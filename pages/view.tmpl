@@ -9,6 +9,9 @@
 #elif $getVar('show', 'unread') == 'down':
 #set item_desc = 'uninteresting'
 #set where_clause = 'item_rating = -1'
+#elif $getVar('show', 'unread') == 'filtered':
+#set item_desc = 'filtered'
+#set where_clause = 'item_rating = -2'
 #elif $getVar('show', 'unread') == 'all':
 #set item_desc = 'all'
 #set where_clause = 'item_rating is not null'

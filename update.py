@@ -119,7 +119,7 @@ def process_parsed_feed(f, c, feed_uid):
   f['items'].reverse()
   for item in f['items']:
     normalize.normalize(item, f)
-    skip = False
+    skip = 0
     filter_dict = {}
     for key in f['channel']:
       filter_dict['feed_' + key] = f['channel'][key]
@@ -128,13 +128,12 @@ def process_parsed_feed(f, c, feed_uid):
       try:
         skip = eval(rule, filter_dict)
         if skip:
-          continue
+          break
       except:
         e = sys.exc_info()[1]
         print e
     if skip:
-      print 'SKIP', item['title']
-      continue
+      skip = -2
     title   = item['title']
     link    = item['link']
     creator = item['creator']
@@ -160,16 +159,20 @@ def process_parsed_feed(f, c, feed_uid):
     if not l:
       sql = """insert into fm_items (item_feed_uid,
       item_created,   item_modified, item_viewed, item_link, item_md5hex,
-      item_title, item_content, item_creator) values (%d,
+      item_title, item_content, item_creator, item_rating) values (%d,
       julianday('%s'), %s,          NULL,        '%s',      '%s',
-      '%s',       '%s',         '%s')""" % \
+      '%s',       '%s',         '%s', %d)""" % \
       (feed_uid, escape(created), modified, escape(link),
        md5.new(content).hexdigest(),
        escape(title),
        escape(content),
-       escape(creator))
+       escape(creator),
+       skip)
       c.execute(sql)
-      print ' ' * 4, title
+      if skip:
+        print 'SKIP', title
+      else:
+        print ' ' * 4, title
     # permalink already exists, this is a change
     else:
       assert len(l) == 1
