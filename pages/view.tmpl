@@ -1,6 +1,7 @@
 ## -*- html -*-
 #from singleton import db
 #import time
+#import param
 <html>
 <head><title>Temboz - unread items</title>
 <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
@@ -46,17 +47,25 @@ function toggle(item)
 <body>
 
 #set c = db.cursor()
-#silent c.execute("""update fm_items set item_viewed=julianday('now') where item_rating=0""")
+#silent c.execute("""update fm_items set item_viewed=julianday('now') where item_uid in (select item_uid from fm_items where item_rating = 0
+order by item_created DESC, item_uid DESC
+limit %d)""" % param.overload_threshold)
 #silent c.execute("""select count(*) from fm_items where item_rating=0""")
 #set $num_items = int(c.fetchone()[0])
 #set $cutoff = ($num_items + 1) / 2 + 1
 #set $count = 0
-<p>$num_items new items&nbsp;&nbsp;<a href="javascript:unhide_all();">unhide all</a></p>
+<p>$num_items new items
+#if $num_items > $param.overload_threshold:
+($param.overload_threshold shown)
+#set cutoff = (param.overload_threshold + 1) / 2 + 1
+#end if
+&nbsp;&nbsp;<a href="javascript:unhide_all();">unhide all</a>&nbsp;<a href="/feeds/">All feeds</a></p>
 #silent c.execute("""select item_uid, item_creator, item_title, item_link,
 item_content, datetime(item_loaded), date(item_created),
 feed_title, feed_html, feed_xml, julianday('now') - julianday(item_created)
 from fm_items, fm_feeds where item_feed_uid=feed_uid
-and item_rating = 0 order by item_created DESC, item_uid DESC""")
+and item_rating = 0 order by item_created DESC, item_uid DESC
+limit %d""" % param.overload_threshold)
 <div class="col">
 #for uid, creator, title, link, content, loaded, created, feed_title, feed_html, feed_xml, delta_created in c:
 #set $count += 1
