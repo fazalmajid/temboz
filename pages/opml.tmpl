@@ -15,7 +15,7 @@ where item_feed_uid=feed_uid
 group by feed_uid, feed_title, feed_html, feed_xml
 order by lower(feed_title)""")
 #for feed_uid, feed_title, feed_desc, feed_html, feed_xml in c:
-#set feed_title = feed_title.replace("'", "&quot;")
+#set feed_title = feed_title.replace("'", "&apos;").replace(""", "&quot;")
       <outline type="rss" title="$feed_title" description="$feed_desc" xmlUrl="$feed_xml" htmlUrl="$feed_html" />
 #end for
 #silent c.close()
