@@ -24,7 +24,7 @@ changelog:
 dist: changelog
 	-rm -rf temboz-$(VERSION)
 	mkdir temboz-$(VERSION)
-	cp README INSTALL NEWS LICENSE ChangeLog temboz *.py rss.db.dump temboz-$(VERSION)
+	cp README INSTALL NEWS LICENSE UPGRADE ChangeLog temboz *.py rss.db.dump temboz-$(VERSION)
 	cp ddl.sql me.opml temboz-$(VERSION)
 	-rm -f pages/*~
 	cp -r pages images temboz-$(VERSION)
@@ -34,6 +34,7 @@ dist: changelog
 	gtar zcvf temboz-$(VERSION).tar.gz temboz-$(VERSION)
 	-rm -rf temboz-$(VERSION)
 	-mv temboz-$(VERSION).tar.gz ../mylos/data/stories/2004/03/29
+	-$${EDITOR} ../mylos/data/stories/2004/03/29/temboz.html
 
 clean:
 	-rm -f core *.pyc *~ pages/*~ *.old pages/*.py ChangeLog*
