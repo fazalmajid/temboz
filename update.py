@@ -19,7 +19,7 @@ def add_feed(feed_xml):
   try:
     f = feedparser.parse(feed_xml)
     normalize.normalize_feed(f)
-    if not (f.get('channel') and f.get('items')):
+    if not ('channel' in f and 'items'in f):
       return 3
     feed = {
       'xmlUrl': f['url'],
