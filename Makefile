@@ -21,13 +21,15 @@ sync:
 changelog:
 	cvs2cl.pl --tags -g -q
 
-dist: changelog
+dist: changelog distclean
 	-rm -rf temboz-$(VERSION)
 	mkdir temboz-$(VERSION)
 	cp README INSTALL NEWS LICENSE UPGRADE ChangeLog temboz *.py rss.db.dump temboz-$(VERSION)
 	cp ddl.sql me.opml temboz-$(VERSION)
 	-rm -f pages/*~
 	cp -r pages images etc temboz-$(VERSION)
+	-rm -rf temboz-$(VERSION)/etc/CVS
+	-rm -f temboz-$(VERSION)/etc/.cvsignore
 	-rm -rf temboz-$(VERSION)/pages/CVS temboz-$(VERSION)/images/CVS
 	# expurgate password
 	sed -e 's/auth_dict.*/auth_dict={"login": "password"}/g' param.py > temboz-$(VERSION)/param.py
@@ -35,6 +37,11 @@ dist: changelog
 	-rm -rf temboz-$(VERSION)
 	-mv temboz-$(VERSION).tar.gz ../mylos/data/stories/2004/03/29
 	-$${EDITOR} ../mylos/data/stories/2004/03/29/temboz.html
+
+distclean:
+	-rm -f core *.pyc *~ pages/*~ *.old pages/*.py ChangeLog*
+	-find . -name .\#* -exec rm {} \;
+	-find . -name .\#~ -exec rm {} \;
 
 clean:
 	-rm -f core *.pyc *~ pages/*~ *.old pages/*.py ChangeLog*
