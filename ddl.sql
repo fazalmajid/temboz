@@ -47,3 +47,9 @@ create view top20 as
   )
 order by interest_ratio DESC
 limit 20;
+
+create table fm_rules (
+	rule_uid	integer primary key,
+	rule_expires	timestamp,
+	rule_text	text
+);

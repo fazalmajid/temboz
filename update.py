@@ -1,4 +1,4 @@
-import md5, time, threading, socket, Queue, signal, sqlite
+import sys, md5, time, threading, socket, Queue, signal, sqlite
 import param, feedparser, normalize
 
 socket.setdefaulttimeout(10)
@@ -119,6 +119,22 @@ def process_parsed_feed(f, c, feed_uid):
   f['items'].reverse()
   for item in f['items']:
     normalize.normalize(item, f)
+    skip = False
+    filter_dict = {}
+    for key in f['channel']:
+      filter_dict['feed_' + key] = f['channel'][key]
+    filter_dict.update(item)
+    for rule in rules:
+      try:
+        skip = eval(rule, filter_dict)
+        if skip:
+          continue
+      except:
+        e = sys.exc_info()[1]
+        print e
+    if skip:
+      print 'SKIP', item['title']
+      continue
     title   = item['title']
     link    = item['link']
     creator = item['creator']
@@ -163,6 +179,8 @@ def process_parsed_feed(f, c, feed_uid):
 
 def update():
   from singleton import db
+  # refresh filtering rules
+  load_rules()
   # create worker threads and the queues used to communicate with them
   work_q = Queue.Queue()
   process_q = Queue.Queue()
@@ -206,3 +224,37 @@ class PeriodicUpdater(threading.Thread):
       time.sleep(param.refresh_interval)
       print time.ctime(), '- refreshing feeds'
       update()
+
+##############################################################################
+#
+rules = []
+def load_rules():
+  global rules
+  rules = []
+  from singleton import db
+  c = db.cursor()
+  try:
+    c.execute("""select rule_uid, rule_text
+    from fm_rules where rule_expires is null
+    or rule_expires > julianday('now')""")
+    for uid, rule in c:
+      rules.append(compile(rule, 'rule' + `uid`, 'eval'))
+  finally:
+    c.close()
+
+def update_rule(db, c, uid, expires, text, delete):
+  if expires == 'never':
+    expires = 'NULL'
+  else:
+    expires = "julianday('%s')" % expires
+  if uid == 'new':
+    c.execute("""insert into fm_rules (rule_expires, rule_text)
+    values (%s, '%s')""" \
+              % (expires, escape(text)))
+  elif delete == 'on':
+    c.execute("delete from fm_rules where rule_uid=%s" % uid)
+  else:
+    c.execute("""update fm_rules set rule_expires=%s, rule_text='%s'
+    where rule_uid=%s""" % (expires, escape(text), uid))
+  db.commit()
+    

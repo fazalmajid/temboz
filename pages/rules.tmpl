@@ -1,0 +1,28 @@
+## -*- html -*-
+<html>
+<head><title>Temboz - Filtering rules</title>
+<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+</head>
+<body>
+<p class="menu"><a href="/view">All unread</a>&nbsp;&nbsp;<a href="/feeds">All feeds</a></p>
+#from singleton import db
+#import time
+#set c = db.cursor()
+
+#if $getVar("uid", None):
+#import update
+#set $status = update.update_rule(db, c, $uid, $expires, $text, $getVar("delete", None))
+#end if
+
+#silent c.execute("""select rule_uid, rule_expires, rule_text
+from fm_rules
+order by rule_uid""")
+<table>
+<tr><th>Rule</th><th>Expires</th><th>Text</th><th>Delete</th><th>Update</th></tr>
+#for uid, expires, text in c:
+<tr valign="top"><form action="/rules" method="get"><td>$uid<input type="hidden" name="uid" value="$uid"></td><td><input type="text" name="expires" value="$expires"></td><td><textarea cols="40" name="text">$text</textarea></td><td><input type="checkbox" name="delete"></td><td><input type="submit" value="Update"></td></td></form></tr>
+#end for
+<tr valign="top"><form action="/rules" method="get"><td><input type="hidden" name="uid" value="new"></td><td><input type="text" name="expires" value="never"></td><td><textarea cols="40" name="text">'XXX' in feed_title and 'YYY' in title</textarea></td><td></td><td><input type="submit" value="Add"></td></td></form></tr>
+#silent c.close()
+</table>
+</body></html>
