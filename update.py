@@ -134,6 +134,7 @@ def process_parsed_feed(f, c, feed_uid):
       assert len(l) == 1
       (item_uid, item_loaded, item_created, item_modified,
        item_viewed, item_md5hex, item_title, item_content, item_creator) = l[0]
+      # XXX update item here
 
 def update():
   from singleton import db
