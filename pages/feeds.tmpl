@@ -12,7 +12,7 @@
 #import time
 #set c = db.cursor()
 #silent c.execute("""select feed_uid, feed_title, feed_html, feed_xml,
-  julianday('now', 'utc') - max(
+  julianday('now') - max(
     ifnull(
       julianday(item_modified),
       julianday(item_created))) as last_modified,
