@@ -41,7 +41,7 @@
 <script language="JavaScript">
 hidden = Array();
 #if public:
-#set img_prefix = '/mylos/images'
+#set img_prefix = 'images'
 function webop(op, uid) {
   ; // don't do anything about up/down yet
 }
@@ -89,7 +89,18 @@ function toggle(item)
 	document.items[item].checked = !document.items[item].checked;
 }
 </script>
-<link rel="stylesheet" type="text/css" href="/temboz.css">
+#if public:
+<link rel="stylesheet" type="text/css" href="gems/temboz.css">
+
+<p class="menu">This page is produced automatically from my RSS aggregator, <a
+href="http://www.temboz.com/">Temboz</a>. It shows the last 200 articles from
+the feeds in blogroll I found interesting. Clicking the "thumbs up" icons will
+highlight the article, clicking "thumbs down" will make it disappear (or
+cancel the highlight if highlighted).</p>
+
+#else:
+<link rel="stylesheet" type="text/css" href="temboz.css">
+#end if
 <style type="text/css">
 </style>
 </head>
