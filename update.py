@@ -174,11 +174,11 @@ class FeedWorker(threading.Thread):
       while True:
         feed = self.in_q.get()
         if not feed: return
-        f = self.fetch_feed(*feed)
-        self.out_q.put((f,) + feed)
+        self.out_q.put((self.fetch_feed(*feed),) + feed)
     finally:
       self.out_q.put(None)
-  def fetch_feed(self, feed_uid, feed_xml, feed_etag, feed_modified):
+  def fetch_feed(self, feed_uid, feed_xml, feed_etag, feed_modified,
+                 feed_dupcheck):
     print self.id, feed_xml
     return fetch_feed(feed_uid, feed_xml, feed_etag, feed_modified)
 
@@ -224,7 +224,8 @@ def clear_errors(db, c, feed_uid, f):
   stmt += " where feed_uid=%d" % feed_uid
   c.execute(stmt)
 
-def update_feed(db, c, f, feed_uid, feed_xml, feed_etag, feed_modified):
+def update_feed(db, c, f, feed_uid, feed_xml, feed_etag, feed_modified,
+                feed_dupcheck=None):
   print feed_xml
   # check for errors - HTTP code 304 means no change
   if 'title' not in f.feed and 'link' not in f.feed and \
@@ -234,7 +235,7 @@ def update_feed(db, c, f, feed_uid, feed_xml, feed_etag, feed_modified):
   else:
     # no error - reset etag and/or modified date and error count
     clear_errors(db, c, feed_uid, f)
-  process_parsed_feed(f, c, feed_uid)
+  process_parsed_feed(f, c, feed_uid, feed_dupcheck)
 
 # shades of LISP...
 def curry(fn, obj):
@@ -247,12 +248,17 @@ def any(obj, *words):
       return True
   return False
 
-def process_parsed_feed(f, c, feed_uid):
+def process_parsed_feed(f, c, feed_uid, feed_dupcheck=None):
   """Insert the entries from a feedparser parsed feed f in the database using
 the cursor c for feed feed_uid.
 Returns a tuple (number of items added unread, number of filtered items)"""
   num_added = 0
   num_filtered = 0
+  # check if duplicate title checking is in effect
+  if feed_dupcheck is None:
+    c.execute('select feed_dupcheck from fm_feeds where feed_uid=%d' \
+              % feed_uid)
+    feed_dupcheck = bool(c.fetchone()[0])
   # the Radio convention is reverse chronological order
   f['items'].reverse()
   for item in f['items']:
@@ -302,6 +308,21 @@ Returns a tuple (number of items added unread, number of filtered items)"""
                where item_feed_uid=%d and item_guid='%s'""" \
                % (feed_uid, escape(guid)))
     l = c.fetchall()
+    # unknown GUID, but title duplicate checking may be in effect
+    if not l:
+      if feed_dupcheck:
+        c.execute("""select count(*) from fm_items
+        where item_feed_uid=%d and item_title='%s'""" \
+                  % (feed_uid, escape(title)))
+        l = bool(c.fetchone()[0])
+        if l:
+          print 'DUPLICATE TITLE', title
+    # GUID already exists, this is a change
+    else:
+      assert len(l) == 1
+      (item_uid, item_link, item_loaded, item_created, item_modified,
+       item_viewed, item_md5hex, item_title, item_content, item_creator) = l[0]
+      # XXX update item here
     # GUID doesn't exist yet, insert it
     if not l:
       sql = """insert into fm_items (item_feed_uid, item_guid,
@@ -322,12 +343,6 @@ Returns a tuple (number of items added unread, number of filtered items)"""
       else:
         num_added += 1
         print ' ' * 4, title
-    # GUID already exists, this is a change
-    else:
-      assert len(l) == 1
-      (item_uid, item_link, item_loaded, item_created, item_modified,
-       item_viewed, item_md5hex, item_title, item_content, item_creator) = l[0]
-      # XXX update item here
   # update timestamp of the oldest item still in the feed file
   if 'oldest' in f and f['oldest'] != '9999-99-99 99:99:99':
     c.execute("""update fm_feeds
@@ -344,7 +359,7 @@ def update():
   # garbage collection - see param.py
   # this is done only once a day between 3 and 4 AM as this is quite intensive
   # and could interfere with user activity
-  if param.garbage_contents and time.localtime()[3] == 3:
+  if param.garbage_contents and time.localtime()[3] == param.backup_hour:
     c.execute("""update fm_items
     set item_content=''
     where item_rating<0 and item_created < julianday('now')-%d""" %
@@ -374,16 +389,16 @@ def update():
     workers.append(FeedWorker(i + 1, work_q, process_q))
     workers[-1].start()
   # assign work
-  c.execute("""select feed_uid, feed_xml, feed_etag,
+  c.execute("""select feed_uid, feed_xml, feed_etag, feed_dupcheck,
   strftime('%s', feed_modified)
   from fm_feeds where feed_status=0""")
-  for feed_uid, feed_xml, feed_etag, feed_modified in c:
+  for feed_uid, feed_xml, feed_etag, feed_dupcheck, feed_modified in c:
     if feed_modified:
       feed_modified = float(feed_modified)
       feed_modified = time.localtime(feed_modified)
     else:
       feed_modified = None
-    work_q.put((feed_uid, feed_xml, feed_etag, feed_modified))
+    work_q.put((feed_uid, feed_xml, feed_etag, feed_modified, feed_dupcheck))
   # None is an indication for workers to stop
   for i in range(param.feed_concurrency):
     work_q.put(None)

@@ -25,6 +25,8 @@ backup_compressor = ('gzip -9c', '.gz')
 #backup_compressor = ('bzip2 -9c', '.bz2)
 # number of daily backups to keep
 daily_backups = 7
+# at what time should the backup be made (default: between 3 and 4 AM)
+backup_hour = 3
 
 # garbage collection - articles flagged as "uninteresting" will have their
 # content automatically dumped after this interval (but not their title or
