@@ -250,6 +250,9 @@ limit %d""" % overload_threshold)
 #for uid, creator, title, link, content, loaded, created, feed_title, feed_html, feed_xml, delta_created in c:
 #set count += 1
 #if count == cutoff:
+## this empty paragraph prevents the right column from resizing when all items
+## in the left column are dismissed
+<p></p>
 </div><div class="col2">
 #end if
 ########################################################################
