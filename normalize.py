@@ -10,7 +10,8 @@ except AttributeError:
 
 def normalize(item, f):
   # get rid of RDF lossage...
-  for key in ['title', 'link', 'date', 'modified', 'creator']:
+  for key in ['title', 'link', 'date', 'modified', 'creator',
+              'content', 'content_encoded', 'description']:
     if type(item.get(key)) == list and len(item[key]) == 1:
       item[key] = item[key][0]
     if type(item.get(key)) == dict and 'value' in item[key]:
@@ -64,24 +65,14 @@ def normalize(item, f):
     else:
       item['modified'] = time.strftime(date_fmt, modified)
   # content
-  if 'content_encoded' in item:
+  if 'content' in item:
+    content = item['content']
+  elif 'content_encoded' in item:
     content = item['content_encoded']
   elif 'description' in item:
     content = item['description']
   else:
-    # XXX take this out
-    sop = [k for k in item.keys() if k not in
-           ['description', 'link', 'title', 'guid', 'content_encoded',
-            'links', 'creator', 'summary', 'id', 'date',
-            'summary_detail', 'title_detail',
-            'modified_parsed', 'date_parsed', 'modified']]
-    if sop:
-      print '@' * 72
-      import code
-      from sys import exit
-      code.interact(local=locals())
-    else:
-      content = '<a href="' + item['link'] + '">' + item['title'] + '</a>'
+    content = '<a href="' + item['link'] + '">' + item['title'] + '</a>'
   item['content'] = content
   # map unicode
   for key in ['title', 'link', 'date', 'modified', 'creator', 'content']:
