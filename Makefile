@@ -24,7 +24,7 @@ changelog:
 dist: changelog
 	-rm -rf temboz-$(VERSION)
 	mkdir temboz-$(VERSION)
-	cp README INSTALL ChangeLog temboz *.py rss.db.dump temboz-$(VERSION)
+	cp README INSTALL NEWS LICENSE ChangeLog temboz *.py rss.db.dump temboz-$(VERSION)
 	cp ddl.sql me.opml temboz-$(VERSION)
 	-rm -f pages/*~
 	cp -r pages images temboz-$(VERSION)

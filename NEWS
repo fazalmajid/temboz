@@ -1,0 +1,33 @@
+Temboz NEWS -- history of user-visible changes.
+
+Copyright (C) 2004 Fazal Majid
+See the end for copying conditions.
+
+Please send Temboz bug reports to the email address listed at www.temboz.com
+
+* Changes in Temboz 0.3.1.
+
+** Basic search functionality added (case sensitive)
+
+** The "All feeds" view has arrow indicators for sort order
+
+** feeds are automatically suspended after 100 errors by default
+
+** Added an option to change a feed URL in the feed details view
+
+** Feeds with errors are now highlighted in red in the "All feeds" view
+
+----------------------------------------------------------------------
+Copyright information:
+
+Copyright (C) 2004 Fazal Majid
+
+   Permission is granted to anyone to make or distribute verbatim
+   copies of this document as received, in any medium, provided that
+   the copyright notice and this permission notice are preserved, thus
+   giving the recipient permission to redistribute in turn.
+
+   Permission is granted to distribute modified versions of this
+   document, or of portions of it, under the above conditions,
+   provided also that they carry prominent notices stating who last
+   changed them.
