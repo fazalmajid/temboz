@@ -18,6 +18,8 @@ class TembozTemplate(Template):
       return str(int(delta_t * 24.0 * 60.0)) + ' minutes ago'
     elif delta_t < 1.0:
       return str(int(delta_t * 24.0)) + ' hours ago'
+    elif delta_t < 2.0:
+      return 'one day ago'
     elif delta_t < 3.0:
       return str(int(delta_t)) + ' days ago'
     else:
