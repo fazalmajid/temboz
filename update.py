@@ -18,15 +18,15 @@ def add_feed(feed_xml):
   c = db.cursor()
   try:
     f = feedparser.parse(feed_xml)
-    normalize.normalize_feed(f)
-    if not f['channel']:
+    if not f.feed:
       return 3, None
+    normalize.normalize_feed(f)
     feed = {
       'xmlUrl': f['url'],
-      'htmlUrl': str(f['channel']['link']),
+      'htmlUrl': str(f.feed['link']),
       'etag': f['etag'],
-      'title': f['channel']['title'].encode('ascii', 'xmlcharrefreplace'),
-      'desc': f['channel']['description'].encode('ascii', 'xmlcharrefreplace')
+      'title': f.feed['title'].encode('ascii', 'xmlcharrefreplace'),
+      'desc': f.feed['description'].encode('ascii', 'xmlcharrefreplace')
       }
     for key, value in feed.items():
       if type(value) == str:
@@ -95,7 +95,7 @@ def fetch_feed(feed_uid, feed_xml, feed_etag, feed_modified):
 def update_feed(db, c, f, feed_uid, feed_xml, feed_etag, feed_modified):
   print feed_xml
   # check for errors - HTTP code 304 means no change
-  if 'title' not in f['channel'] and 'link' not in f['channel'] and \
+  if 'title' not in f.feed and 'link' not in f.feed and \
          ('status' not in f or f['status'] not in [304]):
     # error or timeout - increment error count
     c.execute("""update fm_feeds set feed_errors = feed_errors + 1
@@ -123,9 +123,9 @@ def process_parsed_feed(f, c, feed_uid):
     normalize.normalize(item, f)
     skip = 0
     filter_dict = {}
-    for key in f['channel']:
+    for key in f.feed:
       try:
-        filter_dict['feed_' + key] = f['channel'][key]
+        filter_dict['feed_' + key] = f.feed[key]
       except KeyError:
         pass
     filter_dict.update(item)
