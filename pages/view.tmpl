@@ -63,9 +63,9 @@
 #else:
 #set search_where = 'item_content'
 #end if
-#set where_clause = where_clause + ' and ' + search_where + ' like '
+#set where_clause = where_clause + ' and lower(' + search_where + ') like '
 #from update import escape
-#set where_clause = where_clause + "'%%%s%%'" % escape($getVar('search'))
+#set where_clause = where_clause + "'%%%s%%'" % escape($getVar('search').lower())
 #end if
 ########################################################################
 ##
