@@ -3,7 +3,12 @@
 #import time
 #import param
 
+#set public = False
 #if $getVar('show', 'unread') == 'up':
+#set item_desc = 'interesting'
+#set where_clause = 'item_rating > 0'
+#elif $getVar('show', 'unread') == 'mylos':
+#set public = True
 #set item_desc = 'interesting'
 #set where_clause = 'item_rating > 0'
 #elif $getVar('show', 'unread') == 'down':
@@ -35,10 +40,18 @@
 <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
 <script language="JavaScript">
 hidden = Array();
+#if public:
+#set img_prefix = '/mylos/images'
 function webop(op, uid) {
-  var i = new Image();
+  ; // don't do anything about up/down yet
+}
+#else:
+#set img_prefix = ''
+var i = new Image();
+function webop(op, uid) {
   i.src = '/feedback/' + op + '/' + Math.random().toString().substring(8) + '/' + uid + '.gif';
 }
+#end if
 function hide(id) {
   elt = document.getElementById('art' + id);
   if(elt.style.backgroundColor == "yellow") {
@@ -94,7 +107,12 @@ limit %d offset %d)""" % (param.overload_threshold, offset))
 ($param.overload_threshold shown)
 #set cutoff = (param.overload_threshold + 1) / 2 + 1
 #end if
-&nbsp;&nbsp;<a href="javascript:unhide_all();">Unhide all</a>&nbsp;&nbsp;<a href="javascript:unhide_last();">Unhide last</a>&nbsp;&nbsp;<a href="/feeds/">All feeds</a>&nbsp;&nbsp;<a href="/add/">Add feed</a></p>
+&nbsp;&nbsp;<a href="javascript:unhide_all();">Unhide all</a>&nbsp;&nbsp;<a href="javascript:unhide_last();">Unhide last</a>
+#if public:
+</p>
+#else:
+&nbsp;&nbsp;<a href="/feeds/">All feeds</a>&nbsp;&nbsp;<a href="/add/">Add feed</a></p>
+#end if
 #silent c.execute("""select item_uid, item_creator, item_title, item_link,
 item_content, datetime(item_loaded), date(item_created),
 feed_title, feed_html, feed_xml, julianday('now') - julianday(item_created)
@@ -108,7 +126,7 @@ limit %d""" % param.overload_threshold)
 </div><div class="col2">
 #end if
 #set since_when = self.since(delta_created)
-<div class="article" id="art$uid"><div class="headline"><img width="32" height="32" alt="up" src="/up.gif" class="up" onclick="highlight('$uid')" /><img width="32" height="32" alt="down" src="/down.gif" class="down" onclick="hide('$uid')" /><a href="/redirect/$uid" class="headline" target="_blank" onclick="highlight('$uid');">$title</a><br><a href="$feed_html" title="" class="source">$feed_title</a> - $since_when<br><!-- by $creator, cached at $loaded --></div><div class="content">$content</div></div>
+<div class="article" id="art$uid"><div class="headline"><img width="32" height="32" alt="up" src="<%=img_prefix%>/up.gif" class="up" onclick="highlight('$uid')" /><img width="32" height="32" alt="down" src="<%=img_prefix%>/down.gif" class="down" onclick="hide('$uid')" /><a href="/redirect/$uid" class="headline" target="_blank" onclick="highlight('$uid');">$title</a><br><a href="$feed_html" title="" class="source">$feed_title</a> - $since_when<br><!-- by $creator, cached at $loaded --></div><div class="content">$content</div></div>
 #end for
 </div>
 #silent db.commit()
