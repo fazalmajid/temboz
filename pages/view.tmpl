@@ -42,10 +42,12 @@
 hidden = Array();
 #if public:
 #set img_prefix = 'images'
+#set overload_threshold = 50
 function webop(op, uid) {
   ; // don't do anything about up/down yet
 }
 #else:
+#set overload_threshold = param.overload_threshold
 #set img_prefix = ''
 var i = new Image();
 function webop(op, uid) {
@@ -91,13 +93,11 @@ function toggle(item)
 </script>
 #if public:
 <link rel="stylesheet" type="text/css" href="gems/temboz.css">
-
 <p class="menu">This page is produced automatically from my RSS aggregator, <a
-href="http://www.temboz.com/">Temboz</a>. It shows the last 200 articles from
+href="http://www.temboz.com/">Temboz</a>. It shows the last 50 articles from
 the feeds in blogroll I found interesting. Clicking the "thumbs up" icons will
 highlight the article, clicking "thumbs down" will make it disappear (or
 cancel the highlight if highlighted).</p>
-
 #else:
 <link rel="stylesheet" type="text/css" href="temboz.css">
 #end if
@@ -108,7 +108,7 @@ cancel the highlight if highlighted).</p>
 #set c = db.cursor()
 #silent c.execute("""update fm_items set item_viewed=julianday('now') where item_uid in (select item_uid from fm_items where """ + where_clause + """
 order by item_created DESC, item_uid DESC
-limit %d offset %d)""" % (param.overload_threshold, offset))
+limit %d offset %d)""" % (overload_threshold, offset))
 #silent c.execute("""select count(*) from fm_items where """ + where_clause)
 #set num_items = int(c.fetchone()[0])
 #set cutoff = (num_items + 1) / 2 + 1
