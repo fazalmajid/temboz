@@ -1,0 +1,22 @@
+<p class="menu"><a href="/unread">All unread</a>&nbsp;&nbsp;<a href="/feeds">All feeds</a></p>
+
+Subscribe to a RSS feed:<br>
+<form action="/add" method="POST">
+<input size=64 name="feed_xml"><input type="submit" value="Subscribe">
+</form>
+
+#if $getVar("feed_xml", None):
+#import update
+#set $status = update.add_feed($feed_xml)
+#if $status == 0:
+  <b>Subscribed to</b> $feed_xml
+#elif $status == 1:
+  <b>Subscribed to</b> $feed_xml via autodiscovery
+#elif $status == 2:
+  <b>Already subscribed to</b> $feed_xml, nothing to be done
+#elif $status == 3:
+  <b>Connection or parse error in attempting to subscribe to</b> $feed_xml, check URL
+#elif $status == -1:
+  <b>Unknown error in attempting to subscribe to</b> $feed_xml
+#end if
+#end if

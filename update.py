@@ -1,4 +1,4 @@
-import md5, time, threading, socket, Queue, signal
+import md5, time, threading, socket, Queue, signal, sqlite
 import param, feedparser, normalize
 
 socket.setdefaulttimeout(10)
@@ -8,30 +8,44 @@ def escape(str):
   return str.replace("'", "''")
 
 def add_feed(feed_xml):
+  """Try to add a feed. Return values:
+  -1: unknown error
+  0: feed added normally
+  1: feed added via autodiscovery
+  2: feed not added, already present
+  3: feed not added, connection or parse error"""
   from singleton import db
   c = db.cursor()
-  f = feedparser.parse(feed_xml)
-  feed = {
-    'xmlUrl': f['link'],
-    'htmlUrl': f['channel']['link'],
-    'etag': f['etag'],
-    'title': f['channel']['title']
-    }
   try:
-    c.execute("""insert into fm_feeds
-    (feed_xml, feed_etag, feed_html, feed_title, feed_desc) values
-    ('%(xmlUrl)s', '%(etag)s', '%(htmlUrl)s', '%(title)s',
-    '%(desc)s')""" % feed)
-    feed_uid = db.db.sqlite_last_insert_rowid()
-    process_parsed_feed(f, c, feed_uid)
-    db.commit()
-  except sqlite.IntegrityError, e:
-    if 'feed_xml' not in str(e):
-      raise
-    else:
-      # duplicate attempt
-      pass
-  c.close()
+    f = feedparser.parse(feed_xml)
+    if not (f.get('channel') and f.get('items')):
+      return 3
+    feed = {
+      'xmlUrl': f['url'],
+      'htmlUrl': str(f['channel']['link']),
+      'etag': f['etag'],
+      'title': f['channel']['title'].encode('ascii', 'xmlcharrefreplace'),
+      'desc': f['channel']['description'].encode('ascii', 'xmlcharrefreplace')
+      }
+    for key, value in feed.items():
+      feed[key] = escape(value)
+    try:
+      c.execute("""insert into fm_feeds
+      (feed_xml, feed_etag, feed_html, feed_title, feed_desc) values
+      ('%(xmlUrl)s', '%(etag)s', '%(htmlUrl)s', '%(title)s',
+      '%(desc)s')""" % feed)
+      feed_uid = db.sqlite_last_insert_rowid()
+      process_parsed_feed(f, c, feed_uid)
+      db.commit()
+      return 0
+    except sqlite.IntegrityError, e:
+      if 'feed_xml' not in str(e):
+        return -1
+      else:
+        # duplicate attempt
+        return 2
+  finally:
+    c.close()
 
 class FeedWorker(threading.Thread):
   def __init__(self, id, in_q, out_q):
