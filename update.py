@@ -196,7 +196,7 @@ def update():
   c = db.cursor()
   c.execute("""select feed_uid, feed_xml, feed_etag,
   strftime('%s', feed_modified)
-  from fm_feeds""")
+  from fm_feeds where feed_status=0""")
   for feed_uid, feed_xml, feed_etag, feed_modified in c:
     if feed_modified:
       feed_modified = float(feed_modified)
