@@ -66,7 +66,7 @@ def normalize(item, f):
     from sys import exit
     code.interact(local=locals())
   item['title_lc'] =   item['title'].lower()
-  item['title_words'] =   item['title_lc'].translate(punctuation).split()
+  item['title_words'] =  str(item['title_lc']).translate(punctuation).split()
   ########################################################################
   # link
   if 'link' not in item:
