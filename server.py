@@ -155,8 +155,11 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
           if login in auth_dict and auth_dict[login] == passwd:
             return login
     self.browser_output(
-      401, 'text/html', '<h1>401 Authorization required</h1><p>%s</p>',
+      401, 'text/html', """<h1>401 Authorization required</h1><p>%%s</p>
+      <script language="JavaScript">document.location.href="%s";</script>""" \
+      % param.unauth_page,
       ['WWW-Authenticate: Basic realm="%s"' % realm])
+    return
 
   def init_session(self):
     self.output_buffer = []
