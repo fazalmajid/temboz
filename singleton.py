@@ -1,6 +1,6 @@
 # hold a single database connection
 
-import threading, sqlite, math, time
+import sys, threading, sqlite, math, time
 
 class PseudoCursor:
   def __init__(self, db):
@@ -16,7 +16,7 @@ class PseudoCursor:
     result = self.c.execute(*args, **kwargs)
     elapsed = time.time() - before
     if elapsed > 5.0:
-      print 'Slow SQL:', elapsed, args, kwargs
+      print >> sys.stderr, 'Slow SQL:', elapsed, args, kwargs
     return result
 
 class PseudoDB:
