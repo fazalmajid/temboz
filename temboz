@@ -28,6 +28,13 @@ if __name__ == '__main__':
       opml.import_opml(val)
     elif opt == '--server':
       import update, server
+      # close stdin file descriptor
+      try:
+        import posix
+        posix.close(0)
+        posix.open('/dev/null', posix.O_RDONLY)
+      except ImportError:
+        pass
       updater = update.PeriodicUpdater()
       updater.start()
       server.run()
