@@ -11,11 +11,12 @@ pages/%.py: pages/%.tmpl
 	cheetah compile $<
 
 init:
+	@if [ `hostname` != "alamut" ]; then true; else echo "Will not run make init on alamut"; false; fi
 	-rm -f rss.db
 	sqlite rss.db < ddl.sql > /dev/null
 	#temboz --import subs.opml
-	temboz --import fof.opml
-	#temboz --import broken.opml
+	#temboz --import fof.opml
+	temboz --import broken.opml
 	#temboz --import me.opml
 	temboz --refresh
 
