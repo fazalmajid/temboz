@@ -1,4 +1,4 @@
-import sys, md5, time, threading, socket, Queue, signal, sqlite
+import sys, md5, time, threading, socket, Queue, signal, sqlite, os
 import param, feedparser, normalize
 
 socket.setdefaulttimeout(10)
@@ -245,6 +245,7 @@ Returns a tuple (number of items added unread, number of filtered items)"""
       skip = -2
     title   = item['title']
     link    = item['link']
+    guid    = item['id']
     author = item['author']
     created = item['created']
     modified = item['modified']
@@ -253,21 +254,22 @@ Returns a tuple (number of items added unread, number of filtered items)"""
     else:
       modified = 'NULL'
     content = item['content']
-    # check if the item already exists, using the permalink as key
-    c.execute("""select item_uid, item_loaded, item_created, item_modified,
+    # check if the item already exists, using the GUID as key
+    c.execute("""select item_uid, item_link,
+               item_loaded, item_created, item_modified,
                item_viewed, item_md5hex, item_title, item_content, item_creator
                from fm_items
-               where item_feed_uid=%d and item_link='%s'""" \
-               % (feed_uid, escape(link)))
+               where item_feed_uid=%d and item_guid='%s'""" \
+               % (feed_uid, escape(guid)))
     l = c.fetchall()
-    # permalink doesn't exist yet, insert it
+    # GUID doesn't exist yet, insert it
     if not l:
-      sql = """insert into fm_items (item_feed_uid,
+      sql = """insert into fm_items (item_feed_uid, item_guid,
       item_created,   item_modified, item_viewed, item_link, item_md5hex,
-      item_title, item_content, item_creator, item_rating) values (%d,
+      item_title, item_content, item_creator, item_rating) values (%d, '%s',
       julianday('%s'), %s,          NULL,        '%s',      '%s',
       '%s',       '%s',         '%s', %d)""" % \
-      (feed_uid, escape(created), modified, escape(link),
+      (feed_uid, escape(guid), escape(created), modified, escape(link),
        md5.new(content).hexdigest(),
        escape(title),
        escape(content),
@@ -280,10 +282,10 @@ Returns a tuple (number of items added unread, number of filtered items)"""
       else:
         num_added += 1
         print ' ' * 4, title
-    # permalink already exists, this is a change
+    # GUID already exists, this is a change
     else:
       assert len(l) == 1
-      (item_uid, item_loaded, item_created, item_modified,
+      (item_uid, item_link, item_loaded, item_created, item_modified,
        item_viewed, item_md5hex, item_title, item_content, item_creator) = l[0]
       # XXX update item here
   return (num_added, num_filtered)
@@ -303,6 +305,21 @@ def update():
                param.garbage_contents)
     db.commit()
     c.execute('vacuum')
+    # we still hold the PseudoCursor lock, this is a good opportunity to backup
+    try:
+      os.mkdir('backups')
+    except OSError:
+      pass
+    os.system(('sqlite rss.db .dump | %s > backups/daily_' \
+               + time.strftime('%Y-%m-%d') + '%s') % param.backup_compressor)
+    try:
+      os.remove('backups/daily_'
+                + time.strftime('%Y-%m-%d',
+                                time.localtime(time.time()
+                                               - 86400 * param.daily_backups))
+                + param.backup_compressor[1])
+    except OSError:
+      pass
   # create worker threads and the queues used to communicate with them
   work_q = Queue.Queue()
   process_q = Queue.Queue()

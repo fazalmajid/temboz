@@ -8,11 +8,14 @@ create table fm_feeds (
 	feed_desc	text,
 	feed_errors	int default 0,
 	-- 0=active, 1=suspended
+	feed_lang	varchar(2) default 'en',
+	feed_private	int default 0,
 	feed_status	int default 0
 );
 
 create table fm_items (
 	item_uid	integer primary key,
+	item_guid	varchar(255),
 	item_feed_uid	int,
 	-- references fm_feeds (feed_uid) on delete cascade,
 	item_loaded	timestamp,
@@ -24,7 +27,8 @@ create table fm_items (
 	item_title	text,
 	item_content	text,
 	item_creator	varchar(255),
-	item_rating	default 0
+	item_rating	default 0,
+	item_item_uid	int -- to cluster related items together
 );
 
 create trigger update_timestamp after insert on fm_items
@@ -33,7 +37,8 @@ begin
 	where item_uid=new.item_uid;
 end;
 
-create unique index item_feed_link_i on fm_items(item_feed_uid, item_link);
+create index item_feed_link_i on fm_items(item_feed_uid, item_link);
+create unique index item_feed_guid_i on fm_items(item_feed_uid, item_guid);
 create index item_rating_i on fm_items(item_rating, item_feed_uid);
 
 create table fm_rules (

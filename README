@@ -1,8 +1,9 @@
-Version 0.4.4, released 2005-01-18
+Version 0.5, released 2005-01-30
 
 Not much documentation for now, check out www.temboz.com for more details.
 
-See INSTALL for installation instructions
+See INSTALL for installation instructions, and UPGRADE if you are upgrading
+from an earlier version.
 
 If you are upgrading from a previous version of Temboz, check the UPGRADE file
 for relevant upgrade instructions.

@@ -1,6 +1,24 @@
+From 0.4.4 to 0.5:
+
+First kill your running Temboz server.
+
+To upgrade your database to the new data model, go to the directory containing
+your rss.db file, then run:
+	sh etc/db_0.5.sh
+(the original will be backed up)
+
+Then run:
+	temboz --refresh
+	python etc/resolveguid.py
+
+The latter will resolve duplicates due to items in RSS/ATOM feeds that have
+links different from their GUID.
+
+------------------------------------------------------------------------
 from 0.4.x to 0.4.4:
 add the param.garbage_contents parameter to your param.py file
 
+------------------------------------------------------------------------
 From 0.3.2 to 0.4:
 
 sqlite rss.db << EOF

@@ -1,4 +1,4 @@
-VERSION= 0.4.4
+VERSION= 0.5
 PAGES= view error opml feeds temboz.css rules catch_up
 
 all: changelog
@@ -27,7 +27,7 @@ dist: changelog
 	cp README INSTALL NEWS LICENSE UPGRADE ChangeLog temboz *.py rss.db.dump temboz-$(VERSION)
 	cp ddl.sql me.opml temboz-$(VERSION)
 	-rm -f pages/*~
-	cp -r pages images temboz-$(VERSION)
+	cp -r pages images etc temboz-$(VERSION)
 	-rm -rf temboz-$(VERSION)/pages/CVS temboz-$(VERSION)/images/CVS
 	# expurgate password
 	sed -e 's/auth_dict.*/auth_dict={"login": "password"}/g' param.py > temboz-$(VERSION)/param.py

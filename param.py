@@ -19,6 +19,13 @@ refresh_interval = 3600
 # Whether "catch-up" links require user confirmation (default is yes)b
 catch_up_confirm = True
 
+# automatic backups
+# stream compression utility to use for backups
+backup_compressor = ('gzip -9c', '.gz')
+#backup_compressor = ('bzip2 -9c', '.bz2)
+# number of daily backups to keep
+daily_backups = 7
+
 # garbage collection - articles flagged as "uninteresting" will have their
 # content automatically dumped after this interval (but not their title or
 # permalink) to make room. If this parameter is set to None or False, this
