@@ -220,7 +220,8 @@ limit %d offset %d)""" % (overload_threshold, offset))
 #if $getVar('feed_uid', None):
 <input name="feed_uid" type="hidden" value="$feed_uid">
 #end if
-<input name="show" type="hidden" value="$show"><input name="search">
+<input name="show" type="hidden" value="$show">
+<input name="search" value="$getVar('search', '')">
 <select name="show">
 <option value="all" selected>All articles</option>
 <option value="unread">Unread only</option>
