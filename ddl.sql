@@ -31,6 +31,8 @@ begin
 	where item_uid=new.item_uid;
 end;
 
+create unique index item_feed_link_i on fm_items(item_feed_uid, item_link);
+
 create view top20 as
   select
     feed_title,
