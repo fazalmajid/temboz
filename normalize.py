@@ -43,9 +43,8 @@ def fix_date(date_tuple):
 
 url_re = re.compile('(?:href|src)="([^"]*)"', re.IGNORECASE)
 
-punctuation = ',.?!;:-()'
 punct_map = {}
-for c in punctuation:
+for c in string.punctuation:
   punct_map[ord(c)] = 32
 
 def normalize(item, f):
@@ -147,7 +146,8 @@ def normalize(item, f):
       content += end_tag * imbalance
   item['content'] = content
   item['content_lc'] = content.lower()
-  item['content_words'] = item['content_lc'].split()
+  item['content_words'] = unicode(item['content_lc']).translate(
+    punct_map).split()
   item['urls'] = url_re.findall(content)
   ########################################################################
   # map unicode
