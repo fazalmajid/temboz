@@ -1,4 +1,4 @@
-import sys, time, re, feedparser, codecs
+import sys, time, re, feedparser, codecs, string
 
 # XXX TODO
 #
@@ -41,6 +41,12 @@ def fix_date(date_tuple):
   else:
     return date_tuple
 
+url_re = re.compile('(?:href|src)="([^"]*)"', re.IGNORECASE)
+
+punctuation = ''.join(
+  [{True: c, False: ' '}[c in (string.letters + string.digits)]
+   for c in [chr(x) for x in range(256)]])
+
 def normalize(item, f):
   # get rid of RDF lossage...
   for key in ['title', 'link', 'created', 'modified', 'author',
@@ -60,7 +66,7 @@ def normalize(item, f):
     from sys import exit
     code.interact(local=locals())
   item['title_lc'] =   item['title'].lower()
-  item['title_words'] =   item['title_lc'].split()
+  item['title_words'] =   item['title_lc'].translate(punctuation).split()
   ########################################################################
   # link
   if 'link' not in item:
@@ -136,6 +142,7 @@ def normalize(item, f):
   item['content'] = content
   item['content_lc'] = content.lower()
   item['content_words'] = item['content_lc'].split()
+  item['urls'] = url_re.findall(content)
   ########################################################################
   # map unicode
   for key in ['title', 'link', 'created', 'modified', 'author', 'content']:
