@@ -16,6 +16,7 @@ class PseudoDB:
   def __init__(self):
     self.lock = threading.RLock()
     self.db = sqlite.connect('rss.db', mode=077)
+    self.sqlite_last_insert_rowid = self.db.db.sqlite_last_insert_rowid
     self.c = self.db.cursor()
   def cursor(self):
     return PseudoCursor(self)
