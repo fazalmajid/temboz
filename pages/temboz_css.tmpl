@@ -3,6 +3,8 @@ body {
   font-family: verdana, arial, sans-serif;
   font-size:9pt;
   line-height:11pt;
+}
+body.unpadded {
   padding:0px;
   margin:0px;
 }
@@ -28,6 +30,7 @@ a.headline {
 
 p.menu {
   margin: 20px;
+  background: #BFFF80;
 }
 
 .col1 .article {
@@ -58,11 +61,19 @@ p.menu {
   overflow: hidden;
 }
 th.sort {
-  background:#ddf;
+  background: #ddf;
   color: red;
   font-weight: bold;
 }
 th.nonsort {
-  background:#eee;
+  background: #eee;
   font-weight: normal;
+}
+tr.odd {
+  background: white;
+  font-size:9pt;
+}
+tr.even {
+  background:#eee;
+  font-size:9pt;
 }

@@ -2,6 +2,7 @@
 <html>
 <head><title>Temboz - Filtering rules</title>
 <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+<link rel="stylesheet" type="text/css" href="/temboz.css">
 </head>
 <body>
 <p class="menu"><a href="/view">All unread</a>&nbsp;&nbsp;<a href="/view?show=filtered">All filtered</a>&nbsp;&nbsp;<a href="/feeds">All feeds</a></p>
@@ -25,4 +26,48 @@ order by rule_uid""")
 <tr valign="top"><form action="/rules" method="get"><td><input type="hidden" name="uid" value="new"></td><td><input type="text" name="expires" value="never"></td><td><textarea cols="40" name="text">'XXX' in feed_title and 'YYY' in title</textarea></td><td></td><td><input type="submit" value="Add"></td></td></form></tr>
 #silent c.close()
 </table>
+
+<h2>Filter syntax:</h2>
+
+<p>The filtering rules are Python expressions that are evaluated as booleans. The following variables are always available:</p>
+
+<table>
+<tr><th class="nonsort">Variable</th><th class="nonsort">Description</th></tr>
+<tr class="odd"><td>feed_title</td><td>Title of the feed</td></tr>
+<tr class="even"><td>title</td><td>Title of the article</td></tr>
+<tr class="odd"><td>title_lc</td><td>Title of the article (all in lower case)</td></tr>
+<tr class="even"><td>contents</td><td>Contents of the article</td></tr>
+<tr class="odd"><td>contents_lc</td><td>Contents of the article (all in lower case)</td>
+</tr>
+</table>
+
+<p>Other variables may be available on a feed-by-feed basis, also depending on
+which feed standard is used (e.g. Atom vs. RSS). Check the feed details page
+for the feed you are interested in for more details.</p>
+
+<p>If a variable does not exist, the expression evaluation will throw an
+exception, and the article will not be filtered out, but in a Python logical
+OR expression, if the first term evaluates true, the second term is not
+evaluated and the article will be filtered out even if the second term refers
+to a variable that does not exist.</p>
+
+<h2>Examples</h2>
+
+<p>Should be self-explanatory:</p>
+
+<pre>
+'Salon' in feed_title and ('King Kaufman' in title or 'Letters' in title)
+</pre>
+
+<pre>
+'Guardian Unlimited' in feed_title and (content.startswith('Sport:')
+ or 'football' in content_lc or 'cricket' in content_lc)
+</pre>
+
+<p>Filter articles referring to SAP, but as a word (i.e. do not filter out 'ASAP'): 
+
+<pre>
+'SAP' in title.split()
+</pre>
+
 </body></html>

@@ -1,0 +1,92 @@
+## -*- html -*-
+<html>
+<head><title>Temboz - Feed details</title>
+<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+<link rel="stylesheet" type="text/css" href="/temboz.css">
+</head>
+<body>
+<p class="menu"><a href="/view">All unread</a>&nbsp;&nbsp;<a href="/add">Add feed</a>&nbsp;&nbsp;<a href="/feeds">All feeds</a></p>
+#set $feed_uid = $getVar('feed_uid')
+#from singleton import db
+#import time
+#set c = db.cursor()
+#silent c.execute("""select feed_title, feed_html, feed_xml,
+  julianday('now') - max(
+    ifnull(
+      julianday(item_modified),
+      julianday(item_created))) as last_modified,
+  sum(case when item_rating=1 then 1 else 0 end) as interesting,
+  sum(case when item_rating=0 then 1 else 0 end) as unread,
+  sum(case when item_rating=-1 then 1 else 0 end) as uninteresting,
+  sum(case when item_rating=-2 then 1 else 0 end) as filtered,
+  count(*) as total, feed_status
+from fm_feeds, fm_items
+where item_feed_uid=feed_uid and feed_uid=""" + $feed_uid + """
+group by feed_uid, feed_title, feed_html, feed_xml
+""")
+
+#silent feed_title, feed_html, feed_xml, delta_t, interesting, unread, uninteresting, filtered, total, status = c.fetchone()
+#set since = self.since(delta_t)
+#set unread = int(unread)
+#set interesting = int(interesting)
+#set uninteresting = int(uninteresting)
+#set filtered = int(filtered)
+#set total = int(total)
+#if interesting + uninteresting > 0:
+#set ratio = interesting*100/(interesting + uninteresting)
+#else
+#set ratio = 0
+#end if
+#silent assert interesting + uninteresting + unread + filtered == total, feed_title
+#set uninteresting = total - unread - filtered - interesting
+
+<h1><a href="<%=feed_html%>"><%=feed_title%></a></h2>
+Feed: <a href="<%=feed_xml%>"><%=feed_xml%></a><br><br>
+<table border="0">
+<tr><td>Last modified</td><td align="right"><%=since%></td></tr>
+<tr><td><a href="/view?feed_uid=$feed_uid&show=unread">Unread</a></td><td align="right"><%=unread%></td></tr>
+<tr><td><a href="/view?feed_uid=$feed_uid&show=filtered">Filtered</a></td><td align="right"><%=filtered%></td></tr>
+<tr><td><a href="/view?feed_uid=$feed_uid&show=up">Interesting</a></td><td align="right"><%=interesting%></td></tr>
+<tr><td><a href="/view?feed_uid=$feed_uid&show=down">Uninteresting</a></td><td align="right"><%=uninteresting%></td></tr>
+<tr><td>Hit ratio</td><td align="right">$ratio %</td></tr>
+
+#if $getVar('change_op', None):
+#if $getVar('change_op') == 'Activate':
+#set status = 0
+#silent c.execute('update fm_feeds set feed_status=0 where feed_uid=' + $feed_uid)
+#elif $getVar('change_op') == 'Suspend':
+#set status = 1
+#end if
+#silent c.execute('update fm_feeds set feed_status=%d where feed_uid=%s' % ($status, $feed_uid))
+#end if
+
+#if status == 0:
+#set status_text = 'Active'
+#set change_op = 'Suspend'
+#elif status == 1:
+#set status_text = 'Suspended'
+#set change_op = 'Activate'
+#else
+#set status_text = 'Unknown'
+#set change_op = 'Activate'
+#end if
+<tr><td>Status</td><td>$status_text&nbsp;<a href="/feed_info?feed_uid=$feed_uid&change_op=$change_op">$change_op</a></td></tr>
+#silent db.commit()
+#silent c.close()
+</table>
+
+<h2>Feed variables</h2>
+
+#import feedparser
+#set f = feedparser.parse(feed_xml)
+#for var in f['channel']:
+feed_$var<br>
+#end for
+
+<h2>Item variables</h2>
+
+#for var in f['items'][0]:
+$var<br>
+#end for
+
+</body></html>
