@@ -2,6 +2,7 @@ import md5, time, threading, socket, Queue, signal
 import param, feedparser, normalize
 
 socket.setdefaulttimeout(10)
+feedparser.USER_AGENT = param.user_agent
 
 def escape(str):
   return str.replace("'", "''")
