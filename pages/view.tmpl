@@ -108,6 +108,9 @@ href="http://www.bloglines.com/">Bloglines</a>.</p>
 </head>
 <body>
 #set c = db.cursor()
+#if $getVar('where_clause', False):
+#set where_clause = where_clause + ' and ' + $getVar('where_clause')
+#end if
 #silent c.execute("""update fm_items set item_viewed=julianday('now') where item_uid in (select item_uid from fm_items where """ + where_clause + """
 order by item_created DESC, item_uid DESC
 limit %d offset %d)""" % (overload_threshold, offset))
