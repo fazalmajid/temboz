@@ -11,6 +11,10 @@ try:
 except AttributeError:
   parse_date = feedparser.parse_date
 
+def normalize_feed(f):
+  if 'description' not in f['channel']:
+    f['channel']['description'] = f['channel'].get('title', '')
+
 def normalize(item, f):
   # get rid of RDF lossage...
   for key in ['title', 'link', 'date', 'modified', 'creator',
