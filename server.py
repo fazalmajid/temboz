@@ -319,7 +319,10 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.xml()
 
       # XXX use static compiled versions for speed
-      page = 'pages/' + parts[0].split('/')[1] + '.tmpl'
+      tmpl = parts[0].split('/')[1]
+      if tmpl.endswith('.css'):
+        self.mime_type = 'text/css'
+      page = 'pages/' + tmpl + '.tmpl'
       tmpl = TembozTemplate(file=page, searchList=[self.input])
       tmpl.respond(trans=self)
       self.flush()
