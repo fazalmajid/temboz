@@ -36,6 +36,12 @@ function unhide_all() {
   }
   hidden = Array();
 }
+function unhide_last() {
+  elt = hidden[hidden.length - 1];
+  elt.style.display = "block";
+  webop('basic', elt.id.substring(3));
+  hidden.length = hidden.length - 1
+}
 function toggle(item)
 {
 	document.items[item].checked = !document.items[item].checked;
@@ -60,7 +66,7 @@ limit %d)""" % param.overload_threshold)
 ($param.overload_threshold shown)
 #set cutoff = (param.overload_threshold + 1) / 2 + 1
 #end if
-&nbsp;&nbsp;<a href="javascript:unhide_all();">unhide all</a>&nbsp;&nbsp;<a href="/feeds/">All feeds</a></p>
+&nbsp;&nbsp;<a href="javascript:unhide_all();">Unhide all</a>&nbsp;&nbsp;<a href="javascript:unhide_last();">Unhide last</a>&nbsp;&nbsp;<a href="/feeds/">All feeds</a>&nbsp;&nbsp;<a href="/add/">Add feed</a></p>
 #silent c.execute("""select item_uid, item_creator, item_title, item_link,
 item_content, datetime(item_loaded), date(item_created),
 feed_title, feed_html, feed_xml, julianday('now') - julianday(item_created)
