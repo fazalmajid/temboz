@@ -200,7 +200,7 @@ limit %d offset %d)""" % (overload_threshold, offset))
 #set cutoff = (num_items + 1) / 2 + 1
 #set count = 0
 #if not public:
-<form method="GET" action="/view">
+<form method="GET" action="/view" target="_blank">
 #end if
 <p class="menu">$num_items $item_desc
 #if num_items > overload_threshold:
