@@ -6,6 +6,25 @@ See the end for copying conditions.
 Please send Temboz bug reports to the email address listed at www.temboz.com
 
 
+* Changes in Temboz 0.5 (2005-02-06).
+
+** Automatic database backups daily
+
+** The database tracks the GUID and link separately, so it handles feeds where
+   the two differ correctly (suggested by Georg Bauer).
+
+** Feeds can be flagged as private. They won't be listed in OPML exports if
+   they are marked private.
+
+** Some feeds have duplicate articles with identical titles but different
+   permalinks or GUIDs (e.g. Reuters). You can now optionally flag a feed as
+   requiring title-based duplicate detection and removal.
+
+** Upgraded to the latest version of feedparser.py
+
+** More robust handling of feeds with 8-bit contents (suggested by Georg Bauer)
+
+
 * Changes in Temboz 0.4.4.
 
 ** Improved presentation on a number of pages, and IE rendering
