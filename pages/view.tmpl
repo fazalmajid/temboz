@@ -1,43 +1,93 @@
 ## -*- html -*-
+########################################################################
+##
+## Query-string parameters for this page:
+##   show
+##   feed_uid
+##   search
+##   where_clause
+##   offset
+##
+########################################################################
 #from singleton import db
 #import time
 #import param
+########################################################################
 ##
+## What items to use:
+##   unread:   unread articles (default)
+##   up:       articles already flagged interesting
+##   down:     articles already flagged uninteresting
+##   filtered: filtered out articles
+##   mylos:    read-only view, e.g. http://www.majid.info/mylos/temboz.html
+##
+########################################################################
 #set public = False
-#if $getVar('show', 'unread') == 'up':
+#set $show = $getVar('show', 'unread')
+#if $show == 'up':
 #set item_desc = 'interesting'
 #set where_clause = 'item_rating > 0'
-#elif $getVar('show', 'unread') == 'mylos':
+#elif $show == 'mylos':
 #set public = True
 #set item_desc = 'interesting'
 #set where_clause = 'item_rating > 0'
-#elif $getVar('show', 'unread') == 'down':
+#elif $show == 'down':
 #set item_desc = 'uninteresting'
 #set where_clause = 'item_rating = -1'
-#elif $getVar('show', 'unread') == 'filtered':
+#elif $show == 'filtered':
 #set item_desc = 'filtered'
 #set where_clause = 'item_rating = -2'
-#elif $getVar('show', 'unread') == 'all':
+#elif $show == 'all':
 #set item_desc = 'all'
 #set where_clause = 'item_rating is not null'
 #else:
 #set item_desc = 'unread'
 #set where_clause = 'item_rating = 0'
 #end if
+########################################################################
 ##
+## Optionally restrict view to a single feed
+##
+########################################################################
 #if $getVar('feed_uid', None):
 #set where_clause = where_clause + ' and item_feed_uid=' + $feed_uid
 #end if
+########################################################################
 ##
+## Crude search functionality
+##
+########################################################################
+#if $getVar('search', None):
+#if $getVar('search_in', 'title') == 'title':
+#set search_where = 'item_title'
+#else:
+#set search_where = 'item_content'
+#end if
+#set where_clause = where_clause + ' and ' + search_where + ' like '
+#from update import escape
+#set where_clause = where_clause + "'%%%s%%'" % escape($getVar('search'))
+#end if
+########################################################################
+##
+## Preliminary support for offsets to read more than overload_threshold
+## articles, not fully implemented yet
+##
+########################################################################
 #if not $getVar('offset', None):
 #set offset = '0'
 #end if
 #set offset = int(offset)
-##
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head><title>Temboz - $item_desc items</title>
 <meta name="robots" content="noarchive,noindex,follow,nocache">
+########################################################################
+##
+## This script handle Thumbs up/down using the XMLHttpRequest method
+## if available, or by loading a pixel (less reliable) otherwise.
+## XXX doesn't use XMLHttpRequest on IE6 as coded here
+##
+########################################################################
 <script language="JavaScript">
 hidden = Array();
 #if public:
@@ -96,11 +146,16 @@ function unhide_last() {
     hidden.length = hidden.length - 1
   }
 }
-function toggle(item)
-{
+function toggle(item) {
 	document.items[item].checked = !document.items[item].checked;
 }
 </script>
+########################################################################
+##
+## If show=mylos, we switch to a special read-only view of the last 50
+## (by default) items
+##
+########################################################################
 #if public:
 <link rel="stylesheet" type="text/css" href="gems/temboz.css">
 <p class="menu">This page is produced automatically from my RSS aggregator, <a
@@ -113,21 +168,40 @@ href="http://www.bloglines.com/">Bloglines</a>.</p>
 #else:
 <link rel="stylesheet" type="text/css" href="temboz.css">
 #end if
-<style type="text/css">
-</style>
 </head>
 <body class="unpadded">
 #set c = db.cursor()
+########################################################################
+##
+## Support for arbitrary where clauses in the view script. Not directly
+## accessible from the UI
+##
+########################################################################
 #if $getVar('where_clause', False):
 #set where_clause = where_clause + ' and ' + $getVar('where_clause')
 #end if
+########################################################################
+##
+## Update the view timestamp
+##
+########################################################################
 #silent c.execute("""update fm_items set item_viewed=julianday('now') where item_uid in (select item_uid from fm_items where """ + where_clause + """
 order by item_created DESC, item_uid DESC
 limit %d offset %d)""" % (overload_threshold, offset))
 #silent c.execute("""select count(*) from fm_items where """ + where_clause)
+########################################################################
+##
+## We try to get a balanced two-column design by having as many articles
+## on either side. Very long articles will unbalance the flow, but this
+## works reasonably well in practice.
+##
+########################################################################
 #set num_items = int(c.fetchone()[0])
 #set cutoff = (num_items + 1) / 2 + 1
 #set count = 0
+#if not public:
+<form method="GET" action="/view">
+#end if
 <p class="menu">$num_items $item_desc items
 #if num_items > overload_threshold:
 ($overload_threshold shown)
@@ -137,8 +211,25 @@ limit %d offset %d)""" % (overload_threshold, offset))
 #if public:
 </p>
 #else:
-&nbsp;&nbsp;<a href="/feeds/">All feeds</a>&nbsp;&nbsp;<a href="/add/">Add feed</a>&nbsp;&nbsp;<a href="/rules">Filters</a></p>
+&nbsp;&nbsp;<a href="/feeds/">All feeds</a>&nbsp;&nbsp;<a href="/add/">Add feed</a>&nbsp;&nbsp;<a href="/rules">Filters</a>&nbsp;&nbsp;
+########################################################################
+##
+## Crude search functionality
+##
+########################################################################
+#if $getVar('feed_uid', None):
+<input name="feed_uid" type="hidden" value="$feed_uid">
 #end if
+<input name="show" type="hidden" value="$show"><input name="search">
+<input name="search_in" type="radio" value="title" checked> in titles
+<input name="search_in" type="radio" value="content"> in content
+<input type="submit" value="Search"></p></form>
+#end if
+########################################################################
+##
+## Fetch overload_threshold (default 200) items
+##
+########################################################################
 #silent c.execute("""select item_uid, item_creator, item_title, item_link,
 item_content, datetime(item_loaded), date(item_created),
 feed_title, feed_html, feed_xml, julianday('now') - julianday(item_created)
@@ -151,19 +242,30 @@ limit %d""" % overload_threshold)
 #if count == cutoff:
 </div><div class="col2">
 #end if
-#if public:
-#set redirect = link
-#else:
-#set redirect = '/redirect/' + `uid`
-#end if
+########################################################################
+##
+## URL to use for the article title link
 ## we are not doing any logging yet, no point for an unnecessary redirect
+##
+########################################################################
+## disabled for now: #set redirect = '/redirect/' + `uid`
 #set redirect = link
 #set since_when = self.since(delta_created)
+########################################################################
+##
+## Actual article display
+##
+########################################################################
 <div class="article" id="art$uid"><div class="headline"><img width="32" height="32" alt="up" src="<%=img_prefix%>/up.gif" class="up" onclick="highlight('$uid')" /><img width="32" height="32" alt="down" src="<%=img_prefix%>/down.gif" class="down" onclick="hide('$uid')" /><a href="<%=redirect%>" class="headline" target="_blank" onclick="highlight('$uid');">$title</a><br><a href="$feed_html" title="" class="source">$feed_title</a> $since_when<br><!-- by $creator, cached at $loaded --></div><div class="content">$content</div></div>
 #end for
 </div>
 #silent db.commit()
 #silent c.close()
-
+########################################################################
+##
+## If we want to put stuff at the page footer, make sure we do not collide
+## with either column
+##
+########################################################################
 <div style="clear: both;" />
 </body></html>

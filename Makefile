@@ -1,4 +1,4 @@
-VERSION= 0.3
+VERSION= 0.3.1
 PAGES= view error opml feeds temboz.css rules catch_up
 
 all: changelog
