@@ -30,3 +30,20 @@ begin
 	update fm_items set item_loaded = julianday("now")
 	where item_uid=new.item_uid;
 end;
+
+create view top20 as
+  select
+    feed_title,
+    round(100*interesting/(interesting+uninteresting)) as interest_ratio
+  from (
+    select
+      feed_title,
+      sum(case when item_rating=1 then 1 else 0 end) as interesting,
+      sum(case when item_rating=-1 then 1 else 0 end) as uninteresting
+    from fm_feeds, fm_items
+    where item_feed_uid=feed_uid
+    group by feed_title
+    order by feed_title
+  )
+order by interest_ratio DESC
+limit 20;
