@@ -172,6 +172,9 @@ def update():
   c.close()
 
 class PeriodicUpdater(threading.Thread):
+  def __init__(self):
+    threading.Thread.__init__(self)
+    self.setDaemon(True)
   def run(self):
     while True:
       # XXX should wrap this in a try/except clause
