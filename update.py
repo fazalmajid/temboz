@@ -8,7 +8,7 @@ def escape(str):
   return str.replace("'", "''")
 
 def add_feed(feed_xml):
-  """Try to add a feed. Return values:
+  """Try to add a feed. Return values: tuple (status, feed_uid)
   -1: unknown error
   0: feed added normally
   1: feed added via autodiscovery
@@ -20,7 +20,7 @@ def add_feed(feed_xml):
     f = feedparser.parse(feed_xml)
     normalize.normalize_feed(f)
     if not ('channel' in f and 'items'in f):
-      return 3
+      return 3, None
     feed = {
       'xmlUrl': f['url'],
       'htmlUrl': str(f['channel']['link']),
@@ -39,13 +39,13 @@ def add_feed(feed_xml):
       feed_uid = db.sqlite_last_insert_rowid()
       process_parsed_feed(f, c, feed_uid)
       db.commit()
-      return 0
+      return 0, feed_uid
     except sqlite.IntegrityError, e:
       if 'feed_xml' not in str(e):
-        return -1
+        return -1, None
       else:
         # duplicate attempt
-        return 2
+        return 2, None
   finally:
     c.close()
 

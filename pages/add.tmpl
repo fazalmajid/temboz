@@ -8,8 +8,11 @@ Subscribe to a RSS feed:<br>
 #if $getVar("feed_xml", None):
 #import update
 #set $status = update.add_feed($feed_xml)
+#set $feed_uid = $status[1]
+#set $status = $status[0]
 #if $status == 0:
-  <b>Subscribed to</b> $feed_xml
+  <b>Subscribed to</b> $feed_xml<br>
+  <a href="/catch_up?feed_uid=$feed_uid">catch up</a>
 #elif $status == 1:
   <b>Subscribed to</b> $feed_xml via autodiscovery
 #elif $status == 2:
