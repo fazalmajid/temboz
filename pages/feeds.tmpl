@@ -1,0 +1,27 @@
+## -*- html -*-
+<html>
+<head><title>Temboz - All feeds</title>
+<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+</head>
+<body>
+#from singleton import db
+#import time
+#set c = db.cursor()
+#silent c.execute("""select feed_uid, feed_title, feed_html,
+    julianday('now', 'utc') - julianday(feed_modified), count(*)
+from fm_feeds, fm_items
+where item_feed_uid=feed_uid and item_rating=0
+group by feed_uid, feed_title, feed_html,
+    julianday('now') - julianday(feed_modified)
+order by lower(feed_title)""")
+<table>
+<tr><th>Feed</th><th>Last modified</th><th>Unread</th></tr>
+#for feed_uid, feed_title, feed_html, delta_t, count in c:
+#set since = self.since(delta_t)
+#set count = int(count)
+<tr><td><a href="$feed_html">$feed_title</a></td><td>$since</td><td>$count</td></tr>
+#end for
+#silent db.commit()
+#silent c.close()
+</table>
+</body></html>
