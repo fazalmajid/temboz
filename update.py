@@ -47,6 +47,17 @@ def add_feed(feed_xml):
   finally:
     c.close()
 
+def catch_up(feed_uid):
+  feed_uid = int(feed_uid)
+  from singleton import db
+  c = db.cursor()
+  try:
+    c.execute("""update fm_items set item_rating=-1
+    where item_feed_uid=%d and item_rating=0""" % feed_uid)
+    db.commit()
+  finally:
+    c.close()
+
 class FeedWorker(threading.Thread):
   def __init__(self, id, in_q, out_q):
     threading.Thread.__init__(self)
