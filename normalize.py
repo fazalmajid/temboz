@@ -27,14 +27,14 @@ def normalize_feed(f):
 def fix_date(date_tuple):
   if not date_tuple:
     return date_tuple
-  if time.mktime(date_tuple) > time.mktime(time.gmtime()):
+  if time.mktime(date_tuple) > time.time():
     # feedparser's parsed date tuple has no DST indication, we need to force it
     # because there is no UTC equivalent of mktime()
     date_tuple = date_tuple[:-1] + (-1,)
     date_tuple = time.localtime(time.mktime(date_tuple) - 3600)
     # if it is still in the future, the implementation is hopelessly broken,
     # truncate it to the present
-    if time.mktime(date_tuple) > time.mktime(time.gmtime()):
+    if time.mktime(date_tuple) > time.time():
       return time.gmtime()
     else:
       return date_tuple
