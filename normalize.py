@@ -1,5 +1,8 @@
 import time, re, feedparser, codecs
 
+# XXX TODO
+# XXX normalize feed['title'] to quote &amp; &quot;
+
 #date_fmt = '%a, %d %b %Y %H:%M:%S %Z'
 date_fmt = '%Y-%m-%d %H:%M:%S'
 
@@ -75,12 +78,13 @@ def normalize(item, f):
     content = '<a href="' + item['link'] + '">' + item['title'] + '</a>'
   # balance tags like <b>...</b>
   content_lc = content.lower()
-  for tag in ['<b>', '<strong>', '<em>', '<i>', '<font']:
+  # XXX this will not work correctly for <a name="..." />
+  for tag in ['<b>', '<strong>', '<em>', '<i>', '<font ', '<a ']:
     end_tag = '</' + tag[1:]
+    if '>' not in end_tag:
+      end_tag = end_tag .strip() + '>'
     imbalance = content_lc.count(tag) - content_lc.count(end_tag)
     if imbalance > 0:
-      if '>' not in end_tag:
-        end_tag += '>'
       content += end_tag * imbalance
   item['content'] = content
   # map unicode
