@@ -4,13 +4,29 @@ import time, re, feedparser
 date_fmt = '%Y-%m-%d %H:%M:%S'
 
 def normalize(item, f):
+  # get rid of RDF lossage...
+  for key in ['title', 'link', 'date', 'modified', 'creator']:
+    if type(item.get(key)) == list and len(item[key]) == 1:
+      item[key] = item[key][0]
+    if type(item.get(key)) == dict and 'value' in item[key]:
+      item[key] = item[key]['value']
   # title
   if 'title' not in item:
     item['title'] = 'Untitled'
+  if type(item['title']) != str:
+    print 'ß' * 72
+    import code
+    from sys import exit
+    code.interact(local=locals())
   # link
   if 'link' not in item:
     print 'E' * 16, item
     item['link'] = f['channel']['link']
+  if type(item['link']) != str:
+    print 'ø' * 72
+    import code
+    from sys import exit
+    code.interact(local=locals())
   # creator
   if 'creator' not in item or item['creator'] == 'Unknown':
     item['creator'] = 'Unknown'
@@ -44,11 +60,11 @@ def normalize(item, f):
     # XXX this code should go away in final versions
     # find possible alternative date fields
     sop = [k for k in item.keys() if k not in
-           ['description', 'link', 'title', 'guid', 'content_encoded',
+           ['date', 'description', 'link', 'title', 'guid', 'content_encoded',
             'links', 'creator', 'summary', 'id', 'content',
             'category', 'categories', 'comments']]
     if sop:
-      print '#' * 72
+      print '$' * 72
       import code
       from sys import exit
       code.interact(local=locals())
@@ -68,6 +84,7 @@ def normalize(item, f):
   elif 'description' in item:
     content = item['description']
   else:
+    # XXX take this out
     sop = [k for k in item.keys() if k not in
            ['description', 'link', 'title', 'guid', 'content_encoded',
             'links', 'creator', 'summary', 'id', 'date',
