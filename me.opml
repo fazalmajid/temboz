@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<opml>
+  <body>
+    <outline description="Personal news and random pontification."
+             htmlurl="http://www.majid.info/mylos/"
+             title="Fazal Majid's low-intensity weblog"
+             xmlurl="http://www.majid.info/mylos/weblog/rss.xml"
+    />
+  </body>
+</opml>

@@ -1,0 +1,332 @@
+<?xml version="1.0"?>
+<opml>
+  <body>
+    <outline description="Confessions of a Caffeine Addicted Mind"
+             htmlurl="http://www.decafbad.com/blog"
+             title="0xDECAFBAD"
+             xmlurl="http://www.decafbad.com/blog/index.rss"
+    />
+    <outline description="a deliberate pouring from empty into void"
+             htmlurl="http://www.antipixel.com/blog/"
+             title="Antipixel - Full Posts"
+             xmlurl="http://antipixel.com/blog/theWorks.xml"
+    />
+    <outline description="The PC enthusiast's resource"
+             htmlurl="http://www.arstechnica.com"
+             title="Ars Technica"
+             xmlurl="http://www.arstechnica.com/etc/rdf/ars.rdf"
+    />
+    <outline description=""
+             htmlurl="http://www.boxesandarrows.com/"
+             title="Boxes and Arrows"
+             xmlurl="http://www.boxesandarrows.com/index.xml"
+    />
+    <outline description="Cem Kaner's weblog
+Software testing, software safety, software law."
+             htmlurl="http://blackbox.cs.fit.edu/blog/kaner/"
+             title="Cem Kaner's blog"
+             xmlurl="http://blackbox.cs.fit.edu/blog/kaner/index.rdf"
+    />
+    <outline description="Clay Shirky's Essays"
+             htmlurl="http://www.shirky.com/writings/rss.cgi"
+             title="Clay Shirky's Essays"
+             xmlurl="http://www.shirky.com/writings/rss.cgi"
+    />
+    <outline description="Tech News First"
+             htmlurl="http://www.news.com/"
+             title="CNET News.com"
+             xmlurl="http://export.cnet.com/export/feeds/news/rss/1,11176,,00.xml"
+    />
+    <outline description="Here are my recommendations for cool stuff. I include any books, tools, software, videos, maps, gadgets, hardware, websites, or gear that are extraordinarily handy or useful for individual and small groups. The best items are those that open up new p"
+             htmlurl="http://www.kk.org/cooltools/"
+             title="Cool Tools"
+             xmlurl="http://www.kk.org/cooltools/index.xml"
+    />
+    <outline description="Daily news from the Python universe, presented by your friends at Secret Labs."
+             htmlurl="http://www.pythonware.com/daily/"
+             title="Daily Python-URL! (from the Secret Labs)"
+             xmlurl="http://www.pythonware.com/daily/rss.xml"
+    />
+    <outline description=""
+             htmlurl="http://weblog.siliconvalley.com/column/dangillmor/"
+             title="Dan Gillmor's eJournal"
+             xmlurl="http://weblog.siliconvalley.com/column/dangillmor/index.xml"
+    />
+    <outline description="Macintosh punditry and curmudgeonry."
+             htmlurl="http://daringfireball.net/"
+             title="Daring Fireball"
+             xmlurl="http://daringfireball.net/index.xml"
+    />
+    <outline description="Digital Photography Review, Latest digital camera news, camera reviews, galleries, technology and comparisons"
+             htmlurl="http://www.dpreview.com/"
+             title="Digital Photography Review (dpreview.com)"
+             xmlurl="http://www.dpreview.com/news/dpr.rdf"
+    />
+    <outline description=""
+             htmlurl="http://www.docuverse.com/blog/donpark/"
+             title="Don Park's Daily Habit"
+             xmlurl="http://www.docuverse.com/blog/donpark/rss.xml"
+    />
+    <outline description="Tim Oren's notes and opinions on technology, venture investing, Silicon Valley, life, the universe and everything."
+             htmlurl="http://www.pacificavc.com/blog/"
+             title="Due Diligence"
+             xmlurl="http://www.pacificavc.com/blog/rss.xml"
+    />
+    <outline description=""
+             htmlurl="http://www.rtfm.com/movabletype/"
+             title="Educated Guesswork"
+             xmlurl="http://www.rtfm.com/movabletype/index.rdf"
+    />
+    <outline description=""
+             htmlurl="http://www.etherfarm.com/"
+             title="etherfarm: etherblog"
+             xmlurl="http://www.etherfarm.com/etherblogexcerpts.xml"
+    />
+    <outline description="Personal news and random pontification."
+             htmlurl="http://www.majid.info/mylos/"
+             title="Fazal Majid's low-intensity weblog"
+             xmlurl="http://www.majid.info/mylos/weblog/rss.xml"
+    />
+    <outline description=""
+             htmlurl="http://www.kanai.net/weblog/"
+             title="Gen Kanai weblog"
+             xmlurl="http://www.kanai.net/weblog/index.rdf"
+    />
+    <outline description="The gadgets weblog"
+             htmlurl="http://www.gizmodo.com/"
+             title="Gizmodo"
+             xmlurl="http://www.gizmodo.net/index.xml"
+    />
+    <outline description="Turning technology from mumbo-jumbo into rich tasty gumbo"
+             htmlurl="http://blog.glennf.com/"
+             title="GlennLog"
+             xmlurl="http://blog.glennf.com/rss.xml"
+    />
+    <outline description="
+All Things Pythonic
+"
+             htmlurl="http://www.artima.com/weblogs/index.jsp?blogger=guido"
+             title="Guido van Rossum's Weblog"
+             xmlurl="http://www.artima.com/weblogs/feeds/bloggers/guido.rss"
+    />
+    <outline description="text and images."
+             htmlurl="http://www.hebig.com/"
+             title="Heiko Hebig"
+             xmlurl="http://www.hebig.com/index.rdf"
+    />
+    <outline description=""
+             htmlurl="http://weblog.infoworld.com/techwatch/"
+             title="InfoWorld TechWatch"
+             xmlurl="http://weblog.infoworld.com/techwatch/index.rdf"
+    />
+    <outline description="Top News from InfoWorld"
+             htmlurl="http://www.infoworld.com/news/index.html"
+             title="InfoWorld:  Top News"
+             xmlurl="http://www.infoworld.com/rss/news.rdf"
+    />
+    <outline description="David S. Isenberg's musings about loci of intelligence and stupidity."
+             htmlurl="http://www.isen.com/blog/"
+             title="isen.blog"
+             xmlurl="http://isen.com/blog/index.rdf"
+    />
+    <outline description="News related to SPU research and analysis"
+             htmlurl="http://www.itu.int/osg/spu/newslog/"
+             title="ITU Strategy and Policy Unit  Newslog"
+             xmlurl="http://www.itu.int/osg/spu/newslog/rss.xml"
+    />
+    <outline description="
+Objects, Networks, and Making Things Work
+"
+             htmlurl="http://www.artima.com/weblogs/index.jsp?blogger=waldo"
+             title="Jim Waldo's Weblog"
+             xmlurl="http://www.artima.com/weblogs/feeds/bloggers/waldo.rss"
+    />
+    <outline description="Painless Software Management"
+             htmlurl="http://www.joelonsoftware.com"
+             title="Joel on Software"
+             xmlurl="http://www.joelonsoftware.com/rss.xml"
+    />
+    <outline description="Jon Udell's Radio Blog"
+             htmlurl="http://weblog.infoworld.com/udell/"
+             title="Jon's Radio"
+             xmlurl="http://weblog.infoworld.com/udell/rss.xml"
+    />
+    <outline description=""
+             htmlurl="http://radio.weblogs.com/0100676/"
+             title="Ken Bereskin's Radio Weblog"
+             xmlurl="http://radio.weblogs.com/0100676/rss.xml"
+    />
+    <outline description="-P2P, i-mode, mobile gadget and game biz in Japan-"
+             htmlurl="http://nkcp.zive.net/kokoro/"
+             title="KoKoRo"
+             xmlurl="http://nkcp.zive.net/kokoro/index.rdf"
+    />
+    <outline description="Jason Kottke's weblog, home of fine hypertext products"
+             htmlurl="http://www.kottke.org/"
+             title="kottke.org"
+             xmlurl="http://www.kottke.org/index.rdf"
+    />
+    <outline description="News, links and opinions about mobile and wireless technologies"
+             htmlurl="http://www.mobitopia.com/"
+             title="Mobitopia"
+             xmlurl="http://www.mobitopia.com/rss.jsp"
+    />
+    <outline description="Ongoing fragmented essay by Tim Bray."
+             htmlurl="http://www.tbray.org/ongoing/"
+             title="ongoing"
+             xmlurl="http://tbray.org/ongoing/ongoing.rss"
+    />
+    <outline description="News for Application Developers"
+             htmlurl="http://otn.oracle.com/"
+             title="Oracle Technology Network News"
+             xmlurl="http://otn.oracle.com/syndication/rss_otn_news.xml"
+    />
+    <outline description="PalmInfocenter.com is the leading Palm OS News site. Featuring daily news, reviews and community discussions."
+             htmlurl="http://www.palminfocenter.com/"
+             title="PalmInfocenter"
+             xmlurl="http://www.palminfocenter.com/feed.xml"
+    />
+    <outline description="Notes, news, and updates from Derek K. Miller in Vancouver, Canada, at www.penmachine.com."
+             htmlurl="http://www.penmachine.com"
+             title="Penmachine words music comment"
+             xmlurl="http://www.penmachine.com/rss/rss.xml"
+    />
+    <outline description="an interesting idea every three months; a posting every day"
+             htmlurl="http://blogs.law.harvard.edu/philg/"
+             title="Philip Greenspun Weblog"
+             xmlurl="http://blogs.law.harvard.edu/philg/xml/rss.xml"
+    />
+    <outline description="Film . Digital . Global . Personal. PhotographyBLOG brings you the latest and greatest photography news, both film and digital, both global and UK-based."
+             htmlurl="http://www.photographyblog.com/"
+             title="PhotographyBLOG"
+             xmlurl="http://www.photographyblog.com/index.xml"
+    />
+    <outline description="Pind's Blog"
+             htmlurl="http://www.pinds.com/"
+             title="Pind's Blog"
+             xmlurl="http://www.pinds.com/blog/rss.xml"
+    />
+    <outline description="Updates to the Python Packages Index (PyPI)"
+             htmlurl="http://www.python.org/pypi"
+             title="PyPI recent updates"
+             xmlurl="http://www.python.org/pypi?:action=rss"
+    />
+    <outline description="Python-related news and announcements.
+      Python is an interpreted, interactive, object-oriented
+      programming language."
+             htmlurl="http://www.python.org/"
+             title="Python News"
+             xmlurl="http://www.python.org/channews.rdf"
+    />
+    <outline description="Technical Journal of Jonathan 'Wolf' Rentzsch"
+             htmlurl="http://rentzsch.com"
+             title="rentzsch.com: Tales from the Red Shed"
+             xmlurl="http://rentzsch.com/rss.xml/"
+    />
+    <outline description="SITE LOGGING &amp; MONITORING"
+             htmlurl="http://radio.weblogs.com/0104487/"
+             title="s l a m"
+             xmlurl="http://radio.weblogs.com/0104487/rss.xml"
+    />
+    <outline description="Salon makes you think."
+             htmlurl="http://www.salon.com"
+             title="Salon.com"
+             xmlurl="http://www.salon.com/feed/RDF/salon_use.rdf"
+    />
+    <outline description="News In Brief (By http://www.newsisfree.com/syndicate.php - FOR PERSONAL AND NON COMMERCIAL USE ONLY!)"
+             htmlurl="http://www.sciam.com/news_directory.cfm"
+             title="Scientific American"
+             xmlurl="http://xml.newsisfree.com/feeds/39/1439.xml"
+    />
+    <outline description="Be well, do good work and &lt;a href=&quot;http://radio.xmlstoragesystem.com/rcsPublic/mailto?usernum=0001009&quot; title=&quot;Keep in touch by sending an email to Scott Loftesness...&quot;&gt;keep in touch&lt;/a&gt;..."
+             htmlurl="http://www.loftesness.com/radio/"
+             title="Scott Loftesness"
+             xmlurl="http://www.loftesness.com/radio/rss.xml"
+    />
+    <outline description="From the secret files of Kat Donohue"
+             htmlurl="http://blogs.salon.com/0001068/"
+             title="She's Actual Size, Nationwide, Believe"
+             xmlurl="http://blogs.salon.com/0001068/rss.xml"
+    />
+    <outline description="Dan Cederholm's stuff."
+             htmlurl="http://www.simplebits.com/"
+             title="SimpleBits"
+             xmlurl="http://www.simplebits.com/xml/rss.xml"
+    />
+    <outline description="Solaris Central"
+             htmlurl="http://www.solariscentral.org"
+             title="Solaris Central"
+             xmlurl="http://www.solariscentral.org/news/SolarisCentral.rdf"
+    />
+    <outline description="They said never be content. So I'm micro-contenting."
+             htmlurl="http://www.pycs.net/sqr/"
+             title="Square Rutabaga"
+             xmlurl="http://www.pycs.net/sqr/rss.xml"
+    />
+    <outline description="winner of the &quot;Wanna Be a .Net Programmer&quot; contest"
+             htmlurl="http://techno-weenie.com/"
+             title="techno weenie"
+             xmlurl="http://techno-weenie.com/rss.xml"
+    />
+    <outline description="Telecom strategy in the age of end-to-end networks"
+             htmlurl="http://www.telepocalypse.net/"
+             title="Telepocalypse"
+             xmlurl="http://www.telepocalypse.net/index.rdf"
+    />
+    <outline description="Tracts of an improving nature"
+             htmlurl="http://www.textism.com"
+             title="Textism"
+             xmlurl="http://www.textism.com/rss.php"
+    />
+    <outline description="Biting the hand that feeds IT"
+             htmlurl="http://www.theregister.co.uk"
+             title="The Register"
+             xmlurl="http://theregister.co.uk/feeds/latest.rdf"
+    />
+    <outline description="The latest news from Think Secret."
+             htmlurl="http://www.thinksecret.com/"
+             title="Think Secret"
+             xmlurl="http://www.thinksecret.com/rss.xml"
+    />
+    <outline description="Bruce Eckel's Web Log"
+             htmlurl="http://www.MindView.net/WebLog/"
+             title="Thinking About Computing"
+             xmlurl="http://mindview.net/WebLog/RSS.xml"
+    />
+    <outline description="Insightful news, reviews, and analysis of the Macintosh and Internet worlds"
+             htmlurl="http://www.tidbits.com/"
+             title="TidBITS"
+             xmlurl="http://www.tidbits.com/channels/tidbits.rss"
+    />
+    <outline description="Tom Yager's InfoWorld blog"
+             htmlurl="http://weblog.infoworld.com/yager/"
+             title="Tom Yager"
+             xmlurl="http://weblog.infoworld.com/yager/rss.xml"
+    />
+    <outline description="Daily links to strategic Web design news from Lawrence Lee"
+             htmlurl="http://www.tomalak.org/"
+             title="Tomalak's Realm"
+             xmlurl="http://static.userland.com/tomalak/links2.xml"
+    />
+    <outline description="A daily journal of typography featuring news, observations, and open commentary on fonts and typographic design."
+             htmlurl="http://typographi.ca/"
+             title="Typographica"
+             xmlurl="http://typographi.ca/index.rdf"
+    />
+    <outline description="A Random Walk Down Sand Hill Road"
+             htmlurl="http://www.ventureblog.com/"
+             title="VentureBlog"
+             xmlurl="http://www.ventureblog.com/index.rdf"
+    />
+    <outline description="The world according to Kevin Werbach"
+             htmlurl="http://werbach.com/blog/"
+             title="Werblog"
+             xmlurl="http://werbach.com/blog/rss.xml"
+    />
+    <outline description="Organizations Usually Get the IT They Deserve&lt;sup class=&quot;realsmall&quot;&gt;SM&lt;/sup&gt;"
+             htmlurl="http://www.windley.com/"
+             title="Windley's Enterprise Computing Weblog"
+             xmlurl="http://www.windley.com/rss.xml"
+    />
+  </body>
+</opml>
