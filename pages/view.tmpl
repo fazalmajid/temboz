@@ -60,11 +60,11 @@ function toggle(item)
 order by item_created DESC, item_uid DESC
 limit %d)""" % param.overload_threshold)
 #silent c.execute("""select count(*) from fm_items where item_rating=0""")
-#set $num_items = int(c.fetchone()[0])
-#set $cutoff = ($num_items + 1) / 2 + 1
-#set $count = 0
+#set num_items = int(c.fetchone()[0])
+#set cutoff = (num_items + 1) / 2 + 1
+#set count = 0
 <p class="menu">$num_items new items
-#if $num_items > $param.overload_threshold:
+#if num_items > param.overload_threshold:
 ($param.overload_threshold shown)
 #set cutoff = (param.overload_threshold + 1) / 2 + 1
 #end if
@@ -77,21 +77,12 @@ and item_rating = 0 order by item_created DESC, item_uid DESC
 limit %d""" % param.overload_threshold)
 <div class="col1">
 #for uid, creator, title, link, content, loaded, created, feed_title, feed_html, feed_xml, delta_created in c:
-#set $count += 1
-#if $count == $cutoff:
+#set count += 1
+#if count == cutoff:
 </div><div class="col2">
 #end if
-#set delta_created = float(delta_created)
-#if delta_created < 1.0/24:
-#set since = str(int(delta_created * 24.0 * 60.0)) + ' minutes ago'
-#elif delta_created < 1.0:
-#set since = str(int(delta_created * 24.0)) + ' hours ago'
-#elif delta_created < 3.0:
-#set since = str(int(delta_created)) + ' days ago'
-#else
-#set since = created
-#end if
-<div class="article" id="art$uid"><div class="headline"><img width="32" height="32" alt="up" src="/up.gif" class="up" onclick="highlight('$uid')" /><img width="32" height="32" alt="down" src="/down.gif" class="down" onclick="hide('$uid')" /><a href="/redirect/$uid" class="headline" target="_blank" onclick="highlight('$uid');">$title</a><br><a href="$feed_html" title="" class="source">$feed_title</a> - $since<br><!-- by $creator, cached at $loaded --></div><div class="content">$content</div></div>
+#set since_when = self.since(delta_created)
+<div class="article" id="art$uid"><div class="headline"><img width="32" height="32" alt="up" src="/up.gif" class="up" onclick="highlight('$uid')" /><img width="32" height="32" alt="down" src="/down.gif" class="down" onclick="hide('$uid')" /><a href="/redirect/$uid" class="headline" target="_blank" onclick="highlight('$uid');">$title</a><br><a href="$feed_html" title="" class="source">$feed_title</a> - $since_when<br><!-- by $creator, cached at $loaded --></div><div class="content">$content</div></div>
 #end for
 </div>
 #silent db.commit()

@@ -1,6 +1,6 @@
 #!/usr/local/bin/python
 # $Id$
-import sys, os, logging, base64
+import sys, os, logging, base64, time
 
 import BaseHTTPServer, SocketServer, cgi
 from Cheetah.Template import Template
@@ -20,6 +20,9 @@ class TembozTemplate(Template):
       return str(int(delta_t * 24.0)) + ' hours ago'
     elif delta_t < 3.0:
       return str(int(delta_t)) + ' days ago'
+    else:
+      return time.strftime('%Y-%m-%d',
+                           time.localtime(time.time() - 86400 * delta_t))
 
 class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
   def version_string(self):
