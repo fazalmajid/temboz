@@ -30,7 +30,11 @@ order by interesting DESC, lower(feed_title)""")
 #set uninteresting = int(uninteresting)
 #set total = int(total)
 #silent assert interesting + uninteresting + unread == total, feed_title
-<tr><td><a href="$feed_html">$feed_title</a>&nbsp;&nbsp;<a href="$feed_xml">(XML)</a></td><td>$since</td><td><a href="/view?feed_uid=$feed_uid&show=unread">$unread</a></td><td><a href="/view?feed_uid=$feed_uid&show=up">$interesting</a></td><td><%=interesting*100/total%>%</td><td><a href="/view?feed_uid=$feed_uid&show=all">$total</a></td><td><a href="/catch_up?feed_uid=$feed_uid">catch up</a></td></tr>
+<tr><td><a href="$feed_html">$feed_title</a>&nbsp;&nbsp;<a href="$feed_xml">(XML)</a></td><td>$since</td><td><a href="/view?feed_uid=$feed_uid&show=unread">$unread</a></td><td><a href="/view?feed_uid=$feed_uid&show=up">$interesting</a></td><td><%=interesting*100/total%>%</td><td><a href="/view?feed_uid=$feed_uid&show=all">$total</a></td><td>
+#if unread > 0:
+<a href="/catch_up?feed_uid=$feed_uid">catch up</a>
+#end if
+</td></tr>
 #end for
 #silent db.commit()
 #silent c.close()
