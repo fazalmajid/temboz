@@ -60,7 +60,7 @@ limit %d)""" % param.overload_threshold)
 ($param.overload_threshold shown)
 #set cutoff = (param.overload_threshold + 1) / 2 + 1
 #end if
-&nbsp;&nbsp;<a href="javascript:unhide_all();">unhide all</a>&nbsp;<a href="/feeds/">All feeds</a></p>
+&nbsp;&nbsp;<a href="javascript:unhide_all();">unhide all</a>&nbsp;&nbsp;<a href="/feeds/">All feeds</a></p>
 #silent c.execute("""select item_uid, item_creator, item_title, item_link,
 item_content, datetime(item_loaded), date(item_created),
 feed_title, feed_html, feed_xml, julianday('now') - julianday(item_created)
