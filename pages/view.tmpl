@@ -122,7 +122,7 @@ limit %d offset %d)""" % (overload_threshold, offset))
 #if public:
 </p>
 #else:
-&nbsp;&nbsp;<a href="/feeds/">All feeds</a>&nbsp;&nbsp;<a href="/add/">Add feed</a></p>
+&nbsp;&nbsp;<a href="/feeds/">All feeds</a>&nbsp;&nbsp;<a href="/add/">Add feed</a>&nbsp;&nbsp;<a href="/rules">Filters</a></p>
 #end if
 #silent c.execute("""select item_uid, item_creator, item_title, item_link,
 item_content, datetime(item_loaded), date(item_created),
