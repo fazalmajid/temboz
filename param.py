@@ -1,6 +1,6 @@
 debug = True
 port = 9999
-temboz_url = 'http://www.majid.info/mylos/stories/2004/03/29/temboz.html'
+temboz_url = 'http://www.temboz.com/'
 # number of RSS feeds fetched in parallel 
 feed_concurrency = 10
 # Maximum number of articles shown
