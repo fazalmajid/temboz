@@ -34,7 +34,7 @@ begin
 end;
 
 create unique index item_feed_link_i on fm_items(item_feed_uid, item_link);
-create index item_rating_i on fm_items(item_rating);
+create index item_rating_i on fm_items(item_rating, item_feed_uid);
 
 create table fm_rules (
 	rule_uid	integer primary key,
