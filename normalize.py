@@ -84,6 +84,15 @@ def normalize(item, f):
     import code
     from sys import exit
     code.interact(local=locals())
+  # XXX special case handling for annoying Sun/Roller malformed entries
+  if 'blog.sun.com' in item['link'] or 'blog.sun.com' in item['link']:
+    item['link'] = item['link'].replace(
+      'blog.sun.com', 'blogs.sun.com').replace(
+      'blogs.sun.com/page', 'blogs.sun.com/roller/page')
+  ########################################################################
+  # GUID
+  if 'id' not in item:
+    item['id'] = item['link']
   ########################################################################
   # creator
   if 'author' not in item or item['author'] == 'Unknown':
@@ -144,6 +153,14 @@ def normalize(item, f):
     imbalance = content_lc.count(tag) - content_lc.count(end_tag)
     if imbalance > 0:
       content += end_tag * imbalance
+  # the content might have invalid 8-bit characters.
+  # Heuristic suggested by Georg Bauer
+  if type(content) != unicode:
+    try:
+      content = content.decode('utf-8')
+    except UnicodeError:
+      content = content.decode('iso-8859-1')
+  #
   item['content'] = content
   item['content_lc'] = content.lower()
   item['content_words'] = unicode(item['content_lc']).translate(
