@@ -174,5 +174,5 @@ class PeriodicUpdater(threading.Thread):
     while True:
       # XXX should wrap this in a try/except clause
       time.sleep(param.refresh_interval)
-      print 'refreshing feeds'
+      print time.ctime(), '- refreshing feeds'
       update()
