@@ -271,8 +271,19 @@ Returns a tuple (number of items added unread, number of filtered items)"""
 
 def update():
   from singleton import db
+  c = db.cursor()
   # refresh filtering rules
   load_rules()
+  # garbage collection - see param.py
+  # this is done only once a day between 3 and 4 AM as this is quite intensive
+  # and could interfere with user activity
+  if param.garbage_contents and time.localtime()[3] == 3:
+    c.execute("""update fm_items
+    set item_content=''
+    where item_rating<0 and item_created < julianday('now')-%d""" %
+               param.garbage_contents)
+    db.commit()
+    c.execute('vacuum')
   # create worker threads and the queues used to communicate with them
   work_q = Queue.Queue()
   process_q = Queue.Queue()
@@ -281,7 +292,6 @@ def update():
     workers.append(FeedWorker(i + 1, work_q, process_q))
     workers[-1].start()
   # assign work
-  c = db.cursor()
   c.execute("""select feed_uid, feed_xml, feed_etag,
   strftime('%s', feed_modified)
   from fm_feeds where feed_status=0""")
