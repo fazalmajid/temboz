@@ -24,13 +24,13 @@ changelog:
 dist: distclean changelog
 	-rm -rf temboz-$(VERSION)
 	mkdir temboz-$(VERSION)
-	cp README INSTALL NEWS LICENSE UPGRADE ChangeLog temboz *.py rss.db.dump temboz-$(VERSION)
+	cp README INSTALL NEWS LICENSE UPGRADE ChangeLog temboz *.py temboz-$(VERSION)
 	cp ddl.sql me.opml temboz-$(VERSION)
 	-rm -f pages/*~
 	cp -r pages images etc temboz-$(VERSION)
-	-rm -rf temboz-$(VERSION)/etc/CVS
-	-rm -f temboz-$(VERSION)/etc/.cvsignore
+	-rm -f temboz-$(VERSION)/etc/.cvsignore temboz-$(VERSION)/pages/__init__.py
 	-rm -rf temboz-$(VERSION)/pages/CVS temboz-$(VERSION)/images/CVS
+	-rm -rf temboz-$(VERSION)/etc/CVS
 	# expurgate password
 	sed -e 's/auth_dict.*/auth_dict={"login": "password"}/g' param.py > temboz-$(VERSION)/param.py
 	gtar zcvf temboz-$(VERSION).tar.gz temboz-$(VERSION)
