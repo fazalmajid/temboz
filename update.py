@@ -7,8 +7,15 @@ feedparser.USER_AGENT = param.user_agent
 def escape(str):
   return str.replace("'", "''")
 
+class ParseError(Exception):
+  pass
+class FeedAlreadyExists(Exception):
+  pass
+class UnknownError(Exception):
+  pass
+
 def add_feed(feed_xml):
-  """Try to add a feed. Return values: tuple (status, feed_uid)
+  """Try to add a feed. Returns a tuple (feed_uid, num_added, num_filtered)
   -1: unknown error
   0: feed added normally
   1: feed added via autodiscovery
@@ -19,7 +26,7 @@ def add_feed(feed_xml):
   try:
     f = feedparser.parse(feed_xml)
     if not f.feed:
-      return 3, None
+      raise ParseError
     normalize.normalize_feed(f)
     feed = {
       'xmlUrl': f['url'],
@@ -37,15 +44,45 @@ def add_feed(feed_xml):
       ('%(xmlUrl)s', '%(etag)s', '%(htmlUrl)s', '%(title)s',
       '%(desc)s')""" % feed)
       feed_uid = db.sqlite_last_insert_rowid()
-      process_parsed_feed(f, c, feed_uid)
+      num_added, num_filtered = process_parsed_feed(f, c, feed_uid)
       db.commit()
-      return 0, feed_uid
+      return (feed_uid, num_added, num_filtered)
     except sqlite.IntegrityError, e:
-      if 'feed_xml' not in str(e):
-        return -1, None
+      if 'feed_xml' in str(e):
+        db.rollback()
+        raise FeedAlreadyExists
       else:
-        # duplicate attempt
-        return 2, None
+        db.rollback()
+        raise UnknownError(str(e))
+  finally:
+    c.close()
+
+def update_feed_xml(feed_uid, feed_xml):
+  """Update a feed URL and fetch the feed. Returns the number of new items"""
+  feed_uid = int(feed_uid)
+
+  f = feedparser.parse(feed_xml)
+  if not f.feed:
+    raise ParseError
+  normalize.normalize_feed(f)
+
+  from singleton import db
+  c = db.cursor()
+  clear_errors(db, c, feed_uid, f)
+  try:
+    try:
+      c.execute("""update fm_feeds set feed_xml='%s' where feed_uid=%d""" \
+                % (escape(feed_xml), feed_uid))
+    except sqlite.IntegrityError, e:
+      if 'feed_xml' in str(e):
+        db.rollback()
+        raise FeedAlreadyExists
+      else:
+        db.rollback()
+        raise UnknownError(str(e))
+    num_added = process_parsed_feed(f, c, feed_uid)
+    db.commit()
+    return num_added
   finally:
     c.close()
 
@@ -56,6 +93,18 @@ def catch_up(feed_uid):
   try:
     c.execute("""update fm_items set item_rating=-1
     where item_feed_uid=%d and item_rating=0""" % feed_uid)
+    db.commit()
+  finally:
+    c.close()
+
+def set_status(feed_uid, status):
+  feed_uid = int(feed_uid)
+  status = int(status)
+  from singleton import db
+  c = db.cursor()
+  try:
+    c.execute("""update fm_feeds set feed_status=%d where item_feed_uid=%d""" \
+              % (status, feed_uid))
     db.commit()
   finally:
     c.close()
@@ -92,31 +141,53 @@ def fetch_feed(feed_uid, feed_xml, feed_etag, feed_modified):
     f = {'channel': {}, 'items': []}
   return f
 
+def increment_errors(db, c, feed_uid):
+  """Increment the error counter, and suspend the feed if the threshold is
+  reached"""
+  c.execute('update fm_feeds set feed_errors=feed_errors+1 where feed_uid=%d' \
+            % feed_uid)
+  c.execute("""select feed_errors, feed_title
+  from fm_feeds where feed_uid=%d""" % feed_uid)
+  errors, feed_title = c.fetchone()
+  max_errors = getattr(param, 'max_errors', 100)
+  if max_errors != -1 and errors > max_errors:
+    print 'EEEEE too many errors, suspending feed', feed_title
+    c.execute('update fm_feeds set feed_status = 1 where feed_uid=%d' \
+              % feed_uid)
+
+def clear_errors(db, c, feed_uid, f):
+  'On successful feed parse, reset etag and/or modified date and error count'
+  stmt = 'update fm_feeds set feed_errors=0'
+  if 'etag' in f and f['etag']:
+    stmt += ", feed_etag='%s'" % escape(f['etag'])
+  else:
+    stmt += ", feed_etag=NULL"
+  if 'modified' in f and f['modified']:
+    stmt += ", feed_modified=julianday(%f, 'unixepoch')" \
+            % time.mktime(f['modified'])
+  else:
+    stmt += ", feed_modified=NULL"
+  stmt += " where feed_uid=%d" % feed_uid
+  c.execute(stmt)
+
 def update_feed(db, c, f, feed_uid, feed_xml, feed_etag, feed_modified):
   print feed_xml
   # check for errors - HTTP code 304 means no change
   if 'title' not in f.feed and 'link' not in f.feed and \
          ('status' not in f or f['status'] not in [304]):
     # error or timeout - increment error count
-    c.execute("""update fm_feeds set feed_errors = feed_errors + 1
-    where feed_uid=%d""" % feed_uid)
+    increment_errors(db, c, feed_uid)
   else:
     # no error - reset etag and/or modified date and error count
-    stmt = 'update fm_feeds set feed_errors=0'
-    if 'etag' in f and f['etag']:
-      stmt += ", feed_etag='%s'" % escape(f['etag'])
-    else:
-      stmt += ", feed_etag=NULL"
-    if 'modified' in f and f['modified']:
-      stmt += ", feed_modified=julianday(%f, 'unixepoch')" \
-              % time.mktime(f['modified'])
-    else:
-      stmt += ", feed_modified=NULL"
-    stmt += " where feed_uid=%d" % feed_uid
-    c.execute(stmt)
+    clear_errors(db, c, feed_uid, f)
   process_parsed_feed(f, c, feed_uid)
 
 def process_parsed_feed(f, c, feed_uid):
+  """Insert the entries from a feedparser parsed feed f in the database using
+the cursor c for feed feed_uid.
+Returns a tuple (number of items added unread, number of filtered items)"""
+  num_added = 0
+  num_filtered = 0
   # the Radio convention is reverse chronological order
   f['items'].reverse()
   for item in f['items']:
@@ -171,8 +242,10 @@ def process_parsed_feed(f, c, feed_uid):
        skip)
       c.execute(sql)
       if skip:
+        num_filtered += 1
         print 'SKIP', title
       else:
+        num_added += 1
         print ' ' * 4, title
     # permalink already exists, this is a change
     else:
@@ -180,6 +253,7 @@ def process_parsed_feed(f, c, feed_uid):
       (item_uid, item_loaded, item_created, item_modified,
        item_viewed, item_md5hex, item_title, item_content, item_creator) = l[0]
       # XXX update item here
+  return (num_added, num_filtered)
 
 def update():
   from singleton import db

@@ -27,5 +27,9 @@ unauth_page = temboz_url
 # dictionary of login/password
 auth_dict = {'majid': 'sopo'}
 
+# maximum number of errors, after this threshold is reached,
+# the feed is automatically suspended. -1 to unlimit
+max_errors = 100
+
 #debug = True
 debug = False
