@@ -60,6 +60,7 @@ def normalize(item, f):
     from sys import exit
     code.interact(local=locals())
   item['title_lc'] =   item['title'].lower()
+  item['title_words'] =   item['title_lc'].split()
   ########################################################################
   # link
   if 'link' not in item:
@@ -134,6 +135,7 @@ def normalize(item, f):
       content += end_tag * imbalance
   item['content'] = content
   item['content_lc'] = content.lower()
+  item['content_words'] = item['content_lc'].split()
   ########################################################################
   # map unicode
   for key in ['title', 'link', 'created', 'modified', 'author', 'content']:
