@@ -124,7 +124,10 @@ def process_parsed_feed(f, c, feed_uid):
     skip = 0
     filter_dict = {}
     for key in f['channel']:
-      filter_dict['feed_' + key] = f['channel'][key]
+      try:
+        filter_dict['feed_' + key] = f['channel'][key]
+      except KeyError:
+        pass
     filter_dict.update(item)
     for rule in rules:
       try:
@@ -138,8 +141,8 @@ def process_parsed_feed(f, c, feed_uid):
       skip = -2
     title   = item['title']
     link    = item['link']
-    creator = item['creator']
-    created = item['date']
+    author = item['author']
+    created = item['created']
     modified = item['modified']
     if modified:
       modified = "julianday('%s')" % escape(modified)
@@ -153,10 +156,6 @@ def process_parsed_feed(f, c, feed_uid):
                where item_feed_uid=%d and item_link='%s'""" \
                % (feed_uid, escape(link)))
     l = c.fetchall()
-    import code
-    from sys import exit
-    ###if 'modified' in item:
-    ###  code.interact(local=locals())
     # permalink doesn't exist yet, insert it
     if not l:
       sql = """insert into fm_items (item_feed_uid,
@@ -168,7 +167,7 @@ def process_parsed_feed(f, c, feed_uid):
        md5.new(content).hexdigest(),
        escape(title),
        escape(content),
-       escape(creator),
+       escape(author),
        skip)
       c.execute(sql)
       if skip:
