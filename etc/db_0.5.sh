@@ -54,6 +54,7 @@ end;
 create index item_feed_link_i on fm_items(item_feed_uid, item_link);
 create unique index item_feed_guid_i on fm_items(item_feed_uid, item_guid);
 create index item_rating_i on fm_items(item_rating, item_feed_uid);
+create index item_title_i on fm_items(item_feed_uid, item_title);
 
 drop table fm_items2;
 
