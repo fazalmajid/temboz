@@ -79,7 +79,9 @@ def normalize(item, f):
   # balance tags like <b>...</b>
   content_lc = content.lower()
   # XXX this will not work correctly for <a name="..." />
-  for tag in ['<b>', '<strong>', '<em>', '<i>', '<font ', '<a ']:
+  for tag in ['<b>', '<strong>', '<em>', '<i>', '<font ', '<a ',
+              '<small>', '<big>', '<cite>', '<blockquote>', '<pre>',
+              '<sub>', '<sup>', '<tt>', '<ul>', '<ol>']:
     end_tag = '</' + tag[1:]
     if '>' not in end_tag:
       end_tag = end_tag .strip() + '>'
