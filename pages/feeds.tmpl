@@ -7,6 +7,9 @@
 <body>
 <p class="menu"><a href="/view">All unread</a>&nbsp;&nbsp;<a href="/add">Add feed</a>&nbsp;&nbsp;<a href="/opml">as OPML</a>&nbsp;&nbsp;<a href="/rules">Filtering</a></p>
 #set sort_key = $getVar('sort', 'interesting')
+#if sort_key == 'feed_title':
+#set sort_key = 'lower(feed_title)'
+#end if
 #set order = $getVar('order', 'DESC')
 #from singleton import db
 #import time
