@@ -9,6 +9,18 @@ import param
 class Server(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
   pass
 
+class TembozTemplate(Template):
+  def since(self, delta_t):
+    if not delta_t:
+      return 'never'
+    delta_t = float(delta_t)
+    if delta_t < 2.0/24:
+      return str(int(delta_t * 24.0 * 60.0)) + ' minutes ago'
+    elif delta_t < 1.0:
+      return str(int(delta_t * 24.0)) + ' hours ago'
+    elif delta_t < 3.0:
+      return str(int(delta_t)) + ' days ago'
+
 class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
   def version_string(self):
     """Return the server software version string."""
@@ -286,7 +298,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
 
       # XXX use static compiled versions for speed
       page = 'pages/' + self.path.split('/')[1] + '.tmpl'
-      tmpl = Template(file=page, searchList=[self.input])
+      tmpl = TembozTemplate(file=page, searchList=[self.input])
       tmpl.respond(trans=self)
       self.flush()
     except:
