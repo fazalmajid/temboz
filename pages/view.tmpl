@@ -2,7 +2,7 @@
 #from singleton import db
 #import time
 #import param
-#
+##
 #set public = False
 #if $getVar('show', 'unread') == 'up':
 #set item_desc = 'interesting'
@@ -24,16 +24,16 @@
 #set item_desc = 'unread'
 #set where_clause = 'item_rating = 0'
 #end if
-#
+##
 #if $getVar('feed_uid', None):
 #set where_clause = where_clause + ' and item_feed_uid=' + $feed_uid
 #end if
-#
+##
 #if not $getVar('offset', None):
 #set offset = '0'
 #end if
 #set offset = int(offset)
-#
+##
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head><title>Temboz - $item_desc items</title>
