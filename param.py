@@ -4,3 +4,5 @@ port = 9999
 feed_concurrency = 10
 # Maximum number of articles shown
 overload_threshold = 200
+# refresh interval in seconds
+refresh_interval = 3600

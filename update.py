@@ -168,3 +168,11 @@ def update():
       update_feed(db, c, *feed_info)
   db.commit()
   c.close()
+
+class PeriodicUpdater(threading.Thread):
+  def run(self):
+    while True:
+      # XXX should wrap this in a try/except clause
+      time.sleep(param.refresh_interval)
+      print 'refreshing feeds'
+      update()
