@@ -6,7 +6,9 @@ create table fm_feeds (
 	feed_html	varchar(255) not null,
 	feed_title	varchar(255),
 	feed_desc	text,
-	feed_errors	int default 0
+	feed_errors	int default 0,
+	-- 0=active, 1=suspended
+	feed_status	int default 0
 );
 
 create table fm_items (
