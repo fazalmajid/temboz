@@ -11,3 +11,5 @@ refresh_interval = 3600
 user_agent = 'Temboz (%s)' % temboz_url
 # page unauthenticated users should see
 unauth_page = temboz_url
+# dictionary of login/password
+auth_dict = {'majid': 'sopo'}

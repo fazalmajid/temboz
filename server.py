@@ -27,7 +27,7 @@ class TembozTemplate(Template):
 class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
   def version_string(self):
     """Return the server software version string."""
-    return "$Id$"
+    return param.user_agent
   
   def log_message(self, *args):
     pass
@@ -162,6 +162,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     return
 
   def init_session(self):
+    self.mime_type = 'text/html'
     self.output_buffer = []
     self.host, self.port = self.client_address
     if self.headers.dict.has_key('user-agent'):
@@ -223,7 +224,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     self.output_buffer.append(output)
 
   def flush(self):
-    self.browser_output(200, 'text/html', ''.join(self.output_buffer))
+    self.browser_output(200, self.mime_type, ''.join(self.output_buffer))
 
   pixel_data = open('images/pixel.gif').read()
   def pixel(self):
@@ -256,7 +257,8 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     self.set_rating(item_uid, 1)
 
   def process_request(self):
-    self.require_auth({'majid': 'sopo'})
+    if not self.require_auth(param.auth_dict):
+      return
     try:
       parts = self.path.split('?', 2)
       path = parts[0]
