@@ -26,6 +26,7 @@ dist: changelog
 	mkdir temboz-$(VERSION)
 	cp README INSTALL ChangeLog temboz *.py rss.db.dump temboz-$(VERSION)
 	cp ddl.sql me.opml temboz-$(VERSION)
+	-rm -f pages/*~
 	cp -r pages images temboz-$(VERSION)
 	-rm -rf temboz-$(VERSION)/pages/CVS temboz-$(VERSION)/images/CVS
 	# expurgate password
@@ -34,7 +35,7 @@ dist: changelog
 	-rm -rf temboz-$(VERSION)
 
 clean:
-	-rm -f core *.pyc *~ *.old pages/*.py ChangeLog*
+	-rm -f core *.pyc *~ pages/*~ *.old pages/*.py ChangeLog*
 	-rm -rf temboz-$(VERSION) temboz-$(VERSION).tar.gz
 
 realclean: clean
