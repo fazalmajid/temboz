@@ -8,8 +8,7 @@
 
 #from singleton import db
 #set c = db.cursor()
-#silent c.execute("""select feed_title, feed_html
-from fm_feeds, fm_items
+#silent c.execute("""select feed_title, feed_html from fm_feeds
 where feed_uid=""" + $feed_uid)
 #silent tup = c.fetchone()
 #set title = tup[0]
