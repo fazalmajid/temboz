@@ -71,8 +71,9 @@ def update_feed_xml(feed_uid, feed_xml):
   clear_errors(db, c, feed_uid, f)
   try:
     try:
-      c.execute("""update fm_feeds set feed_xml='%s' where feed_uid=%d""" \
-                % (escape(feed_xml), feed_uid))
+      c.execute("""update fm_feeds set feed_xml='%s', feed_html='%s'
+      where feed_uid=%d""" \
+                % (escape(feed_xml), escape(str(f.feed['link'])), feed_uid))
     except sqlite.IntegrityError, e:
       if 'feed_xml' in str(e):
         db.rollback()
