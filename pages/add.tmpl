@@ -12,6 +12,7 @@ Subscribe to a RSS feed:<br>
 #set $status = $status[0]
 #if $status == 0:
   <b>Subscribed to</b> $feed_xml<br>
+  <a href="/view?feed_uid=$feed_uid">view articles now</a>&nbsp;&nbsp;
   <a href="/catch_up?feed_uid=$feed_uid">catch up</a>
 #elif $status == 1:
   <b>Subscribed to</b> $feed_xml via autodiscovery
