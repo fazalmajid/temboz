@@ -73,6 +73,15 @@ def normalize(item, f):
     content = item['description']
   else:
     content = '<a href="' + item['link'] + '">' + item['title'] + '</a>'
+  # balance tags like <b>...</b>
+  content_lc = content.lower()
+  for tag in ['<b>', '<strong>', '<em>', '<i>', '<font']:
+    end_tag = '</' + tag[1:]
+    imbalance = content_lc.count(tag) - content_lc.count(end_tag)
+    if imbalance > 0:
+      if '>' not in end_tag:
+        end_tag += '>'
+      content += end_tag * imbalance
   item['content'] = content
   # map unicode
   for key in ['title', 'link', 'date', 'modified', 'creator', 'content']:
