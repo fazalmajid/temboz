@@ -136,8 +136,13 @@ limit %d""" % param.overload_threshold)
 #if count == cutoff:
 </div><div class="col2">
 #end if
+#if public:
+#set redirect = link
+#else:
+#set redirect = '/redirect/' + `uid`
+#end if
 #set since_when = self.since(delta_created)
-<div class="article" id="art$uid"><div class="headline"><img width="32" height="32" alt="up" src="<%=img_prefix%>/up.gif" class="up" onclick="highlight('$uid')" /><img width="32" height="32" alt="down" src="<%=img_prefix%>/down.gif" class="down" onclick="hide('$uid')" /><a href="/redirect/$uid" class="headline" target="_blank" onclick="highlight('$uid');">$title</a><br><a href="$feed_html" title="" class="source">$feed_title</a> - $since_when<br><!-- by $creator, cached at $loaded --></div><div class="content">$content</div></div>
+<div class="article" id="art$uid"><div class="headline"><img width="32" height="32" alt="up" src="<%=img_prefix%>/up.gif" class="up" onclick="highlight('$uid')" /><img width="32" height="32" alt="down" src="<%=img_prefix%>/down.gif" class="down" onclick="hide('$uid')" /><a href="<%=$redirect%>" class="headline" target="_blank" onclick="highlight('$uid');">$title</a><br><a href="$feed_html" title="" class="source">$feed_title</a> - $since_when<br><!-- by $creator, cached at $loaded --></div><div class="content">$content</div></div>
 #end for
 </div>
 #silent db.commit()
