@@ -35,6 +35,12 @@ end;
 
 create unique index item_feed_link_i on fm_items(item_feed_uid, item_link);
 
+create table fm_rules (
+	rule_uid	integer primary key,
+	rule_expires	timestamp,
+	rule_text	text
+);
+
 create view top20 as
   select
     feed_title,
@@ -52,8 +58,13 @@ create view top20 as
 order by interest_ratio DESC
 limit 20;
 
-create table fm_rules (
-	rule_uid	integer primary key,
-	rule_expires	timestamp,
-	rule_text	text
-);
+create view daily_stats as
+  select
+    date(item_created) as day,
+    sum(case when item_rating>0 then 1 else 0 end) as interesting,
+    sum(case when item_rating=-2 then 1 else 0 end) as filtered,
+    sum(case when item_rating=-1 then 1 else 0 end) as uninteresting
+  from fm_feeds, fm_items
+  where item_feed_uid=feed_uid
+  group by day
+  order by day;
