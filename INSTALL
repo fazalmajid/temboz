@@ -9,7 +9,6 @@ Prerequisites: Python 2.3.x, SQLite 2.8.x (3.x not supported yet), PySQLite
 
 2.	Create the database:
 	sqlite rss.db < ddl.sql
-	Alternately, you can import from the SQLite dump file rss.db.dump
 
 3.	(optional) Import feeds from an OPML file (pyRXP required):
 	temboz --import some_opml_file.opml
