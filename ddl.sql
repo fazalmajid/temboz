@@ -10,6 +10,8 @@ create table fm_feeds (
 	-- 0=active, 1=suspended
 	feed_lang	varchar(2) default 'en',
 	feed_private	int default 0,
+	feed_dupcheck	int default 0,
+	feed_oldest	timestamp,
 	feed_status	int default 0
 );
 

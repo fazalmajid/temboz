@@ -68,12 +68,14 @@ create table fm_feeds2 (
 	feed_errors	int default 0,
 	feed_lang	varchar(2) default 'en',
 	feed_private	int default 0,
+	feed_dupcheck	int default 0,
+	feed_oldest	timestamp,
 	feed_status	int default 0
 );
 
 insert into fm_feeds2 select feed_uid, feed_xml, feed_etag, feed_modified,
-feed_html, feed_title, feed_desc, feed_errors, 'en', 0, feed_status from
-fm_feeds;
+feed_html, feed_title, feed_desc, feed_errors, 'en', 0, 0, null, feed_status
+from fm_feeds;
 
 drop table fm_feeds;
 create table fm_feeds (
@@ -87,6 +89,8 @@ create table fm_feeds (
 	feed_errors	int default 0,
 	feed_lang	varchar(2) default 'en',
 	feed_private	int default 0,
+	feed_dupcheck	int default 0,
+	feed_oldest	timestamp,
 	feed_status	int default 0
 );
 insert into fm_feeds select * from fm_feeds2;
