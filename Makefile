@@ -21,7 +21,7 @@ sync:
 changelog:
 	cvs2cl.pl --tags -g -q
 
-dist: changelog distclean
+dist: distclean changelog
 	-rm -rf temboz-$(VERSION)
 	mkdir temboz-$(VERSION)
 	cp README INSTALL NEWS LICENSE UPGRADE ChangeLog temboz *.py rss.db.dump temboz-$(VERSION)
