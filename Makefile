@@ -38,7 +38,7 @@ dist: distclean changelog
 	-$${EDITOR} ../mylos/data/stories/2004/03/29/temboz.html
 
 distclean:
-	-rm -f core *.pyc *~ pages/*~ *.old pages/*.py ChangeLog*
+	-rm -f core *.pyc *~ pages/*~ *.old pages/*.py pages/*.pyc ChangeLog*
 	-find . -name .\#* -exec rm {} \;
 	-find . -name .\#~ -exec rm {} \;
 	-rm -f pages/*~
