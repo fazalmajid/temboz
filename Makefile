@@ -11,11 +11,12 @@ pages/%.py: pages/%.tmpl
 	cheetah compile $<
 
 init:
-	-rm rss.db
+	-rm -f rss.db
 	sqlite rss.db < ddl.sql > /dev/null
 	#temboz --import subs.opml
-	#temboz --import fof.opml
-	temboz --import me.opml
+	temboz --import fof.opml
+	#temboz --import broken.opml
+	#temboz --import me.opml
 	temboz --refresh
 
 sync:

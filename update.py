@@ -1,6 +1,6 @@
-import md5, time, feedparser, normalize
+import md5, time, threading, socket, Queue, signal
+import param, feedparser, normalize
 
-import socket
 socket.setdefaulttimeout(10)
 
 def escape(str):
@@ -32,19 +32,37 @@ def add_feed(feed_xml):
       pass
   c.close()
 
-def update_feed(db, feed_uid, feed_xml, feed_etag, feed_modified):
+class FeedWorker(threading.Thread):
+  def __init__(self, id, in_q, out_q):
+    threading.Thread.__init__(self)
+    self.id = id
+    self.in_q = in_q
+    self.out_q = out_q
+  def run(self):
+    while True:
+      feed = self.in_q.get()
+      if not feed:
+        self.out_q.put(None)
+        return
+      f = self.fetch_feed(*feed)
+      self.out_q.put((f,) + feed)
+  def fetch_feed(self, feed_uid, feed_xml, feed_etag, feed_modified):
+    print self.id, feed_xml
+    if not feed_etag:
+      feed_etag = None
+    if not feed_modified:
+      feed_modified = None
+    else:
+      feed_modified = eval(feed_modified)
+      assert type(feed_modified) == tuple, repr(feed_modified)
+    try:
+      f = feedparser.parse(feed_xml, etag=feed_etag, modified=feed_modified)
+    except socket.timeout:
+      f = {'channel': {}, 'items': []}
+    return f
+
+def update_feed(db, f, feed_uid, feed_xml, feed_etag, feed_modified):
   print feed_xml
-  if not feed_etag:
-    feed_etag = None
-  if not feed_modified:
-    feed_modified = None
-  else:
-    feed_modified = eval(feed_modified)
-    assert type(feed_modified) == tuple, repr(feed_modified)
-  try:
-    f = feedparser.parse(feed_xml, etag=feed_etag, modified=feed_modified)
-  except socket.timeout:
-    f = {'channel': {}, 'items': []}
   c2 = db.cursor()
   # check for errors - HTTP code 304 means no change
   if 'title' not in f['channel'] and 'link' not in f['channel'] and \
@@ -118,11 +136,29 @@ def process_parsed_feed(f, c, feed_uid):
 
 def update():
   from singleton import db
+  # create worker threads and the queues used to communicate with them
+  work_q = Queue.Queue()
+  process_q = Queue.Queue()
+  workers = []
+  for i in range(param.feed_concurrency):
+    workers.append(FeedWorker(i + 1, work_q, process_q))
+    workers[-1].start()
+  # assign work
   c1 = db.cursor()
   c1.execute("""select feed_uid, feed_xml, feed_etag, feed_modified
   from fm_feeds""")
   for feed_uid, feed_xml, feed_etag, feed_modified in c1:
-  #for feed_uid, feed_xml, feed_etag, feed_modified in c1.fetchall()[:2]:
-    update_feed(db, feed_uid, feed_xml, feed_etag, feed_modified)
+    work_q.put((feed_uid, feed_xml, feed_etag, feed_modified))
+  # None is an indication to workers to stop
+  for i in range(param.feed_concurrency):
+    work_q.put(None)
+  workers_left = param.feed_concurrency
+  while workers_left > 0:
+    feed_info = process_q.get()
+    # exited worker
+    if not feed_info:
+      workers_left -= 1
+    else:
+      update_feed(db, *feed_info)
   db.commit()
   c1.close()
