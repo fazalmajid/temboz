@@ -140,3 +140,11 @@ def normalize(item, f):
     if type(item.get(key)) == unicode:
       item[key] = item[key].encode('ascii', 'xmlcharrefreplace')
   
+def escape_xml(s):
+  """Escape entities for a XML target"""
+  return s.decode('latin1').replace('&', '&amp;').encode('ascii', 'xmlcharrefreplace').replace("'", "&apos;").replace('"', '&quot;').replace('<', '&lt;').replace('>', '&gt;')
+
+def escape_html(s):
+  """Escape entities for a HTML target.
+Differs from XML in that &apos; is defined by W3C but not implemented widely"""
+  return s.decode('latin1').replace('&', '&amp;').encode('ascii', 'xmlcharrefreplace').replace("'", "&#39;").replace('"', '&quot;').replace('<', '&lt;').replace('>', '&gt;')

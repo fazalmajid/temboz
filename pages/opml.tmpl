@@ -5,6 +5,7 @@
   </head>
   <body>
 #from singleton import db
+#from normalize import escape_xml
 #import time
 #set c = db.cursor()
 #silent trans.mime_type = 'text/xml'
@@ -16,10 +17,10 @@ where item_feed_uid=feed_uid and feed_status=0
 group by feed_uid, feed_title, feed_html, feed_xml
 order by lower(feed_title)""")
 #for feed_uid, feed_title, feed_desc, feed_html, feed_xml in c:
-#set $feed_xml = feed_xml.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;').replace("'", '&apos;')
-#set $feed_html = feed_html.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;').replace("'", '&apos;')
-#set feed_title = feed_title.decode('latin1').replace('&', '&amp;').encode('ascii', 'xmlcharrefreplace').replace("'", "&#39;").replace('"', '&quot;').replace('<', '&lt;').replace('>', '&gt;')
-#set feed_desc = feed_desc.decode('latin1').replace('&', '&amp;').encode('ascii', 'xmlcharrefreplace').replace("'", "&#39;").replace('"', '&quot;').replace('<', '&lt;').replace('>', '&gt;')
+#set feed_xml = escape_xml(feed_xml)
+#set feed_html = escape_xml(feed_html)
+#set feed_title = escape_xml(feed_title)
+#set feed_desc = escape_xml(feed_desc)
       <outline type="rss" title="$feed_title" description="$feed_desc" xmlUrl="$feed_xml" htmlUrl="$feed_html" />
 #end for
 #silent c.close()
