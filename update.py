@@ -325,6 +325,8 @@ def update_rule(db, c, uid, expires, text, delete):
     expires = 'NULL'
   else:
     expires = "julianday('%s')" % expires
+  # check syntax
+  compile(text, 'web form', 'eval')
   if uid == 'new':
     c.execute("""insert into fm_rules (rule_expires, rule_text)
     values (%s, '%s')""" \
