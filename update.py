@@ -103,7 +103,7 @@ def set_status(feed_uid, status):
   from singleton import db
   c = db.cursor()
   try:
-    c.execute("""update fm_feeds set feed_status=%d where item_feed_uid=%d""" \
+    c.execute("""update fm_feeds set feed_status=%d where feed_uid=%d""" \
               % (status, feed_uid))
     db.commit()
   finally:
