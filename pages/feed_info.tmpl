@@ -40,7 +40,20 @@ group by feed_uid, feed_title, feed_html, feed_xml
 #silent assert interesting + uninteresting + unread + filtered == total, feed_title
 #set uninteresting = total - unread - filtered - interesting
 
+########################################################################
+##
+## Change feed title if requested
+##
+########################################################################
+#if $getVar('feed_title', None) and $getVar('feed_title', None) != feed_title:
+#import update
+#silent update.update_feed_title($feed_uid, $getVar('feed_title'))
+<p>Feed title updated successfully.
+#set feed_title = $getVar('feed_title', feed_title)
+#end if
+
 <h1><a href="<%=feed_html%>"><%=feed_title%></a></h2>
+
 ########################################################################
 ##
 ## Change feed URL if requested
@@ -79,12 +92,16 @@ duplicates.</p>
 ##
 ########################################################################
 <form method="GET" action="/feed_info" name="feed_xml">
-<a href="<%=feed_xml%>">Feed</a>:
-<input type="hidden" name="feed_uid" value="$feed_uid">
-<input name="feed_xml" size="64" value="<%=feed_xml%>">
-<input type="button" value="Clear"
- onclick="document.forms.feed_xml.feed_xml.value='';document.forms.feed_xml.feed_xml.focus();">
-<input type="submit" value="Change"><br><br>
+<table>
+<tr><td>Title:</td><td><input name="feed_title" size="64"
+ value="<%=feed_title%>"></td></tr>
+<tr><td><a href="<%=feed_xml%>">Feed</a>:</td>
+<td><input type="hidden" name="feed_uid" value="$feed_uid">
+<input name="feed_xml" size="64" value="<%=feed_xml%>"></td></tr>
+<tr><td colspan="2" align="center"><input type="button" value="Clear"
+ onclick="document.forms.feed_xml.feed_xml.value='';document.forms.feed_xml.feed_title.value='';document.forms.feed_xml.feed_xml.focus();">
+<input type="submit" value="Change"></td></tr>
+</table><br><br>
 
 ########################################################################
 ##

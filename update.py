@@ -87,6 +87,19 @@ def update_feed_xml(feed_uid, feed_xml):
   finally:
     c.close()
 
+def update_feed_title(feed_uid, feed_title):
+  """Update a feed title"""
+  feed_uid = int(feed_uid)
+
+  from singleton import db
+  c = db.cursor()
+  try:
+    c.execute("""update fm_feeds set feed_title='%s' where feed_uid=%d""" \
+              % (escape(feed_title), feed_uid))
+    db.commit()
+  finally:
+    c.close()
+
 def catch_up(feed_uid):
   feed_uid = int(feed_uid)
   from singleton import db
