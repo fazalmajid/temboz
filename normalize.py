@@ -25,7 +25,7 @@ def normalize(item, f):
     code.interact(local=locals())
   # link
   if 'link' not in item:
-    print 'E' * 16, item
+    print 'E' * 16, 'no link in ', item
     item['link'] = f['channel']['link']
   if type(item['link']) == unicode:
     item['link'] = str(item['link'])
@@ -39,7 +39,10 @@ def normalize(item, f):
     item['creator'] = 'Unknown'
     if 'creator' in f['channel']:
       item['creator'] = f['channel']['creator']
-  # date
+  # modified date
+  if 'modified' not in item:
+    item['modified'] = f['channel'].get('modified')
+  # created - use modified if not available
   if 'date' not in item:
     if 'modified' in item:
       date = parse_date(item['modified'])
@@ -51,10 +54,8 @@ def normalize(item, f):
     # XXX use HTTP last-modified date here
     date = time.gmtime()
   item['date'] = time.strftime(date_fmt, date)
-  # modified date
-  if 'modified' not in item:
-    item['modified'] = None
-  else:
+  # finish modified date
+  if item['modified']:
     modified = parse_date(item['modified'])
     # add a fudge factor within modifications are not counted as such
     # 10 minutes here
