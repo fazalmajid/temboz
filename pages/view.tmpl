@@ -202,7 +202,7 @@ limit %d offset %d)""" % (overload_threshold, offset))
 #if not public:
 <form method="GET" action="/view">
 #end if
-<p class="menu">$num_items $item_desc items
+<p class="menu">$num_items $item_desc
 #if num_items > overload_threshold:
 ($overload_threshold shown)
 #set cutoff = (overload_threshold + 1) / 2 + 1
@@ -221,8 +221,16 @@ limit %d offset %d)""" % (overload_threshold, offset))
 <input name="feed_uid" type="hidden" value="$feed_uid">
 #end if
 <input name="show" type="hidden" value="$show"><input name="search">
-<input name="search_in" type="radio" value="title" checked> in titles
-<input name="search_in" type="radio" value="content"> in content
+<select name="show">
+<option value="all" selected>All articles</option>
+<option value="down">Unread only</option>
+<option value="up">Interesting only</option>
+<option value="filtered">Filtered only</option>
+</select>
+<select name="search_in">
+<option value="title" selected>in titles</option>
+<option value="content">in content</option>
+</select>
 <input type="submit" value="Search"></p></form>
 #end if
 ########################################################################
