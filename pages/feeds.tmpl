@@ -20,7 +20,7 @@
   sum(case when item_rating=0 then 1 else 0 end) as unread,
   sum(case when item_rating=-1 then 1 else 0 end) as uninteresting,
   sum(case when item_rating=-2 then 1 else 0 end) as filtered,
-  count(*) as total, feed_status
+  count(*) as total, feed_status, feed_errors
 from fm_feeds, fm_items
 where item_feed_uid=feed_uid
 group by feed_uid, feed_title, feed_html, feed_xml
@@ -28,6 +28,13 @@ order by feed_status ASC, """ \
     + sort_key + ' ' + order + """, lower(feed_title)""")
 <table>
 <tr>
+########################################################################
+##
+## Produce column headings with appropriate sort order
+##
+## XXX should indicate the sort order for columns using CSS background-image
+##
+########################################################################
 #for title in ['Feed Title', 'Last modified', 'Unread', 'Filtered', 'Interesting', 'Hit Ratio', 'Total']:
 #set col = title.lower().replace(' ', '_')
 #if col in ['hit_ratio']:
@@ -49,7 +56,12 @@ order by feed_status ASC, """ \
 #end for
 </tr>
 #set rownum = 0
-#for feed_uid, feed_title, feed_html, feed_xml, delta_t, interesting, unread, uninteresting, filtered, total, status in c:
+########################################################################
+##
+## Loop over feeds
+##
+########################################################################
+#for feed_uid, feed_title, feed_html, feed_xml, delta_t, interesting, unread, uninteresting, filtered, total, status, errors in c:
 #set since = self.since(delta_t)
 #set unread = int(unread)
 #set interesting = int(interesting)
@@ -63,13 +75,28 @@ order by feed_status ASC, """ \
 #end if
 #silent assert interesting + uninteresting + unread + filtered == total, feed_title
 #set suspended = ' (suspended)' * status
+########################################################################
+##
+## Alternate row colors for improved legibility
+##
+########################################################################
 #set rownum = rownum + 1
 #if rownum % 2:
 #set rowcolor = 'odd'
 #else
 #set rowcolor = 'even'
 #end if
-<tr valign="top" class="$rowcolor"><td><a href="$feed_html">$feed_title</a>&nbsp;&nbsp;<a href="$feed_xml">(XML)</a><a href="/feed_info?feed_uid=$feed_uid"> (Details)</a>$suspended</td><td nowrap align="right">$since</td><td nowrap align="right"><a href="/view?feed_uid=$feed_uid&show=unread">$unread</a></td><td nowrap align="right"><a href="/view?feed_uid=$feed_uid&show=filtered">$filtered</a></td><td nowrap align="right"><a href="/view?feed_uid=$feed_uid&show=up">$interesting</a></td><td nowrap align="right"><%=ratio%>%</td><td nowrap align="right"><a href="/view?feed_uid=$feed_uid&show=all">$total</a></td><td nowrap>
+########################################################################
+##
+## Flag feeds with errors
+##
+########################################################################
+#if errors > 0:
+#set error_flag = ' class="error"'
+#else
+#set error_flag = ''
+#end if
+<tr valign="top" class="$rowcolor"><td><a href="$feed_html">$feed_title</a>&nbsp;&nbsp;<a$error_flag href="$feed_xml">(XML)</a><a href="/feed_info?feed_uid=$feed_uid"> (Details)</a>$suspended</td><td nowrap align="right">$since</td><td nowrap align="right"><a href="/view?feed_uid=$feed_uid&show=unread">$unread</a></td><td nowrap align="right"><a href="/view?feed_uid=$feed_uid&show=filtered">$filtered</a></td><td nowrap align="right"><a href="/view?feed_uid=$feed_uid&show=up">$interesting</a></td><td nowrap align="right"><%=ratio%>%</td><td nowrap align="right"><a href="/view?feed_uid=$feed_uid&show=all">$total</a></td><td nowrap>
 #if unread > 0:
 <a href="/catch_up?feed_uid=$feed_uid">catch up</a>
 #end if
