@@ -52,8 +52,13 @@ def normalize(item, f):
   # get rid of RDF lossage...
   for key in ['title', 'link', 'created', 'modified', 'author',
               'content', 'content_encoded', 'description']:
-    if type(item.get(key)) == list and len(item[key]) == 1:
-      item[key] = item[key][0]
+    if type(item.get(key)) == list:
+      if len(item[key]) == 1:
+        item[key] = item[key][0]
+      else:
+        # XXX not really sure how to handle these cases
+        print 'E' * 16, 'ambiguous RDF', item[key]
+        item[key] = item[key][0]
     if isinstance(item.get(key), dict) and 'value' in item[key]:
       item[key] = item[key]['value']
   ########################################################################
