@@ -64,14 +64,13 @@ def fetch_feed(feed_uid, feed_xml, feed_etag, feed_modified):
     f = {'channel': {}, 'items': []}
   return f
 
-def update_feed(db, f, feed_uid, feed_xml, feed_etag, feed_modified):
+def update_feed(db, c, f, feed_uid, feed_xml, feed_etag, feed_modified):
   print feed_xml
-  c2 = db.cursor()
   # check for errors - HTTP code 304 means no change
   if 'title' not in f['channel'] and 'link' not in f['channel'] and \
          ('status' not in f or f['status'] not in [304]):
     # error or timeout - increment error count
-    c2.execute("""update fm_feeds set feed_errors = feed_errors + 1
+    c.execute("""update fm_feeds set feed_errors = feed_errors + 1
     where feed_uid=%d""" % feed_uid)
   else:
     # no error - reset etag and/or modified date and error count
@@ -86,8 +85,8 @@ def update_feed(db, f, feed_uid, feed_xml, feed_etag, feed_modified):
     else:
       stmt += ", feed_modified=NULL"
     stmt += " where feed_uid=%d" % feed_uid
-    c2.execute(stmt)
-  process_parsed_feed(f, c2, feed_uid)
+    c.execute(stmt)
+  process_parsed_feed(f, c, feed_uid)
 
 def process_parsed_feed(f, c, feed_uid):
   # the Radio convention is reverse chronological order
@@ -145,11 +144,11 @@ def update():
     workers.append(FeedWorker(i + 1, work_q, process_q))
     workers[-1].start()
   # assign work
-  c1 = db.cursor()
-  c1.execute("""select feed_uid, feed_xml, feed_etag,
+  c = db.cursor()
+  c.execute("""select feed_uid, feed_xml, feed_etag,
   strftime('%s', feed_modified)
   from fm_feeds""")
-  for feed_uid, feed_xml, feed_etag, feed_modified in c1:
+  for feed_uid, feed_xml, feed_etag, feed_modified in c:
     if feed_modified:
       feed_modified = float(feed_modified)
       feed_modified = time.localtime(feed_modified)
@@ -166,6 +165,6 @@ def update():
     if not feed_info:
       workers_left -= 1
     else:
-      update_feed(db, *feed_info)
+      update_feed(db, c, *feed_info)
   db.commit()
-  c1.close()
+  c.close()
