@@ -2,10 +2,6 @@
 <head>
 <title>Catch up</title>
 <link rel="stylesheet" type="text/css" href="/temboz.css">
-</head>
-<body>
-<p class="menu"><a href="/view">All unread</a>&nbsp;&nbsp;<a href="/feeds">All feeds</a></p>
-
 #from singleton import db
 #set c = db.cursor()
 #silent c.execute("""select feed_title, feed_html from fm_feeds
@@ -14,12 +10,38 @@ where feed_uid=""" + $feed_uid)
 #set title = tup[0]
 #set url = tup[1]
 #silent c.close()
-#if $getVar("confirm", None):
+########################################################################
+##
+## Find out which page to get back to
+##
+########################################################################
+#set $referrer = $getVar("referrer", '')
+#if not $referrer:
+#if not $referer or 'http://' not in $referer:
+#set $referrer = '/feeds'
+#else:
+#set $referrer = $referer
+#end if
+#end if
+########################################################################
+##
+## Check if confirmation is required
+##
+########################################################################
+#import param
+#if not getattr(param, 'catch_up_confirm', True) or $getVar("confirm", None):
 #import update
 #set $status = update.catch_up($feed_uid)
+<meta http-equiv="refresh" content="0; URL=$referrer">
+</head>
+<body>
 <b>Caught up with <a href="$url">$title</a></b>
 #else:
+</head>
+<body>
+<p class="menu"><a href="/view">All unread</a>&nbsp;&nbsp;<a href="/feeds">All feeds</a></p>
 <form action="/catch_up?feed_uid=$feed_uid" method="POST">
+<input type="hidden" name="referrer" value="$referrer">
 <input type="hidden" name="confirm" value="yes">
 Please confirm you want to catch up with <a href="$url">$title</a> <input type="submit" value="Confirm">
 </form>

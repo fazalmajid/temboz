@@ -175,7 +175,8 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
       self.referer = self.headers.dict['referer']
     else:
       self.referer = ''
-    self.input = {}
+    self.input = {'referer': self.referer,
+                  'headers': self.headers.dict}
 
   def process_post_info(self):
     """Processes POST variables coming in, either standard or form-data."""
