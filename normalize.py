@@ -51,7 +51,7 @@ def normalize(item, f):
       item[key] = item[key]['value']
   ########################################################################
   # title
-  if 'title' not in item:
+  if 'title' not in item or not item['title'].strip():
     item['title'] = 'Untitled'
   # XXX for debugging
   if type(item['title']) not in [str, unicode]:
