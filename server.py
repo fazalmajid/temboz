@@ -228,15 +228,12 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
   def flush(self):
     self.browser_output(200, self.mime_type, ''.join(self.output_buffer))
 
+  images = {}
+  for fn in [fn for fn in os.listdir('images') if fn.endswith('.gif')]:
+    images[fn] = open('images/' + fn).read()
   pixel_data = open('images/pixel.gif').read()
   def pixel(self):
-    self.browser_output(200, 'image/gif', self.pixel_data)
-  up_data = open('images/up.gif').read()
-  def up(self):
-    self.browser_output(200, 'image/gif', self.up_data)
-  down_data = open('images/down.gif').read()
-  def down(self):
-    self.browser_output(200, 'image/gif', self.down_data)
+    self.browser_output(200, 'image/gif', self.images['pixel.gif'])
   favicon_data = open('images/favicon.ico').read()
   def favicon(self):
     self.browser_output(200, 'image/x-icon', self.favicon_data)
@@ -277,10 +274,8 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
       if param.debug:
         logging.info((self.command, self.path, self.request_version, vars))
 
-      if path == '/up.gif':
-        self.up()
-      if path == '/down.gif':
-        self.down()
+      if path.endswith('.gif') and path[1:] in self.images:
+        self.browser_output(200, 'image/gif', self.images[path[1:]])
 
       if parts[0].count('favicon.ico') > 0:
         self.favicon()

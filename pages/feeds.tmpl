@@ -41,7 +41,7 @@ order by feed_status ASC, """ \
 <th class="nonsort">$title</th>
 #else
 #if col == sort_key:
-#set css = ' class="sort"'
+#set css = ' class="sort' + order + '"'
 #set alt_order = {'ASC': 'DESC', 'DESC': 'ASC'}[order]
 #else
 #set css = ' class="nonsort"'
