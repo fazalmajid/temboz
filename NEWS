@@ -5,6 +5,16 @@ See the end for copying conditions.
 
 Please send Temboz bug reports to the email address listed at www.temboz.com
 
+* Changes in Temboz 0.3.2.
+
+** Fixes to search functionality, now case insensitive
+
+** Filter rules now check syntax
+
+** New filter variables title_words and content_words
+
+** Numerous small fixes to the user interface
+
 * Changes in Temboz 0.3.1.
 
 ** Basic search functionality added (case sensitive)
