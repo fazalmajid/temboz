@@ -1,4 +1,9 @@
+<html>
+<head>
 <title>Catch up</title>
+<link rel="stylesheet" type="text/css" href="/temboz.css">
+</head>
+<body>
 <p class="menu"><a href="/view">All unread</a>&nbsp;&nbsp;<a href="/feeds">All feeds</a></p>
 
 #from singleton import db
@@ -20,3 +25,5 @@ where feed_uid=""" + $feed_uid)
 Please confirm you want to catch up with <a href="$url">$title</a> <input type="submit" value="Confirm">
 </form>
 #end if
+</body>
+</html>
