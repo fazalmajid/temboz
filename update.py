@@ -196,6 +196,17 @@ def update_feed(db, c, f, feed_uid, feed_xml, feed_etag, feed_modified):
     clear_errors(db, c, feed_uid, f)
   process_parsed_feed(f, c, feed_uid)
 
+# shades of LISP...
+def curry(fn, obj):
+  return lambda *args: fn(obj, *args)
+
+# obj can be a string, list or dictionary
+def any(obj, *words):
+  for w in words:
+    if w in obj:
+      return True
+  return False
+
 def process_parsed_feed(f, c, feed_uid):
   """Insert the entries from a feedparser parsed feed f in the database using
 the cursor c for feed feed_uid.
@@ -214,6 +225,14 @@ Returns a tuple (number of items added unread, number of filtered items)"""
       except KeyError:
         pass
     filter_dict.update(item)
+    # convenient shortcut functions
+    filter_dict['title_any_words'] = curry(any, item['title_words'])
+    filter_dict['content_any_words'] = curry(any, item['content_words'])
+    filter_dict['title_any'] = curry(any, item['title'])
+    filter_dict['content_any'] = curry(any, item['content'])
+    filter_dict['title_any_lc'] = curry(any, item['title_lc'])
+    filter_dict['content_any_lc'] = curry(any, item['content_lc'])
+    # evaluate the rules
     for rule in rules:
       try:
         skip = eval(rule, filter_dict)
