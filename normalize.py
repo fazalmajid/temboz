@@ -116,6 +116,11 @@ def normalize(item, f):
     created = time.gmtime()
   created = fix_date(created)
   item['created'] = time.strftime(date_fmt, created)
+  # keep track of the oldest item still in the feed file
+  if 'oldest' not in f:
+    f['oldest'] = '9999-99-99 99:99:99'
+  if item['created'] < f['oldest']:
+    f['oldest'] = item['created']
   # finish modified date
   if 'modified_parsed' in item and item['modified_parsed']:
     modified = fix_date(item['modified_parsed'])

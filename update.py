@@ -129,6 +129,8 @@ class FeedWorker(threading.Thread):
     self.id = id
     self.in_q = in_q
     self.out_q = out_q
+    # we need to do this so temboz --refresh honors Ctrl-C
+    self.setDaemon(True)
   def run(self):
     try:
       while True:
@@ -288,6 +290,12 @@ Returns a tuple (number of items added unread, number of filtered items)"""
       (item_uid, item_link, item_loaded, item_created, item_modified,
        item_viewed, item_md5hex, item_title, item_content, item_creator) = l[0]
       # XXX update item here
+  # update timestamp of the oldest item still in the feed file
+  if 'oldest' in f and f['oldest'] != '9999-99-99 99:99:99':
+    c.execute("""update fm_feeds
+    set feed_oldest=julianday('%s')
+    where feed_uid=%d""" % (f['oldest'], feed_uid))
+  
   return (num_added, num_filtered)
 
 def update():
@@ -338,7 +346,7 @@ def update():
     else:
       feed_modified = None
     work_q.put((feed_uid, feed_xml, feed_etag, feed_modified))
-  # None is an indication to workers to stop
+  # None is an indication for workers to stop
   for i in range(param.feed_concurrency):
     work_q.put(None)
   workers_left = param.feed_concurrency
