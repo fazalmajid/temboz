@@ -9,6 +9,7 @@ def usage():
   --refresh            : refresh the subscribed feeds
   --import <opml_file> : import subscriptions from a OPML file
   --server             : run the built-in web server
+  --kill               : kill the server
   -v                   : be more verbose (can be repeated)
   """ % sys.argv[0]
   sys.exit(0)
@@ -16,7 +17,7 @@ def usage():
 if __name__ == '__main__':
   import getopt
   opts, args = getopt.getopt(sys.argv[1:], 'v',
-                             ['refresh', 'server', 'import='])
+                             ['refresh', 'server', 'import=', 'kill'])
   if opts == []:
     usage()
   for opt, val in opts:
@@ -38,3 +39,9 @@ if __name__ == '__main__':
       updater = update.PeriodicUpdater()
       updater.start()
       server.run()
+    elif opt == '--kill':
+      import os
+      pid = int(open('temboz.pid').readline().strip())
+      os.kill(pid, 9)
+      os.remove('temboz.pid')
+      

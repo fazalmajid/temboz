@@ -335,4 +335,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
 def run():
   logging.getLogger().setLevel(logging.INFO)
   server = Server(('', param.port), Handler)
+  pidfile = open('temboz.pid', 'w')
+  print >> pidfile, os.getpid()
+  pidfile.close()
   server.serve_forever()
