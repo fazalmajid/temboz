@@ -11,7 +11,7 @@
 #silent c.execute("""select feed_uid, feed_title, feed_desc,
   feed_html, feed_xml
 from fm_feeds, fm_items
-where item_feed_uid=feed_uid
+where item_feed_uid=feed_uid and feed_xml not like '%www.majid.info%'
 group by feed_uid, feed_title, feed_html, feed_xml
 order by lower(feed_title)""")
 #for feed_uid, feed_title, feed_desc, feed_html, feed_xml in c:
