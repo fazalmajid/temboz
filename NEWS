@@ -6,6 +6,16 @@ See the end for copying conditions.
 Please send Temboz bug reports to the email address listed at www.temboz.com
 
 
+* Changes in Temboz 0.4.4.
+
+** Improved presentation on a number of pages, and IE rendering
+
+** Added filtering convenience functions like title_any_words()
+
+** Garbage collection - every day between 3AM and 4AM, uninteresting entries
+   are purged of their contents to clear disk space (by default, entries 7 days
+   or older are purged)
+
 * Changes in Temboz 0.4.3.
 
 ** fix CSS layout bug in IE6

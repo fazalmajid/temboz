@@ -1,3 +1,6 @@
+from 0.4.x to 0.4.4:
+add the param.garbage_contents parameter to your param.py file
+
 From 0.3.2 to 0.4:
 
 sqlite rss.db << EOF
