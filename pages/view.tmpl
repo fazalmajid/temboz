@@ -2,7 +2,8 @@
 #from singleton import db
 #import time
 #import param
-<html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head><title>Temboz - unread items</title>
 <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
 <script>
@@ -54,7 +55,7 @@ limit %d)""" % param.overload_threshold)
 #set $num_items = int(c.fetchone()[0])
 #set $cutoff = ($num_items + 1) / 2 + 1
 #set $count = 0
-<p>$num_items new items
+<p class="menu">$num_items new items
 #if $num_items > $param.overload_threshold:
 ($param.overload_threshold shown)
 #set cutoff = (param.overload_threshold + 1) / 2 + 1
@@ -66,11 +67,11 @@ feed_title, feed_html, feed_xml, julianday('now') - julianday(item_created)
 from fm_items, fm_feeds where item_feed_uid=feed_uid
 and item_rating = 0 order by item_created DESC, item_uid DESC
 limit %d""" % param.overload_threshold)
-<div class="col">
+<div class="col1">
 #for uid, creator, title, link, content, loaded, created, feed_title, feed_html, feed_xml, delta_created in c:
 #set $count += 1
 #if $count == $cutoff:
-</div><div class="col">
+</div><div class="col2">
 #end if
 #set delta_created = float(delta_created)
 #if delta_created < 1.0/24:

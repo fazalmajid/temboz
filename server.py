@@ -181,8 +181,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     else:
       istr = self.rfile.read(int(self.headers['content-length']))
       query_list = cgi.parse_qsl(istr, 1)
-    for key, value in query_list:
-      self.input[key] = value
+    self.input.update(dict(query_list))
 
   def do_POST(self):
     """The main POST shell.
@@ -253,29 +252,29 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
   def process_request(self):
     self.require_auth({'majid': 'sopo'})
     try:
+      if self.path in ['', '/']:
+        self.path = '/unread'
       parts = self.path.split('?', 2)
+      path = parts[0]
       vars = []
       if len(parts) == 2:
-        vars = cgi.parse_qsl(parts[1], 1)
+        self.input.update(dict(cgi.parse_qsl(parts[1], 1)))
 
       if param.debug:
         logging.info((self.command, self.path, self.request_version, vars))
 
-      if self.path in ['', '/']:
-        self.path = '/unread'
-
-      if self.path == '/up.gif':
+      if path == '/up.gif':
         self.up()
-      if self.path == '/down.gif':
+      if path == '/down.gif':
         self.down()
 
       if parts[0].count('favicon.ico') > 0:
         self.favicon()
 
-      if self.path.startswith('/redirect/'):
+      if path.startswith('/redirect/'):
         from singleton import db
         c = db.cursor()
-        item_uid = int(self.path[10:])
+        item_uid = int(path[10:])
         c.execute('select item_link from fm_items where item_uid=%d'
                   % item_uid)
         redirect_url = c.fetchone()[0]
@@ -287,8 +286,8 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
                             ['Location: ' + redirect_url])
         return
 
-      if self.path.startswith('/feedback/'):
-        op, item_uid = self.path.split('/')[2::2]
+      if path.startswith('/feedback/'):
+        op, item_uid = path.split('/')[2::2]
         item_uid = item_uid.split('.')[0]
         item_uid = int(item_uid)
         # for safety, these operations should be idempotent
@@ -297,7 +296,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.pixel()
 
       # XXX use static compiled versions for speed
-      page = 'pages/' + self.path.split('/')[1] + '.tmpl'
+      page = 'pages/' + parts[0].split('/')[1] + '.tmpl'
       tmpl = TembozTemplate(file=page, searchList=[self.input])
       tmpl.respond(trans=self)
       self.flush()

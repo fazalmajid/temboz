@@ -2,7 +2,8 @@ body {
   line-height:10pt;
   font-family: georgia;
   font-size:9pt;
-
+  padding:0px;
+  margin:0px;
 }
 a.headline {
   font-size:12pt;
@@ -20,8 +21,38 @@ a.headline {
 .article {
   border: solid 1px gray;
   margin-bottom: 12px;
-  padding: 3pt;
+  padding: 6px;
   overflow: hidden;
 }
 
+p.menu {
+  margin: 20px;
+}
+
+.col1 .article {
+  margin-left:  20px;
+  margin-right: 10px;
+}
+
+.col2 .article {
+  margin-right: 20px;
+  margin-left:  10px;
+}
+
 .col { width: 43%; float: left; margin: 5px}
+.col1 {
+  width: 50%;
+  float: left;
+  padding: 0px;
+  margin: 0px;
+  border: 0px;
+  overflow: hidden;
+}
+.col2 {
+  width: 50%;
+  float: right;
+  padding: 0px;
+  margin: 0px;
+  border: 0px;
+  overflow: hidden;
+}
