@@ -1,4 +1,4 @@
-VERSION= 0.2
+VERSION= 0.3
 PAGES= view error opml feeds temboz.css rules catch_up
 
 all: changelog
@@ -34,7 +34,8 @@ dist: changelog
 	-rm -rf temboz-$(VERSION)
 
 clean:
-	-rm -f core *.pyc *~ *.old pages/*.py
+	-rm -f core *.pyc *~ *.old pages/*.py ChangeLog*
+	-rm -rf temboz-$(VERSION) temboz-$(VERSION).tar.gz
 
 realclean: clean
 	-rm -rf rss.db
