@@ -1,7 +1,10 @@
-Version 0.3.3, released 2004-11-29
+Version 0.4, released 2004-12-11
 
 Not much for now, check out www.temboz.com for more details.
 
 See INSTALL for installation instructions
+
+If you are upgrading from a previous version of Temboz, check the UPGRADE file
+for relevant upgrade instructions.
 
 License: same as Python (to be fleshed out)

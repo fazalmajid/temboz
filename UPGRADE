@@ -1,0 +1,5 @@
+From 0.3.2 to 0.4:
+
+sqlite rss.db << EOF
+create index item_rating_i on fm_items(item_rating, item_feed_uid);
+EOF
