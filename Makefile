@@ -1,12 +1,9 @@
-WW_FILE:sh	=echo ../../src/lang/python/Webware-*.tar.gz
-WW_VER=		$(WW_FILE:../../src/lang/python/Webware-%.tar.gz=%)
+VERSION= 0.1
+PAGES= view error opml feeds temboz.css rules catch_up
 
-PAGES=	error unread
+all: changelog
 
-
-all: cheetah
-
-cheetah:$(PAGES:%=pages/%.py)
+cheetah: $(PAGES:%=pages/%.py)
 pages/%.py: pages/%.tmpl
 	cheetah compile $<
 
@@ -14,23 +11,30 @@ init:
 	@if [ `hostname` != "alamut" ]; then true; else echo "Will not run make init on alamut"; false; fi
 	-rm -f rss.db
 	sqlite rss.db < ddl.sql > /dev/null
-	#temboz --import subs.opml
-	#temboz --import fof.opml
-	temboz --import broken.opml
-	#temboz --import me.opml
+	temboz --import me.opml
 	temboz --refresh
 
 sync:
 	-mv feedparser.py feedparser.old
 	wget http://diveintomark.org/projects/feed_parser/feedparser.py
 
-webware: Webware-$(WW_VER)/_installed
-Webware-$(WW_VER)/_installed: $(WW_FILE)
-	gzip -cd $(WW_FILE)|tar xf -
-	expect webware.exp
+changelog:
+	cvs2cl.pl --tags -g -q
+
+dist: changelog
+	-rm -rf temboz-$(VERSION)
+	mkdir temboz-$(VERSION)
+	cp README INSTALL ChangeLog temboz *.py rss.db.dump temboz-$(VERSION)
+	cp ddl.sql me.opml temboz-$(VERSION)
+	cp -r pages images temboz-$(VERSION)
+	-rm -rf temboz-$(VERSION)/pages/CVS temboz-$(VERSION)/images/CVS
+	# expurgate password
+	sed -e 's/auth_dict.*/auth_dict={"login": "password"}/g' param.py > temboz-$(VERSION)/param.py
+	gtar zcvf temboz-$(VERSION).tar.gz temboz-$(VERSION)
+	-rm -rf temboz-$(VERSION)
 
 clean:
-	-rm -f core *.pyc *~ *.old
+	-rm -f core *.pyc *~ *.old pages/*.py
 
 realclean: clean
-	-rm -rf Webware*  rss.db
+	-rm -rf rss.db
