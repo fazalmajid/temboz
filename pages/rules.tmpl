@@ -15,7 +15,7 @@
 #set $status = update.update_rule(db, c, $uid, $expires, $text, $getVar("delete", None))
 #end if
 
-#silent c.execute("""select rule_uid, rule_expires, rule_text
+#silent c.execute("""select rule_uid, date(rule_expires), rule_text
 from fm_rules
 order by rule_uid""")
 <table>
