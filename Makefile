@@ -28,7 +28,8 @@ dist: distclean changelog
 	cp ddl.sql me.opml temboz-$(VERSION)
 	-rm -f pages/*~
 	cp -r pages images etc temboz-$(VERSION)
-	-rm -f temboz-$(VERSION)/etc/.cvsignore temboz-$(VERSION)/pages/__init__.py
+	-rm -f temboz-$(VERSION)/etc/.cvsignore
+	-rm -f temboz-$(VERSION)/pages/__init__.py
 	-rm -rf temboz-$(VERSION)/pages/CVS temboz-$(VERSION)/images/CVS
 	-rm -rf temboz-$(VERSION)/etc/CVS
 	# expurgate password
