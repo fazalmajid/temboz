@@ -11,17 +11,26 @@
 #import time
 #set c = db.cursor()
 #silent c.execute("""select feed_title, feed_html, feed_xml,
-  julianday('now') - max(
+  min(last_modified) as last_modified,
+  sum(case when item_rating=1 then cnt else 0 end) as interesting,
+  sum(case when item_rating=0 then cnt else 0 end) as unread,
+  sum(case when item_rating=-1 then cnt else 0 end) as uninteresting,
+  sum(case when item_rating=-2 then cnt else 0 end) as filtered,
+  sum(cnt) as total,
+  feed_status, feed_errors
+from fm_feeds, (
+  select item_rating, item_feed_uid, count(*) as cnt,
+    julianday('now') - max(
     ifnull(
       julianday(item_modified),
-      julianday(item_created))) as last_modified,
-  sum(case when item_rating=1 then 1 else 0 end) as interesting,
-  sum(case when item_rating=0 then 1 else 0 end) as unread,
-  sum(case when item_rating=-1 then 1 else 0 end) as uninteresting,
-  sum(case when item_rating=-2 then 1 else 0 end) as filtered,
-  count(*) as total, feed_status, feed_errors
-from fm_feeds, fm_items
-where item_feed_uid=feed_uid and feed_uid=""" + $feed_uid + """
+      julianday(item_created)
+    )
+  ) as last_modified
+  from fm_items
+  where item_feed_uid=""" + $feed_uid + """
+  group by item_rating, item_feed_uid
+)
+where item_feed_uid=feed_uid
 group by feed_uid, feed_title, feed_html, feed_xml
 """)
 
