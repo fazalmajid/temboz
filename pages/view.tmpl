@@ -51,7 +51,17 @@ function webop(op, uid) {
 #set img_prefix = ''
 var i = new Image();
 function webop(op, uid) {
-  i.src = '/feedback/' + op + '/' + Math.random().toString().substring(8) + '/' + uid + '.gif';
+  if (window.XMLHttpRequest) {
+    var x = new XMLHttpRequest();
+  } else {
+    var x = false;
+  }
+  if (x) {
+    x.open('GET', '/xmlfeedback/' + op + '/' + Math.random().toString().substring(8) + '/' + uid + '.xml');
+    x.send(null);
+  } else {
+    i.src = '/feedback/' + op + '/' + Math.random().toString().substring(8) + '/' + uid + '.gif';
+  }
 }
 #end if
 function hide(id) {

@@ -240,6 +240,8 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
   favicon_data = open('images/favicon.ico').read()
   def favicon(self):
     self.browser_output(200, 'image/x-icon', self.favicon_data)
+  def xml(self):
+    self.browser_output(200, 'text/xml', '<?xml version="1.0"?>')
 
   def set_rating(self, item_uid, rating):
     from singleton import db
@@ -306,6 +308,15 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
         if op in ['promote', 'demote', 'basic']:
           getattr(self, 'op_' + op)(item_uid)
         self.pixel()
+
+      if path.startswith('/xmlfeedback/'):
+        op, item_uid = path.split('/')[2::2]
+        item_uid = item_uid.split('.')[0]
+        item_uid = int(item_uid)
+        # for safety, these operations should be idempotent
+        if op in ['promote', 'demote', 'basic']:
+          getattr(self, 'op_' + op)(item_uid)
+        self.xml()
 
       # XXX use static compiled versions for speed
       page = 'pages/' + parts[0].split('/')[1] + '.tmpl'
