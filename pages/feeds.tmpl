@@ -24,7 +24,8 @@
 from fm_feeds, fm_items
 where item_feed_uid=feed_uid
 group by feed_uid, feed_title, feed_html, feed_xml
-order by """ + sort_key + ' ' + order + """, lower(feed_title)""")
+order by feed_status ASC, """ \
+    + sort_key + ' ' + order + """, lower(feed_title)""")
 <table>
 <tr>
 #for title in ['Feed Title', 'Last modified', 'Unread', 'Filtered', 'Interesting', 'Hit Ratio', 'Total']:
