@@ -258,10 +258,12 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
   def process_request(self):
     self.require_auth({'majid': 'sopo'})
     try:
-      if self.path in ['', '/']:
-        self.path = '/unread'
       parts = self.path.split('?', 2)
       path = parts[0]
+      if self.path in ['', '/']:
+        self.browser_output(301, None, 'This document has moved.',
+                            ['Location: /view'])
+        return
       vars = []
       if len(parts) == 2:
         self.input.update(dict(cgi.parse_qsl(parts[1], 1)))

@@ -2,9 +2,33 @@
 #from singleton import db
 #import time
 #import param
+
+#if $getVar('show', 'unread') == 'up':
+#set item_desc = 'interesting'
+#set where_clause = 'item_rating > 0'
+#elif $getVar('show', 'unread') == 'down':
+#set item_desc = 'uninteresting'
+#set where_clause = 'item_rating = -1'
+#elif $getVar('show', 'unread') == 'all':
+#set item_desc = 'all'
+#set where_clause = 'item_rating is not null'
+#else:
+#set item_desc = 'unread'
+#set where_clause = 'item_rating = 0'
+#end if
+
+#if $getVar('feed_uid', None):
+#set where_clause = where_clause + ' and item_feed_uid=' + $feed_uid
+#end if
+
+#if not $getVar('offset', None):
+#set offset = '0'
+#end if
+#set offset = int(offset)
+
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head><title>Temboz - unread items</title>
+<head><title>Temboz - $item_desc items</title>
 <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
 <script language="JavaScript">
 hidden = Array();
@@ -54,24 +78,6 @@ function toggle(item)
 </style>
 </head>
 <body>
-
-#if $getVar("show", "unread") == 'up':
-#set where_clause = 'item_rating > 0'
-#elif $getVar("show", "unread") == 'down':
-#set where_clause = 'item_rating = -1'
-#else:
-#set where_clause = 'item_rating = 0'
-#end if
-
-#if $getVar("feed_uid", None):
-#set where_clause = where_clause + ' and item_feed_uid=' + $feed_uid
-#end if
-
-#if not $getVar("offset", None):
-#set offset = "0"
-#end if
-#set offset = int(offset)
-
 #set c = db.cursor()
 #silent c.execute("""update fm_items set item_viewed=julianday('now') where item_uid in (select item_uid from fm_items where """ + where_clause + """
 order by item_created DESC, item_uid DESC
@@ -80,7 +86,7 @@ limit %d offset %d)""" % (param.overload_threshold, offset))
 #set num_items = int(c.fetchone()[0])
 #set cutoff = (num_items + 1) / 2 + 1
 #set count = 0
-<p class="menu">$num_items new items
+<p class="menu">$num_items $item_desc items
 #if num_items > param.overload_threshold:
 ($param.overload_threshold shown)
 #set cutoff = (param.overload_threshold + 1) / 2 + 1
