@@ -114,9 +114,9 @@ limit %d offset %d)""" % (overload_threshold, offset))
 #set cutoff = (num_items + 1) / 2 + 1
 #set count = 0
 <p class="menu">$num_items $item_desc items
-#if num_items > param.overload_threshold:
-($param.overload_threshold shown)
-#set cutoff = (param.overload_threshold + 1) / 2 + 1
+#if num_items > overload_threshold:
+($overload_threshold shown)
+#set cutoff = (overload_threshold + 1) / 2 + 1
 #end if
 &nbsp;&nbsp;<a href="javascript:unhide_all();">Unhide all</a>&nbsp;&nbsp;<a href="javascript:unhide_last();">Unhide last</a>
 #if public:
@@ -129,7 +129,7 @@ item_content, datetime(item_loaded), date(item_created),
 feed_title, feed_html, feed_xml, julianday('now') - julianday(item_created)
 from fm_items, fm_feeds where item_feed_uid=feed_uid
 and """ + where_clause + """ order by item_created DESC, item_uid DESC
-limit %d""" % param.overload_threshold)
+limit %d""" % overload_threshold)
 <div class="col1">
 #for uid, creator, title, link, content, loaded, created, feed_title, feed_html, feed_xml, delta_created in c:
 #set count += 1
