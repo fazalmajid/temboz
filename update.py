@@ -28,7 +28,8 @@ def add_feed(feed_xml):
       'desc': f['channel']['description'].encode('ascii', 'xmlcharrefreplace')
       }
     for key, value in feed.items():
-      feed[key] = escape(value)
+      if type(value) == str:
+        feed[key] = escape(value)
     try:
       c.execute("""insert into fm_feeds
       (feed_xml, feed_etag, feed_html, feed_title, feed_desc) values
