@@ -39,27 +39,30 @@ class FeedWorker(threading.Thread):
     self.in_q = in_q
     self.out_q = out_q
   def run(self):
-    while True:
-      feed = self.in_q.get()
-      if not feed:
-        self.out_q.put(None)
-        return
-      f = self.fetch_feed(*feed)
-      self.out_q.put((f,) + feed)
+    try:
+      while True:
+        feed = self.in_q.get()
+        if not feed: return
+        f = self.fetch_feed(*feed)
+        self.out_q.put((f,) + feed)
+    finally:
+      self.out_q.put(None)
   def fetch_feed(self, feed_uid, feed_xml, feed_etag, feed_modified):
     print self.id, feed_xml
-    if not feed_etag:
-      feed_etag = None
-    if not feed_modified:
-      feed_modified = None
-    else:
-      feed_modified = eval(feed_modified)
-      assert type(feed_modified) == tuple, repr(feed_modified)
-    try:
-      f = feedparser.parse(feed_xml, etag=feed_etag, modified=feed_modified)
-    except socket.timeout:
-      f = {'channel': {}, 'items': []}
-    return f
+    return fetch_feed(feed_uid, feed_xml, feed_etag, feed_modified)
+
+def fetch_feed(feed_uid, feed_xml, feed_etag, feed_modified):
+  if not feed_etag:
+    feed_etag = None
+  if not feed_modified:
+    feed_modified = None
+  try:
+    f = feedparser.parse(feed_xml, etag=feed_etag, modified=feed_modified)
+  except socket.timeout:
+    if param.debug:
+      print 'EEEEE error fetching feed', feed_xml
+    f = {'channel': {}, 'items': []}
+  return f
 
 def update_feed(db, f, feed_uid, feed_xml, feed_etag, feed_modified):
   print feed_xml
@@ -68,20 +71,18 @@ def update_feed(db, f, feed_uid, feed_xml, feed_etag, feed_modified):
   if 'title' not in f['channel'] and 'link' not in f['channel'] and \
          ('status' not in f or f['status'] not in [304]):
     # error or timeout - increment error count
-    print '!' * 72
-    print f
-    print '!' * 72
     c2.execute("""update fm_feeds set feed_errors = feed_errors + 1
     where feed_uid=%d""" % feed_uid)
   else:
     # no error - reset etag and/or modified date and error count
     stmt = 'update fm_feeds set feed_errors=0'
-    if 'etag' in f:
+    if 'etag' in f and f['etag']:
       stmt += ", feed_etag='%s'" % escape(f['etag'])
     else:
       stmt += ", feed_etag=NULL"
-    if 'modified' in f:
-      stmt += ", feed_modified='%s'" % escape(repr(f['modified']))
+    if 'modified' in f and f['modified']:
+      stmt += ", feed_modified=julianday(%f, 'unixepoch')" \
+              % time.mktime(f['modified'])
     else:
       stmt += ", feed_modified=NULL"
     stmt += " where feed_uid=%d" % feed_uid
@@ -145,9 +146,15 @@ def update():
     workers[-1].start()
   # assign work
   c1 = db.cursor()
-  c1.execute("""select feed_uid, feed_xml, feed_etag, feed_modified
+  c1.execute("""select feed_uid, feed_xml, feed_etag,
+  strftime('%s', feed_modified)
   from fm_feeds""")
   for feed_uid, feed_xml, feed_etag, feed_modified in c1:
+    if feed_modified:
+      feed_modified = float(feed_modified)
+      feed_modified = time.localtime(feed_modified)
+    else:
+      feed_modified = None
     work_q.put((feed_uid, feed_xml, feed_etag, feed_modified))
   # None is an indication to workers to stop
   for i in range(param.feed_concurrency):
