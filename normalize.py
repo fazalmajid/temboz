@@ -43,9 +43,10 @@ def fix_date(date_tuple):
 
 url_re = re.compile('(?:href|src)="([^"]*)"', re.IGNORECASE)
 
-punctuation = ''.join(
-  [{True: c, False: ' '}[c in (string.letters + string.digits)]
-   for c in [chr(x) for x in range(256)]])
+punctuation = ',.?!;:-()'
+punct_map = {}
+for c in punctuation:
+  punct_map[ord(c)] = 32
 
 def normalize(item, f):
   # get rid of RDF lossage...
@@ -66,7 +67,7 @@ def normalize(item, f):
     from sys import exit
     code.interact(local=locals())
   item['title_lc'] =   item['title'].lower()
-  item['title_words'] =  str(item['title_lc']).translate(punctuation).split()
+  item['title_words'] =  unicode(item['title_lc']).translate(punct_map).split()
   ########################################################################
   # link
   if 'link' not in item:
