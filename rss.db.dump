@@ -1,0 +1,199 @@
+BEGIN TRANSACTION;
+create table fm_feeds (
+	feed_uid	integer primary key,
+	feed_xml	varchar(255) unique not null,
+	feed_etag	varchar(255),
+	feed_modified	varchar(255),
+	feed_html	varchar(255) not null,
+	feed_title	varchar(255),
+	feed_desc	text,
+	feed_errors	int default 0,
+	feed_status	int default 0
+);
+INSERT INTO fm_feeds VALUES(1,'http://www.decafbad.com/blog/index.rss',NULL,NULL,'http://www.decafbad.com/blog','0xDECAFBAD','Confessions of a Caffeine Addicted Mind',2,0);
+INSERT INTO fm_feeds VALUES(2,'http://antipixel.com/blog/theWorks.xml','"3cae2-5cca-4104fd17"',NULL,'http://www.antipixel.com/blog/','Antipixel - Full Posts','a deliberate pouring from empty into void',0,0);
+INSERT INTO fm_feeds VALUES(3,'http://www.arstechnica.com/etc/rdf/ars.rdf','"894d56248073c41:8eb"',2453213.93017361,'http://www.arstechnica.com','Ars Technica','The PC enthusiast''s resource',16,0);
+INSERT INTO fm_feeds VALUES(4,'http://www.nyclondon.com/blog/index.rdf','"348034-2aaa-410190ca"',NULL,'http://www.nyclondon.com/blog/','Black and White Photography','',7,0);
+INSERT INTO fm_feeds VALUES(5,'http://www.boxesandarrows.com/index.xml','"1534a20-2190-40f60f6e"',NULL,'http://www.boxesandarrows.com/','Boxes and Arrows','',9,0);
+INSERT INTO fm_feeds VALUES(6,'http://blackbox.cs.fit.edu/blog/kaner/index.rdf','"1869d3-1eb4-401568f4"',NULL,'http://blackbox.cs.fit.edu/blog/kaner/','Cem Kaner''s blog','Cem Kaner''s weblog Software testing, software safety, software law.',0,0);
+INSERT INTO fm_feeds VALUES(7,'http://journalism.berkeley.edu/projects/chinadn/en/index.rdf','"855ba-2fa9-41068297"',NULL,'http://journalism.berkeley.edu/projects/chinadn/en/','China Digital News','Inside China''s information revolution',1,0);
+INSERT INTO fm_feeds VALUES(8,'http://www.christianlindholm.com/christianlindholm/index.rdf','"380c446-6c32-3968480"',NULL,'http://www.christianlindholm.com/christianlindholm/','ChristianLindholm.com','Mobile experiences - A blog about mobile devices and good food and lifes big, little and other moments',0,0);
+INSERT INTO fm_feeds VALUES(9,'http://www.shirky.com/writings/rss.cgi',NULL,NULL,'http://www.shirky.com/','Clay Shirky''s Essays','Clay Shirky''s Essays',4,0);
+INSERT INTO fm_feeds VALUES(10,'http://www.wsanchez.net/blog/index.rdf','"11ea40-2186-30d82440"',NULL,'http://www.wsanchez.net/blog/','Clever Name TBD','',0,0);
+INSERT INTO fm_feeds VALUES(11,'http://export.cnet.com/export/feeds/news/rss/1,11176,,00.xml',NULL,NULL,'http://www.news.com/','CNET News.com','Tech News First',0,0);
+INSERT INTO fm_feeds VALUES(12,'http://www.kk.org/cooltools/index.xml','"14bd2a0-1065-41005a31"',NULL,'http://www.kk.org/cooltools/','Cool Tools','Here are my recommendations for cool stuff. I include any books, tools, software, videos, maps, gadgets, hardware, websites, or gear that are extraordinarily handy or useful for individual and small groups. The best items are those that open up new p',0,0);
+INSERT INTO fm_feeds VALUES(13,'http://weblog.siliconvalley.com/column/dangillmor/index.xml','"1e6aa38-399a-4106e717"',2453214.81730324,'http://weblog.siliconvalley.com/column/dangillmor/','Dan Gillmor''s eJournal','',0,0);
+INSERT INTO fm_feeds VALUES(14,'http://daringfireball.net/index.xml','"f1a3a8-123d-4103e246"',NULL,'http://daringfireball.net/','Daring Fireball','Macintosh punditry and curmudgeonry.',0,0);
+INSERT INTO fm_feeds VALUES(15,'http://www.designobserver.com/index.xml','"1675f3-15fc-410695a8"',NULL,'http://www.designobserver.com/','Design Observer: writings about design &amp; culture','',0,0);
+INSERT INTO fm_feeds VALUES(16,'http://www.dpreview.com/news/dpr.rdf','"bad4dd1c3c74c41:89f"',2453214.86458333,'http://www.dpreview.com/','Digital Photography Review (dpreview.com)','Digital Photography Review, Latest digital camera news, camera reviews, galleries, technology and comparisons',0,0);
+INSERT INTO fm_feeds VALUES(17,'http://www.digitalslr.org/index.rdf',NULL,2453214.58797454,'http://www.digitalslr.org/','digitalslr.org','Digital SLR information for the masses.',0,0);
+INSERT INTO fm_feeds VALUES(18,'http://www.docuverse.com/blog/donpark/rss.xml','"1C4732770680300:1C473DFC66738B2"',2453213.48923611,'http://www.docuverse.com/blog/donpark/','Don Park''s Daily Habit','',9,0);
+INSERT INTO fm_feeds VALUES(19,'http://www.dottocomu.com/b/index.rdf','"38c2ab-2b9d-cd2d4bc0"',NULL,'http://www.dottocomu.com/b/','dottocomu','japan: technology, politics, frivolity.',0,0);
+INSERT INTO fm_feeds VALUES(20,'http://www.pacificavc.com/blog/rss.xml','"661de0-af9c-41018abf"',NULL,'http://www.pacificavc.com/blog/','Due Diligence','Tim Oren''s notes and opinions on technology, venture investing, Silicon Valley, life, the universe and everything.',0,0);
+INSERT INTO fm_feeds VALUES(21,'http://www.rtfm.com/movabletype/index.rdf','"189b01-7be3-4106f206"',2453214.84969907,'http://www.rtfm.com/movabletype/','Educated Guesswork','',0,0);
+INSERT INTO fm_feeds VALUES(22,'http://www.engadget.com/rss.xml',NULL,NULL,'http://www.engadget.com/','engadget.com','engadget.com',0,0);
+INSERT INTO fm_feeds VALUES(23,'http://www.etherfarm.com/etherblogexcerpts.xml','"5f804c-2190-41053ac9"',NULL,'http://www.etherfarm.com/','etherfarm: etherblog','',0,0);
+INSERT INTO fm_feeds VALUES(24,'http://www.majid.info/mylos/weblog/rss.xml','"9a91a-11142-4105b676"',NULL,'http://www.majid.info/mylos/','Fazal Majid''s low-intensity weblog','Mostly random pontification, delivered at irregular intervals.',0,0);
+INSERT INTO fm_feeds VALUES(25,'http://www.livejournal.com/users/vesper2000/data/rss',NULL,2453214.50462963,'http://www.livejournal.com/users/vesper2000/','Fear and Loathing in Dublin','Fear and Loathing in Dublin - LiveJournal.com',0,0);
+INSERT INTO fm_feeds VALUES(26,'http://www.pycs.net/bob/weblog/rss.xml',NULL,2453185.89094907,'http://www.pycs.net/bob/weblog/','from __future__ import *','Bob''s Rants',0,0);
+INSERT INTO fm_feeds VALUES(27,'http://www.kanai.net/weblog/index.rdf','"cc068-20d3-4106e892"',NULL,'http://www.kanai.net/weblog/','Gen Kanai weblog','',0,0);
+INSERT INTO fm_feeds VALUES(28,'http://www.gizmodo.net/index.xml','"12c18e-5d9b-bbc2de80"',NULL,'http://www.gizmodo.com/','Gizmodo','The gadgets weblog',0,0);
+INSERT INTO fm_feeds VALUES(29,'http://blog.glennf.com/rss.xml','"9cd1e-4f17-30e63f80"',NULL,'http://blog.glennf.com/','GlennLog','Turning technology from mumbo-jumbo into rich tasty gumbo',5,0);
+INSERT INTO fm_feeds VALUES(30,'http://michaelthompson.org/news/gms.xml','"cd918c-1ca8-4106dc21"',NULL,'http://www.siliconvalley.com/mld/siliconvalley/business/columnists/gmsv/','Good Morning Silicon Valley','',0,0);
+INSERT INTO fm_feeds VALUES(31,'http://www.artima.com/weblogs/feeds/bloggers/guido.rss','"11f040-da0-a35d3a80"',NULL,'http://www.artima.com/weblogs/index.jsp?blogger=guido','Guido van Rossum''s Weblog',' All Things Pythonic ',1,0);
+INSERT INTO fm_feeds VALUES(32,'http://www.hebig.com/index.rdf','"3d14c-1d25-4106663d"',NULL,'http://www.hebig.com/','Heiko Hebig','text and images.',0,0);
+INSERT INTO fm_feeds VALUES(33,'http://cgi.pbs.org/cgi-registry/cringely/cringelyrdf.pl',NULL,2453220.60359954,'http://www.pbs.org/cringely/','I, Cringely @ PBS.org','Caught on a planet of peril, he dared challenge its monster rulers...',0,0);
+INSERT INTO fm_feeds VALUES(34,'http://www.infosync.no/feed/infosync_rdf.php',NULL,NULL,'http://www.infosyncworld.com/','infoSync World','News and Resources from the Handheld and Wireless sectors',0,0);
+INSERT INTO fm_feeds VALUES(35,'http://weblog.infoworld.com/techwatch/index.rdf','"52a2a1-2a8b-6b335700"',NULL,'http://weblog.infoworld.com/techwatch/','InfoWorld TechWatch','',0,0);
+INSERT INTO fm_feeds VALUES(36,'http://www.infoworld.com/rss/news.rdf','"53b1dc-1e79-e746c880"',2453214.83354167,'http://www.infoworld.com/news/index.html','InfoWorld:  Top News','Top News from InfoWorld',0,0);
+INSERT INTO fm_feeds VALUES(37,'http://isen.com/blog/atom.xml','"13ff216-5c8d-41017aea"',NULL,'http://www.isen.com/blog/','isen.blog','David S. Isenberg''s musings about loci of intelligence and stupidity.',0,0);
+INSERT INTO fm_feeds VALUES(38,'http://www.itu.int/osg/spu/newslog/rss.xml','"213cb-763a-40ffddae"',NULL,'http://www.itu.int/osg/spu/newslog/','ITU Strategy and Policy Unit  Newslog','News related to SPU research and analysis',1,0);
+INSERT INTO fm_feeds VALUES(39,'http://today.java.net/jag/blog.rss','"475d9f-117c-40fc3dc7"',NULL,'http://today.java.net/jag/','James Gosling: on the Java road...','I''ve been inescapably tagged as &quot;the Java guy&quot;, despite the fact that I havn''t worked in the Java product or',0,0);
+INSERT INTO fm_feeds VALUES(40,'http://www.artima.com/weblogs/feeds/bloggers/waldo.rss','"11f0f8-1624-2e838940"',NULL,'http://www.artima.com/weblogs/index.jsp?blogger=waldo','Jim Waldo''s Weblog',' Objects, Networks, and Making Things Work ',1,0);
+INSERT INTO fm_feeds VALUES(41,'http://www.joelonsoftware.com/rss.xml','"7004da9a672c41:e88"',NULL,'http://www.joelonsoftware.com','Joel on Software','Painless Software Management',0,0);
+INSERT INTO fm_feeds VALUES(42,'http://battellemedia.com/index.xml','"3bc064-8f5c-4a289d80"',NULL,'http://battellemedia.com/','John Battelle''s Searchblog','Thoughts on the intersection of search, media, technology, and more.                   Beta',0,0);
+INSERT INTO fm_feeds VALUES(43,'http://bereskin.typepad.com/panther_weblog/index.rdf','"4835fdc-67e5-8aed3fc0"',NULL,'http://bereskin.typepad.com/panther_weblog/','Ken Bereskin''s "Panther" Weblog','',880,0);
+INSERT INTO fm_feeds VALUES(44,'http://nkcp.zive.net/kokoro/index.rdf','"0-1fc0-40f76600"',NULL,'http://nkcp.zive.net/kokoro/','KoKoRo','-P2P, i-mode, mobile gadget and game biz in Japan-',0,0);
+INSERT INTO fm_feeds VALUES(45,'http://www.kottke.org/index.rdf','"15006e-2599-4106bab6"',2453214.68581019,'http://www.kottke.org/','kottke.org','Jason Kottke''s weblog, home of fine hypertext products',4,0);
+INSERT INTO fm_feeds VALUES(46,'http://www.markbernstein.org/news.rss','"23ead6-1c86-41068522"',NULL,'http://markBernstein.org/','Mark Bernstein','Mark Bernstein: hypertext research',0,0);
+INSERT INTO fm_feeds VALUES(47,'http://www.mobitopia.com/rss.jsp',NULL,NULL,'http://www.mobitopia.com/','Mobitopia','News, links and opinions about mobile and wireless technologies',0,0);
+INSERT INTO fm_feeds VALUES(48,'http://armandfrasco.typepad.com/moleskinerie/index.rdf',NULL,2453213.7868287,'http://armandfrasco.typepad.com/moleskinerie/','moleskinerie','legends and other stories',0,0);
+INSERT INTO fm_feeds VALUES(49,'http://log.does-not-exist.org/index.rdf','"2a6b1c-8616-4104f60a"',NULL,'http://log.does-not-exist.org/','No Such Weblog','Thomas Roessler''s notes on ICANN, the GNSO, the ALAC, and less virtual topics.',0,0);
+INSERT INTO fm_feeds VALUES(50,'http://tbray.org/ongoing/ongoing.rss','"1a0085-4fdb-4106c9a8"',NULL,'http://www.tbray.org/ongoing/','ongoing','Ongoing fragmented essay by Tim Bray.',0,0);
+INSERT INTO fm_feeds VALUES(51,'http://otn.oracle.com/syndication/rss_otn_news.xml',NULL,NULL,'http://otn.oracle.com/','Oracle Technology Network News','News for Application Developers',0,0);
+INSERT INTO fm_feeds VALUES(52,'http://www.palminfocenter.com/feed.xml','"f8b15dbf1774c41:245e"',NULL,'http://www.palminfocenter.com/','PalmInfocenter','PalmInfocenter.com is the leading Palm OS News site. Featuring daily news, reviews and community discussions.',0,0);
+INSERT INTO fm_feeds VALUES(53,'http://www.penmachine.com/rss/rss.xml','"3281f0-d28d-410698c0"',NULL,'http://www.penmachine.com','Penmachine words music comment','Notes, news, and updates from Derek K. Miller in Vancouver, Canada, at www.penmachine.com.',0,0);
+INSERT INTO fm_feeds VALUES(54,'http://blogs.law.harvard.edu/philg/xml/rss.xml',NULL,NULL,'http://blogs.law.harvard.edu/philg/','Philip Greenspun Weblog','an interesting idea every three months; a posting every day',0,0);
+INSERT INTO fm_feeds VALUES(55,'http://z.about.com/6/g/photography/b/index.xml','"316c71-18ea-410619bf"',2453214.20887732,'http://photography.about.com/','Photography','Photography',0,0);
+INSERT INTO fm_feeds VALUES(56,'http://www.photographyblog.com/index.xml','"6040d6-1cd9-410670a8"',NULL,'http://www.photographyblog.com/','PhotographyBLOG','Film . Digital . Global . Personal. PhotographyBLOG brings you the latest and greatest photography news, both film and digital, both global and UK-based.',0,0);
+INSERT INTO fm_feeds VALUES(57,'http://www.pinds.com/blog/rss.xml',NULL,2453146.20759259,'http://www.pinds.com/','Pind''s Blog','Pind''s Blog',1564,0);
+INSERT INTO fm_feeds VALUES(58,'http://www.polytechnique.org/rss.php?promo=1989',NULL,NULL,'http://www.polytechnique.org/','Polytechnique.org :: News','l''actualité polytechnicienne...(Promotion 1989)',0,0);
+INSERT INTO fm_feeds VALUES(59,'http://www.pvrblog.com/pvr/index.rdf',NULL,2453214.06130787,'http://www.pvrblog.com/pvr/','PVRblog','How-to articles, News, and Reviews of all things TiVo, ReplayTV and Digital Video Recorder.',0,0);
+INSERT INTO fm_feeds VALUES(60,'http://www.python.org/pypi?:action=rss',NULL,NULL,'http://www.python.org/pypi','PyPI recent updates','Updates to the Python Packages Index (PyPI)',0,0);
+INSERT INTO fm_feeds VALUES(61,'http://www.python.org/channews.rdf','"5a750c-1334-41057695"',NULL,'http://www.python.org/','Python News','Python-related news and announcements.       Python is an interpreted, interactive, object-oriented       programming language.',0,0);
+INSERT INTO fm_feeds VALUES(62,'http://rentzsch.com/rss.xml/',NULL,NULL,'http://rentzsch.com','rentzsch.com: Tales from the Red Shed','Technical Journal of Jonathan ''Wolf'' Rentzsch',0,0);
+INSERT INTO fm_feeds VALUES(63,'http://www.rohdesign.com/weblog/rss.xml','"310266-33fb-410039ae"',NULL,'http://www.rohdesign.com/weblog/','Rohdesign Weblog','Mike Rohde''s weblog, covers design, mobile computing, travel, cycling, books, music and film.',0,0);
+INSERT INTO fm_feeds VALUES(64,'http://radio.weblogs.com/0104487/rss.xml','"28c3ca-1310-c8c96f00"',NULL,'http://radio.weblogs.com/0104487/','s l a m','SITE LOGGING &amp; MONITORING',0,0);
+INSERT INTO fm_feeds VALUES(65,'http://www.salon.com/feed/RDF/salon_use.rdf',NULL,NULL,'http://www.salon.com','Salon.com','Salon makes you think.',0,0);
+INSERT INTO fm_feeds VALUES(66,'http://www.satn.org/satn_rss.xml','"18796ad-19fb-40f69dcf"',NULL,'http://www.satn.org','SATN','Bob, David, and Dan''s comments',0,0);
+INSERT INTO fm_feeds VALUES(67,'http://xml.newsisfree.com/feeds/39/1439.xml','"ffa86-896-4105e9d5"',NULL,'http://www.sciam.com/news_directory.cfm','Scientific American','News In Brief (By http://www.newsisfree.com/syndicate.php - FOR PERSONAL AND NON COMMERCIAL USE ONLY!)',1,0);
+INSERT INTO fm_feeds VALUES(68,'http://www.loftesness.com/radio/rss.xml','"3f0b6-25d1-280a3f80"',NULL,'http://www.loftesness.com/radio/','Scott Loftesness','Be well, do good work and keep in touch...',0,0);
+INSERT INTO fm_feeds VALUES(69,'http://www.simplebits.com/xml/rss.xml','"278088-1d0b-4106cda6"',NULL,'http://www.simplebits.com/','SimpleBits','Dan Cederholm''s stuff.',0,0);
+INSERT INTO fm_feeds VALUES(70,'http://www.solariscentral.org/backend/solariscentral.rdf','"291295c-6d5-41065529"',NULL,'http://www.solariscentral.org','Solaris Central','Solaris Central',0,0);
+INSERT INTO fm_feeds VALUES(71,'http://www.pycs.net/sqr/rss.xml',NULL,2453182.04092593,'http://www.pycs.net/sqr/','Square Rutabaga','They said never be content. So I''m micro-contenting.',0,0);
+INSERT INTO fm_feeds VALUES(72,'http://techno-weenie.com/rss.xml','',NULL,'http://techno-weenie.com/','techno weenie','winner of the &quot;Wanna Be a .Net Programmer&quot; contest',2870,0);
+INSERT INTO fm_feeds VALUES(73,'http://www.telepocalypse.net/index.rdf','"3bd0f1-2935-4102b7ad"',NULL,'http://www.telepocalypse.net/','Telepocalypse','Telecom strategy in the age of end-to-end networks',0,0);
+INSERT INTO fm_feeds VALUES(74,'http://www.textism.com/rss.php',NULL,2453194.66944445,'http://www.textism.com','Textism','Tracts of an improving nature',0,0);
+INSERT INTO fm_feeds VALUES(75,'http://theregister.co.uk/feeds/latest.rdf','"20816b-1180-4106e0f3"',2453214.7991088,'http://www.theregister.co.uk','The Register','Biting the hand that feeds IT',1,0);
+INSERT INTO fm_feeds VALUES(76,'http://apple.weblogsinc.com/rss.xml',NULL,NULL,'http://apple.weblogsinc.com/','The Unofficial Apple Weblog','The Unofficial Apple Weblog',0,0);
+INSERT INTO fm_feeds VALUES(77,'http://www.thinksecret.com/rss.xml','"31dac-1cd8-4105b1a7"',NULL,'http://www.thinksecret.com/','Think Secret','The latest news from Think Secret.',0,0);
+INSERT INTO fm_feeds VALUES(78,'http://mindview.net/WebLog/RSS.xml',NULL,NULL,'http://www.MindView.net/WebLog/','Thinking About Computing','Bruce Eckel''s Web Log',0,0);
+INSERT INTO fm_feeds VALUES(79,'http://broken.typepad.com/b/index.rdf','"9831a9c-6ef8-5925d880"',2453214.0105787,'http://broken.typepad.com/b/','This Is Broken','Raising awareness about customer experience, and how to improve it.',0,0);
+INSERT INTO fm_feeds VALUES(80,'http://www.tidbits.com/channels/tidbits.rss',NULL,2453213.86575232,'http://www.tidbits.com/','TidBITS','Insightful news, reviews, and analysis of the Macintosh and Internet worlds',1,0);
+INSERT INTO fm_feeds VALUES(81,'http://weblog.infoworld.com/yager/rss.xml','"4f6d82-6489-2cea0f40"',NULL,'http://weblog.infoworld.com/yager/','Tom Yager','Tom Yager''s InfoWorld blog',0,0);
+INSERT INTO fm_feeds VALUES(83,'http://typographi.com/index.xml','"f8c8c4-4791-4105be83"',NULL,'http://typographi.com/','Typographica','A daily journal of typography featuring news, observations, and open commentary on fonts and typographic design.',0,0);
+INSERT INTO fm_feeds VALUES(84,'http://feeds.feedburner.com/ventureblog',NULL,2453214.59309028,'http://www.ventureblog.com/','VentureBlog','A Random Walk Down Sand Hill Road',0,0);
+INSERT INTO fm_feeds VALUES(85,'http://radio.weblogs.com/0110138/rss.xml','"8b01e3-7616-230b5b40"',NULL,'http://radio.weblogs.com/0110138/','VRlog','tracking developments in the VR world',0,0);
+INSERT INTO fm_feeds VALUES(86,'http://wendy.seltzer.org/blog/index.rdf','"d8034-6e30-43e8e00"',2453214.83916667,'http://wendy.seltzer.org/blog/','Wendy''s Blog: Legal Tags','',0,0);
+INSERT INTO fm_feeds VALUES(87,'http://werblog.com/index.xml','"ab001e-2268-40fd1044"',NULL,'http://werbach.com/blog/','Werblog','The world according to Kevin Werbach',0,0);
+INSERT INTO fm_feeds VALUES(88,'http://www.windley.com/rss.xml','"820062-5e31-1a485080"',NULL,'http://www.windley.com/','Windley''s Enterprise Computing Weblog','Organizations Usually Get the IT They DeserveSM',0,0);
+INSERT INTO fm_feeds VALUES(89,'http://blog.zmag.org/ttt/index.rdf','"c0a52421f73c41:e5b"',NULL,'http://blog.zmag.org/ttt/','Turning the Tide','The official weblog of Noam Chomsky, including exclusive, original observations drawn from personal correspondence, <a href="http://www.zmag.org/sustainers">ZNet Sustainer Forums</a> posts, and direct blog entries',2,0);
+INSERT INTO fm_feeds VALUES(90,'http://quietconfusion.com/qc_full.xml','"54d63c-9bd8-3b845180"',NULL,'http://www.quietconfusion.com/','Jim Ray is Quietly Confused (Full Text)','',178,0);
+INSERT INTO fm_feeds VALUES(91,'http://www.idlewords.com/index.xml','"374ce-e8be-40e7911a"',NULL,'http://www.idlewords.com/','Idle Words','',0,0);
+INSERT INTO fm_feeds VALUES(92,'http://sopsy.com/rss/empireNotes','"14b959-60fb-10951fc0"',2453214.8415625,'http://www.empirenotes.org/','Empire Notes','Empire Notes "We don''t seek empires. We''re not imperialistic. We never have been. I can''t imagine why you''d even ask the question." Donald Rumsfeld, questioned by an al-Jazeera correspondent, April 29, 2003. "No one can now doubt the word of America," George W. Bush, State of the Union, January 20, 2004. A Blog by Rahul Mahajan',0,0);
+INSERT INTO fm_feeds VALUES(93,'http://whatdoiknow.org/index.xml','"6d3c46-12cc8-4106d7c4"',NULL,'http://whatdoiknow.org/','What Do I Know','The daily dish of Dominey Design.',0,0);
+INSERT INTO fm_feeds VALUES(94,'http://www.juancole.com/rss.xml','"1039d34-23a18-4106030f"',NULL,'http://www.juancole.com/','Juan Cole   *  Informed Comment  *','http://www.juancole.com/ via Wytheville Community College',0,0);
+INSERT INTO fm_feeds VALUES(95,'http://foreword.ospreydesign.com/index.rdf','"e3c3f8-2626-4106a5cf"',NULL,'http://foreword.ospreydesign.com/','Foreword','Foreword is a community in the service of books and book design, brought to you by authors in the US and UK, and sponsored by ospreydesign.',0,0);
+INSERT INTO fm_feeds VALUES(96,'http://riverbendblog.blogspot.com/atom.xml','"1ff4028-5cf4-40d3249c"',NULL,'http://riverbendblog.blogspot.com','Baghdad Burning','Girl Blog from Iraq... let''s talk war, politics and occupation. &#13;',0,0);
+INSERT INTO fm_feeds VALUES(97,'http://slashdot.org/index.rss',NULL,NULL,'http://slashdot.org/','Slashdot','News for nerds, stuff that matters',0,0);
+INSERT INTO fm_feeds VALUES(98,'http://avondale.typepad.com/rawformat/index.rdf','"5908e1d-623e-51362f00"',2453194.02550926,'http://avondale.typepad.com/rawformat/','rawformat','A site dedicated to an open imaging RAW format standard.',0,0);
+INSERT INTO fm_feeds VALUES(99,'http://dwlt.net/tapestry/dilbert.rdf','"b65f4b-30ba-4106023d"',NULL,'http://www.dilbert.com/','Dilbert','Tapestry :: RSS Delivery of Web Comics',0,0);
+INSERT INTO fm_feeds VALUES(100,'http://back-to-iraq.com/index.rdf','"2bed59-2513-4105057e"',NULL,'http://www.back-to-iraq.com/','Back to Iraq 3.0','Being a recounting of my journalistic adventures concerning Iraq',0,0);
+INSERT INTO fm_feeds VALUES(101,'http://www.photo.net/bboard/forum-rss?topic_id=1548',NULL,NULL,'http://www.photo.net/forum?topic_id=1548','Leica Photography Forum at photo.net','Leica Photography Forum at photo.net',3,0);
+INSERT INTO fm_feeds VALUES(102,'http://www.kernelthread.com/blog/index.rdf','"c0050-19da-40d166a6"',NULL,'http://www.kernelthread.com/blog/','/dev/blog','',0,0);
+INSERT INTO fm_feeds VALUES(103,'http://www.webweavertech.com/ovidiu/weblog/index.xml','"a40045-1f14-c7a180"',NULL,'http://www.webweavertech.com/ovidiu/weblog/','Ovidiu Predescu''s Weblog','Technology ramblings',0,0);
+INSERT INTO fm_feeds VALUES(104,'http://diveintomark.org/xml/atom.xml','"8c236-26ca-41069e32;40fb36b3"',NULL,'http://diveintomark.org/','dive into mark','the best of all possible worlds',1,0);
+INSERT INTO fm_feeds VALUES(105,'http://www.lightpierce.com/ltshdw/index.rdf','"51c46a-239f-41068d9e"',NULL,'http://WWW.LIGHTPIERCE.COM/ltshdw/','Light // Shadows (by Lightpierce)','Our thoughts on new media development and design, business, politics, food and whatever else happens to be on our mind at the time.',0,0);
+INSERT INTO fm_feeds VALUES(106,'http://www.37signals.com/svn/index_full.rdf','"1389d4-44d0-4106b82e"',NULL,'http://www.37signals.com/svn/','SIGNAL VS. NOISE','',0,0);
+INSERT INTO fm_feeds VALUES(107,'http://blogs.sun.com/roller/rss/jclingan',NULL,NULL,'http://blogs.sun.com/roller/page/jclingan','John Clingan''s Weblog','John Clingan''s Weblog',0,0);
+INSERT INTO fm_feeds VALUES(108,'http://www.photo.net/bboard/forum-rss?topic_id=35',NULL,NULL,'http://www.photo.net/forum?topic_id=35','Medium Format Digest Forum at photo.net','Medium Format Digest Forum at photo.net',3,0);
+INSERT INTO fm_feeds VALUES(109,'http://www.cross-spectrum.com/index.rss','"ac023-5c3b-41005f49"',NULL,'http://www.cross-spectrum.com','Cross&#183;Spectrum','Discussion, links from around the acoustics and noise control community',0,0);
+INSERT INTO fm_feeds VALUES(110,'http://hometheater.blogs.com/hometheater/index.rdf','"b116714-33a7-185a8b40"',NULL,'http://hometheater.blogs.com/hometheater/','Home Theater Blog | Home Theater news and reviews','Home Theater news & reviews',0,0);
+INSERT INTO fm_feeds VALUES(111,'http://www.microsite.reuters.com/rss/scienceNews',NULL,NULL,'http://www.reuters.com','Reuters: Science','Reuters: Science',0,0);
+INSERT INTO fm_feeds VALUES(112,'http://www.jwz.org/cheesegrater/RSS/apod.rss','"6c4e0c-ce1-41061289"',NULL,'http://antwrp.gsfc.nasa.gov/apod/','Astronomy Picture of the Day','Each day a different image or photograph of our fascinating universe is featured, along with a brief explanation written by a professional astronomer.',0,0);
+INSERT INTO fm_feeds VALUES(113,'http://www.airbagindustries.com/index.xml','"b0a2945c9673c41:932"',NULL,'http://www.airbagindustries.com/','Airbag','',0,0);
+INSERT INTO fm_feeds VALUES(114,'http://blogs.sun.com/roller/rss/eschrock',NULL,NULL,'http://blogs.sun.com/roller/page/eschrock','Eric Schrock''s Weblog','Eric Schrock''s Weblog',0,0);
+INSERT INTO fm_feeds VALUES(115,'http://blogs.sun.com/roller/rss/bmc',NULL,NULL,'http://blogs.sun.com/roller/page/bmc','The Observation Deck','Views on software from Bryan Cantrill''s deck chair',0,0);
+INSERT INTO fm_feeds VALUES(116,'http://blogs.sun.com/roller/rss/tucker',NULL,NULL,'http://blogs.sun.com/roller/page/tucker','Andy Tucker''s Weblog','Andy Tucker''s Weblog',0,0);
+INSERT INTO fm_feeds VALUES(117,'http://blogs.sun.com/roller/rss/sch',NULL,NULL,'http://blogs.sun.com/roller/page/sch','Predictable','Stephen Hahn''s blog at Sun Microsystems',0,0);
+INSERT INTO fm_feeds VALUES(118,'http://blogs.sun.com/roller/rss/jeffdillon',NULL,NULL,'http://blogs.sun.com/roller/page/jeffdillon','Jeff Dillon','Jeff Dillon''s Weblog',0,0);
+INSERT INTO fm_feeds VALUES(119,'http://feeds.feedburner.com/FeldThoughts',NULL,2453214.5941088,'http://www.feld.com/blog/','Feld Thoughts','',0,0);
+INSERT INTO fm_feeds VALUES(120,'http://blogs.sun.com/roller/rss/alanc',NULL,NULL,'http://blogs.sun.com/roller/page/alanc','Alan Coopersmith''s Weblog','<i><b>Random thoughts of a disorganized mind...</b><br />(and though it should be obvious, while Sun pays me to think about things, they disclaim any responsibility for these thoughts, nor do I claim what I say matches in any way what Sun thinks)</i>',0,0);
+INSERT INTO fm_feeds VALUES(121,'http://www.guardian.co.uk/rss/0,,,00.xml','"11f5f84-15d5-4106dc50"',NULL,'http://www.guardian.co.uk','Guardian Unlimited','Intelligent news and comment throughout the day from The Guardian newspaper',0,0);
+INSERT INTO fm_feeds VALUES(122,'http://www.russellbeattie.com/notebook/index.rss',NULL,NULL,'http://www.russellbeattie.com/notebook/','Russell Beattie Notebook','My online notebook with thoughts, comments, links and more.',0,0);
+INSERT INTO fm_feeds VALUES(123,'http://www.chrisnolan.com/index.rdf','"3f2c067-276d-410673be"',NULL,'http://www.chrisnolan.com/','Chris Nolan - Politics from Left to Right','',1,0);
+INSERT INTO fm_feeds VALUES(124,'http://weblog.bluepenguin.us/index.xml','"8b16e-af6e-40834af7"',NULL,'http://weblog.bluepenguin.us/','Paul Holbrook''s weblog','Formerly Paul Holbrook''s Radio Weblog',0,0);
+INSERT INTO fm_feeds VALUES(125,'http://www.sigwinch.org/weblog/wp-rss2.php',NULL,2453214.86582176,'http://www.sigwinch.org/weblog/index.php','Graham''s Weblog','Graham''s random thoughts',0,0);
+create table fm_items (
+	item_uid	integer primary key,
+	item_feed_uid	int,
+	-- references fm_feeds (feed_uid) on delete cascade,
+	item_loaded	timestamp,
+	item_created	timestamp,
+	item_modified	timestamp,
+	item_viewed	timestamp,
+	item_link	varchar(255),
+	item_md5hex	char(32) not null,
+	item_title	text,
+	item_content	text,
+	item_creator	varchar(255),
+	item_rating	default 0
+);
+create table fm_rules (
+        rule_uid        integer primary key,
+        rule_expires    timestamp,
+        rule_text       text
+);
+INSERT INTO fm_rules VALUES(2,NULL,'''PhotographyBLOG'' in feed_title and (''Reviews'' in title or ''Previews'' in title or ''Competition'' in title) and ''Luminous'' not in title');
+INSERT INTO fm_rules VALUES(3,NULL,'''Salon'' in feed_title and ((''King Kaufman'' in title) or (''New Hampshire Is for Lovers'' in title) or (''K Chronicles'' in title) or (''The Fix'' in title)  or (''Bestsellers'' in title) or (''In the polls'' in title) or (''must-reads'' in title) or (''Letters'' in title) or (''I Like to Watch'' in title) or (''Lynda Barry'' in title))');
+INSERT INTO fm_rules VALUES(4,NULL,'''DoCoMo'' in title or ''i-mode'' in title.lower() or ''voda'' in title.lower() or ''vonage'' in title.lower() or ''cameraphone'' in title.lower() or ''headset'' in title.lower() or ''Nextel'' in title or ''ITU'' in title or ''Sendo'' in title or ''handset'' in title.lower() or ''Blackberry'' in title');
+INSERT INTO fm_rules VALUES(5,NULL,'''ESB'' in title.split() or ''SOA'' in title.split() or ''Computer Associates'' in title or ''SAP'' in title.split() or ''BEA'' in title.split() or ''Siebel'' in title or ''WebSphere'' in title or ''PeopleSoft'' in title or ''autonomic'' in title.lower() or ''capgemini'' in title.lower() or ''Tibco'' in title or ''WS-'' in title or ''.NET'' in title or ''Accenture'' in title or ''RLX'' in title or ''Salesforce.com'' in title or ''Eclipse'' in title or ''Web Services'' in title or ''NetBeans'' in title or ''JDeveloper'' in title or ''Tomcat'' in title or ''Jakarta'' in title');
+INSERT INTO fm_rules VALUES(6,NULL,'''SCO'' in title or ''SCO'' in content or ''Napster'' in title or ''Lindows'' in title or ''Linspire'' in title or ''Novell'' in title or ''Network Associates'' in title or (''Oracle'' in title and ''PeopleSoft'' in content) or ''RealNetworks'' in title or ''RIAA'' in content or ''MPAA'' in content or ''MTV'' in title or ''AOL'' in title or ''RealPlayer'' in title or ''RealPlayer'' in content');
+INSERT INTO fm_rules VALUES(7,NULL,'''playstation'' in title.lower() or ''xbox'' in title.lower().split() or ''Nintendo'' in title or ''Game Boy'' in title or ''sega'' in title.lower().split() or ''N-Gage'' in title or ''Tapwave'' in title or ''Radeon'' in title or ''GeForce'' in title or ''Kazaa'' in title or ''sega'' in content.lower().split()');
+INSERT INTO fm_rules VALUES(8,NULL,'''wimax'' in title.lower() or ''Transmeta'' in title or ''Zope'' in title or ''iTunes'' in title or ''coolpix'' in title.lower() or ''powershot'' in title.lower() or ''finepix'' in title.lower() or ''phishing'' in title.lower()');
+INSERT INTO fm_rules VALUES(9,NULL,'(''Gizmodo'' in feed_title and ''Sponsor'' in title) or (''Bernstein'' in feed_title and ''Tinderbox'' in title)');
+INSERT INTO fm_rules VALUES(10,NULL,'''This Week'' in title or ''The week in'' in title or ''photo of the week'' in title.lower()');
+INSERT INTO fm_rules VALUES(13,NULL,'''mp3 player'' in title.lower() or ''karaoke'' in title.lower() or ''TiVo'' in title or ''video player'' in title.lower()');
+INSERT INTO fm_rules VALUES(15,NULL,'''Red Hat'' in title or ''Fedora'' in title');
+INSERT INTO fm_rules VALUES(17,NULL,'''ipaq'' in title.lower() or ''PocketPC'' in title or ''Pocket PC'' in title or ''smartphone'' in title.lower() or ''Treo 6'' in title');
+INSERT INTO fm_rules VALUES(18,NULL,'''Scientific American'' in feed_title and (''Customize this feed'' in title or ''NewsIsFree'' in title)');
+INSERT INTO fm_rules VALUES(19,NULL,'''The Register'' in feed_title and (''UK.biz'' in title or ''NTL'' in title or ''Ofcom'' in title or ''It was five years ago today'' in content or "Cash''n''Carrion" in content or ''Site Offer'' in content or ''419'' in title)');
+INSERT INTO fm_rules VALUES(21,NULL,'''CNET'' in feed_title and ''Briefly'' in title');
+INSERT INTO fm_rules VALUES(22,NULL,'''Leica'' in feed_title and (''R4'' in title or ''R6'' in title or ''R8'' in title or ''R9'' in title or ''SF20'' in title or ''w/nw'' in title.lower() or ''nw/w'' in title.lower() or ''wnw'' in title.lower() or ''CM'' in title or ''filter'' in title.lower() or ''-R'' in title or ''Minilux'' in title or ''ROM'' in title or ''Summar'' in title or ''Skopar'' in title or ''VC'' in title or ''Minilux'' in title or ''Magnum'' in title or ''iii'' in title.lower() or ''WTB'' in title or ''WTT'' in title or ''FS'' in title or ''Minolta'' in title or ''bessa'' in title.lower())');
+INSERT INTO fm_rules VALUES(23,NULL,'''Clingan'' in feed_title and category == ''Java''');
+INSERT INTO fm_rules VALUES(24,NULL,'''Medium Format'' in feed_title and (''645'' in title or ''Bronica'' in title or ''RZ'' in title or ''RB'' in title or ''mamiya'' in title.lower() or ''Rollei'' in title or ''Yashica'' in title or ''Pentax'' in title)');
+INSERT INTO fm_rules VALUES(25,NULL,'''PyPI'' in feed_title and (''Snakelets'' in title or ''ZODB'' in title or ''Twisted'' in title)');
+INSERT INTO fm_rules VALUES(26,NULL,'''Guardian Unlimited'' in feed_title and (''football'' in content.lower() or ''NHS'' in title or ''strike'' in title.lower() or ''tennis'' in content.lower() or ''cricket'' in content.lower() or ''UKIP'' in title or ''Kilroy-Silk'' in title or ''BNP'' in title or ''cricket'' in content.lower())');
+create view top20 as
+  select
+    feed_title,
+    round(100*interesting/(interesting+uninteresting)) as interest_ratio
+  from (
+    select
+      feed_title,
+      sum(case when item_rating=1 then 1 else 0 end) as interesting,
+      sum(case when item_rating=-1 then 1 else 0 end) as uninteresting
+    from fm_feeds, fm_items
+    where item_feed_uid=feed_uid
+    group by feed_title
+    order by feed_title
+  )
+order by interest_ratio DESC
+limit 20;
+create unique index item_feed_link_i on fm_items(item_feed_uid, item_link);
+create trigger update_timestamp after insert on fm_items
+begin
+	update fm_items set item_loaded = julianday("now")
+	where item_uid=new.item_uid;
+end;
+COMMIT;

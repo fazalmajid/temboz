@@ -1,11 +1,5 @@
-inspiration:
-	FeedOnFeeds
-	Google News
-	TiVo
-features:
-	multi-column
-dependencies:
-	Python 2.3
-	SQLite
-	Cheetah
-	pyRXP
+Not much for now, check out www.temboz.com for more details.
+
+See INSTALL for installation instructions
+
+License: same as Python (to be fleshed out)

@@ -1,0 +1,25 @@
+Very preliminary documentation
+==============================
+
+Prerequisites: Python, PySQLite, Cheetah, pyRXP (optional)
+
+1.	Edit the file param.py. The login and password used to "secure" the web
+	interface is set in a dictionary there.
+
+2.	Create the database:
+	sqlite rss.db < ddl.sql
+	Alternately, you can import from the SQLite dump file rss.db.dump
+
+3.	(optional) Import feeds from an OPML file (pyRXP required):
+	temboz --import some_opml_file.opml
+
+4.	(optional) Prime the pump
+	temboz --refresh
+
+5,	Start the server:
+	temboz --server &
+
+6.	Access the interface by pointing your browser to:
+	http://localhost:9999/ (default)
+	If you did not run step 4, the feeds will star being updated
+	after 1 hour (default polling interval)
