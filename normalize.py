@@ -81,7 +81,8 @@ def normalize(item, f):
   # XXX this will not work correctly for <a name="..." />
   for tag in ['<b>', '<strong>', '<em>', '<i>', '<font ', '<a ',
               '<small>', '<big>', '<cite>', '<blockquote>', '<pre>',
-              '<sub>', '<sup>', '<tt>', '<ul>', '<ol>']:
+              '<sub>', '<sup>', '<tt>', '<ul>', '<ol>',
+              '<div>', '<div ', '<span>', '<span ']:
     end_tag = '</' + tag[1:]
     if '>' not in end_tag:
       end_tag = end_tag .strip() + '>'
