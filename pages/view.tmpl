@@ -37,10 +37,12 @@ function unhide_all() {
   hidden = Array();
 }
 function unhide_last() {
-  elt = hidden[hidden.length - 1];
-  elt.style.display = "block";
-  webop('basic', elt.id.substring(3));
-  hidden.length = hidden.length - 1
+  if(hidden.length > 0) {
+    elt = hidden[hidden.length - 1];
+    elt.style.display = "block";
+    webop('basic', elt.id.substring(3));
+    hidden.length = hidden.length - 1
+  }
 }
 function toggle(item)
 {
