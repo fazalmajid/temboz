@@ -31,7 +31,13 @@ def fix_date(date_tuple):
     # feedparser's parsed date tuple has no DST indication, we need to force it
     # because there is no UTC equivalent of mktime()
     date_tuple = date_tuple[:-1] + (-1,)
-    return time.localtime(time.mktime(date_tuple) - 3600)
+    date_tuple = time.localtime(time.mktime(date_tuple) - 3600)
+    # if it is still in the future, the implementation is hopelessly broken,
+    # truncate it to the present
+    if time.mktime(date_tuple) > time.mktime(time.gmtime()):
+      return time.gmtime()
+    else:
+      return date_tuple
   else:
     return date_tuple
 
