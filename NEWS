@@ -4,6 +4,46 @@ Copyright (C) 2004 Fazal Majid
 See the end for copying conditions.
 
 Please send Temboz bug reports to the email address listed at www.temboz.com
+
+
+* Changes in Temboz 0.4.3.
+
+** fix CSS layout bug in IE6
+
+** added catch_up_confirm option to param
+
+** make catch up page return to referrer
+
+** add missing UPGRADE file
+
+* Changes in Temboz 0.4.2.
+
+** Work-around some feeds that would cause the server to hang
+
+* Changes in Temboz 0.4.1.
+
+** Fix a SQL query bug that was causing catch-up to be unnecessarily slow
+
+* Changes in Temboz 0.4.
+
+** Database optimizations to speed up the view and all feeds pages
+
+** slow SQL operations are logged to stderr
+
+** Feed titles can now be updated from the feed info page
+
+** more precise documentation of dependencies in INSTALL
+
+* Changes in Temboz 0.3.3.
+
+** Improved user interface appearance and consistency
+
+** The catch-up confirmation page now indicates which feed we are catching up
+   with
+
+** Searches now open in a new window/tab
+
+** Several bug fixes, see the ChangeLog file for details
 
 * Changes in Temboz 0.3.2.
 
