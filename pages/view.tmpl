@@ -244,7 +244,7 @@ limit %d offset %d)""" % (overload_threshold, offset))
 item_content, datetime(item_loaded), date(item_created),
 feed_title, feed_html, feed_xml, julianday('now') - julianday(item_created)
 from fm_items, fm_feeds where item_feed_uid=feed_uid
-and """ + where_clause + """ order by item_created DESC, item_uid DESC
+and """ + where_clause + ' and feed_private = 0' * public + """ order by item_created DESC, item_uid DESC
 limit %d""" % overload_threshold)
 <div class="col1">
 #for uid, creator, title, link, content, loaded, created, feed_title, feed_html, feed_xml, delta_created in c:

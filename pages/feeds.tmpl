@@ -21,7 +21,7 @@
   sum(case when item_rating=-1 then cnt else 0 end) as uninteresting,
   sum(case when item_rating=-2 then cnt else 0 end) as filtered,
   sum(cnt) as total,
-  feed_status, feed_errors
+  feed_status, feed_private, feed_errors
 from fm_feeds, (
   select item_rating, item_feed_uid, count(*) as cnt,
     julianday('now') - max(
@@ -72,7 +72,7 @@ order by feed_status ASC, """ \
 ## Loop over feeds
 ##
 ########################################################################
-#for feed_uid, feed_title, feed_html, feed_xml, delta_t, interesting, unread, uninteresting, filtered, total, status, errors in c:
+#for feed_uid, feed_title, feed_html, feed_xml, delta_t, interesting, unread, uninteresting, filtered, total, status, private, errors in c:
 #set since = self.since(delta_t)
 #set unread = int(unread)
 #set interesting = int(interesting)
@@ -85,7 +85,12 @@ order by feed_status ASC, """ \
 #set ratio = 0
 #end if
 #silent assert interesting + uninteresting + unread + filtered == total, feed_title + ' interesting ' + repr(interesting) + ' uninteresting ' + repr(uninteresting) + ' unread ' + repr(unread) + ' filtered ' + repr(filtered) + ' total ' + repr(total) + ' does not add up'
-#set suspended = ' (suspended)' * status
+#set flags = ['suspended'] * status + ['private'] * private
+#if flags:
+#set flags = ' (' + ', '.join(flags) + ')'
+#else:
+#set flags = ''
+#end if
 ########################################################################
 ##
 ## Alternate row colors for improved legibility
@@ -107,7 +112,7 @@ order by feed_status ASC, """ \
 #else
 #set error_flag = ''
 #end if
-<tr valign="top" class="$rowcolor"><td><a href="$feed_html">$feed_title</a>&nbsp;&nbsp;<a$error_flag href="$feed_xml">(XML)</a><a href="/feed_info?feed_uid=$feed_uid"> (Details)</a>$suspended</td><td nowrap align="right">$since</td><td nowrap align="right"><a href="/view?feed_uid=$feed_uid&show=unread">$unread</a></td><td nowrap align="right"><a href="/view?feed_uid=$feed_uid&show=filtered">$filtered</a></td><td nowrap align="right"><a href="/view?feed_uid=$feed_uid&show=up">$interesting</a></td><td nowrap align="right"><%=ratio%>%</td><td nowrap align="right"><a href="/view?feed_uid=$feed_uid&show=all">$total</a></td><td nowrap>
+<tr valign="top" class="$rowcolor"><td><a href="$feed_html">$feed_title</a>&nbsp;&nbsp;<a$error_flag href="$feed_xml">(XML)</a><a href="/feed_info?feed_uid=$feed_uid"> (Details)</a>$flags</td><td nowrap align="right">$since</td><td nowrap align="right"><a href="/view?feed_uid=$feed_uid&show=unread">$unread</a></td><td nowrap align="right"><a href="/view?feed_uid=$feed_uid&show=filtered">$filtered</a></td><td nowrap align="right"><a href="/view?feed_uid=$feed_uid&show=up">$interesting</a></td><td nowrap align="right"><%=ratio%>%</td><td nowrap align="right"><a href="/view?feed_uid=$feed_uid&show=all">$total</a></td><td nowrap>
 #if unread > 0:
 <a href="/catch_up?feed_uid=$feed_uid">catch up</a>
 #end if

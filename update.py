@@ -100,6 +100,44 @@ def update_feed_title(feed_uid, feed_title):
   finally:
     c.close()
 
+def update_feed_desc(feed_uid, feed_desc):
+  """Update a feed desc"""
+  feed_uid = int(feed_uid)
+
+  from singleton import db
+  c = db.cursor()
+  try:
+    c.execute("""update fm_feeds set feed_desc='%s' where feed_uid=%d""" \
+              % (escape(feed_desc), feed_uid))
+    db.commit()
+  finally:
+    c.close()
+
+def update_feed_private(feed_uid, private):
+  feed_uid = int(feed_uid)
+  private = int(bool(private))
+  from singleton import db
+  c = db.cursor()
+  try:
+    c.execute("""update fm_feeds set feed_private=%d where feed_uid=%d""" \
+              % (private, feed_uid))
+    db.commit()
+  finally:
+    c.close()
+
+def update_feed_dupcheck(feed_uid, dupcheck):
+  feed_uid = int(feed_uid)
+  dupcheck = int(bool(dupcheck))
+  # XXX run a dupcheck pass retroactively here if dupcheck == 1
+  from singleton import db
+  c = db.cursor()
+  try:
+    c.execute("""update fm_feeds set feed_dupcheck=%d where feed_uid=%d""" \
+              % (dupcheck, feed_uid))
+    db.commit()
+  finally:
+    c.close()
+
 def catch_up(feed_uid):
   feed_uid = int(feed_uid)
   from singleton import db
