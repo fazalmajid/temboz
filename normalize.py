@@ -1,4 +1,5 @@
-import sys, time, re, feedparser, codecs, string
+import sys, time, re, codecs, string, traceback
+import feedparser, transform
 
 # XXX TODO
 #
@@ -114,6 +115,10 @@ def normalize(item, f):
   if not created:
     # XXX use HTTP last-modified date here
     created = time.gmtime()
+    # feeds that do not have timestamps cannot be garbage-collected
+    # XXX need to find a better heuristic, as high-volume sites such as
+    # XXX The Guardian, CNET.com or Salon.com lack item-level timestamps
+    f['oldest'] = '1970-01-01 00:00:00'
   created = fix_date(created)
   item['created'] = time.strftime(date_fmt, created)
   # keep track of the oldest item still in the feed file
@@ -142,6 +147,17 @@ def normalize(item, f):
     content = item['description']
   else:
     content = '<a href="' + item['link'] + '">' + item['title'] + '</a>'
+  if not content:
+    content = '<a href="' + item['link'] + '">' + item['title'] + '</a>'
+  try:
+    content = transform.filter(content, f, item)
+  except:
+    e, tb = sys.exc_info()[1:3]
+    print 'T' * 72
+    print e
+    traceback.print_tb(tb)
+    print 'T' * 72
+    del tb
   ########################################################################
   # balance tags like <b>...</b>
   content_lc = content.lower()
