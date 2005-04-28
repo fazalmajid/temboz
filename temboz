@@ -11,16 +11,19 @@ def usage():
   --server             : run the built-in web server
   --kill               : kill the server
   -v                   : be more verbose (can be repeated)
+  -h, --help           : print this help text
   """ % sys.argv[0]
   sys.exit(0)
 
 if __name__ == '__main__':
   import getopt
-  opts, args = getopt.getopt(sys.argv[1:], 'v',
-                             ['refresh', 'server', 'import=', 'kill'])
+  opts, args = getopt.getopt(sys.argv[1:], 'vh',
+                             ['refresh', 'server', 'import=', 'kill', 'help'])
   if opts == []:
     usage()
   for opt, val in opts:
+    if opt in ['-h', '--help']:
+      usage()
     if opt == '--refresh':
       import update
       update.update()
