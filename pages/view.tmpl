@@ -166,6 +166,22 @@ cancel the highlight if highlighted).</p>
 #else:
 <link rel="stylesheet" type="text/css" href="temboz.css">
 #end if
+## work-around IE's defective position: fixed
+## see also: http://www.enorg.org/faq/csshacks.html
+<!--[if IE]>
+<style type="text/css">
+body.unpadded {
+  margin-top: 0px;
+}
+div.menu {
+  margin-top: 0px;
+  padding-top: 0px;
+}
+.col1, .col2 {
+  top: 1cm;
+}
+</style>
+<![endif]-->
 </head>
 <body class="unpadded">
 #set c = db.cursor()
@@ -197,8 +213,9 @@ limit %d offset %d)""" % (overload_threshold, offset))
 #set num_items = int(c.fetchone()[0])
 #set cutoff = (num_items + 1) / 2 + 1
 #set count = 0
+<div class="menu">
 #if not public:
-<form method="GET" action="/view" target="_blank">
+<form method="GET" action="/view" target="_blank" class="menu">
 #end if
 <p class="menu">$num_items $item_desc
 #if num_items > overload_threshold:
@@ -209,7 +226,7 @@ limit %d offset %d)""" % (overload_threshold, offset))
 #if public:
 </p>
 #else:
-&nbsp;&nbsp;<a href="/feeds/">All feeds</a>&nbsp;&nbsp;<a href="/add/">Add feed</a>&nbsp;&nbsp;<a href="/rules">Filters</a>&nbsp;&nbsp;
+&nbsp;&nbsp;<a href="/feeds">All feeds</a>&nbsp;&nbsp;<a href="/add">Add feed</a>&nbsp;&nbsp;<a href="/rules">Filters</a>&nbsp;&nbsp;
 ########################################################################
 ##
 ## Crude search functionality
@@ -233,6 +250,7 @@ limit %d offset %d)""" % (overload_threshold, offset))
 </select>
 <input type="submit" value="Search"></p></form>
 #end if
+</div>
 ########################################################################
 ##
 ## Fetch overload_threshold (default 200) items

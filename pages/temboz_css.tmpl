@@ -1,3 +1,9 @@
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
 body {
   line-height:10pt;
   font-family: verdana, arial, sans-serif;
@@ -5,8 +11,13 @@ body {
   line-height:11pt;
 }
 body.unpadded {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
   padding:0px;
   margin:0px;
+  margin-top: 1cm;
 }
 a.headline {
   font-size:12pt;
@@ -27,39 +38,58 @@ a.headline {
   padding: 6px;
   overflow: hidden;
 }
-
-p.menu {
+/* work-around IE */
+body>div.menu {
+  position: fixed;
+  height: 1cm;
+}
+div.menu {
+  padding: 0px;
+  top: 0; left: 0; width: 100%;
   background: #BFFF80;
+  z-index: 2;
+}
+p.menu {
+  margin-top: 5px;
+  margin-bottom: 0px;
+  margin-left: 0px;
+  margin-right: 0px;
+  background: #BFFF80;
+  width: 100%;
 }
 body.unpadded p.menu {
-  margin-left: 20px;
-  margin-right: 20px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .col1 .article {
   margin-left:  20px;
   margin-right: 10px;
 }
-
 .col2 .article {
-  margin-right: 20px;
   margin-left:  10px;
+  margin-right: 20px;
 }
-
-.col { width: 43%; float: left; margin: 5px}
 .col1 {
   width: 49.9%;
   float: left;
   padding: 0px;
   margin: 0px;
+  margin-top: 10px;
   border: 0px;
   overflow: hidden;
 }
 .col2 {
-/*  width: 49.9%;
-  float: right; */
+## ugly work-around a bug in Safari (and probably Konqueror as well)
+#if 'KHTML' not in $headers.get('user-agent', ''):
+  width: 49.9%;
+  float: right;
+#end if
   padding: 0px;
   margin: 0px;
+  margin-top: 10px;
   border: 0px;
   overflow: hidden;
 }
