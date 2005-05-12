@@ -17,24 +17,24 @@ Subscribe to a RSS feed:<br>
 ## Subscribe to a feed if requested
 ##
 ########################################################################
-#if $getVar("feed_xml", None):
+#if $getVar("feed_xml", None)
 #import update
-#try:
+#try
 #silent feed_uid, num_added, num_filtered = update.add_feed($feed_xml)
 <p>Subscribed successfully. 
-#if num_added > 0:
+#if num_added > 0
 <%=num_added%> unread articles.&nbsp;&nbsp;
 <a href="/view?feed_uid=<%=feed_uid%>">view articles now</a>&nbsp;&nbsp;
 <a href="/catch_up?feed_uid=<%=feed_uid%>">catch up</a>
 #end if
 </p>
-#except update.ParseError:
+#except update.ParseError
 <p><b>Connection or parse error in attempting to subscribe to</b> $feed_xml,
 check URL</p>
-#except update.FeedAlreadyExists:
+#except update.FeedAlreadyExists
 <p>The URL $feed_xml is already assigned to another feed, check for duplicates.
 </p>
-#except update.UnknownError, e:
+#except update.UnknownError, e
 <p>Unknown error:<p>
 <pre>
 <%=e.args[0]%>

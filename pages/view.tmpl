@@ -1,7 +1,7 @@
 ## -*- html -*-
 ########################################################################
 ##
-## Query-string parameters for this page:
+## Query-string parameters for this page
 ##   show
 ##   feed_uid
 ##   search
@@ -14,7 +14,7 @@
 #import param
 ########################################################################
 ##
-## What items to use:
+## What items to use
 ##   unread:   unread articles (default)
 ##   up:       articles already flagged interesting
 ##   down:     articles already flagged uninteresting
@@ -24,23 +24,23 @@
 ########################################################################
 #set public = False
 #set $show = $getVar('show', 'unread')
-#if $show == 'up':
+#if $show == 'up'
 #set item_desc = 'interesting'
 #set where_clause = 'item_rating > 0'
-#elif $show == 'mylos':
+#elif $show == 'mylos'
 #set public = True
 #set item_desc = 'interesting'
 #set where_clause = 'item_rating > 0'
-#elif $show == 'down':
+#elif $show == 'down'
 #set item_desc = 'uninteresting'
 #set where_clause = 'item_rating = -1'
-#elif $show == 'filtered':
+#elif $show == 'filtered'
 #set item_desc = 'filtered'
 #set where_clause = 'item_rating = -2'
-#elif $show == 'all':
+#elif $show == 'all'
 #set item_desc = 'all'
 #set where_clause = 'item_rating is not null'
-#else:
+#else
 #set item_desc = 'unread'
 #set where_clause = 'item_rating = 0'
 #end if
@@ -49,7 +49,7 @@
 ## Optionally restrict view to a single feed
 ##
 ########################################################################
-#if $getVar('feed_uid', None):
+#if $getVar('feed_uid', None)
 #set where_clause = where_clause + ' and item_feed_uid=' + $feed_uid
 #end if
 ########################################################################
@@ -57,10 +57,10 @@
 ## Crude search functionality
 ##
 ########################################################################
-#if $getVar('search', None):
-#if $getVar('search_in', 'title') == 'title':
+#if $getVar('search', None)
+#if $getVar('search_in', 'title') == 'title'
 #set search_where = 'item_title'
-#else:
+#else
 #set search_where = 'item_content'
 #end if
 #set where_clause = where_clause + ' and lower(' + search_where + ') like '
@@ -73,7 +73,7 @@
 ## articles, not fully implemented yet
 ##
 ########################################################################
-#if not $getVar('offset', None):
+#if not $getVar('offset', None)
 #set offset = '0'
 #end if
 #set offset = int(offset)
@@ -90,13 +90,13 @@
 ########################################################################
 <script language="JavaScript">
 hidden = Array();
-#if public:
+#if public
 #set img_prefix = 'images'
 #set overload_threshold = 50
 function webop(op, uid) {
   ; // don't do anything about up/down yet
 }
-#else:
+#else
 #set overload_threshold = param.overload_threshold
 #set img_prefix = ''
 var i = new Image();
@@ -156,14 +156,14 @@ function toggle(item) {
 ## (by default) items
 ##
 ########################################################################
-#if public:
+#if public
 <link rel="stylesheet" type="text/css" href="gems/temboz.css">
 <p class="menu">This page is produced automatically from my RSS aggregator, <a
 href="http://www.temboz.com/">Temboz</a>. It shows the last 50 articles from
 the feeds in blogroll I found interesting. Clicking the "thumbs up" icons will
 highlight the article, clicking "thumbs down" will make it disappear (or
 cancel the highlight if highlighted).</p>
-#else:
+#else
 <link rel="stylesheet" type="text/css" href="temboz.css">
 #end if
 ## work-around IE's defective position: fixed
@@ -191,7 +191,7 @@ div.menu {
 ## accessible from the UI
 ##
 ########################################################################
-#if $getVar('where_clause', False):
+#if $getVar('where_clause', False)
 #set where_clause = where_clause + ' and ' + $getVar('where_clause')
 #end if
 ########################################################################
@@ -214,25 +214,25 @@ limit %d offset %d)""" % (overload_threshold, offset))
 #set cutoff = (num_items + 1) / 2 + 1
 #set count = 0
 <div class="menu">
-#if not public:
+#if not public
 <form method="GET" action="/view" target="_blank" class="menu">
 #end if
 <p class="menu">$num_items $item_desc
-#if num_items > overload_threshold:
+#if num_items > overload_threshold
 ($overload_threshold shown)
 #set cutoff = (overload_threshold + 1) / 2 + 1
 #end if
 &nbsp;&nbsp;<a href="javascript:unhide_all();">Unhide all</a>&nbsp;&nbsp;<a href="javascript:unhide_last();">Unhide last</a>
-#if public:
+#if public
 </p>
-#else:
+#else
 &nbsp;&nbsp;<a href="/feeds">All feeds</a>&nbsp;&nbsp;<a href="/add">Add feed</a>&nbsp;&nbsp;<a href="/rules">Filters</a>&nbsp;&nbsp;
 ########################################################################
 ##
 ## Crude search functionality
 ##
 ########################################################################
-#if $getVar('feed_uid', None):
+#if $getVar('feed_uid', None)
 <input name="feed_uid" type="hidden" value="$feed_uid">
 #end if
 <input name="show" type="hidden" value="$show">
@@ -263,9 +263,9 @@ from fm_items, fm_feeds where item_feed_uid=feed_uid
 and """ + where_clause + ' and feed_private = 0' * public + """ order by item_created DESC, item_uid DESC
 limit %d""" % overload_threshold)
 <div class="col1">
-#for uid, creator, title, link, content, loaded, created, feed_title, feed_html, feed_xml, delta_created in c:
+#for uid, creator, title, link, content, loaded, created, feed_title, feed_html, feed_xml, delta_created in c
 #set count += 1
-#if count == cutoff:
+#if count == cutoff
 ## this empty paragraph prevents the right column from resizing when all items
 ## in the left column are dismissed
 <p></p>

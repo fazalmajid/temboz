@@ -41,7 +41,7 @@ group by feed_uid, feed_title, feed_html, feed_xml
 #set uninteresting = int(uninteresting)
 #set filtered = int(filtered)
 #set total = int(total)
-#if interesting + uninteresting > 0:
+#if interesting + uninteresting > 0
 #set ratio = interesting*100/(interesting + uninteresting)
 #else
 #set ratio = 0
@@ -54,13 +54,13 @@ group by feed_uid, feed_title, feed_html, feed_xml
 ## Change feed title/desc if requested
 ##
 ########################################################################
-#if $getVar('feed_title', None) and $getVar('feed_title', None) != feed_title:
+#if $getVar('feed_title', None) and $getVar('feed_title', None) != feed_title
 #import update
 #silent update.update_feed_title($feed_uid, $getVar('feed_title'))
 <p>Feed title updated successfully.</p>
 #set feed_title = $getVar('feed_title', feed_title)
 #end if
-#if $getVar('feed_desc', None) and $getVar('feed_desc', None) != feed_desc:
+#if $getVar('feed_desc', None) and $getVar('feed_desc', None) != feed_desc
 #import update
 #silent update.update_feed_desc($feed_uid, $getVar('feed_desc'))
 <p>Feed description updated successfully.</p>
@@ -71,31 +71,31 @@ group by feed_uid, feed_title, feed_html, feed_xml
 ## Change feed URL if requested
 ##
 ########################################################################
-#if $getVar('feed_xml', None):
+#if $getVar('feed_xml', None)
 #import update
 #try
 #silent num_added, num_filtered = update.update_feed_xml($feed_uid, $getVar('feed_xml'))
 #silent unread += num_added
 #silent filtered += num_filtered
 #silent feed_errors = 0
-#if $getVar('feed_xml', None) != feed_xml:
+#if $getVar('feed_xml', None) != feed_xml
 <p>Feed URL updated successfully.
 #else
 <p>Feed refreshed successfully.
 #end if
-#if num_added > 0:
+#if num_added > 0
 <%=num_added%> new unread articles.&nbsp;&nbsp;
 <a href="/view?feed_uid=$feed_uid">view articles now</a>&nbsp;&nbsp;
 <a href="/catch_up?feed_uid=$feed_uid">catch up</a>
 #end if
 </p>
-#except update.ParseError:
+#except update.ParseError
 <p><b>Connection or parse error in attempting to subscribe to</b> $feed_xml,
 check URL</p>
-#except update.FeedAlreadyExists:
+#except update.FeedAlreadyExists
 <p>The feed $feed_xml is already assigned to another feed, check for
 duplicates.</p>
-#except update.UnknownError, e:
+#except update.UnknownError, e
 <p>Unknown error:<p>
 <pre>
 <%=e.args[0]%>
@@ -145,24 +145,24 @@ name="feed_desc"><%=feed_desc%></textarea></td></tr>
 ## checking if requested
 ##
 ########################################################################
-#if $getVar('change_op', None):
+#if $getVar('change_op', None)
 #import update
-#if $getVar('change_op') == 'Activate':
+#if $getVar('change_op') == 'Activate'
 <% status = 0 %>
 <% update.set_status(feed_uid, status) %>
-#elif $getVar('change_op') == 'Suspend':
+#elif $getVar('change_op') == 'Suspend'
 <% status = 1 %>
 <% update.set_status(feed_uid, status) %>
-#elif $getVar('change_op') == 'Private':
+#elif $getVar('change_op') == 'Private'
 <% private = 1 %>
 <% update.update_feed_private(feed_uid, private) %>
-#elif $getVar('change_op') == 'Public':
+#elif $getVar('change_op') == 'Public'
 <% private = 0 %>
 <% update.update_feed_private(feed_uid, private) %>
-#elif $getVar('change_op') == 'Dupcheck':
+#elif $getVar('change_op') == 'Dupcheck'
 <% dupcheck = 1 %>
 <% update.update_feed_dupcheck(feed_uid, dupcheck) %>
-#elif $getVar('change_op') == 'NoDupcheck':
+#elif $getVar('change_op') == 'NoDupcheck'
 <% dupcheck = 0 %>
 <% update.update_feed_dupcheck(feed_uid, dupcheck) %>
 #end if
@@ -172,10 +172,10 @@ name="feed_desc"><%=feed_desc%></textarea></td></tr>
 ## Display feed flags with option to change it
 ##
 ########################################################################
-#if status == 0:
+#if status == 0
 #set status_text = 'Active'
 #set change_op = 'Suspend'
-#elif status == 1:
+#elif status == 1
 #set status_text = 'Suspended'
 #set change_op = 'Activate'
 #else
@@ -184,10 +184,10 @@ name="feed_desc"><%=feed_desc%></textarea></td></tr>
 #end if
 <tr class="even"><td>Status</td><td>$status_text&nbsp;<a href="/feed_info?feed_uid=$feed_uid&change_op=$change_op">$change_op</a></td></tr>
 ########################################################################
-#if private == 0:
+#if private == 0
 #set private_text = 'Public'
 #set change_op = 'Private'
-#elif private == 1:
+#elif private == 1
 #set private_text = 'Private'
 #set change_op = 'Public'
 #else
@@ -196,9 +196,9 @@ name="feed_desc"><%=feed_desc%></textarea></td></tr>
 #end if
 <tr class="odd"><td>Privacy</td><td>$private_text&nbsp;<a href="/feed_info?feed_uid=$feed_uid&change_op=$change_op">$change_op</a></td></tr>
 ########################################################################
-#if dupcheck == 0:
+#if dupcheck == 0
 <tr class="even"><td>Duplicate<br>title<br>checking</td><td>No duplicate checks&nbsp;<a href="/feed_info?feed_uid=$feed_uid&change_op=Dupcheck">check for duplicate titles</a></td></tr>
-#elif dupcheck == 1:
+#elif dupcheck == 1
 <tr class="even"><td>Duplicate<br>title<br>checking</td><td>Duplicate checking in effect&nbsp;<a href="/feed_info?feed_uid=$feed_uid&change_op=NoDupcheck">disable duplicate checking</a></td></tr>
 #else
 <tr class="even"><td>Duplicate<br>title<br>checking</td><td>Unknown&nbsp;<a href="/feed_info?feed_uid=$feed_uid&change_op=NoDupcheck">disable duplicate checking</a></td></tr>
@@ -214,13 +214,13 @@ name="feed_desc"><%=feed_desc%></textarea></td></tr>
 <h2>Feed variables</h2>
 #import feedparser
 #set f = feedparser.parse(feed_xml)
-#for var in f.feed:
+#for var in f.feed
 feed_$var<br>
 #end for
 
 <h2>Item variables</h2>
-#if 'items' in f and f['items']:
-#for var in f['items'][0]:
+#if 'items' in f and f['items']
+#for var in f['items'][0]
 $var<br>
 #end for
 #end if

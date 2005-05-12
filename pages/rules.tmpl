@@ -10,7 +10,7 @@
 #import time
 #set c = db.cursor()
 
-#if $getVar("uid", None):
+#if $getVar("uid", None)
 #import update
 #set $status = update.update_rule(db, c, $uid, $expires, $text, $getVar("delete", None))
 #end if
@@ -20,7 +20,7 @@ from fm_rules
 order by rule_uid""")
 <table>
 <tr><th>Rule</th><th>Expires</th><th>Text</th><th>Delete</th><th>Update</th></tr>
-#for uid, expires, text in c:
+#for uid, expires, text in c
 #set lines = max(4, len(text) // 80 + 1)
 <tr valign="top"><form action="/rules" method="get"><td>$uid<input type="hidden" name="uid" value="$uid"></td><td><input type="text" name="expires" value="$expires" size="10"></td><td><textarea cols="80" rows="$lines" name="text">$text</textarea></td><td><input type="checkbox" name="delete"></td><td><input type="submit" value="Update"></td></td></form></tr>
 #end for
@@ -43,17 +43,19 @@ title</td></tr>
 <tr class="odd"><td>content</td><td>Contents of the article</td></tr>
 <tr class="even"><td>content_lc</td><td>Contents of the article (all in lower
 case)</td>
-<tr class="odd"><td>content_words</td><td>List of lower-cased words in the
-contents of the article</td></tr>
+<tr class="odd"><td>union_lc</td><td>Union of the article (all in lower
+case)</td></tr>
 </tr>
 </table>
 
 <p>In addition, the convenience functions <tt>title_any</tt>,
-<tt>content_any</tt>, <tt>title_any_lc</tt>, <tt>content_any_lc</tt>,
-<tt>title_any_words</tt>, <tt>content_any_words</tt>, are here to simplify
+<tt>content_any</tt>, <tt>union_any</tt>, <tt>title_any_lc</tt>,
+<tt>content_any_lc</tt>, <tt>union_any_lc</tt>, <tt>title_any_words</tt>,
+<tt>content_any_words</tt>, <tt>union_any_words</tt>are here to simplify
 rules. They take a list of strings and search in the corresponding
-<tt>title|content(|_lc|_words)</tt>. If any of the strings in the list
-matches, the function returns True.</p>
+<tt>title|content(|_lc|_words)</tt> (the <tt>union_</tt>* variants will match
+either title or contents). If any of the strings in the list matches, the
+function returns True.</p>
 
 <p>Other variables may be available on a feed-by-feed basis, also depending on
 which feed standard is used (e.g. Atom vs. RSS). Check the feed details page

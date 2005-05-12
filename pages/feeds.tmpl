@@ -7,7 +7,7 @@
 <body>
 <p class="menu"><a href="/view">All unread</a>&nbsp;&nbsp;<a href="/add">Add feed</a>&nbsp;&nbsp;<a href="/opml">as OPML</a>&nbsp;&nbsp;<a href="/rules">Filtering</a></p>
 #set sort_key = $getVar('sort', 'unread')
-#if sort_key == 'feed_title':
+#if sort_key == 'feed_title'
 #set sort_key = 'lower(feed_title)'
 #end if
 #set order = $getVar('order', 'DESC')
@@ -46,17 +46,17 @@ order by feed_status ASC, """ \
 ## XXX should indicate the sort order for columns using CSS background-image
 ##
 ########################################################################
-#for title in ['Feed Title', 'Last modified', 'Unread', 'Filtered', 'Interesting', 'Hit Ratio', 'Total']:
+#for title in ['Feed Title', 'Last modified', 'Unread', 'Filtered', 'Interesting', 'Hit Ratio', 'Total']
 #set col = title.lower().replace(' ', '_')
-#if col in ['hit_ratio']:
+#if col in ['hit_ratio']
 <th class="nonsort">$title</th>
 #else
-#if col == sort_key:
+#if col == sort_key
 #set css = ' class="sort' + order + '"'
 #set alt_order = {'ASC': 'DESC', 'DESC': 'ASC'}[order]
 #else
 #set css = ' class="nonsort"'
-#if col in ['feed_title', 'last_modified']:
+#if col in ['feed_title', 'last_modified']
 #set alt_order = 'ASC'
 #else
 #set alt_order = 'DESC'
@@ -72,23 +72,23 @@ order by feed_status ASC, """ \
 ## Loop over feeds
 ##
 ########################################################################
-#for feed_uid, feed_title, feed_html, feed_xml, delta_t, interesting, unread, uninteresting, filtered, total, status, private, errors in c:
+#for feed_uid, feed_title, feed_html, feed_xml, delta_t, interesting, unread, uninteresting, filtered, total, status, private, errors in c
 #set since = self.since(delta_t)
 #set unread = int(unread)
 #set interesting = int(interesting)
 #set uninteresting = int(uninteresting)
 #set filtered = int(filtered)
 #set total = int(total)
-#if interesting + uninteresting > 0:
+#if interesting + uninteresting > 0
 #set ratio = interesting*100/(interesting + uninteresting)
 #else
 #set ratio = 0
 #end if
 #silent assert interesting + uninteresting + unread + filtered == total, feed_title + ' interesting ' + repr(interesting) + ' uninteresting ' + repr(uninteresting) + ' unread ' + repr(unread) + ' filtered ' + repr(filtered) + ' total ' + repr(total) + ' does not add up'
 #set flags = ['suspended'] * status + ['private'] * private
-#if flags:
+#if flags
 #set flags = ' (' + ', '.join(flags) + ')'
-#else:
+#else
 #set flags = ''
 #end if
 ########################################################################
@@ -97,7 +97,7 @@ order by feed_status ASC, """ \
 ##
 ########################################################################
 #set rownum = rownum + 1
-#if rownum % 2:
+#if rownum % 2
 #set rowcolor = 'odd'
 #else
 #set rowcolor = 'even'
@@ -107,13 +107,13 @@ order by feed_status ASC, """ \
 ## Flag feeds with errors
 ##
 ########################################################################
-#if errors > 0:
+#if errors > 0
 #set error_flag = ' class="error"'
 #else
 #set error_flag = ''
 #end if
 <tr valign="top" class="$rowcolor"><td><a href="$feed_html">$feed_title</a>&nbsp;&nbsp;<a$error_flag href="$feed_xml">(XML)</a><a href="/feed_info?feed_uid=$feed_uid"> (Details)</a>$flags</td><td nowrap align="right">$since</td><td nowrap align="right"><a href="/view?feed_uid=$feed_uid&show=unread">$unread</a></td><td nowrap align="right"><a href="/view?feed_uid=$feed_uid&show=filtered">$filtered</a></td><td nowrap align="right"><a href="/view?feed_uid=$feed_uid&show=up">$interesting</a></td><td nowrap align="right"><%=ratio%>%</td><td nowrap align="right"><a href="/view?feed_uid=$feed_uid&show=all">$total</a></td><td nowrap>
-#if unread > 0:
+#if unread > 0
 <a href="/catch_up?feed_uid=$feed_uid">catch up</a>
 #end if
 </td></tr>
