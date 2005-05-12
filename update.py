@@ -1,4 +1,4 @@
-import sys, md5, time, threading, socket, Queue, signal, sqlite, os
+import sys, md5, time, threading, socket, Queue, signal, sqlite, os, re
 import param, feedparser, normalize
 
 socket.setdefaulttimeout(10)
@@ -248,6 +248,13 @@ def any(obj, *words):
       return True
   return False
 
+def union_any(obj_list, *words):
+  for w in words:
+    for obj in obj_list:
+      if w in obj:
+        return True
+  return False
+
 def process_parsed_feed(f, c, feed_uid, feed_dupcheck=None):
   """Insert the entries from a feedparser parsed feed f in the database using
 the cursor c for feed feed_uid.
@@ -274,10 +281,16 @@ Returns a tuple (number of items added unread, number of filtered items)"""
     # convenient shortcut functions
     filter_dict['title_any_words'] = curry(any, item['title_words'])
     filter_dict['content_any_words'] = curry(any, item['content_words'])
+    filter_dict['union_any_words'] = curry(
+      union_any, [item['title_words'], item['content_words']])
     filter_dict['title_any'] = curry(any, item['title'])
     filter_dict['content_any'] = curry(any, item['content'])
+    filter_dict['union_any'] = curry(
+      union_any, [item['title'], item['content']])
     filter_dict['title_any_lc'] = curry(any, item['title_lc'])
     filter_dict['content_any_lc'] = curry(any, item['content_lc'])
+    filter_dict['union_any_lc'] = curry(
+      union_any, [item['title_lc'], item['content_lc']])
     # evaluate the rules
     for rule in rules:
       try:
@@ -286,7 +299,10 @@ Returns a tuple (number of items added unread, number of filtered items)"""
           break
       except:
         e = sys.exc_info()[1]
+        print 'E' * 72
         print e
+        print rule
+        print 'E' * 72
     if skip:
       skip = -2
     title   = item['title']
@@ -359,12 +375,20 @@ def update():
   # garbage collection - see param.py
   # this is done only once a day between 3 and 4 AM as this is quite intensive
   # and could interfere with user activity
-  if param.garbage_contents and time.localtime()[3] == param.backup_hour:
-    c.execute("""update fm_items
-    set item_content=''
-    where item_rating<0 and item_created < julianday('now')-%d""" %
-               param.garbage_contents)
-    db.commit()
+  if time.localtime()[3] == param.backup_hour:
+    if getattr(param, 'garbage_contents', False):
+      c.execute("""update fm_items
+      set item_content=''
+      where item_rating<0 and item_created < julianday('now')-%d""" %
+                 param.garbage_contents)
+      db.commit()
+    if getattr(param, 'garbage_items', False):
+      c.execute("""delete from fm_items where item_uid in (
+        select item_uid from fm_items, fm_feeds
+        where item_created < julianday('now') - %d
+        and item_rating < 0 and item_created < feed_oldest
+        and feed_uid=item_feed_uid)""" % param.garbage_items)
+      db.commit()
     c.execute('vacuum')
     # we still hold the PseudoCursor lock, this is a good opportunity to backup
     try:
@@ -373,14 +397,18 @@ def update():
       pass
     os.system(('sqlite rss.db .dump | %s > backups/daily_' \
                + time.strftime('%Y-%m-%d') + '%s') % param.backup_compressor)
-    try:
-      os.remove('backups/daily_'
-                + time.strftime('%Y-%m-%d',
-                                time.localtime(time.time()
-                                               - 86400 * param.daily_backups))
-                + param.backup_compressor[1])
-    except OSError:
-      pass
+    # delete old backups
+    backup_re = re.compile(
+      'daily_[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\\.')
+    for fn in os.listdir('backups'):
+      m = backup_re.match(fn)
+      if m:
+        elapsed = time.time() - os.stat('backups/' + fn).st_ctime
+        if elapsed > 86400 * param.daily_backups:
+          try:
+            os.remove('backups/' + fn)
+          except OSError:
+            pass
   # create worker threads and the queues used to communicate with them
   work_q = Queue.Queue()
   process_q = Queue.Queue()

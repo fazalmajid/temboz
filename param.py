@@ -35,6 +35,12 @@ backup_hour = 3
 garbage_contents = 7
 # garbage_contents = None
 
+# after a longer period of time, the articles themselves are purges, assuming
+# they are no longer in the feed files (otherwise they would reappear the next
+# time the feed is loaded)
+garbage_items = 180
+# garbage_items = None
+
 # URL to use as the User-Agent when downloading feeds
 temboz_url = 'http://www.temboz.com/'
 # user agent shown when fetching the feeds
@@ -52,3 +58,7 @@ max_errors = 100
 
 #debug = True
 debug = False
+
+# Logging, controlled by the standard Python logging module
+import logging
+log = logging.getLogger('Temboz')
