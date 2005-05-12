@@ -160,6 +160,9 @@ def normalize(item, f):
     del tb
   ########################################################################
   # balance tags like <b>...</b>
+  # XXX should also simplify HTML entities, e.g. &eacute; -> e
+  # XXX unfortunately this is an open problem with Unicode, as demonstrated
+  # XXX by phishing using internationalized domain names
   content_lc = content.lower()
   # XXX this will not work correctly for <a name="..." />
   for tag in ['<b>', '<strong>', '<em>', '<i>', '<font ', '<a ',
