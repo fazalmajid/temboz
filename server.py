@@ -315,7 +315,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.xml()
 
       # XXX use static compiled versions for speed
-      tmpl = parts[0].split('/')[1]
+      tmpl = parts[0].split('/', 1)[1].strip('/')
       if tmpl.endswith('.css'):
         self.mime_type = 'text/css'
       page = 'pages/' + tmpl + '.tmpl'
