@@ -19,5 +19,10 @@ goog_ad_re1 = re.compile(
 goog_ad_re2 = re.compile(
   '<a[^>]*href="http://www.google.com/ads_by_google[^>]*>[^<>]*</a>',
   re.MULTILINE)
+falkag_ad_re = re.compile(
+  '<a href="[^"]*falkag.net[^>]*><img[^>]*></a>')
 def filter_ads(content):
-  return fb_ad_re.sub('', goog_ad_re1.sub('', goog_ad_re2.sub('', content)))
+  return falkag_ad_re.sub(
+    '', fb_ad_re.sub(
+    '', goog_ad_re1.sub(
+    '', goog_ad_re2.sub('', content))))
