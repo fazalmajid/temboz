@@ -3,6 +3,7 @@
 # rules.
 
 import re
+import param
 
 def filter(content, feed, item):
   content = filter_ads(content)
@@ -10,19 +11,17 @@ def filter(content, feed, item):
   content = content.replace('<br />><br />', '<br><br>')
   return content
 
-# strip out feedburner and Google ads
-fb_ad_re = re.compile(
-  '<a href[^>]*><img src="http://feeds.feedburner[^>]*></a>')
-goog_ad_re1 = re.compile(
-  '<a[^>]*href="http://imageads.googleadservices[^>]*>[^<>]*<img [^<>]*></a>',
-  re.MULTILINE)
-goog_ad_re2 = re.compile(
-  '<a[^>]*href="http://www.google.com/ads_by_google[^>]*>[^<>]*</a>',
-  re.MULTILINE)
-falkag_ad_re = re.compile(
-  '<a href="[^"]*falkag.net[^>]*><img[^>]*></a>')
+# strip out annoying elements
+filter_re = []
+for item in param.filter_re:
+  assert type(item) in [str, tuple], 'filter item ' + repr(item) + \
+         'must be a string or tuple suitable for re.compile'
+  if type(item) == tuple:
+    filter_re.append(re.compile(*item))
+  elif type(item) == str:
+    filter_re.append(re.compile(item))
+
 def filter_ads(content):
-  return falkag_ad_re.sub(
-    '', fb_ad_re.sub(
-    '', goog_ad_re1.sub(
-    '', goog_ad_re2.sub('', content))))
+  for item in filter_re:
+    content = item.sub('', content)
+  return content
