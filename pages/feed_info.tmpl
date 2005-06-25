@@ -203,6 +203,7 @@ name="feed_desc"><%=feed_desc%></textarea></td></tr>
 #else
 <tr class="even"><td>Duplicate<br>title<br>checking</td><td>Unknown&nbsp;<a href="/feed_info?feed_uid=$feed_uid&change_op=NoDupcheck">disable duplicate checking</a></td></tr>
 #end if
+<tr class="odd"><td>Purge</td><td><a href="catch_up?reload=Y&feed_uid=$feed_uid">Purge and reload</a> $unread unread articles</td></tr>
 #silent c.close()
 </table>
 ########################################################################

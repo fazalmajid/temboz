@@ -149,6 +149,29 @@ def catch_up(feed_uid):
   finally:
     c.close()
 
+def purge_reload(feed_uid):
+  feed_uid = int(feed_uid)
+  from singleton import db
+  c = db.cursor()
+  try:
+    c.execute("""delete from fm_items
+    where item_feed_uid=%d and item_rating=0""" % feed_uid)
+    c.execute("""update fm_feeds set feed_modified=NULL, feed_etag=NULL
+    where feed_uid=%d""" % feed_uid)
+    c.execute("""select feed_xml from fm_feeds
+    where feed_uid=%d""" % feed_uid)
+    feed_xml = c.fetchone()[0]
+    db.commit()
+    f = feedparser.parse(feed_xml)
+    if not f.feed:
+      raise ParseError
+    normalize.normalize_feed(f)
+    clear_errors(db, c, feed_uid, f)
+    num_added = process_parsed_feed(f, c, feed_uid)
+    db.commit()
+  finally:
+    c.close()
+
 def set_status(feed_uid, status):
   feed_uid = int(feed_uid)
   status = int(status)
