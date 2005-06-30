@@ -9,6 +9,10 @@ class PseudoCursor:
     self.c = self.db.db.cursor()
   def __del__(self):
     self.db.lock.release()
+  def __str__(self):
+    return '<SQLite Cursor wrapper>'
+  def __repr__(self):
+    return self.__str__()
   def __getattr__(self, name):
     return getattr(self.c, name, None)
   def execute(self, *args, **kwargs):
