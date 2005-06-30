@@ -38,6 +38,7 @@ def add_feed(feed_xml):
     for key, value in feed.items():
       if type(value) == str:
         feed[key] = escape(value)
+    load_rules()
     try:
       c.execute("""insert into fm_feeds
       (feed_xml, feed_etag, feed_html, feed_title, feed_desc) values
@@ -81,6 +82,7 @@ def update_feed_xml(feed_uid, feed_xml):
       else:
         db.rollback()
         raise UnknownError(str(e))
+    load_rules()
     num_added = process_parsed_feed(f, c, feed_uid)
     db.commit()
     return num_added
@@ -167,6 +169,7 @@ def purge_reload(feed_uid):
       raise ParseError
     normalize.normalize_feed(f)
     clear_errors(db, c, feed_uid, f)
+    load_rules()
     num_added = process_parsed_feed(f, c, feed_uid)
     db.commit()
   finally:
@@ -228,6 +231,7 @@ def increment_errors(db, c, feed_uid):
   errors, feed_title = c.fetchone()
   max_errors = getattr(param, 'max_errors', 100)
   if max_errors != -1 and errors > max_errors:
+    # XXX we should generate a service announcement item if this happens
     print 'EEEEE too many errors, suspending feed', feed_title
     c.execute('update fm_feeds set feed_status = 1 where feed_uid=%d' \
               % feed_uid)
@@ -321,11 +325,7 @@ Returns a tuple (number of items added unread, number of filtered items)"""
         if skip:
           break
       except:
-        e = sys.exc_info()[1]
-        print 'E' * 72
-        print e
-        print rule
-        print 'E' * 72
+        util.print_stack()
     if skip:
       skip = -2
     title   = item['title']
