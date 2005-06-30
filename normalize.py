@@ -1,5 +1,5 @@
 import sys, time, re, codecs, string, traceback
-import feedparser, transform
+import feedparser, transform, util
 
 # XXX TODO
 #
@@ -149,15 +149,13 @@ def normalize(item, f):
     content = '<a href="' + item['link'] + '">' + item['title'] + '</a>'
   if not content:
     content = '<a href="' + item['link'] + '">' + item['title'] + '</a>'
+  # strip embedded NULs as a defensive measure
+  content = content.replace('\0', '')
+  # apply transforms like stripping ads
   try:
     content = transform.filter(content, f, item)
   except:
-    e, tb = sys.exc_info()[1:3]
-    print 'T' * 72
-    print e
-    traceback.print_tb(tb)
-    print 'T' * 72
-    del tb
+    util.print_stack()
   ########################################################################
   # balance tags like <b>...</b>
   # XXX should also simplify HTML entities, e.g. &eacute; -> e

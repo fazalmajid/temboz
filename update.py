@@ -1,5 +1,5 @@
 import sys, md5, time, threading, socket, Queue, signal, sqlite, os, re
-import param, feedparser, normalize
+import param, feedparser, normalize, util
 
 socket.setdefaulttimeout(10)
 feedparser.USER_AGENT = param.user_agent
@@ -473,7 +473,10 @@ class PeriodicUpdater(threading.Thread):
       # XXX should wrap this in a try/except clause
       time.sleep(param.refresh_interval)
       print time.ctime(), '- refreshing feeds'
-      update()
+      try:
+        update()
+      except:
+        util.print_stack()
 
 ##############################################################################
 #
