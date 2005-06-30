@@ -361,6 +361,13 @@ Returns a tuple (number of items added unread, number of filtered items)"""
       assert len(l) == 1
       (item_uid, item_link, item_loaded, item_created, item_modified,
        item_viewed, item_md5hex, item_title, item_content, item_creator) = l[0]
+      # if this is a feed without timestamps, use our timestamp to determine
+      # the oldest item in the feed XML file
+      if 'oldest' in f and f['oldest'] == '1970-01-01 00:00:00':
+        if 'oldest_ts' not in f:
+          f['oldest_ts'] = item_created
+        else:
+          f['oldest_ts'] = min(f['oldest_ts'], item_created)
       # XXX update item here
     # GUID doesn't exist yet, insert it
     if not l:
@@ -384,9 +391,14 @@ Returns a tuple (number of items added unread, number of filtered items)"""
         print ' ' * 4, title
   # update timestamp of the oldest item still in the feed file
   if 'oldest' in f and f['oldest'] != '9999-99-99 99:99:99':
-    c.execute("""update fm_feeds
-    set feed_oldest=julianday('%s')
-    where feed_uid=%d""" % (f['oldest'], feed_uid))
+    if f['oldest'] == '1970-01-01 00:00:00' and 'oldest_ts' in f:
+      c.execute("""update fm_feeds
+      set feed_oldest=%s
+      where feed_uid=%d""" % (f['oldest_ts'], feed_uid))
+    else:
+      c.execute("""update fm_feeds
+      set feed_oldest=julianday('%s')
+      where feed_uid=%d""" % (f['oldest'], feed_uid))
   
   return (num_added, num_filtered)
 

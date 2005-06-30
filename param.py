@@ -35,7 +35,7 @@ backup_hour = 3
 garbage_contents = 7
 # garbage_contents = None
 
-# after a longer period of time, the articles themselves are purges, assuming
+# after a longer period of time, the articles themselves are purged, assuming
 # they are no longer in the feed files (otherwise they would reappear the next
 # time the feed is loaded)
 garbage_items = 180
@@ -85,7 +85,6 @@ filter_re = [
   ('<form.*?</form>', re.IGNORECASE + re.DOTALL),
   # annoying Weblogs Inc. footer
   ('<a href=[^>]*>Permalink</a>.*?<a [^>]*>Email this</a>.*?Comments</a>', re.IGNORECASE + re.DOTALL),
-  '<h6></h6>',
   ]
 
 # Logging, controlled by the standard Python logging module
