@@ -163,7 +163,7 @@ def normalize(item, f):
   # XXX by phishing using internationalized domain names
   content_lc = content.lower()
   # XXX this will not work correctly for <a name="..." />
-  for tag in ['<b>', '<strong>', '<em>', '<i>', '<font ', '<a ',
+  for tag in ['<b>', '<strong>', '<strike>', '<em>', '<i>', '<font ', '<a ',
               '<small>', '<big>', '<cite>', '<blockquote>', '<pre>',
               '<sub>', '<sup>', '<tt>', '<ul>', '<ol>',
               '<div>', '<div ', '<span>', '<span ',
