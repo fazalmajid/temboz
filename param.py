@@ -77,14 +77,20 @@ filter_re = [
   '<a href="[^"]*falkag.net[^>]*><img[^>]*></a>',
   # Empty paragraphs used as spacers in front of ads
   '<p>&#160;</p>',
+  ('<p><br />\s*</p>\s*', re.MULTILINE),
   # DoubleClick ads
   ('<a[^>]*href="http://ad.doubleclick.net[^>]*>.*?</a>',
    re.MULTILINE),
   '<p>ADVERTISEMENT.*?</p>',
   # annoying forms inside posts, e.g. Russell Beattie
   ('<form.*?</form>', re.IGNORECASE + re.DOTALL),
+  # Weblogs Inc, ads
+  ('<p><a[^>]*href="http://feeds.gawker.com[^>]*>[^<>]*'
+   '<img [^>]*src="http://feeds.gawker.com[^<>]*></a></p>',
+   re.MULTILINE),
   # annoying Weblogs Inc. footer
-  ('<a href=[^>]*>Permalink</a>.*?<a [^>]*>Email this</a>.*?Comments</a>', re.IGNORECASE + re.DOTALL),
+  ('<a href=[^>]*>Permalink</a>.*?<a [^>]*>Email this</a>.*?Comments</a>',
+   re.IGNORECASE + re.DOTALL),
   ]
 
 # Logging, controlled by the standard Python logging module
