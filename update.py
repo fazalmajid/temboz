@@ -1,4 +1,5 @@
 import sys, md5, time, threading, socket, Queue, signal, sqlite, os, re
+import textwrap
 import param, feedparser, normalize, util
 
 socket.setdefaulttimeout(10)
@@ -262,7 +263,10 @@ def update_feed(db, c, f, feed_uid, feed_xml, feed_etag, feed_modified,
   else:
     # no error - reset etag and/or modified date and error count
     clear_errors(db, c, feed_uid, f)
-  process_parsed_feed(f, c, feed_uid, feed_dupcheck)
+  try:
+    process_parsed_feed(f, c, feed_uid, feed_dupcheck)
+  except:
+    util.print_stack(['c', 'f'])
 
 # shades of LISP...
 def curry(fn, obj):
@@ -325,7 +329,7 @@ Returns a tuple (number of items added unread, number of filtered items)"""
         if skip:
           break
       except:
-        util.print_stack()
+        util.print_stack(['f'])
     if skip:
       skip = -2
     title   = item['title']
@@ -371,24 +375,28 @@ Returns a tuple (number of items added unread, number of filtered items)"""
       # XXX update item here
     # GUID doesn't exist yet, insert it
     if not l:
-      sql = """insert into fm_items (item_feed_uid, item_guid,
-      item_created,   item_modified, item_viewed, item_link, item_md5hex,
-      item_title, item_content, item_creator, item_rating) values (%d, '%s',
-      julianday('%s'), %s,          NULL,        '%s',      '%s',
-      '%s',       '%s',         '%s', %d)""" % \
-      (feed_uid, escape(guid), escape(created), modified, escape(link),
-       md5.new(content).hexdigest(),
-       escape(title),
-       escape(content),
-       escape(author),
-       skip)
-      c.execute(sql)
-      if skip:
-        num_filtered += 1
-        print 'SKIP', title
-      else:
-        num_added += 1
-        print ' ' * 4, title
+      try:
+        sql = """insert into fm_items (item_feed_uid, item_guid,
+        item_created,   item_modified, item_viewed, item_link, item_md5hex,
+        item_title, item_content, item_creator, item_rating) values (%d, '%s',
+        julianday('%s'), %s,          NULL,        '%s',      '%s',
+        '%s',       '%s',         '%s', %d)""" % \
+        (feed_uid, escape(guid), escape(created), modified, escape(link),
+         md5.new(content).hexdigest(),
+         escape(title),
+         escape(content),
+         escape(author),
+         skip)
+        c.execute(sql)
+        if skip:
+          num_filtered += 1
+          print 'SKIP', title
+        else:
+          num_added += 1
+          print ' ' * 4, title
+      except:
+        util.print_stack(['c', 'f'])
+        continue
   # update timestamp of the oldest item still in the feed file
   if 'oldest' in f and f['oldest'] != '9999-99-99 99:99:99':
     if f['oldest'] == '1970-01-01 00:00:00' and 'oldest_ts' in f:
@@ -493,6 +501,27 @@ class PeriodicUpdater(threading.Thread):
 ##############################################################################
 #
 rules = []
+
+rule_comment_re = re.compile('^#.*$', re.MULTILINE)
+def normalize_rule(rule):
+  """allow embedded CR/LF and comments to make for more readable rules"""
+  return rule_comment_re.sub('', rule).replace(
+    '\n', ' ').replace('\r', ' ').strip()
+
+wrapper = textwrap.TextWrapper(width=80, break_long_words=False)
+# XXX this relies on texwrap implementation details to prevent wrapping on
+# XXX hyphens and em-dashes, only on spaces
+wrapper.wordsep_re = re.compile(r'(\s+)')
+def rule_lines(rule):
+  "Find how many lines are needed for the rule in a word-wrapped <textarea>"
+  lines = 0
+  for line in rule.splitlines():
+    if line.strip():
+      lines += len(wrapper.wrap(line))
+    else:
+      lines += 1
+  return lines
+
 def load_rules():
   global rules
   rules = []
@@ -503,6 +532,7 @@ def load_rules():
     from fm_rules where rule_expires is null
     or rule_expires > julianday('now')""")
     for uid, rule in c:
+      rule = normalize_rule(rule)
       rules.append(compile(rule, 'rule' + `uid`, 'eval'))
   finally:
     c.close()
@@ -513,7 +543,7 @@ def update_rule(db, c, uid, expires, text, delete):
   else:
     expires = "julianday('%s')" % expires
   # check syntax
-  compile(text, 'web form', 'eval')
+  compile(normalize_rule(text), 'web form', 'eval')
   if uid == 'new':
     c.execute("""insert into fm_rules (rule_expires, rule_text)
     values (%s, '%s')""" \
