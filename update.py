@@ -1,5 +1,5 @@
 import sys, md5, time, threading, socket, Queue, signal, sqlite, os, re
-import textwrap
+import textwrap, urllib2, HTMLParser
 import param, feedparser, normalize, util, transform
 
 socket.setdefaulttimeout(10)
@@ -15,19 +15,46 @@ class FeedAlreadyExists(Exception):
 class UnknownError(Exception):
   pass
 
+class AutoDiscoveryHandler(HTMLParser.HTMLParser):
+  """Find RSS autodiscovery info, as specified in:
+    http://diveintomark.org/archives/2002/05/30/rss_autodiscovery
+  Cope even if the HTML document is not strictly XML compliant (as we do not
+  use a SGML parser like htmllib.HTMLParser does"""
+  def __init__(self):
+    HTMLParser.HTMLParser.__init__(self)
+    self.autodiscovery = {}
+  def handle_starttag(self, tag, attrs):
+    if tag == 'link':
+      attrs = dict(attrs)
+      if attrs.get('rel', '').strip().lower() != 'alternate':
+        return
+      if attrs.get('type') == 'application/rss+xml' and 'href' in attrs:
+        self.autodiscovery['rss'] = attrs['href']
+      if attrs.get('type') == 'application/atom+xml' and 'href' in attrs:
+        self.autodiscovery['atom'] = attrs['href']
+  def feed_url(self, page_url):
+    page_data = urllib2.urlopen(page_url).read()
+    self.feed(page_data)
+    # Atom has cleaner semantics than RSS, so give it priority
+    return self.autodiscovery.get(
+      'atom', self.autodiscovery.get('rss'))
+
 def add_feed(feed_xml):
-  """Try to add a feed. Returns a tuple (feed_uid, num_added, num_filtered)
-  -1: unknown error
-  0: feed added normally
-  1: feed added via autodiscovery
-  2: feed not added, already present
-  3: feed not added, connection or parse error"""
+  """Try to add a feed. Returns a tuple (feed_uid, num_added, num_filtered)"""
   from singleton import db
   c = db.cursor()
   try:
+    # verify the feed
     f = feedparser.parse(feed_xml)
     if not f.feed:
-      raise ParseError
+      # try autodiscovery
+      feed_xml = AutoDiscoveryHandler().feed_url(feed_xml)
+      if not feed_xml:
+        raise ParseError
+      f = feedparser.parse(feed_xml)
+      if not f.feed:
+        raise ParseError
+    # we have a valid feed, normalize it
     normalize.normalize_feed(f)
     feed = {
       'xmlUrl': f['url'],

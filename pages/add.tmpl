@@ -18,7 +18,7 @@ Subscribe to a RSS feed:<br>
 ##
 ########################################################################
 #if $getVar("feed_xml", None)
-#import update
+#import update, urllib2
 #try
 #silent feed_uid, num_added, num_filtered = update.add_feed($feed_xml)
 <p>Subscribed successfully. 
@@ -34,6 +34,11 @@ check URL</p>
 #except update.FeedAlreadyExists
 <p>The URL $feed_xml is already assigned to another feed, check for duplicates.
 </p>
+#except urllib2.URLError, e
+<p>Error loading URL during autodiscovery attempt:<p>
+<pre>
+<%=e.args[0]%>
+</pre>
 #except update.UnknownError, e
 <p>Unknown error:<p>
 <pre>
