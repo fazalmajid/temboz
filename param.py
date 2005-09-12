@@ -59,40 +59,6 @@ max_errors = 100
 #debug = True
 debug = False
 
-# filtering regular expressions, used to strip out annoyances like ads,
-# web bugs and the like from feeds
-# strip out feedburner and Google ads
-import re
-filter_re = [
-  # Feedburner ads
-  '<a href[^>]*><img src="http://feeds.feedburner[^>]*></a>',
-  # Feedburner web bug
-  '<img src="http://feeds.feedburner.com.*?/>',
-  # Google ads
-  ('<a[^>]*href="http://imageads.googleadservices[^>]*>[^<>]*<img [^<>]*></a>',
-   re.MULTILINE),
-  ('<a[^>]*href="http://www.google.com/ads_by_google[^>]*>[^<>]*</a>',
-   re.MULTILINE),
-  # Falk AG ads
-  '<a href="[^"]*falkag.net[^>]*><img[^>]*></a>',
-  # Empty paragraphs used as spacers in front of ads
-  '<p>&#160;</p>',
-  ('<p><br />\s*</p>\s*', re.MULTILINE),
-  # DoubleClick ads
-  ('<a[^>]*href="http://ad.doubleclick.net[^>]*>.*?</a>',
-   re.MULTILINE),
-  '<p>ADVERTISEMENT.*?</p>',
-  # annoying forms inside posts, e.g. Russell Beattie
-  ('<form.*?</form>', re.IGNORECASE + re.DOTALL),
-  # Weblogs Inc, ads
-  ('<p><a[^>]*href="http://feeds.gawker.com[^>]*>[^<>]*'
-   '<img [^>]*src="http://feeds.gawker.com[^<>]*></a></p>',
-   re.MULTILINE),
-  # annoying Weblogs Inc. footer
-  ('<a href=[^>]*>Permalink</a>.*?<a [^>]*>Email this</a>.*?Comments</a>',
-   re.IGNORECASE + re.DOTALL),
-  ]
-
 # Logging, controlled by the standard Python logging module
 import logging
 log = logging.getLogger('Temboz')

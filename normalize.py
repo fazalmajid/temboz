@@ -151,9 +151,10 @@ def normalize(item, f):
     content = '<a href="' + item['link'] + '">' + item['title'] + '</a>'
   # strip embedded NULs as a defensive measure
   content = content.replace('\0', '')
-  # apply transforms like stripping ads
+  # apply ad filters and other degunking to content
   try:
-    content = transform.filter(content, f, item)
+    for filter in transform.filter_list:
+      content = filter.apply(content, f, item)
   except:
     util.print_stack()
   ########################################################################

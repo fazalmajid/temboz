@@ -1,6 +1,6 @@
 import sys, md5, time, threading, socket, Queue, signal, sqlite, os, re
 import textwrap
-import param, feedparser, normalize, util
+import param, feedparser, normalize, util, transform
 
 socket.setdefaulttimeout(10)
 feedparser.USER_AGENT = param.user_agent
@@ -536,6 +536,8 @@ def load_rules():
       rules.append(compile(rule, 'rule' + `uid`, 'eval'))
   finally:
     c.close()
+  # reload the degunking filters as well
+  reload(transform)
 
 def update_rule(db, c, uid, expires, text, delete):
   if expires == 'never':
