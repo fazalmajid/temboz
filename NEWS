@@ -6,6 +6,32 @@ See the end for copying conditions.
 Please send Temboz bug reports to the email address listed at www.temboz.com
 
 
+* Changes in Temboz 0.7 (2005-09-12).
+
+** ad filters
+
+** added feed URL autodiscovery
+
+** filtering rules can now include embedded newlines and comments
+
+** filtering rules and ad-degunking rules can be tested against unread
+   articles using purge-and-reload (in the feed details page)
+
+** improved error reporting
+
+
+* Changes in Temboz 0.6 (unreleased).
+
+** improved navigation and cross-browser compatibility
+
+** articles flagged as uninteresting and older than 6 months (default setting)
+   are removed from the database (enhanced in 0.7)
+
+** added --help and --kill options
+
+** tightened Cheetah syntax to be compatible with Cheetah 0.9.16
+
+
 * Changes in Temboz 0.5 (2005-02-06).
 
 ** Automatic database backups daily
