@@ -1,4 +1,4 @@
-VERSION= 0.6
+VERSION= 0.7
 PAGES= view error opml feeds temboz.css rules catch_up
 
 all: changelog
@@ -31,7 +31,7 @@ dist: distclean changelog
 	-rm -rf temboz-$(VERSION)/pages/CVS temboz-$(VERSION)/images/CVS
 	-rm -rf temboz-$(VERSION)/etc/CVS
 	# expurgate password
-	sed -e 's/auth_dict.*/auth_dict={"login": "password"}/g' param.py > temboz-$(VERSION)/param.py
+	sed -e 's/auth_dict.=.*/auth_dict = {"login": "password"}/g' param.py > temboz-$(VERSION)/param.py
 	gtar zcvf temboz-$(VERSION).tar.gz temboz-$(VERSION)
 	-rm -rf temboz-$(VERSION)
 	-mv temboz-$(VERSION).tar.gz ../mylos/data/stories/2004/03/29

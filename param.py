@@ -50,7 +50,10 @@ user_agent = 'Temboz (%s)' % temboz_url
 unauth_page = temboz_url
 
 # dictionary of login/password
-auth_dict = {'majid': 'sopo'}
+try:
+  from private import auth_dict
+except:
+  auth_dict = {'majid': 'sopo'}
 
 # maximum number of errors, after this threshold is reached,
 # the feed is automatically suspended. -1 to unlimit
