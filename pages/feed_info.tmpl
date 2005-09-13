@@ -8,7 +8,7 @@
 <p class="menu"><a href="/view">All unread</a>&nbsp;&nbsp;<a href="/add">Add feed</a>&nbsp;&nbsp;<a href="/feeds">All feeds</a></p>
 #set $feed_uid = $getVar('feed_uid')
 #from singleton import db
-#import time
+#import time, pprint
 #set c = db.cursor()
 #silent c.execute("""select feed_title, feed_desc, feed_html, feed_xml,
   min(last_modified) as last_modified,
@@ -225,5 +225,11 @@ feed_$var<br>
 $var<br>
 #end for
 #end if
+
+<h2>Feed dump</h2>
+
+<pre>
+#echo pprint.pformat(f)
+</pre>
 
 </body></html>
