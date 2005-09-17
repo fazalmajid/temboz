@@ -17,6 +17,8 @@ filter_list = [
             '[^<>]*<img [^<>]*></a>', re.MULTILINE),
   degunk.Re('<a[^>]*href="http://www.google.com/ads_by_google[^>]*>[^<>]*</a>',
             re.MULTILINE),
+  degunk.Re('<p><map[^>]*><area[^>]*href="http://imageads.google.*?</p>',
+            re.MULTILINE),
   # Falk AG ads
   degunk.Re('<div><br>\s*<strong>.*?<a href="[^"]*falkag.net[^>]*>.*?</strong>'
             '<br>.*?</div>', re.IGNORECASE + re.DOTALL),
