@@ -257,13 +257,13 @@ limit %d offset %d)""" % (overload_threshold, offset))
 ##
 ########################################################################
 #silent c.execute("""select item_uid, item_creator, item_title, item_link,
-item_content, datetime(item_loaded), date(item_created),
+item_content, datetime(item_loaded), date(item_created), feed_uid,
 feed_title, feed_html, feed_xml, julianday('now') - julianday(item_created)
 from fm_items, fm_feeds where item_feed_uid=feed_uid
 and """ + where_clause + ' and feed_private = 0' * public + """ order by item_created DESC, item_uid DESC
 limit %d""" % overload_threshold)
 <div class="col1">
-#for uid, creator, title, link, content, loaded, created, feed_title, feed_html, feed_xml, delta_created in c
+#for uid, creator, title, link, content, loaded, created, feed_uid, feed_title, feed_html, feed_xml, delta_created in c
 #set count += 1
 #if count == cutoff
 ## this empty paragraph prevents the right column from resizing when all items
@@ -285,7 +285,17 @@ limit %d""" % overload_threshold)
 ## Actual article display
 ##
 ########################################################################
-<div class="article" id="art$uid"><div class="headline"><img width="32" height="32" alt="up" src="<%=img_prefix%>/up.gif" class="up" onclick="highlight('$uid')" /><img width="32" height="32" alt="down" src="<%=img_prefix%>/down.gif" class="down" onclick="hide('$uid')" /><a href="<%=redirect%>" class="headline" target="_blank" onclick="highlight('$uid');">$title</a><br><a href="$feed_html" title="" class="source">$feed_title</a> $since_when<br><!-- by $creator, cached at $loaded --></div><div class="content">$content</div></div>
+<div class="article" id="art$uid"><div class="headline"><img
+width="32" height="32" alt="up" src="<%=img_prefix%>/up.gif" class="up"
+onclick="highlight('$uid')" /><img width="32" height="32" alt="down"
+src="<%=img_prefix%>/down.gif" class="down" onclick="hide('$uid')"
+/><a href="<%=redirect%>" class="headline" target="_blank"
+onclick="highlight('$uid');">$title</a><br><a
+href="feed_info?feed_uid=$feed_uid" title="" class="source">$feed_title</a>
+$since_when<br><!-- by $creator, cached at $loaded --></div><div
+class="content">
+$content
+</div></div>
 #end for
 </div>
 #silent db.commit()
