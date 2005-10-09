@@ -10,6 +10,8 @@ def escape(str):
 
 class ParseError(Exception):
   pass
+class AutodiscoveryParseError(Exception):
+  pass
 class FeedAlreadyExists(Exception):
   pass
 class UnknownError(Exception):
@@ -48,7 +50,10 @@ def add_feed(feed_xml):
     f = feedparser.parse(feed_xml)
     if not f.feed:
       # try autodiscovery
-      feed_xml = AutoDiscoveryHandler().feed_url(feed_xml)
+      try:
+        feed_xml = AutoDiscoveryHandler().feed_url(feed_xml)
+      except HTMLParser.HTMLParseError:
+        raise AutodiscoveryParseError
       if not feed_xml:
         raise ParseError
       f = feedparser.parse(feed_xml)

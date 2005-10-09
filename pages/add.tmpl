@@ -31,6 +31,9 @@ Subscribe to a RSS feed:<br>
 #except update.ParseError
 <p><b>Connection or parse error in attempting to subscribe to</b> $feed_xml,
 check URL</p>
+#except update.AutodiscoveryParseError
+<p><b>Autodiscovery failed for</b> $feed_xml,
+you need to find a valid feed URL.</p>
 #except update.FeedAlreadyExists
 <p>The URL $feed_xml is already assigned to another feed, check for duplicates.
 </p>
