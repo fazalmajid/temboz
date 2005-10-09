@@ -41,6 +41,10 @@ filter_list = [
   degunk.Re('<a href=[^>]*>Permalink</a>.*?<a [^>]*>'
             'Email this</a>.*?Comments</a>',
             re.IGNORECASE + re.DOTALL),
+  degunk.Re('<p><font size="1"><hr />SPONSORED BY.*?</p>'),
+  # IDFuel URLs should point to full article, not teaser
+  degunk.ReUrl(url=r'http://www.idfuel.com/index.php?p=\1&more=1',
+               regex_url=r'http://www.idfuel.com/index.php\?p=([0-9]*)'),
   # possibly caused by bugs in feedparser
   degunk.Re('<br>[.>]<br>', 0, '<br>', iterate=True),
   # unwarranted multiple empty lines
