@@ -6,6 +6,29 @@ See the end for copying conditions.
 Please send Temboz bug reports to the email address listed at www.temboz.com
 
 
+* Changes in Temboz 0.7.1 (2005-11-01).
+
+** fixed buggy handling of feeds without links or GUIDs (reported by
+   Peter Janes)
+
+** started adding context-sensitive help by linking to the CVStrac Wiki
+
+** Transforms can change item links to point to full contents rather than
+   a teaser
+
+** improved error reporting on autodiscovery
+
+** the feed title in view now links to feed details page rather than to the
+   feed home directly
+
+** added catch-up link to feed details page
+
+** More ad filtering out of the box
+
+** the feed info page now does a full dump of feedparser's output, to help
+   write filtering rules
+
+
 * Changes in Temboz 0.7 (2005-09-12).
 
 ** ad filters
