@@ -1,4 +1,4 @@
-import sys, time, re, codecs, string, traceback
+import sys, time, re, codecs, string, traceback, md5
 import feedparser, transform, util
 
 # XXX TODO
@@ -75,9 +75,15 @@ def normalize(item, f):
   item['title_words'] =  unicode(item['title_lc']).translate(punct_map).split()
   ########################################################################
   # link
+  #
+  # The RSS 2.0 specification allows items not to have a link if the entry
+  # is complete in itself
   if 'link' not in item:
-    print 'E' * 16, 'no link in ', item
     item['link'] = f['channel']['link']
+    # We have to be careful not to assign a default URL as the GUID
+    # otherwise only one item will ever be recorded
+    if 'id' not in item:
+      item['id'] = 'HASH_CONTENT'
   if type(item['link']) == unicode:
     item['link'] = str(item['link'])
   if type(item['link']) != str:
@@ -194,6 +200,9 @@ def normalize(item, f):
   for key in ['title', 'link', 'created', 'modified', 'author', 'content']:
     if type(item.get(key)) == unicode:
       item[key] = item[key].encode('ascii', 'xmlcharrefreplace')
+  # hash the content as the GUID if required
+  if item['id'] == 'HASH_CONTENT':
+    item['id']= md5.new(item['title'] + item['content']).hexdigest()
   
 def escape_xml(s):
   """Escape entities for a XML target"""
