@@ -15,27 +15,32 @@
 #import time
 #set c = db.cursor()
 #silent c.execute("""select feed_uid, feed_title, feed_html, feed_xml,
-  min(last_modified) as last_modified,
-  sum(case when item_rating=1 then cnt else 0 end) as interesting,
-  sum(case when item_rating=0 then cnt else 0 end) as unread,
-  sum(case when item_rating=-1 then cnt else 0 end) as uninteresting,
-  sum(case when item_rating=-2 then cnt else 0 end) as filtered,
-  sum(cnt) as total,
+  last_modified,
+  interesting, unread, uninteresting, filtered, total,
+  interesting / (total - filtered - unread) * 100 as snr,
   feed_status, feed_private, feed_errors
-from fm_feeds, (
-  select item_rating, item_feed_uid, count(*) as cnt,
-    julianday('now') - max(
-    ifnull(
-      julianday(item_modified),
-      julianday(item_created)
-    )
-  ) as last_modified
-  from fm_items
-  group by item_rating, item_feed_uid
-)
-where item_feed_uid=feed_uid
-group by feed_uid, feed_title, feed_html, feed_xml
-order by feed_status ASC, """ \
+from (
+  select feed_uid, feed_title, feed_html, feed_xml,
+    min(last_modified) as last_modified,
+    sum(case when item_rating=1 then cnt else 0 end) as interesting,
+    sum(case when item_rating=0 then cnt else 0 end) as unread,
+    sum(case when item_rating=-1 then cnt else 0 end) as uninteresting,
+    sum(case when item_rating=-2 then cnt else 0 end) as filtered,
+    sum(cnt) as total,
+    feed_status, feed_private, feed_errors
+  from fm_feeds left outer join (
+    select item_rating, item_feed_uid, count(*) as cnt,
+      julianday('now') - max(
+      ifnull(
+	julianday(item_modified),
+	julianday(item_created)
+      )
+    ) as last_modified
+    from fm_items
+    group by item_rating, item_feed_uid
+  ) on feed_uid=item_feed_uid
+  group by feed_uid, feed_title, feed_html, feed_xml
+) order by feed_status ASC, """ \
     + sort_key + ' ' + order + """, lower(feed_title)""")
 <table>
 <tr>
@@ -46,11 +51,8 @@ order by feed_status ASC, """ \
 ## XXX should indicate the sort order for columns using CSS background-image
 ##
 ########################################################################
-#for title in ['Feed Title', 'Last modified', 'Unread', 'Filtered', 'Interesting', 'Hit Ratio', 'Total']
+#for title in ['Feed Title', 'Last modified', 'Unread', 'Filtered', 'Interesting', 'SNR', 'Total']
 #set col = title.lower().replace(' ', '_')
-#if col in ['hit_ratio']
-<th class="nonsort">$title</th>
-#else
 #if col == sort_key
 #set css = ' class="sort' + order + '"'
 #set alt_order = {'ASC': 'DESC', 'DESC': 'ASC'}[order]
@@ -63,7 +65,6 @@ order by feed_status ASC, """ \
 #end if
 #end if
 <th$css><a href="/feeds?sort=$col&order=$alt_order">$title</a></th>
-#end if
 #end for
 </tr>
 #set rownum = 0
@@ -72,7 +73,7 @@ order by feed_status ASC, """ \
 ## Loop over feeds
 ##
 ########################################################################
-#for feed_uid, feed_title, feed_html, feed_xml, delta_t, interesting, unread, uninteresting, filtered, total, status, private, errors in c
+#for feed_uid, feed_title, feed_html, feed_xml, delta_t, interesting, unread, uninteresting, filtered, total, snr, status, private, errors in c
 #set since = self.since(delta_t)
 #set unread = int(unread)
 #set interesting = int(interesting)
