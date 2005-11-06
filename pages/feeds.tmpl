@@ -5,7 +5,7 @@
 <link rel="stylesheet" type="text/css" href="/temboz.css">
 </head>
 <body>
-<p class="menu"><a href="/view">All unread</a>&nbsp;&nbsp;<a href="/add">Add feed</a>&nbsp;&nbsp;<a href="/opml">as OPML</a>&nbsp;&nbsp;<a href="/rules">Filtering</a></p>
+<p class="menu"><a href="/view">All unread</a>&nbsp;&nbsp;<a href="/add">Add feed</a>&nbsp;&nbsp;<a href="/opml">as OPML</a>&nbsp;&nbsp;<a href="/rules">Filtering</a> <span class="help"><a href="http://www.temboz.com/temboz/wiki?p=AllFeedsPage" target="_blank">Help</a></span></p>
 #set sort_key = $getVar('sort', 'unread')
 #if sort_key == 'feed_title'
 #set sort_key = 'lower(feed_title)'
