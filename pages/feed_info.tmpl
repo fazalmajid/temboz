@@ -205,32 +205,7 @@ name="feed_desc"><%=feed_desc%></textarea></td></tr>
 #end if
 <tr class="odd"><td>Catch-up</td><td><a href="catch_up?feed_uid=$feed_uid">Mark as read</a> $unread unread articles</td></tr>
 <tr class="even"><td>Purge</td><td><a href="catch_up?reload=Y&feed_uid=$feed_uid">Purge and reload</a> $unread unread articles</td></tr>
+<tr class="odd"><td>Debug</td><td><a href="feed_debug?feed_uid=$feed_uid">Dump the parsed feed</a>, useful for writing <a href="rules">filtering rules</a></td></tr>
 #silent c.close()
 </table>
-########################################################################
-##
-## Do a real-time fetch of the feed to show variables available for
-## filtering
-##
-########################################################################
-<h2>Feed variables</h2>
-#import feedparser
-#set f = feedparser.parse(feed_xml)
-#for var in f.feed
-feed_$var<br>
-#end for
-
-<h2>Item variables</h2>
-#if 'items' in f and f['items']
-#for var in f['items'][0]
-$var<br>
-#end for
-#end if
-
-<h2>Feed dump</h2>
-
-<pre>
-#echo pprint.pformat(f)
-</pre>
-
 </body></html>

@@ -11,6 +11,63 @@ import feedparser, transform, util
 #date_fmt = '%a, %d %b %Y %H:%M:%S %Z'
 date_fmt = '%Y-%m-%d %H:%M:%S'
 
+stop_words = ['i', 't', 'am', 'no', 'do', 's', 'my', 'don', 'm', 'on', 'get',
+              'in', 'you', 'me', 'd', 've']
+# list originally from: http://bll.epnet.com/help/ehost/Stop_Words.htm
+stop_words += [
+  'a', 'the', 'of', 'and', 'that', 'for', 'by', 'as', 'be', 'or', 'this',
+  'then', 'we', 'which', 'with', 'at', 'from', 'under', 'such', 'there',
+  'other', 'if', 'is', 'it', 'can', 'now', 'an', 'to', 'but', 'upon', 'where',
+  'these', 'when', 'whether', 'also', 'than', 'after', 'within', 'before',
+  'because', 'without', 'however', 'therefore', 'between', 'those', 'since',
+  'into', 'out', 'some', 'about', 'accordingly', 'again', 'against', 'all',
+  'almost', 'already', 'although', 'always', 'among', 'any', 'anyone',
+  'apparently', 'are', 'arise', 'aside', 'away', 'became', 'become',
+  'becomes', 'been', 'being', 'both', 'briefly', 'came', 'cannot', 'certain',
+  'certainly', 'could', 'etc', 'does', 'done', 'during', 'each', 'either',
+  'else', 'ever', 'every', 'further', 'gave', 'gets', 'give', 'given',
+  'got', 'had', 'hardly', 'has', 'have', 'having', 'here', 'how', 'itself',
+  'just', 'keep', 'kept', 'largely', 'like', 'made', 'mainly', 'make', 'many',
+  'might', 'more', 'most', 'mostly', 'much', 'must', 'nearly', 'necessarily',
+  'neither', 'next', 'none', 'nor', 'normally', 'not', 'noted', 'often',
+  'only', 'our', 'put', 'owing', 'particularly', 'perhaps', 'please',
+  'potentially', 'predominantly', 'present', 'previously', 'primarily',
+  'probably', 'prompt', 'promptly', 'quickly', 'quite', 'rather', 'readily',
+  'really', 'recently', 'regarding', 'regardless', 'relatively',
+  'respectively', 'resulted', 'resulting', 'results', 'said', 'same', 'seem',
+  'seen', 'several', 'shall', 'should', 'show', 'showed', 'shown', 'shows',
+  'significantly', 'similar', 'similarly', 'slightly', 'so', 'sometime',
+  'somewhat', 'soon', 'specifically', 'strongly', 'substantially',
+  'successfully', 'sufficiently', 'their', 'theirs', 'them', 'they', 'though',
+  'through', 'throughout', 'too', 'toward', 'unless', 'until', 'use', 'used',
+  'using', 'usually', 'various', 'very', 'was', 'were', 'what', 'while', 'who',
+  'whose', 'why', 'widely', 'will', 'would', 'yet' ]
+stop_words = dict(zip(stop_words, [1] * len(stop_words)))
+punct_map = {}
+for c in string.punctuation:
+  punct_map[ord(c)] = 32
+
+# only Python 2.4 has a built-in set type
+try:
+  set = set
+except NameError:
+  try:
+    from sets import Set as set
+  except ImportError:
+    set = list
+
+strip_tags_re = re.compile('<[^>]*>')
+def get_words(s):
+  return set([
+    word for word
+    in strip_tags_re.sub('', unicode(s)).translate(punct_map).split()
+    if word not in stop_words])
+  
+def normalize_all(f):
+  normalize_feed(f)
+  for item in f.entries:
+    normalize(item, f)
+
 def normalize_feed(f):
   if 'description' not in f['channel']:
     f['channel']['description'] = f['channel'].get('title', '')
@@ -44,11 +101,7 @@ def fix_date(date_tuple):
 
 url_re = re.compile('(?:href|src)="([^"]*)"', re.IGNORECASE)
 
-punct_map = {}
-for c in string.punctuation:
-  punct_map[ord(c)] = 32
-
-def normalize(item, f):
+def normalize(item, f, run_filters=True):
   # get rid of RDF lossage...
   for key in ['title', 'link', 'created', 'modified', 'author',
               'content', 'content_encoded', 'description']:
@@ -72,7 +125,7 @@ def normalize(item, f):
     from sys import exit
     code.interact(local=locals())
   item['title_lc'] =   item['title'].lower()
-  item['title_words'] =  unicode(item['title_lc']).translate(punct_map).split()
+  item['title_words'] =  get_words(item['title_lc'])
   ########################################################################
   # link
   #
@@ -192,8 +245,7 @@ def normalize(item, f):
   #
   item['content'] = content
   item['content_lc'] = content.lower()
-  item['content_words'] = unicode(item['content_lc']).translate(
-    punct_map).split()
+  item['content_words'] = get_words(item['content_lc'])
   item['urls'] = url_re.findall(content)
   ########################################################################
   # map unicode

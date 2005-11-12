@@ -1,0 +1,85 @@
+## -*- html -*-
+<html>
+<head><title>Temboz - Feed details</title>
+<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+<link rel="stylesheet" type="text/css" href="/temboz.css">
+</head>
+<body>
+<p class="menu"><a href="/view">All unread</a>&nbsp;&nbsp;<a href="/add">Add feed</a>&nbsp;&nbsp;<a href="/feeds">All feeds</a> <span class="help"><a href="http://www.temboz.com/temboz/wiki?p=FeedDebugPage" target="_blank">Help</a></span></p>
+#set $feed_uid = $getVar('feed_uid')
+#from singleton import db
+#import time, pprint
+#set c = db.cursor()
+#silent c.execute("""select feed_title, feed_desc, feed_html, feed_xml,
+  min(last_modified) as last_modified,
+  sum(case when item_rating=1 then cnt else 0 end) as interesting,
+  sum(case when item_rating=0 then cnt else 0 end) as unread,
+  sum(case when item_rating=-1 then cnt else 0 end) as uninteresting,
+  sum(case when item_rating=-2 then cnt else 0 end) as filtered,
+  sum(cnt) as total,
+  feed_status, feed_private, feed_dupcheck, feed_errors
+from fm_feeds, (
+  select item_rating, item_feed_uid, count(*) as cnt,
+    julianday('now') - max(
+    ifnull(
+      julianday(item_modified),
+      julianday(item_created)
+    )
+  ) as last_modified
+  from fm_items
+  where item_feed_uid=""" + $feed_uid + """
+  group by item_rating, item_feed_uid
+)
+where item_feed_uid=feed_uid
+group by feed_uid, feed_title, feed_html, feed_xml
+""")
+
+#silent feed_title, feed_desc, feed_html, feed_xml, delta_t, interesting, unread, uninteresting, filtered, total, status, private, dupcheck, feed_errors = c.fetchone()
+#set since = self.since(delta_t)
+#set unread = int(unread)
+#set interesting = int(interesting)
+#set uninteresting = int(uninteresting)
+#set filtered = int(filtered)
+#set total = int(total)
+#if interesting + uninteresting > 0
+#set ratio = interesting*100/(interesting + uninteresting)
+#else
+#set ratio = 0
+#end if
+#silent assert interesting + uninteresting + unread + filtered == total, feed_title
+#set uninteresting = total - unread - filtered - interesting
+
+<h1><a href="<%=feed_html%>"><%=feed_title%></a></h2>
+
+<a href="<%=feed_xml%>"><%=feed_xml%></a><br>
+<%=feed_desc%><br>
+<a href="feed_info?feed_uid=$feed_uid">feed details</a>
+
+########################################################################
+##
+## Do a real-time fetch of the feed to show variables available for
+## filtering
+##
+########################################################################
+<h2>Feed variables</h2>
+#import feedparser, normalize
+#set f = feedparser.parse(feed_xml)
+#silent normalize.normalize_all(f)
+#for var in f.feed
+feed_$var<br>
+#end for
+
+<h2>Item variables</h2>
+#if 'items' in f and f['items']
+#for var in f['items'][0]
+$var<br>
+#end for
+#end if
+
+<h2>Feed dump (normalized)</h2>
+
+<pre>
+#echo pprint.pformat(f).replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+</pre>
+
+</body></html>
