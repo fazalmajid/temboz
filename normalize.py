@@ -60,7 +60,7 @@ strip_tags_re = re.compile('<[^>]*>')
 def get_words(s):
   return set([
     word for word
-    in strip_tags_re.sub('', unicode(s)).translate(punct_map).split()
+    in unicode(strip_tags_re.sub('', unicode(s))).translate(punct_map).split()
     if word not in stop_words])
   
 def normalize_all(f):
