@@ -208,6 +208,19 @@ def purge_reload(feed_uid):
   finally:
     c.close()
 
+def hard_purge(feed_uid):
+  feed_uid = int(feed_uid)
+  from singleton import db
+  c = db.cursor()
+  try:
+    c.execute("""delete from fm_items
+    where item_feed_uid=%d""" % feed_uid)
+    c.execute("""delete from fm_feeds
+    where feed_uid=%d""" % feed_uid)
+    db.commit()
+  finally:
+    c.close()
+
 def set_status(feed_uid, status):
   feed_uid = int(feed_uid)
   status = int(status)

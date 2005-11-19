@@ -18,7 +18,7 @@
   sum(case when item_rating=-2 then cnt else 0 end) as filtered,
   sum(cnt) as total,
   feed_status, feed_private, feed_dupcheck, feed_errors
-from fm_feeds, (
+from fm_feeds left outer join (
   select item_rating, item_feed_uid, count(*) as cnt,
     julianday('now') - max(
     ifnull(
@@ -27,10 +27,9 @@ from fm_feeds, (
     )
   ) as last_modified
   from fm_items
-  where item_feed_uid=""" + $feed_uid + """
   group by item_rating, item_feed_uid
-)
-where item_feed_uid=feed_uid
+) on feed_uid=item_feed_uid
+where feed_uid=""" + $feed_uid + """
 group by feed_uid, feed_title, feed_html, feed_xml
 """)
 
@@ -206,6 +205,11 @@ name="feed_desc"><%=feed_desc%></textarea></td></tr>
 <tr class="odd"><td>Catch-up</td><td><a href="catch_up?feed_uid=$feed_uid">Mark as read</a> $unread unread articles</td></tr>
 <tr class="even"><td>Purge</td><td><a href="catch_up?reload=Y&feed_uid=$feed_uid">Purge and reload</a> $unread unread articles</td></tr>
 <tr class="odd"><td>Debug</td><td><a href="feed_debug?feed_uid=$feed_uid">Dump the parsed feed</a>, useful for writing <a href="rules">filtering rules</a></td></tr>
+<tr class="even"><td>Hard purge</td><td><a href="hard_purge?feed_uid=$feed_uid">Completely delete</a> $total articles
+#if $interesting > 0
+(including $interesting flagged as interesting)
+#end if
+</td></tr>
 #silent c.close()
 </table>
 </body></html>

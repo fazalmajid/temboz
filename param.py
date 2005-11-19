@@ -18,6 +18,7 @@ refresh_interval = 3600
 
 # Whether "catch-up" links require user confirmation (default is yes)b
 catch_up_confirm = True
+hard_purge_confirm = True
 
 # automatic backups
 # stream compression utility to use for backups
