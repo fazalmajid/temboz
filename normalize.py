@@ -248,6 +248,12 @@ def normalize(item, f, run_filters=True):
   item['content_words'] = get_words(item['content_lc'])
   item['urls'] = url_re.findall(content)
   ########################################################################
+  # categories/tags
+  if 'tags' in item and type(item['tags']) == list:
+    item['category'] = [t['term'] for t in item['tags']]
+  else:
+    item['category'] = []
+  ########################################################################
   # map unicode
   for key in ['title', 'link', 'created', 'modified', 'author', 'content']:
     if type(item.get(key)) == unicode:
