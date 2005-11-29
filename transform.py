@@ -30,6 +30,8 @@ filter_list = [
   degunk.Re('<a[^>]*href="http://ad.doubleclick.net[^>]*>.*?</a>',
             re.MULTILINE),
   degunk.Re('<p>ADVERTISEMENT.*?</p>'),
+  # Yahoo ads
+  degunk.Re('<p class="adv">.*?</p>'),
   # annoying forms inside posts, e.g. Russell Beattie
   degunk.Re('<form.*?</form>', re.IGNORECASE + re.DOTALL),
   # Weblogs Inc, ads
