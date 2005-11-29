@@ -1,5 +1,7 @@
-VERSION= 0.7.1
-PAGES= view error opml feeds temboz.css rules catch_up
+VERSION= 	0.7.1
+TAR_VERSION=	$(VERSION)
+PAGES= 		view error opml feeds temboz.css rules catch_up
+DATE:sh=	date +'%Y-%m-%d'
 
 all: changelog
 
@@ -21,7 +23,12 @@ sync:
 changelog:
 	cvs2cl.pl --tags -g -q
 
-dist: distclean changelog
+cvsdist :=  TAR_VERSION = CVS
+cvsdist :=  VERSION = CVS-$(DATE)
+cvsdist:: cvsupdate
+cvsupdate:
+	cvs -q update -A -d -P
+cvsdist disttar:: distclean changelog
 	-rm -rf temboz-$(VERSION)
 	mkdir temboz-$(VERSION)
 	cp README INSTALL NEWS LICENSE UPGRADE ChangeLog temboz *.py temboz-$(VERSION)
@@ -32,9 +39,11 @@ dist: distclean changelog
 	-rm -rf temboz-$(VERSION)/etc/CVS
 	# expurgate password
 	sed -e 's/auth_dict.=.*/auth_dict = {"login": "password"}/g' param.py > temboz-$(VERSION)/param.py
-	gtar zcvf temboz-$(VERSION).tar.gz temboz-$(VERSION)
+	gtar zcvf temboz-$(TAR_VERSION).tar.gz temboz-$(VERSION)
 	-rm -rf temboz-$(VERSION)
-	-mv temboz-$(VERSION).tar.gz ../mylos/data/stories/2004/03/29
+	-mv temboz-$(TAR_VERSION).tar.gz ../mylos/data/stories/2004/03/29
+
+dist: disttar
 	-$${EDITOR} ../mylos/data/stories/2004/03/29/temboz.html
 
 distclean:
