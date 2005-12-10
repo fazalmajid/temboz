@@ -44,7 +44,7 @@ stop_words += [
   'whose', 'why', 'widely', 'will', 'would', 'yet' ]
 stop_words = dict(zip(stop_words, [1] * len(stop_words)))
 punct_map = {}
-for c in string.punctuation:
+for c in string.punctuation + '\'':
   punct_map[ord(c)] = 32
 
 # only Python 2.4 has a built-in set type
@@ -250,7 +250,7 @@ def normalize(item, f, run_filters=True):
   ########################################################################
   # categories/tags
   if 'tags' in item and type(item['tags']) == list:
-    item['category'] = [t['term'] for t in item['tags']]
+    item['category'] = set([t['term'].lower() for t in item['tags']])
   else:
     item['category'] = []
   ########################################################################
