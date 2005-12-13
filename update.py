@@ -44,6 +44,14 @@ class AutoDiscoveryHandler(HTMLParser.HTMLParser):
     url = urlparse.urljoin(page_url, url)
     return url
 
+def re_autodiscovery(url):
+  autodiscovery_re = re.compile(
+    '<link[^>]*rel="alternate"[^>]*'
+    'application/(atom|rss)\\+xml[^>]*href="([^"]*)"')
+  candidates = autodiscovery_re.findall(urllib2.urlopen(url).read())
+  candidates.sort()
+  return candidates
+
 def add_feed(feed_xml):
   """Try to add a feed. Returns a tuple (feed_uid, num_added, num_filtered)"""
   from singleton import db
@@ -59,7 +67,11 @@ def add_feed(feed_xml):
       try:
         feed_xml = AutoDiscoveryHandler().feed_url(feed_xml)
       except HTMLParser.HTMLParseError:
-        raise AutodiscoveryParseError
+        # in desperate conditions, regexps ride to the rescue
+        try:
+          feed_xml = re_autodiscovery(feed_xml)[0][1]
+        except:
+          raise AutodiscoveryParseError
       if not feed_xml:
         raise ParseError
       f = feedparser.parse(feed_xml)
