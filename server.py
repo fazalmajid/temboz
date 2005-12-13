@@ -333,6 +333,10 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     return
 
 def run():
+  # force loading of the database so we don't have to wait an hour to detect
+  # a database format issue
+  from singleton import db
+  
   logging.getLogger().setLevel(logging.INFO)
   server = Server((getattr(param, 'bind_address', ''), param.port), Handler)
   pidfile = open('temboz.pid', 'w')

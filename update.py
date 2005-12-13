@@ -95,7 +95,7 @@ def add_feed(feed_xml):
       (feed_xml, feed_etag, feed_html, feed_title, feed_desc) values
       ('%(xmlUrl)s', '%(etag)s', '%(htmlUrl)s', '%(title)s',
       '%(desc)s')""" % feed)
-      feed_uid = db.sqlite_last_insert_rowid()
+      feed_uid = c.lastrowid
       num_added, num_filtered = process_parsed_feed(f, c, feed_uid)
       db.commit()
       return (feed_uid, num_added, num_filtered)
