@@ -6,6 +6,10 @@
 
 # TCP port to use for the web server
 port = 9999
+# uncomment this if you want Temboz to bind to a specific IP address
+#
+# bind_address = 'localhost'
+# bind_address = '192.168.1.9'
 
 # number of RSS feeds fetched in parallel 
 feed_concurrency = 10
