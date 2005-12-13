@@ -1,5 +1,5 @@
 import sys, md5, time, threading, socket, Queue, signal, sqlite, os, re
-import textwrap, urllib2, HTMLParser
+import textwrap, urllib2, urlparse, HTMLParser
 import param, feedparser, normalize, util, transform
 
 socket.setdefaulttimeout(10)
@@ -38,8 +38,11 @@ class AutoDiscoveryHandler(HTMLParser.HTMLParser):
     page_data = urllib2.urlopen(page_url).read()
     self.feed(page_data)
     # Atom has cleaner semantics than RSS, so give it priority
-    return self.autodiscovery.get(
+    url = self.autodiscovery.get(
       'atom', self.autodiscovery.get('rss'))
+    # the URL could be relative, if so fix it
+    url = urlparse.urljoin(page_url, url)
+    return url
 
 def add_feed(feed_xml):
   """Try to add a feed. Returns a tuple (feed_uid, num_added, num_filtered)"""
@@ -48,7 +51,10 @@ def add_feed(feed_xml):
   try:
     # verify the feed
     f = feedparser.parse(feed_xml)
-    if not f.feed:
+    # CVS versions of feedparser are not throwing exceptions as they should
+    # see:
+    # http://sourceforge.net/tracker/index.php?func=detail&aid=1379172&group_id=112328&atid=661937
+    if not f.feed or ('link' not in f.feed or 'title' not in f.feed):
       # try autodiscovery
       try:
         feed_xml = AutoDiscoveryHandler().feed_url(feed_xml)
