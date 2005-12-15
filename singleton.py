@@ -70,9 +70,9 @@ class PseudoDB:
         self.__class__ = SQLite3Factory
       except sqlite.DatabaseError, e:
         if str(e) == 'file is encrypted or is not a database':
-          print 'NOTICE: rss.db uses the SQLite 2.x format'
-          print 'an upgrade to the 3.x format is recommended, see:'
-          print 'http://www.temboz.com/temboz/wiki?p=UpgradingSqlite'
+#           print 'NOTICE: rss.db uses the SQLite 2.x format'
+#           print 'an upgrade to the 3.x format is recommended, see:'
+#           print 'http://www.temboz.com/temboz/wiki?p=UpgradingSqlite'
           raise ImportError
         if 'no such table' in str(e):
           print 'WARNING: empty database, populating with new tables...',

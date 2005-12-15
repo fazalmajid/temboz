@@ -473,48 +473,57 @@ Returns a tuple (number of items added unread, number of filtered items)"""
   
   return (num_added, num_filtered)
 
+def cleanup(db=None, c=None):
+  """garbage collection - see param.py
+  this is done only once a day between 3 and 4 AM as this is quite intensive
+  and could interfere with user activity
+  It can also be invoked by running temboz --clean
+  """
+  if not db:
+    from singleton import db
+    c = db.cursor()
+  if getattr(param, 'garbage_contents', False):
+    c.execute("""update fm_items
+    set item_content=''
+    where item_rating<0 and item_created < julianday('now')-%d""" %
+               param.garbage_contents)
+    db.commit()
+  if getattr(param, 'garbage_items', False):
+    c.execute("""delete from fm_items where item_uid in (
+      select item_uid from fm_items, fm_feeds
+      where item_created < julianday('now') - %d
+      and item_rating < 0 and item_created < feed_oldest
+      and feed_uid=item_feed_uid)""" % param.garbage_items)
+    db.commit()
+  c.execute('vacuum')
+  # we still hold the PseudoCursor lock, this is a good opportunity to backup
+  try:
+    os.mkdir('backups')
+  except OSError:
+    pass
+  os.system(('sqlite rss.db .dump | %s > backups/daily_' \
+             + time.strftime('%Y-%m-%d') + '%s') % param.backup_compressor)
+  # delete old backups
+  backup_re = re.compile(
+    'daily_[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\\.')
+  for fn in os.listdir('backups'):
+    m = backup_re.match(fn)
+    if m:
+      elapsed = time.time() - os.stat('backups/' + fn).st_ctime
+      if elapsed > 86400 * param.daily_backups:
+        try:
+          os.remove('backups/' + fn)
+        except OSError:
+          pass
+  
 def update():
   from singleton import db
   c = db.cursor()
   # refresh filtering rules
   load_rules()
-  # garbage collection - see param.py
-  # this is done only once a day between 3 and 4 AM as this is quite intensive
-  # and could interfere with user activity
+  # at 3AM by default, perform house-cleaning
   if time.localtime()[3] == param.backup_hour:
-    if getattr(param, 'garbage_contents', False):
-      c.execute("""update fm_items
-      set item_content=''
-      where item_rating<0 and item_created < julianday('now')-%d""" %
-                 param.garbage_contents)
-      db.commit()
-    if getattr(param, 'garbage_items', False):
-      c.execute("""delete from fm_items where item_uid in (
-        select item_uid from fm_items, fm_feeds
-        where item_created < julianday('now') - %d
-        and item_rating < 0 and item_created < feed_oldest
-        and feed_uid=item_feed_uid)""" % param.garbage_items)
-      db.commit()
-    c.execute('vacuum')
-    # we still hold the PseudoCursor lock, this is a good opportunity to backup
-    try:
-      os.mkdir('backups')
-    except OSError:
-      pass
-    os.system(('sqlite rss.db .dump | %s > backups/daily_' \
-               + time.strftime('%Y-%m-%d') + '%s') % param.backup_compressor)
-    # delete old backups
-    backup_re = re.compile(
-      'daily_[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\\.')
-    for fn in os.listdir('backups'):
-      m = backup_re.match(fn)
-      if m:
-        elapsed = time.time() - os.stat('backups/' + fn).st_ctime
-        if elapsed > 86400 * param.daily_backups:
-          try:
-            os.remove('backups/' + fn)
-          except OSError:
-            pass
+    cleanup(db, c)
   # create worker threads and the queues used to communicate with them
   work_q = Queue.Queue()
   process_q = Queue.Queue()
