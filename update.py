@@ -482,6 +482,7 @@ def cleanup(db=None, c=None):
   if not db:
     from singleton import db
     c = db.cursor()
+  from singleton import sqlite_cli
   if getattr(param, 'garbage_contents', False):
     c.execute("""update fm_items
     set item_content=''
@@ -501,7 +502,7 @@ def cleanup(db=None, c=None):
     os.mkdir('backups')
   except OSError:
     pass
-  os.system(('sqlite rss.db .dump | %s > backups/daily_' \
+  os.system((sqlite_cli + ' rss.db .dump | %s > backups/daily_' \
              + time.strftime('%Y-%m-%d') + '%s') % param.backup_compressor)
   # delete old backups
   backup_re = re.compile(

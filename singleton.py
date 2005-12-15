@@ -52,8 +52,12 @@ well enough) so commits can be associated with the corresponding cursor call.
     del t
     return getattr(db, name)
 
+# name of the command-line executable for SQLite
+sqlite_cli = 'sqlite'
+
 class PseudoDB:
   def __init__(self):
+    global sqlite_cli
     self.lock = threading.RLock()
     self.sqlite_last_insert_rowid = None        
     # try PySQLite2/SQLite3 first, fall back to PySQLite 1.0/SQLite2
@@ -68,6 +72,7 @@ class PseudoDB:
         # black magic here, see this article for more info on the technique:
         #     http://www.majid.info/mylos/weblog/2002/09/07-1.html
         self.__class__ = SQLite3Factory
+        sqlite_cli = 'sqlite3'
       except sqlite.DatabaseError, e:
         if str(e) == 'file is encrypted or is not a database':
 #           print 'NOTICE: rss.db uses the SQLite 2.x format'
