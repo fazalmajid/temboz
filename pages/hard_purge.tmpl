@@ -1,7 +1,7 @@
 <html>
 <head>
 <title>Hard purge</title>
-<link rel="stylesheet" type="text/css" href="/temboz.css">
+<link rel="stylesheet" type="text/css" href="temboz.css">
 #from singleton import db
 #set c = db.cursor()
 #silent c.execute("""select feed_title, feed_html from fm_feeds
@@ -32,7 +32,7 @@ Error: $status
 #else
 </head>
 <body>
-<p class="menu"><a href="/view">All unread</a>&nbsp;&nbsp;<a href="/feeds">All feeds</a></p>
+<p class="menu"><a href="view">All unread</a>&nbsp;&nbsp;<a href="feeds">All feeds</a></p>
 <form action="/hard_purge?feed_uid=$feed_uid" method="POST">
 <input type="hidden" name="confirm" value="yes">
 Please confirm you want to completely delete all articles and the feed itself

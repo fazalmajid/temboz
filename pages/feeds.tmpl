@@ -2,10 +2,10 @@
 <html>
 <head><title>Temboz - All feeds</title>
 <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
-<link rel="stylesheet" type="text/css" href="/temboz.css">
+<link rel="stylesheet" type="text/css" href="temboz.css">
 </head>
 <body>
-<p class="menu"><a href="/view">All unread</a>&nbsp;&nbsp;<a href="/add">Add feed</a>&nbsp;&nbsp;<a href="/opml">as OPML</a>&nbsp;&nbsp;<a href="/rules">Filtering</a> <span class="help"><a href="http://www.temboz.com/temboz/wiki?p=AllFeedsPage" target="_blank">Help</a></span></p>
+<p class="menu"><a href="view">All unread</a>&nbsp;&nbsp;<a href="add">Add feed</a>&nbsp;&nbsp;<a href="opml">as OPML</a>&nbsp;&nbsp;<a href="rules">Filtering</a> <span class="help"><a href="http://www.temboz.com/temboz/wiki?p=AllFeedsPage" target="_blank">Help</a></span></p>
 #set sort_key = $getVar('sort', '(unread > 0) DESC, snr')
 #if sort_key == 'feed_title'
 #set sort_key = 'lower(feed_title)'
@@ -64,7 +64,7 @@ from (
 #set alt_order = 'DESC'
 #end if
 #end if
-<th$css><a href="/feeds?sort=$col&order=$alt_order">$title</a></th>
+<th$css><a href="feeds?sort=$col&order=$alt_order">$title</a></th>
 #end for
 </tr>
 #set rownum = 0
@@ -113,9 +113,9 @@ from (
 #else
 #set error_flag = ''
 #end if
-<tr valign="top" class="$rowcolor"><td><a href="$feed_html">$feed_title</a>&nbsp;&nbsp;<a$error_flag href="$feed_xml">(XML)</a><a href="/feed_info?feed_uid=$feed_uid"> (details)</a>$flags</td><td nowrap align="right">$since</td><td nowrap align="right"><a href="/view?feed_uid=$feed_uid&show=unread">$unread</a></td><td nowrap align="right"><a href="/view?feed_uid=$feed_uid&show=filtered">$filtered</a></td><td nowrap align="right"><a href="/view?feed_uid=$feed_uid&show=up">$interesting</a></td><td nowrap align="right"><%=ratio%>%</td><td nowrap align="right"><a href="/view?feed_uid=$feed_uid&show=all">$total</a></td><td nowrap>
+<tr valign="top" class="$rowcolor"><td><a href="$feed_html">$feed_title</a>&nbsp;&nbsp;<a$error_flag href="$feed_xml">(XML)</a><a href="feed_info?feed_uid=$feed_uid"> (details)</a>$flags</td><td nowrap align="right">$since</td><td nowrap align="right"><a href="view?feed_uid=$feed_uid&show=unread">$unread</a></td><td nowrap align="right"><a href="view?feed_uid=$feed_uid&show=filtered">$filtered</a></td><td nowrap align="right"><a href="view?feed_uid=$feed_uid&show=up">$interesting</a></td><td nowrap align="right"><%=ratio%>%</td><td nowrap align="right"><a href="view?feed_uid=$feed_uid&show=all">$total</a></td><td nowrap>
 #if unread > 0
-<a href="/catch_up?feed_uid=$feed_uid">catch up</a>
+<a href="catch_up?feed_uid=$feed_uid">catch up</a>
 #end if
 </td></tr>
 #end for
