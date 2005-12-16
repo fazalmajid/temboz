@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import sys, util
+import sys, os, util
 
 # XXX TODO
 # XXX pacing
@@ -22,7 +22,13 @@ if __name__ == '__main__':
     sys.argv[1:], 'vh',
     ['refresh', 'server', 'import=', 'kill', 'help', 'clean', 'cleanup'])
   if opts == []:
-    usage()
+    # try to detect if we are being called as a CGI script
+    cgi_ver = os.getenv('GATEWAY_INTERFACE')
+    if cgi_ver and cgi_ver.startswith('CGI/'):
+      import server
+      server.do_cgi()
+    else:
+      usage()
   for opt, val in opts:
     if opt in ['-h', '--help']:
       usage()
@@ -60,3 +66,4 @@ if __name__ == '__main__':
       except:
         util.print_stack()
         sys.exit(1)
+# http://bayazid.kefta.com/~majid/temboz/nph-temboz.cgi/view?feed_uid=1

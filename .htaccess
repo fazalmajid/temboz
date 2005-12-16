@@ -1,0 +1,8 @@
+AuthUserFile /home/majid/public_html/temboz/.htpasswd
+AuthGroupFile /dev/null
+AuthName 'temboz'
+AuthType Basic
+
+<limit GET PUT POST>
+require valid-user
+</limit>

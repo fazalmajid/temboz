@@ -2,7 +2,7 @@
 # $Id$
 import sys, os, logging, base64, time
 
-import BaseHTTPServer, SocketServer, cgi
+import BaseHTTPServer, SocketServer, cgi, cStringIO
 from Cheetah.Template import Template
 import param
 
@@ -230,14 +230,13 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     self.browser_output(200, self.mime_type, ''.join(self.output_buffer))
 
   images = {}
-  for fn in [fn for fn in os.listdir('images') if fn.endswith('.gif')]:
+  for fn in [fn for fn in os.listdir('images')
+             if fn.endswith('.gif') or fn.endswith('.ico')]:
     images[fn] = open('images/' + fn).read()
-  pixel_data = open('images/pixel.gif').read()
   def pixel(self):
     self.browser_output(200, 'image/gif', self.images['pixel.gif'])
-  favicon_data = open('images/favicon.ico').read()
   def favicon(self):
-    self.browser_output(200, 'image/x-icon', self.favicon_data)
+    self.browser_output(200, 'image/x-icon', self.images['favicon.ico'])
   def xml(self):
     self.browser_output(200, 'text/xml', '<?xml version="1.0"?>')
 
@@ -343,3 +342,40 @@ def run():
   print >> pidfile, os.getpid()
   pidfile.close()
   server.serve_forever()
+
+class DummyRequest:
+  """Emulate a BaseHTTPServer from a CGI"""
+  def makefile(self, mode, size):
+    if mode == 'rb':
+      url = os.getenv('PATH_INFO')
+      if os.getenv('QUERY_STRING'):
+        url += '?' + os.getenv('QUERY_STRING')
+      request = """%(method)s %(url)s %(protocol)s\n""" % {
+        'method': os.getenv('REQUEST_METHOD'),
+        'url': url,
+        'protocol': os.getenv('SERVER_PROTOCOL'),
+        }
+      request += '\n'.join(['%s: %s' % (name[5:].replace('_', '-'), value)
+                            for (name, value) in os.environ.iteritems()
+                            if name.startswith('HTTP_')])
+      cl = os.getenv('CONTENT_LENGTH')
+      if cl:
+        cl = int(cl)
+        request += '\nContent-Length: %d\n\n%s' % (cl, sys.stdin.read(cl))
+      else:
+        request += '\n\n'
+      f = open('/tmp/sopz', 'w')
+      f.write(request)
+      f.close()
+      return cStringIO.StringIO(request)
+    elif mode == 'wb':
+      return sys.stdout
+
+def require_auth(self, *args, **kwargs):
+  return os.getenv('REMOTE_USER')
+
+def do_cgi():
+  """Implement a CGI using a BaseHTTPHandler subclass"""
+  param.log = open('/dev/null', 'w')
+  Handler.require_auth = require_auth
+  h = Handler(DummyRequest(), ('localhost', 80), None)

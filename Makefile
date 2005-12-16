@@ -1,4 +1,4 @@
-VERSION= 	0.7.1
+VERSION= 	0.8
 TAR_VERSION=	$(VERSION)
 PAGES= 		view error opml feeds temboz.css rules catch_up
 DATE:sh=	date +'%Y-%m-%d'
@@ -32,7 +32,7 @@ cvsdist disttar:: distclean changelog
 	-rm -rf temboz-$(VERSION)
 	mkdir temboz-$(VERSION)
 	cp README INSTALL NEWS LICENSE UPGRADE ChangeLog temboz *.py temboz-$(VERSION)
-	cp ddl.sql me.opml temboz-$(VERSION)
+	cp ddl.sql me.opml .ht* temboz-$(VERSION)
 	cp -r pages images etc temboz-$(VERSION)
 	-rm -f temboz-$(VERSION)/etc/.cvsignore
 	-rm -rf temboz-$(VERSION)/pages/CVS temboz-$(VERSION)/images/CVS
