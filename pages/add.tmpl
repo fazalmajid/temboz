@@ -2,13 +2,13 @@
 <html>
 <head><title>Temboz - Add a feed</title>
 <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
-<link rel="stylesheet" type="text/css" href="/temboz.css">
+<link rel="stylesheet" type="text/css" href="temboz.css">
 </head>
 <body>
-<p class="menu"><a href="/view">All unread</a>&nbsp;&nbsp;<a href="/feeds">All feeds</a></p>
+<p class="menu"><a href="view">All unread</a>&nbsp;&nbsp;<a href="feeds">All feeds</a></p>
 
 Subscribe to a RSS feed:<br>
-<form action="/add" method="POST">
+<form action="add" method="POST">
 <input size=64 name="feed_xml"><input type="submit" value="Subscribe">
 </form>
 
@@ -24,8 +24,8 @@ Subscribe to a RSS feed:<br>
 <p>Subscribed successfully. 
 #if num_added > 0
 <%=num_added%> unread articles.&nbsp;&nbsp;
-<a href="/view?feed_uid=<%=feed_uid%>">view articles now</a>&nbsp;&nbsp;
-<a href="/catch_up?feed_uid=<%=feed_uid%>">catch up</a>
+<a href="view?feed_uid=<%=feed_uid%>">view articles now</a>&nbsp;&nbsp;
+<a href="catch_up?feed_uid=<%=feed_uid%>">catch up</a>
 #end if
 </p>
 #except update.ParseError
