@@ -31,7 +31,7 @@ cvsupdate:
 cvsdist disttar:: distclean changelog
 	-rm -rf temboz-$(VERSION)
 	mkdir temboz-$(VERSION)
-	-rm -f *~
+	-rm -f .*~ *~
 	cp README INSTALL NEWS LICENSE UPGRADE ChangeLog temboz *.py temboz-$(VERSION)
 	cp ddl.sql me.opml .ht* temboz-$(VERSION)
 	cp -r pages images etc temboz-$(VERSION)
