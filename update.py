@@ -269,7 +269,7 @@ class FeedWorker(threading.Thread):
       self.out_q.put(None)
   def fetch_feed(self, feed_uid, feed_xml, feed_etag, feed_modified,
                  feed_dupcheck):
-    print self.id, feed_xml
+    print >> param.log, self.id, feed_xml
     return fetch_feed(feed_uid, feed_xml, feed_etag, feed_modified)
 
 def fetch_feed(feed_uid, feed_xml, feed_etag, feed_modified):
@@ -281,7 +281,7 @@ def fetch_feed(feed_uid, feed_xml, feed_etag, feed_modified):
     f = feedparser.parse(feed_xml, etag=feed_etag, modified=feed_modified)
   except socket.timeout:
     if param.debug:
-      print 'EEEEE error fetching feed', feed_xml
+      print >> param.log, 'EEEEE error fetching feed', feed_xml
     f = {'channel': {}, 'items': []}
   return f
 
@@ -296,7 +296,7 @@ def increment_errors(db, c, feed_uid):
   max_errors = getattr(param, 'max_errors', 100)
   if max_errors != -1 and errors > max_errors:
     # XXX we should generate a service announcement item if this happens
-    print 'EEEEE too many errors, suspending feed', feed_title
+    print >> param.log, 'EEEEE too many errors, suspending feed', feed_title
     c.execute('update fm_feeds set feed_status = 1 where feed_uid=%d' \
               % feed_uid)
 
@@ -317,7 +317,7 @@ def clear_errors(db, c, feed_uid, f):
 
 def update_feed(db, c, f, feed_uid, feed_xml, feed_etag, feed_modified,
                 feed_dupcheck=None):
-  print feed_xml
+  print >> param.log, feed_xml
   # check for errors - HTTP code 304 means no change
   if 'title' not in f.feed and 'link' not in f.feed and \
          ('status' not in f or f['status'] not in [304]):
@@ -422,7 +422,7 @@ Returns a tuple (number of items added unread, number of filtered items)"""
                   % (feed_uid, escape(title)))
         l = bool(c.fetchone()[0])
         if l:
-          print 'DUPLICATE TITLE', title
+          print >> param.log, 'DUPLICATE TITLE', title
     # GUID already exists, this is a change
     else:
       assert len(l) == 1
@@ -453,10 +453,10 @@ Returns a tuple (number of items added unread, number of filtered items)"""
         c.execute(sql)
         if skip:
           num_filtered += 1
-          print 'SKIP', title
+          print >> param.log, 'SKIP', title
         else:
           num_added += 1
-          print ' ' * 4, title
+          print >> param.log, ' ' * 4, title
       except:
         util.print_stack(['c', 'f'])
         continue
@@ -565,7 +565,7 @@ class PeriodicUpdater(threading.Thread):
     while True:
       # XXX should wrap this in a try/except clause
       time.sleep(param.refresh_interval)
-      print time.ctime(), '- refreshing feeds'
+      print >> param.log, time.ctime(), '- refreshing feeds'
       try:
         update()
       except:

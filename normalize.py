@@ -110,7 +110,7 @@ def normalize(item, f, run_filters=True):
         item[key] = item[key][0]
       else:
         # XXX not really sure how to handle these cases
-        print 'E' * 16, 'ambiguous RDF', item[key]
+        print >> param.log, 'E' * 16, 'ambiguous RDF', item[key]
         item[key] = item[key][0]
     if isinstance(item.get(key), dict) and 'value' in item[key]:
       item[key] = item[key]['value']
@@ -120,7 +120,7 @@ def normalize(item, f, run_filters=True):
     item['title'] = 'Untitled'
   # XXX for debugging
   if type(item['title']) not in [str, unicode]:
-    print 'TITLE' * 15
+    print >> param.log, 'TITLE' * 15
     import code
     from sys import exit
     code.interact(local=locals())
@@ -140,7 +140,7 @@ def normalize(item, f, run_filters=True):
   if type(item['link']) == unicode:
     item['link'] = str(item['link'])
   if type(item['link']) != str:
-    print 'LINK' * 18
+    print >> param.log, 'LINK' * 18
     import code
     from sys import exit
     code.interact(local=locals())

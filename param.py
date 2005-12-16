@@ -67,6 +67,6 @@ max_errors = 100
 #debug = True
 debug = False
 
-# Logging, controlled by the standard Python logging module
-import logging
-log = logging.getLogger('Temboz')
+# logging
+import sys
+log = sys.stderr

@@ -2,7 +2,7 @@
 # a writer thread collide. This module wraps a SQLite object with a Python
 # mutex to prevent this from happening inside Temboz
 
-import sys, threading, math, time
+import sys, threading, math, time, param
 
 class PseudoCursor(object):
   def __init__(self, db):
@@ -24,7 +24,7 @@ class PseudoCursor(object):
     result = self.c.execute(*args, **kwargs)
     elapsed = time.time() - before
     if elapsed > 5.0:
-      print >> sys.stderr, 'Slow SQL:', elapsed, args, kwargs
+      print >> param.log, 'Slow SQL:', elapsed, args, kwargs
     return result
   def sqlite_last_insert_rowid(self):
     return self.db.db.db.sqlite_last_insert_rowid()
@@ -75,14 +75,14 @@ class PseudoDB:
         sqlite_cli = 'sqlite3'
       except sqlite.DatabaseError, e:
         if str(e) == 'file is encrypted or is not a database':
-#           print 'NOTICE: rss.db uses the SQLite 2.x format'
-#           print 'an upgrade to the 3.x format is recommended, see:'
-#           print 'http://www.temboz.com/temboz/wiki?p=UpgradingSqlite'
+#           print >> param.log, 'NOTICE: rss.db uses the SQLite 2.x format'
+#           print >> param.log, 'Upgrading to 3.x is recommended, see:'
+#           print >> param.log, 'http://www.temboz.com/temboz/wiki?p=UpgradingSqlite'
           raise ImportError
         if 'no such table' in str(e):
-          print 'WARNING: empty database, populating with new tables...',
+          print >> param.log, 'WARNING: empty database, populating...',
           self.populate_tables()
-          print 'done.'
+          print >> param.log, 'done.'
     except ImportError:
       import sqlite
       self.db = sqlite.connect('rss.db', mode=077)
