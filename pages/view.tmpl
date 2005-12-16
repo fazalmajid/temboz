@@ -91,7 +91,7 @@
 <script language="JavaScript">
 hidden = Array();
 #if public
-#set img_prefix = 'images'
+#set img_prefix = 'images/'
 #set overload_threshold = 50
 function webop(op, uid) {
   ; // don't do anything about up/down yet
@@ -107,10 +107,10 @@ function webop(op, uid) {
     var x = false;
   }
   if (x) {
-    x.open('GET', '/xmlfeedback/' + op + '/' + Math.random().toString().substring(8) + '/' + uid + '.xml');
+    x.open('GET', 'xmlfeedback/' + op + '/' + Math.random().toString().substring(8) + '/' + uid + '.xml');
     x.send(null);
   } else {
-    i.src = '/feedback/' + op + '/' + Math.random().toString().substring(8) + '/' + uid + '.gif';
+    i.src = 'feedback/' + op + '/' + Math.random().toString().substring(8) + '/' + uid + '.gif';
   }
 }
 #end if
@@ -226,7 +226,7 @@ limit %d offset %d)""" % (overload_threshold, offset))
 #if public
 </p>
 #else
-&nbsp;&nbsp;<a href="/feeds">All feeds</a>&nbsp;&nbsp;<a href="/add">Add feed</a>&nbsp;&nbsp;<a href="/rules">Filters</a>&nbsp;&nbsp;
+&nbsp;&nbsp;<a href="feeds">All feeds</a>&nbsp;&nbsp;<a href="add">Add feed</a>&nbsp;&nbsp;<a href="rules">Filters</a>&nbsp;&nbsp;
 ########################################################################
 ##
 ## Crude search functionality
@@ -288,9 +288,9 @@ limit %d""" % overload_threshold)
 ##
 ########################################################################
 <div class="article" id="art$uid"><div class="headline"><img
-width="32" height="32" alt="up" src="<%=img_prefix%>/up.gif" class="up"
+width="32" height="32" alt="up" src="<%=img_prefix%>up.gif" class="up"
 onclick="highlight('$uid')" /><img width="32" height="32" alt="down"
-src="<%=img_prefix%>/down.gif" class="down" onclick="hide('$uid')"
+src="<%=img_prefix%>down.gif" class="down" onclick="hide('$uid')"
 /><a href="<%=redirect%>" class="headline" target="_blank"
 title="by $creator, cached at $loaded"
 onclick="highlight('$uid');">$title</a><br><a
