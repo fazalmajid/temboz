@@ -33,7 +33,7 @@ Error: $status
 </head>
 <body>
 <p class="menu"><a href="view">All unread</a>&nbsp;&nbsp;<a href="feeds">All feeds</a></p>
-<form action="/hard_purge?feed_uid=$feed_uid" method="POST">
+<form action="hard_purge?feed_uid=$feed_uid" method="POST">
 <input type="hidden" name="confirm" value="yes">
 Please confirm you want to completely delete all articles and the feed itself
 <a href="$url">$title</a> <input type="submit" value="Confirm">

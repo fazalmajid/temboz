@@ -22,9 +22,9 @@ order by rule_uid""")
 <tr><th>Rule</th><th>Expires</th><th>Text</th><th>Delete</th><th>Update</th></tr>
 #for uid, expires, text in c
 #set lines = max(4, update.rule_lines(text))
-<tr valign="top"><form action="/rules" method="get"><td>$uid<input type="hidden" name="uid" value="$uid"></td><td><input type="text" name="expires" value="$expires" size="10"></td><td><textarea cols="80" rows="$lines" name="text">$text</textarea></td><td><input type="checkbox" name="delete"></td><td><input type="submit" value="Update"></td></td></form></tr>
+<tr valign="top"><form action="rules" method="get"><td>$uid<input type="hidden" name="uid" value="$uid"></td><td><input type="text" name="expires" value="$expires" size="10"></td><td><textarea cols="80" rows="$lines" name="text">$text</textarea></td><td><input type="checkbox" name="delete"></td><td><input type="submit" value="Update"></td></td></form></tr>
 #end for
-<tr valign="top"><form action="/rules" method="get"><td><input type="hidden" name="uid" value="new"></td><td><input type="text" name="expires" size="10" value="never"></td><td><textarea cols="80" name="text">'XXX' in feed_title and 'YYY' in title</textarea></td><td></td><td><input type="submit" value="Add"></td></td></form></tr>
+<tr valign="top"><form action="rules" method="get"><td><input type="hidden" name="uid" value="new"></td><td><input type="text" name="expires" size="10" value="never"></td><td><textarea cols="80" name="text">'XXX' in feed_title and 'YYY' in title</textarea></td><td></td><td><input type="submit" value="Add"></td></td></form></tr>
 #silent c.close()
 </table>
 

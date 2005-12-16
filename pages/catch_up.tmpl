@@ -59,7 +59,7 @@ Error: $status
 </head>
 <body>
 <p class="menu"><a href="view">All unread</a>&nbsp;&nbsp;<a href="feeds">All feeds</a></p>
-<form action="/catch_up?reload=$reload&feed_uid=$feed_uid" method="POST">
+<form action="catch_up?reload=$reload&feed_uid=$feed_uid" method="POST">
 <input type="hidden" name="referrer" value="$referrer">
 <input type="hidden" name="confirm" value="yes">
 #if $reload == 'Y':
