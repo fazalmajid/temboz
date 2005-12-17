@@ -1,32 +1,18 @@
 #!/usr/local/bin/python
 # $Id$
-import sys, os, logging, base64, time
+import sys, os, stat, logging, base64, time
 
 import BaseHTTPServer, SocketServer, cgi, cStringIO
-from Cheetah.Template import Template
 import param
 
 class Server(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
   pass
 
-class TembozTemplate(Template):
-  def since(self, delta_t):
-    if not delta_t:
-      return 'never'
-    delta_t = float(delta_t)
-    if delta_t < 2.0/24:
-      return str(int(delta_t * 24.0 * 60.0)) + ' minutes ago'
-    elif delta_t < 1.0:
-      return str(int(delta_t * 24.0)) + ' hours ago'
-    elif delta_t < 2.0:
-      return 'one day ago'
-    elif delta_t < 3.0:
-      return str(int(delta_t)) + ' days ago'
-    else:
-      return time.strftime('%Y-%m-%d',
-                           time.localtime(time.time() - 86400 * delta_t))
+from TembozTemplate import TembozTemplate, Template
+from Cheetah.Compiler import Compiler
 
 class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
+  tmpl_cache = {}
   def version_string(self):
     """Return the server software version string."""
     return param.user_agent
@@ -313,12 +299,31 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
           getattr(self, 'op_' + op)(item_uid)
         self.xml()
 
-      # XXX use static compiled versions for speed
+      # use static precompiled versions for speed, specially with CGI
       tmpl = parts[0].split('/', 1)[1].strip('/')
       if tmpl.endswith('.css'):
         self.mime_type = 'text/css'
-      page = 'pages/' + tmpl.replace('.', '_') + '.tmpl'
-      tmpl = TembozTemplate(file=page, searchList=[self.input])
+      tmpl = tmpl.replace('.', '_')
+      page = 'pages/' + tmpl + '.tmpl'
+      compiled = 'pages/' + tmpl + '.py'
+      module = 'pages/' + tmpl
+      try:
+        compiled_t = os.stat(compiled)[stat.ST_CTIME]
+      except OSError:
+        compiled_t = 0
+      template_t = os.stat(page)[stat.ST_CTIME]
+      if compiled_t < template_t:
+        text = Compiler(file=page, moduleName=tmpl)
+        f = open(compiled, 'w')
+        f.write(str(text))
+        f.close()
+        del text
+        if tmpl in self.tmpl_cache:
+          del self.tmpl_cache[tmpl]
+      if tmpl not in self.tmpl_cache:
+        self.tmpl_cache[tmpl] = getattr(__import__(module), tmpl)
+      tmpl = self.tmpl_cache[tmpl]
+      tmpl = tmpl(searchList=[self.input])
       tmpl.respond(trans=self)
       self.flush()
     except:
