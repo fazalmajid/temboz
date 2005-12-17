@@ -1,6 +1,6 @@
 VERSION= 	0.8
 TAR_VERSION=	$(VERSION)
-PAGES= 		view error opml feeds temboz.css rules catch_up
+PAGES= 		view error opml feeds temboz_css rules catch_up
 DATE:sh=	date +'%Y-%m-%d'
 
 all: changelog
@@ -55,6 +55,7 @@ distclean:
 
 clean: distclean
 	-rm -rf temboz-$(VERSION) temboz-$(VERSION).tar.gz
+	-rm -f pages/*.py pages/*.pyc pages/*.pyo pages/*.py.bak
 
 realclean: clean
 	-rm -rf rss.db
