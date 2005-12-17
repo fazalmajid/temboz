@@ -317,7 +317,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
       tmpl = parts[0].split('/', 1)[1].strip('/')
       if tmpl.endswith('.css'):
         self.mime_type = 'text/css'
-      page = 'pages/' + tmpl + '.tmpl'
+      page = 'pages/' + tmpl.replace('.', '_') + '.tmpl'
       tmpl = TembozTemplate(file=page, searchList=[self.input])
       tmpl.respond(trans=self)
       self.flush()
