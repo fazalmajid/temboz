@@ -10,6 +10,7 @@ class Server(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
 
 from TembozTemplate import TembozTemplate, Template
 from Cheetah.Compiler import Compiler
+from distutils.util import byte_compile
 
 class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
   tmpl_cache = {}
@@ -243,6 +244,64 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
   def op_promote(self, item_uid):
     self.set_rating(item_uid, 1)
 
+  def set_mime_type(self, tmpl):
+    if type(tmpl) in [list, tuple]:
+      tmpl = tmpl[-1]
+    tmpl = tmpl.lower()
+    if tmpl.endswith('.css'):
+      self.mime_type = 'text/css'
+    elif tmpl.endswith('.gif'):
+      self.mime_type = 'image/gif'
+    elif tmpl.endswith('.png'):
+      self.mime_type = 'image/png'
+    elif tmpl.endswith('.jpg')  or tmpl.endswith('.jpeg'):
+      self.mime_type = 'image/jpeg'
+    elif tmpl.endswith('.js'):
+      self.mime_type = 'text/javascript'
+    elif tmpl.endswith('.xml'):
+      self.mime_type = 'text/xml'
+    elif tmpl.endswith('.js'):
+      self.mime_type = 'application-x/javascript'
+    elif tmpl.endswith('.csv'):
+      self.mime_type = 'application/vnd.ms-excel'
+    else:
+      self.mime_type = 'text/html'
+
+  def use_template(self, tmpl, searchlist, tmpl_dir='pages'):
+    """Use compiled-on-demand versions of Cheetah templates for speed,
+    specially with CGI
+    """
+    self.set_mime_type(tmpl)
+    tmpl = tmpl.replace('.', '_')
+    modname = tmpl_dir + '/' + tmpl
+    page = modname + '.tmpl'
+    compiled = modname + '.py'
+    try:
+      compiled_t = os.stat(compiled)[stat.ST_CTIME]
+    except OSError:
+      compiled_t = 0
+    template_t = os.stat(page)[stat.ST_CTIME]
+    #print tmpl, 'edited', time.ctime(template_t),
+    #print 'compiled', time.ctime(compiled_t)
+    if compiled_t < template_t:
+      #print 'recompiling'
+      text = Compiler(file=page, moduleName=tmpl)
+      f = open(compiled, 'w')
+      f.write(str(text))
+      f.close()
+      del text
+      byte_compile([compiled], verbose=0)
+      byte_compile([compiled], verbose=0, optimize=2)
+      if tmpl in self.tmpl_cache:
+        reload(self.tmpl_cache[tmpl])
+    if tmpl not in self.tmpl_cache:
+      self.tmpl_cache[tmpl] = __import__(modname)
+    module = self.tmpl_cache[tmpl]
+    tmpl = getattr(module, tmpl)
+    tmpl = tmpl(searchList=searchlist)
+    tmpl.respond(trans=self)
+    self.flush()
+
   def process_request(self):
     if not self.require_auth(param.auth_dict):
       return
@@ -299,33 +358,8 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
           getattr(self, 'op_' + op)(item_uid)
         self.xml()
 
-      # use static precompiled versions for speed, specially with CGI
       tmpl = parts[0].split('/', 1)[1].strip('/')
-      if tmpl.endswith('.css'):
-        self.mime_type = 'text/css'
-      tmpl = tmpl.replace('.', '_')
-      page = 'pages/' + tmpl + '.tmpl'
-      compiled = 'pages/' + tmpl + '.py'
-      module = 'pages/' + tmpl
-      try:
-        compiled_t = os.stat(compiled)[stat.ST_CTIME]
-      except OSError:
-        compiled_t = 0
-      template_t = os.stat(page)[stat.ST_CTIME]
-      if compiled_t < template_t:
-        text = Compiler(file=page, moduleName=tmpl)
-        f = open(compiled, 'w')
-        f.write(str(text))
-        f.close()
-        del text
-        if tmpl in self.tmpl_cache:
-          del self.tmpl_cache[tmpl]
-      if tmpl not in self.tmpl_cache:
-        self.tmpl_cache[tmpl] = getattr(__import__(module), tmpl)
-      tmpl = self.tmpl_cache[tmpl]
-      tmpl = tmpl(searchList=[self.input])
-      tmpl.respond(trans=self)
-      self.flush()
+      self.use_template(tmpl, [self.input])
     except:
       e = sys.exc_info()
       tmpl = Template(file='pages/error.tmpl')
