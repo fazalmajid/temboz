@@ -4,6 +4,68 @@
 
 import sys, threading, math, time, param
 
+# name of the command-line executable for SQLite
+sqlite_cli = 'sqlite'
+
+# support classes for SQLite3, essentially to catch the OperationalError
+# exceptions thrown when two writers collide
+
+class PseudoCursor3(object):
+  def __init__(self, db):
+    self.c = db.cursor()
+  def __str__(self):
+    return '<SQLite3 Cursor wrapper>'
+  def __repr__(self):
+    return self.__str__()
+  def __iter__(self):
+    return iter(self.c)
+  def __getattr__(self, name):
+    return getattr(self.c, name, None)
+  def execute(self, *args, **kwargs):
+    from pysqlite2 import dbapi2 as sqlite
+    before = time.time()
+    backoff = 0.1
+    done = False
+    while not done:
+      try:
+        result = self.c.execute(*args, **kwargs)
+        done = True
+      except sqlite.OperationalError, e:
+        print >> param.log, str(e) + ', sleeping for', backoff
+        time.sleep(backoff)
+        backoff = min(backoff * 2, 5.0)
+    elapsed = time.time() - before
+    if elapsed > 5.0:
+      print >> param.log, 'Slow SQL:', elapsed, args, kwargs
+    return result
+
+class SQLite3Factory:
+  """SQLite 3.x has a different, improved concurrency model, but it has also
+tightened checking. Among other things, database objects may not be shared
+between threads, apparently due to bugs in some RedHat Linux threading
+library implementations:
+    http://www.hwaci.com/sw/sqlite/faq.html#q8
+
+Thus for SQLite 3.x, singleton.db acts like an implicit factory object
+returning a new connection for each call. We cache the database connection
+objects in the threading.Thread object (not officially supported, but works
+well enough) so commits can be associated with the corresponding cursor call.
+"""
+  def __getattr__(self, name):
+    t = threading.currentThread()
+    db = getattr(t, '__singleton_db', None)
+    if not db:
+      from pysqlite2 import dbapi2 as sqlite
+      db = sqlite.connect('rss.db')
+      setattr(t, '__singleton_db', db)
+    del t
+    if name == 'cursor':
+      return lambda: PseudoCursor3(db)
+    else:
+      return getattr(db, name)
+
+# support classes for SQLite2 to implement locking
+
 class PseudoCursor(object):
   def __init__(self, db):
     self.db = db
@@ -29,31 +91,6 @@ class PseudoCursor(object):
   def sqlite_last_insert_rowid(self):
     return self.db.db.db.sqlite_last_insert_rowid()
   lastrowid = property(sqlite_last_insert_rowid)
-
-class SQLite3Factory:
-  """SQLite 3.x has a different, improved concurrency model, but it has also
-tightened checking. Among other things, database objects may not be shared
-between threads, apparently due to bugs in some RedHat Linux threading
-library implementations:
-    http://www.hwaci.com/sw/sqlite/faq.html#q8
-
-Thus for SQLite 3.x, singleton.db acts like an implicit factory object
-returning a new connection for each call. We cache the database connection
-objects in the threading.Thread object (not officially supported, but works
-well enough) so commits can be associated with the corresponding cursor call.
-"""
-  def __getattr__(self, name):
-    t = threading.currentThread()
-    db = getattr(t, '__singleton_db', None)
-    if not db:
-      from pysqlite2 import dbapi2 as sqlite
-      db = sqlite.connect('rss.db')
-      setattr(t, '__singleton_db', db)
-    del t
-    return getattr(db, name)
-
-# name of the command-line executable for SQLite
-sqlite_cli = 'sqlite'
 
 class PseudoDB:
   def __init__(self):
