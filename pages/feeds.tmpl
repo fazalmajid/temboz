@@ -81,7 +81,11 @@ from (
 #set interesting = int(interesting)
 #set uninteresting = int(uninteresting)
 #set filtered = int(filtered)
+#if not total
+#set total = 0
+#else
 #set total = int(total)
+#end if
 #if interesting + uninteresting > 0
 #set ratio = interesting*100/(interesting + uninteresting)
 #else
