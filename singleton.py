@@ -39,6 +39,20 @@ class PseudoCursor3(object):
       print >> param.log, 'Slow SQL:', elapsed, args, kwargs
     return result
 
+def commit_wrapper(method):
+  """Provide locking error recovery for commit/rollback"""
+  from pysqlite2 import dbapi2 as sqlite
+  backoff = 0.1
+  done = False
+  while not done:
+    try:
+      method()
+      done = True
+    except sqlite.OperationalError, e:
+      print >> param.log, str(e) + ', sleeping for', backoff
+      time.sleep(backoff)
+      backoff = min(backoff * 2, 5.0)
+
 class SQLite3Factory:
   """SQLite 3.x has a different, improved concurrency model, but it has also
 tightened checking. Among other things, database objects may not be shared
@@ -61,6 +75,8 @@ well enough) so commits can be associated with the corresponding cursor call.
     del t
     if name == 'cursor':
       return lambda: PseudoCursor3(db)
+    elif name in ['commit', 'rollback']:
+      return lambda: commit_wrapper(getattr(db, name))
     else:
       return getattr(db, name)
 
