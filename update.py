@@ -553,7 +553,10 @@ def update():
     if not feed_info:
       workers_left -= 1
     else:
-      update_feed(db, c, *feed_info)
+      try:
+        update_feed(db, c, *feed_info)
+      except:
+        util.print_stack()
   db.commit()
   c.close()
 
