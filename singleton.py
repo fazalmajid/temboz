@@ -2,7 +2,7 @@
 # a writer thread collide. This module wraps a SQLite object with a Python
 # mutex to prevent this from happening inside Temboz
 
-import sys, threading, math, time, param
+import sys, thread, threading, signal, math, time, param
 
 # name of the command-line executable for SQLite
 sqlite_cli = 'sqlite'
@@ -24,6 +24,8 @@ class PseudoCursor3(object):
   def execute(self, *args, **kwargs):
     from pysqlite2 import dbapi2 as sqlite
     before = time.time()
+    if param.debug:
+      print >> param.log, thread.get_ident(), time.time(), args
     backoff = 0.1
     done = False
     while not done:
@@ -31,12 +33,16 @@ class PseudoCursor3(object):
         result = self.c.execute(*args, **kwargs)
         done = True
       except sqlite.OperationalError, e:
-        print >> param.log, str(e) + ', sleeping for', backoff
+        if param.debug:
+          print >> param.log, thread.get_ident(), time.time(), str(e),
+          print >> param.log, 'sleeping for', backoff
         time.sleep(backoff)
         backoff = min(backoff * 2, 5.0)
     elapsed = time.time() - before
-    if elapsed > 5.0:
-      print >> param.log, 'Slow SQL:', elapsed, args, kwargs
+    if param.debug:
+      if elapsed > 5.0:
+        print >> param.log, 'Slow SQL:', elapsed, args, kwargs
+      print >> param.log, thread.get_ident(), time.time(), 'done'
     return result
 
 def commit_wrapper(method):
@@ -47,9 +53,13 @@ def commit_wrapper(method):
   while not done:
     try:
       method()
+      if param.debug:
+        print >> param.log, thread.get_ident(), time.time(), 'commit'
       done = True
     except sqlite.OperationalError, e:
-      print >> param.log, str(e) + ', sleeping for', backoff
+      if param.debug:
+        print >> param.log, thread.get_ident(), time.time(), str(e),
+        print >> param.log, 'sleeping for', backoff
       time.sleep(backoff)
       backoff = min(backoff * 2, 5.0)
 
@@ -101,7 +111,7 @@ class PseudoCursor(object):
     before = time.time()
     result = self.c.execute(*args, **kwargs)
     elapsed = time.time() - before
-    if elapsed > 5.0:
+    if param.debug and elapsed > 5.0:
       print >> param.log, 'Slow SQL:', elapsed, args, kwargs
     return result
   def sqlite_last_insert_rowid(self):
@@ -151,6 +161,47 @@ class PseudoDB:
     os.system('sqlite3 rss.db < ddl.sql')
     
 db = PseudoDB()
+
+# upgrade data model on demand
+c = db.cursor()
+c.execute("select count(*) from sqlite_master where name='v_feeds'")
+if not c.fetchone()[0]:
+  print >> param.log, 'WARNING: creating view v_feeds...',
+  c.execute("""create view v_feeds as
+  select feed_uid, feed_title, feed_html, feed_xml,
+    min(last_modified) as last_modified,
+    sum(case when item_rating=1 then cnt else 0 end) as interesting,
+    sum(case when item_rating=0 then cnt else 0 end) as unread,
+    sum(case when item_rating=-1 then cnt else 0 end) as uninteresting,
+    sum(case when item_rating=-2 then cnt else 0 end) as filtered,
+    sum(cnt) as total,
+    feed_status, feed_private, feed_errors
+  from fm_feeds left outer join (
+    select item_rating, item_feed_uid, count(*) as cnt,
+      julianday('now') - max(
+      ifnull(
+	julianday(item_modified),
+	julianday(item_created)
+      )
+    ) as last_modified
+    from fm_items
+    group by item_rating, item_feed_uid
+  ) on feed_uid=item_feed_uid
+  group by feed_uid, feed_title, feed_html, feed_xml""")
+  db.commit()  
+  print >> param.log, 'done.'
+c.execute("select count(*) from sqlite_master where name='v_feed_stats'")
+if not c.fetchone()[0]:
+  print >> param.log, 'WARNING: creating view v_feed_stats...',
+  c.execute("""create view v_feed_stats as
+  select feed_uid, feed_title, feed_html, feed_xml,
+    last_modified,
+    interesting, unread, uninteresting, filtered, total,
+    interesting * 100.0 / (total - filtered - unread) as snr,
+    feed_status, feed_private, feed_errors
+  from v_feeds""")
+  db.commit()  
+  print >> param.log, 'done.'
 
 ########################################################################
 # user-defined aggregate function to calculate the mean and standard
