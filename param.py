@@ -52,6 +52,7 @@ temboz_url = 'http://www.temboz.com/'
 user_agent = 'Temboz (%s)' % temboz_url
 
 # page unauthenticated users should see
+# the most common case is people checking the referrer logs on their web server
 unauth_page = temboz_url
 
 # dictionary of login/password
