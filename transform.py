@@ -46,6 +46,9 @@ filter_list = [
   degunk.Re('<p><font size="1"><hr />SPONSORED BY.*?</p>'),
   # Pheedo ads
   degunk.Re('<p><a href="http://www.pheedo.*?</p>', re.MULTILINE + re.DOTALL),
+  degunk.Re('<div><a href="http://www.pheedo[^"]*">\s*'
+            '<img src="http://www.pheedo.com.*?</div>',
+            re.MULTILINE + re.DOTALL),
   # IDFuel URLs should point to full article, not teaser
   degunk.ReUrl(url=r'http://www.idfuel.com/index.php?p=\1&more=1',
                regex_url=r'http://www.idfuel.com/index.php\?p=([0-9]*)'),
