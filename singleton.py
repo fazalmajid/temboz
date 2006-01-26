@@ -107,6 +107,8 @@ class PseudoCursor(object):
     return iter(self.c)
   def __getattr__(self, name):
     return getattr(self.c, name, None)
+  def __del__(self):
+    del self.c
   def execute(self, *args, **kwargs):
     before = time.time()
     result = self.c.execute(*args, **kwargs)
