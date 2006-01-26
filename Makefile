@@ -13,7 +13,7 @@ pages/%.py: pages/%.tmpl
 init:
 	@if [ `hostname` != "alamut" ]; then true; else echo "Will not run make init on alamut"; false; fi
 	-rm -f rss.db
-	sqlite rss.db < ddl.sql > /dev/null
+	sqlite3 rss.db < ddl.sql > /dev/null
 	temboz --import me.opml
 	temboz --refresh
 
