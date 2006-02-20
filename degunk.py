@@ -62,3 +62,19 @@ class ReUrl(Filter):
         item = args[1]
         item['link'] = url
     return content
+
+class UseFirstLink(Filter):
+  """Use the first link in the body as the article link.
+  Originally for the Daily Python URL feed, where the item link in the feed
+  is the (useless) anchor to that item on the page, rather than the article
+  itself.
+  """
+  url_re = re.compile('(?:href|src)="([^"]*)"', re.IGNORECASE)
+  def __init__(self, prefix):
+    self.prefix = prefix
+  def apply(self, content, *args, **kwargs):
+    item = args[1]
+    urls = self.url_re.findall(content)
+    if item['link'].startswith(self.prefix) and len(urls):
+      item['link'] = urls[0]
+    return content

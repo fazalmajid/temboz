@@ -44,6 +44,9 @@ filter_list = [
             'Email this</a>.*?Comments</a>',
             re.IGNORECASE + re.DOTALL),
   degunk.Re('<p><font size="1"><hr />SPONSORED BY.*?</p>'),
+  # Gawker cross-shilling
+  degunk.Re('&nbsp;<br><a href=[^>]*>Comment on this post</a>\s*<br>Related.*',
+            re.IGNORECASE + re.DOTALL),
   # Pheedo ads
   degunk.Re('<p><a href="http://www.pheedo.*?</p>', re.MULTILINE + re.DOTALL),
   degunk.Re('<div><a href="http://www.pheedo[^"]*">\s*'
@@ -52,6 +55,8 @@ filter_list = [
   # IDFuel URLs should point to full article, not teaser
   degunk.ReUrl(url=r'http://www.idfuel.com/index.php?p=\1&more=1',
                regex_url=r'http://www.idfuel.com/index.php\?p=([0-9]*)'),
+  # Daily Python URL should link to actual articles, not to itself
+  degunk.UseFirstLink('http://www.pythonware.com/daily/'),
   # possibly caused by bugs in feedparser
   degunk.Re('<br>[.>]<br>', 0, '<br>', iterate=True),
   # unwarranted multiple empty lines
