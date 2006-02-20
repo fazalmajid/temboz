@@ -215,7 +215,7 @@ def normalize(item, f, run_filters=True):
     for filter in transform.filter_list:
       content = filter.apply(content, f, item)
   except:
-    util.print_stack()
+    util.print_stack(black_list=['item'])
   ########################################################################
   # balance tags like <b>...</b>
   # XXX should also simplify HTML entities, e.g. &eacute; -> e
