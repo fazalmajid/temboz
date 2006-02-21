@@ -43,9 +43,20 @@ stop_words += [
   'using', 'usually', 'various', 'very', 'was', 'were', 'what', 'while', 'who',
   'whose', 'why', 'widely', 'will', 'would', 'yet' ]
 stop_words = dict(zip(stop_words, [1] * len(stop_words)))
-punct_map = {}
-for c in string.punctuation + '\'':
-  punct_map[ord(c)] = 32
+# translate to lower case, normalize whitespace
+# for ease of filtering
+# this needs to be a mapping as Unicode strings do not support traditional
+# str.translate with a 256-length string
+lc_map = {}
+for c in string.whitespace + string.punctuation + '\'':
+  lc_map[ord(c)] = 32
+lc_map.update(dict(zip(map(ord, string.uppercase),
+                       map(ord, string.lowercase))))
+# XXX need to normalize for HTML entities as well
+# XXX need to strip diacritics
+def lower(s):
+  s = unicode(s)
+  return s.translate(lc_map)
 
 # only Python 2.4 has a built-in set type
 try:
@@ -60,7 +71,7 @@ strip_tags_re = re.compile('<[^>]*>')
 def get_words(s):
   return set([
     word for word
-    in unicode(strip_tags_re.sub('', unicode(s))).translate(punct_map).split()
+    in lower(unicode(strip_tags_re.sub('', unicode(s)))).split()
     if word not in stop_words])
   
 def normalize_all(f):
@@ -124,7 +135,7 @@ def normalize(item, f, run_filters=True):
     import code
     from sys import exit
     code.interact(local=locals())
-  item['title_lc'] =   item['title'].lower()
+  item['title_lc'] =   lower(item['title'])
   item['title_words'] =  get_words(item['title_lc'])
   ########################################################################
   # link
@@ -221,7 +232,7 @@ def normalize(item, f, run_filters=True):
   # XXX should also simplify HTML entities, e.g. &eacute; -> e
   # XXX unfortunately this is an open problem with Unicode, as demonstrated
   # XXX by phishing using internationalized domain names
-  content_lc = content.lower()
+  content_lc = lower(content)
   # XXX this will not work correctly for <a name="..." />
   for tag in ['<b>', '<strong>', '<strike>', '<em>', '<i>', '<font ', '<a ',
               '<small>', '<big>', '<cite>', '<blockquote>', '<pre>',
@@ -244,7 +255,8 @@ def normalize(item, f, run_filters=True):
       content = content.decode('iso-8859-1')
   #
   item['content'] = content
-  item['content_lc'] = content.lower()
+  # we recalculate this as content may have changed due to tag rebalancing, etc
+  item['content_lc'] = lower(content)
   item['content_words'] = get_words(item['content_lc'])
   item['urls'] = url_re.findall(content)
   ########################################################################
