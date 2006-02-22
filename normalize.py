@@ -48,8 +48,12 @@ stop_words = dict(zip(stop_words, [1] * len(stop_words)))
 # this needs to be a mapping as Unicode strings do not support traditional
 # str.translate with a 256-length string
 lc_map = {}
-for c in string.whitespace + string.punctuation + '\'':
+punct_map = {}
+for c in string.whitespace:
   lc_map[ord(c)] = 32
+del lc_map[32]
+for c in string.punctuation + '\'':
+  punct_map[ord(c)] = 32
 lc_map.update(dict(zip(map(ord, string.uppercase),
                        map(ord, string.lowercase))))
 # XXX need to normalize for HTML entities as well
@@ -71,7 +75,8 @@ strip_tags_re = re.compile('<[^>]*>')
 def get_words(s):
   return set([
     word for word
-    in lower(unicode(strip_tags_re.sub('', unicode(s)))).split()
+    in lower(unicode(strip_tags_re.sub('', unicode(s)))
+             ).translate(punct_map).split()
     if word not in stop_words])
   
 def normalize_all(f):
