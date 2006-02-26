@@ -2,7 +2,8 @@
 # a writer thread collide. This module wraps a SQLite object with a Python
 # mutex to prevent this from happening inside Temboz
 
-import sys, thread, threading, signal, math, time, param
+import sys, thread, threading, signal, math, time
+import param
 
 # name of the command-line executable for SQLite
 sqlite_cli = 'sqlite'
@@ -22,7 +23,13 @@ class PseudoCursor3(object):
   def __getattr__(self, name):
     return getattr(self.c, name, None)
   def execute(self, *args, **kwargs):
+    global db
     from pysqlite2 import dbapi2 as sqlite
+    # SQLite3 can deadlock when multiple writers collide, so we use a lock to
+    # prevent this from happening
+    if args[0].split()[0].lower() in ['insert', 'update', 'delete'] \
+           and not self.locked:
+      db.acquire()
     before = time.time()
     if param.debug:
       print >> param.log, thread.get_ident(), time.time(), args
@@ -47,12 +54,14 @@ class PseudoCursor3(object):
 
 def commit_wrapper(method):
   """Provide locking error recovery for commit/rollback"""
+  global db
   from pysqlite2 import dbapi2 as sqlite
   backoff = 0.1
   done = False
   while not done:
     try:
       method()
+      db.release()
       if param.debug:
         print >> param.log, thread.get_ident(), time.time(), 'commit'
       done = True
@@ -75,6 +84,28 @@ returning a new connection for each call. We cache the database connection
 objects in the threading.Thread object (not officially supported, but works
 well enough) so commits can be associated with the corresponding cursor call.
 """
+  lock = threading.Lock()
+  def acquire(self):
+    t = threading.currentThread()
+    if not getattr(t, '__singleton_locked', False):
+      if param.debug:
+        print >> param.log, thread.get_ident(), time.time(), 'ACQUIRE'
+      self.lock.acquire()
+      setattr(t, '__singleton_locked', True)
+      if param.debug:
+        print >> param.log, thread.get_ident(), time.time(), 'DONE'
+    del t
+  def release(self):
+    t = threading.currentThread()
+    if getattr(t, '__singleton_locked', False):
+      if param.debug:
+        print >> param.log, thread.get_ident(), time.time(), 'RELEASE'
+      self.lock.release()
+      setattr(t, '__singleton_locked', False)
+      if param.debug:
+        print >> param.log, thread.get_ident(), time.time(), 'DONE'
+    del t
+  
   def __getattr__(self, name):
     t = threading.currentThread()
     db = getattr(t, '__singleton_db', None)
@@ -82,6 +113,7 @@ well enough) so commits can be associated with the corresponding cursor call.
       from pysqlite2 import dbapi2 as sqlite
       db = sqlite.connect('rss.db')
       setattr(t, '__singleton_db', db)
+      setattr(t, '__singleton_locked', False)
     del t
     if name == 'cursor':
       return lambda: PseudoCursor3(db)
