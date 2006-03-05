@@ -36,6 +36,7 @@ cvsdist disttar:: distclean changelog
 	cp README INSTALL NEWS LICENSE UPGRADE ChangeLog temboz *.py temboz-$(VERSION)
 	cp ddl.sql me.opml .ht* temboz-$(VERSION)
 	cp -r pages images etc temboz-$(VERSION)
+	(cd temboz-$(VERSION); mv param.py param.py.sample; mv transform.py transform.py.sample)
 	-rm -f temboz-$(VERSION)/etc/.cvsignore
 	-rm -rf temboz-$(VERSION)/pages/CVS temboz-$(VERSION)/images/CVS
 	-rm -rf temboz-$(VERSION)/etc/CVS
