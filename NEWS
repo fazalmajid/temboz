@@ -6,6 +6,21 @@ See the end for copying conditions.
 Please send Temboz bug reports to the email address listed at www.temboz.com
 
 
+* Changes in Temboz 0.8 (2006-03-05).
+
+** Support for SQLite 3.x (now preferred over SQLite 2.x)
+
+** You can now sort feeds by their Signal to Noise Ratio in the All Feeds page
+
+** Feedparser.py updated to 4.1 for better Atom and Unicode compatibility
+
+** Added a debugging page to aid with writing filtering rules
+
+** added --cleanup command-line flag to force database purge and cleanup
+
+** Minor bug fixes and usability improvements
+
+
 * Changes in Temboz 0.7.1 (2005-11-01).
 
 ** fixed buggy handling of feeds without links or GUIDs (reported by
