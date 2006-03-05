@@ -1,8 +1,8 @@
 Very preliminary documentation
 ==============================
 
-Prerequisites: Python 2.3.x, SQLite 2.8.x (3.x not supported yet), PySQLite
-1.0 (1.1 requires SQLite 3), Cheetah 0.9.15, pyRXP (optional)
+Prerequisites: Python 2.4.x, Cheetah 0.9.15 or later, SQLite 3.x/PySQLite 2.x
+or SQLite2.8.x/PySQLite 1.0, pyRXP (optional)
 
 1.	Edit the file param.py. The login and password used to "secure" the web
 	interface is set in a dictionary there.
