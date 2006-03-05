@@ -172,9 +172,10 @@ class PseudoDB:
         sqlite_cli = 'sqlite3'
       except sqlite.DatabaseError, e:
         if str(e) == 'file is encrypted or is not a database':
-#           print >> param.log, 'NOTICE: rss.db uses the SQLite 2.x format'
-#           print >> param.log, 'Upgrading to 3.x is recommended, see:'
-#           print >> param.log, 'http://www.temboz.com/temboz/wiki?p=UpgradingSqlite'
+          print >> param.log, 'NOTICE: rss.db uses the SQLite 2.x format'
+          print >> param.log, 'Upgrading to 3.x is recommended, see:'
+          print >> param.log, \
+                '\thttp://www.temboz.com/temboz/wiki?p=UpgradingSqlite'
           raise ImportError
         if 'no such table' in str(e):
           print >> param.log, 'WARNING: empty database, populating...',
@@ -198,8 +199,13 @@ db = PseudoDB()
 
 # upgrade data model on demand
 c = db.cursor()
-c.execute("select count(*) from sqlite_master where name='v_feeds'")
-if not c.fetchone()[0]:
+c.execute("select sql from sqlite_master where name='v_feeds'")
+sql = c.fetchone()[0]
+if 'feed_desc' not in sql:
+  c.execute("""drop view v_feeds""")
+  c.execute("""drop view v_feed_stats""")
+  sql = None
+if not sql:
   print >> param.log, 'WARNING: creating view v_feeds...',
   c.execute("""create view v_feeds as
   select feed_uid, feed_title, feed_html, feed_xml,
@@ -209,7 +215,7 @@ if not c.fetchone()[0]:
     sum(case when item_rating=-1 then cnt else 0 end) as uninteresting,
     sum(case when item_rating=-2 then cnt else 0 end) as filtered,
     sum(cnt) as total,
-    feed_status, feed_private, feed_errors
+    feed_status, feed_private, feed_errors, feed_desc
   from fm_feeds left outer join (
     select item_rating, item_feed_uid, count(*) as cnt,
       julianday('now') - max(
@@ -232,7 +238,7 @@ if not c.fetchone()[0]:
     last_modified,
     interesting, unread, uninteresting, filtered, total,
     interesting * 100.0 / (total - filtered - unread) as snr,
-    feed_status, feed_private, feed_errors
+    feed_status, feed_private, feed_errors, feed_desc
   from v_feeds""")
   db.commit()  
   print >> param.log, 'done.'
