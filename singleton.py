@@ -200,8 +200,8 @@ db = PseudoDB()
 # upgrade data model on demand
 c = db.cursor()
 c.execute("select sql from sqlite_master where name='v_feeds'")
-sql = c.fetchone()[0]
-if 'feed_desc' not in sql:
+sql = c.fetchone()
+if sql and 'feed_desc' not in sql[0]:
   c.execute("""drop view v_feeds""")
   c.execute("""drop view v_feed_stats""")
   sql = None
