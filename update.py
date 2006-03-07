@@ -492,9 +492,8 @@ def cleanup(db=None, c=None):
   if getattr(param, 'garbage_items', False):
     c.execute("""delete from fm_items where item_uid in (
       select item_uid from fm_items, fm_feeds
-      where item_created < julianday('now') - %d
-      and item_rating < 0 and item_created < feed_oldest
-      and feed_uid=item_feed_uid)""" % param.garbage_items)
+      where item_created < min(julianday('now') - %d, feed_oldest - 7)
+      and item_rating < 0 and feed_uid=item_feed_uid)""" % param.garbage_items)
     db.commit()
   c.execute('vacuum')
   # we still hold the PseudoCursor lock, this is a good opportunity to backup
