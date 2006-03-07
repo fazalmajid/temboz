@@ -153,21 +153,27 @@ function toggle(item) {
 }
 ## see:
 ## http://www.quirksmode.org/viewport/compatibility.html
-if(self.innerHeight) {
-  window_height = self.innerHeight;
-} else if (document.documentElement && document.documentElement.clientHeight) {
-  window_height = document.documentElement.clientHeight;
-} else if (document.body) {
-  window_height = document.body.clientHeight;
+function window_height() {
+  var window_height;
+  if (self.innerHeight) {
+    window_height = self.innerHeight;
+  } else if (document.documentElement && document.documentElement.clientHeight) {
+    window_height = document.documentElement.clientHeight;
+  } else if (document.body) {
+    window_height = document.body.clientHeight;
+  } else {
+    alert(document.body);
+  }
+  return window_height;
 }
 function repeat_headline() {
   var article, content;
   article = document.body.lastChild.lastChild;
   content = article.childNodes[1];
-  if(content.offsetHeight && content.offsetHeight > 0.8 * window_height) {
-    document.write('<div>');
+  if(content.offsetHeight && content.offsetHeight > 0.8 * window_height()) {
+    document.write('<span>');
     document.write(article.childNodes[0].firstChild.innerHTML);
-    document.write('</div>');
+    document.write('</span>');
     document.write('<span style="clear:both;">&nbsp;</span>');
   }
 }
