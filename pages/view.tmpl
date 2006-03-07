@@ -171,10 +171,9 @@ function repeat_headline() {
   article = document.body.lastChild.lastChild;
   content = article.childNodes[1];
   if(content.offsetHeight && content.offsetHeight > 0.8 * window_height()) {
-    document.write('<span>');
+    document.write('<p align="right">');
     document.write(article.childNodes[0].firstChild.innerHTML);
-    document.write('</span>');
-    document.write('<span style="clear:both;">&nbsp;</span>');
+    document.write('</p>');
   }
 }
 </script>
