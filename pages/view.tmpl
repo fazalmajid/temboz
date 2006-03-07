@@ -149,7 +149,27 @@ function unhide_last() {
   }
 }
 function toggle(item) {
-	document.items[item].checked = !document.items[item].checked;
+  document.items[item].checked = !document.items[item].checked;
+}
+## see:
+## http://www.quirksmode.org/viewport/compatibility.html
+if(self.innerHeight) {
+  window_height = self.innerHeight;
+} else if (document.documentElement && document.documentElement.clientHeight) {
+  window_height = document.documentElement.clientHeight;
+} else if (document.body) {
+  window_height = document.body.clientHeight;
+}
+function repeat_headline() {
+  var article, content;
+  article = document.body.lastChild.lastChild;
+  content = article.childNodes[1];
+  if(content.offsetHeight && content.offsetHeight > 0.8 * window_height) {
+    document.write('<div>');
+    document.write(article.childNodes[0].firstChild.innerHTML);
+    document.write('</div>');
+    document.write('<span style="clear:both;">&nbsp;</span>');
+  }
 }
 </script>
 ########################################################################
@@ -289,18 +309,25 @@ limit %d""" % overload_threshold)
 ## Actual article display
 ##
 ########################################################################
-<div class="article" id="art$uid"><div class="headline"><img
-width="32" height="32" alt="up" src="<%=img_prefix%>up.gif" class="up"
-onclick="highlight('$uid')" /><img width="32" height="32" alt="down"
-src="<%=img_prefix%>down.gif" class="down" onclick="hide('$uid')"
-/><a href="<%=redirect%>" class="headline" target="_blank"
+<div class="article" id="art$uid"><div class="headline"><span
+class="buttons"><img width="32" height="32" alt="up"
+src="<%=img_prefix%>up.gif" class="up" onclick="highlight('$uid')"
+/><img width="32" height="32" alt="down" src="<%=img_prefix%>down.gif"
+class="down" onclick="hide('$uid')" /></span><a
+href="<%=redirect%>" class="headline" target="_blank"
 title="by $creator, cached at $loaded"
 onclick="highlight('$uid');">$title</a><br><a
 href="feed_info?feed_uid=$feed_uid" title="" class="source">$feed_title</a>
 $since_when<br></div><div
 class="content">
 $content
-</div></div>
+</div>
+## insert buttons at the bottom of long articles so users don't have to scroll
+## all the way back up
+<script language="JavaScript">
+repeat_headline();
+</script>
+</div>
 #end for
 </div>
 #silent db.commit()
