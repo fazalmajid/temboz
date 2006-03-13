@@ -151,10 +151,16 @@ function unhide_last() {
 function toggle(item) {
   document.items[item].checked = !document.items[item].checked;
 }
+#if getattr(param, 'thumbs_bottom', False)
 ## see:
 ## http://www.quirksmode.org/viewport/compatibility.html
+cached_window_height = null;
 function window_height() {
   var window_height;
+
+  if (cached_window_height) {
+    return cached_window_height;
+  }
   if (self.innerHeight) {
     window_height = self.innerHeight;
   } else if (document.documentElement && document.documentElement.clientHeight) {
@@ -164,6 +170,7 @@ function window_height() {
   } else {
     alert(document.body);
   }
+  cached_window_height = window_height;
   return window_height;
 }
 function repeat_headline() {
@@ -176,6 +183,7 @@ function repeat_headline() {
     document.write('</p>');
   }
 }
+#end if
 </script>
 ########################################################################
 ##
@@ -326,11 +334,13 @@ $since_when<br></div><div
 class="content">
 $content
 </div>
+#if getattr(param, 'thumbs_bottom', False)
 ## insert buttons at the bottom of long articles so users don't have to scroll
 ## all the way back up
 <script language="JavaScript">
 repeat_headline();
 </script>
+#end if
 </div>
 #end for
 </div>
