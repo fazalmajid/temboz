@@ -166,6 +166,25 @@ def update_feed_desc(feed_uid, feed_desc):
   finally:
     c.close()
 
+def update_feed_filter(feed_uid, feed_filter):
+  """Update a feed desc"""
+  feed_uid = int(feed_uid)
+  feed_filter = feed_filter.strip()
+  if feed_filter:
+    # check syntax
+    compile(normalize_rule(feed_filter), 'web form', 'eval')
+    val = "'%s'" % escape(feed_filter)
+  else:
+    val = 'NULL'
+  from singleton import db
+  c = db.cursor()
+  try:
+    c.execute("""update fm_feeds set feed_filter=%s where feed_uid=%d""" \
+              % (val, feed_uid))
+    db.commit()
+  finally:
+    c.close()
+
 def update_feed_private(feed_uid, private):
   feed_uid = int(feed_uid)
   private = int(bool(private))
@@ -386,7 +405,7 @@ Returns a tuple (number of items added unread, number of filtered items)"""
     filter_dict['union_any_lc'] = curry(
       union_any, [item['title_lc'], item['content_lc']])
     # evaluate the rules
-    for rule in rules:
+    for rule in rules + [r for r in [feed_rules.get(feed_uid, None)] if r]:
       try:
         skip = eval(rule, filter_dict)
         if skip:
@@ -576,6 +595,7 @@ class PeriodicUpdater(threading.Thread):
 ##############################################################################
 #
 rules = []
+feed_rules = {}
 
 rule_comment_re = re.compile('^#.*$', re.MULTILINE)
 def normalize_rule(rule):
@@ -599,7 +619,9 @@ def rule_lines(rule):
 
 def load_rules():
   global rules
+  global feed_rules
   rules = []
+  feed_rules = dict()
   from singleton import db
   c = db.cursor()
   try:
@@ -609,6 +631,11 @@ def load_rules():
     for uid, rule in c:
       rule = normalize_rule(rule)
       rules.append(compile(rule, 'rule' + `uid`, 'eval'))
+    c.execute("""select feed_uid, feed_filter
+    from fm_feeds where feed_filter is not null""")
+    for uid, rule in c:
+      rule = normalize_rule(rule)
+      feed_rules[uid] = compile(rule, 'feed_filter' + `uid`, 'eval')
   finally:
     c.close()
   # reload the degunking filters as well

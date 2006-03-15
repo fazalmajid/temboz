@@ -201,7 +201,7 @@ db = PseudoDB()
 c = db.cursor()
 c.execute("select sql from sqlite_master where name='v_feeds'")
 sql = c.fetchone()
-if sql and 'feed_desc' not in sql[0]:
+if sql and 'feed_filter' not in sql[0]:
   c.execute("""drop view v_feeds""")
   c.execute("""drop view v_feed_stats""")
   sql = None
@@ -215,7 +215,7 @@ if not sql:
     sum(case when item_rating=-1 then cnt else 0 end) as uninteresting,
     sum(case when item_rating=-2 then cnt else 0 end) as filtered,
     sum(cnt) as total,
-    feed_status, feed_private, feed_errors, feed_desc
+    feed_status, feed_private, feed_errors, feed_desc, feed_filter
   from fm_feeds left outer join (
     select item_rating, item_feed_uid, count(*) as cnt,
       julianday('now') - max(
@@ -238,7 +238,7 @@ if not c.fetchone()[0]:
     last_modified,
     interesting, unread, uninteresting, filtered, total,
     interesting * 100.0 / (total - filtered - unread) as snr,
-    feed_status, feed_private, feed_errors, feed_desc
+    feed_status, feed_private, feed_errors, feed_desc, feed_filter
   from v_feeds""")
   db.commit()  
   print >> param.log, 'done.'

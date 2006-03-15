@@ -12,7 +12,8 @@
 #from singleton import db
 #import time, pprint
 #set c = db.cursor()
-#silent c.execute("""select feed_title, feed_desc, feed_html, feed_xml,
+#silent c.execute("""select feed_title, feed_desc, feed_filter,
+  feed_html, feed_xml,
   min(last_modified) as last_modified,
   sum(case when item_rating=1 then cnt else 0 end) as interesting,
   sum(case when item_rating=0 then cnt else 0 end) as unread,
@@ -35,7 +36,7 @@ where feed_uid=""" + $feed_uid + """
 group by feed_uid, feed_title, feed_html, feed_xml
 """)
 
-#silent feed_title, feed_desc, feed_html, feed_xml, delta_t, interesting, unread, uninteresting, filtered, total, status, private, dupcheck, feed_errors = c.fetchone()
+#silent feed_title, feed_desc, feed_filter, feed_html, feed_xml, delta_t, interesting, unread, uninteresting, filtered, total, status, private, dupcheck, feed_errors = c.fetchone()
 #set since = self.since(delta_t)
 #set unread = int(unread)
 #set interesting = int(interesting)
@@ -49,10 +50,13 @@ group by feed_uid, feed_title, feed_html, feed_xml
 #end if
 #silent assert interesting + uninteresting + unread + filtered == total, feed_title
 #set uninteresting = total - unread - filtered - interesting
+#if feed_filter is None
+#set feed_filter = ''
+#end if
 
 ########################################################################
 ##
-## Change feed title/desc if requested
+## Change feed title/desc/filter if requested
 ##
 ########################################################################
 #if $getVar('feed_title', None) and $getVar('feed_title', None) != feed_title
@@ -66,6 +70,12 @@ group by feed_uid, feed_title, feed_html, feed_xml
 #silent update.update_feed_desc($feed_uid, $getVar('feed_desc'))
 <p>Feed description updated successfully.</p>
 #set feed_desc = $getVar('feed_desc', feed_desc)
+#end if
+#if $getVar('feed_filter', '') and $getVar('feed_filter', '') != feed_filter
+#import update
+#silent update.update_feed_filter($feed_uid, $getVar('feed_filter'))
+<p>Feed filter updated successfully.</p>
+#set feed_filter = $getVar('feed_filter', feed_filter)
 #end if
 ########################################################################
 ##
@@ -121,6 +131,9 @@ duplicates.</p>
 #set lines = max(4, len(feed_desc) // 80 + 1)
 <tr><td>Desc:</td><td><textarea cols="80" rows="$lines"
 name="feed_desc"><%=feed_desc%></textarea></td></tr>
+#set lines = max(4, update.rule_lines(feed_filter))
+<tr><td>Filter:</td><td><textarea cols="80" rows="$lines"
+name="feed_filter"><%=feed_filter%></textarea></td></tr>
 <tr><td colspan="2" align="center"><input type="button" value="Clear"
  onclick="document.forms.feed_xml.feed_xml.value='';document.forms.feed_xml.feed_title.value='';document.forms.feed_xml.feed_desc.value='';document.forms.feed_xml.feed_xml.focus();">
 <input type="submit" value="Change"></td></tr>
