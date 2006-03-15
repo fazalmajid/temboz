@@ -82,18 +82,14 @@ group by feed_uid, feed_title, feed_html, feed_xml
 ## Change feed URL if requested
 ##
 ########################################################################
-#if $getVar('feed_xml', None)
+#if $getVar('refresh', 0) == '1' or ($getVar('feed_xml', None) and $getVar('feed_xml', None) != feed_xml)
 #import update
 #try
-#silent num_added, num_filtered = update.update_feed_xml($feed_uid, $getVar('feed_xml'))
+#silent num_added, num_filtered = update.update_feed_xml($feed_uid, $getVar('feed_xml', feed_xml))
 #silent unread += num_added
 #silent filtered += num_filtered
 #silent feed_errors = 0
-#if $getVar('feed_xml', None) != feed_xml
-<p>Feed URL updated successfully.
-#else
 <p>Feed refreshed successfully.
-#end if
 #if num_added > 0
 <%=num_added%> new unread articles.&nbsp;&nbsp;
 <a href="view?feed_uid=$feed_uid">view articles now</a>&nbsp;&nbsp;
@@ -217,10 +213,11 @@ name="feed_filter"><%=feed_filter%></textarea></td></tr>
 #else
 <tr class="even"><td>Duplicate<br>title<br>checking</td><td>Unknown&nbsp;<a href="feed_info?feed_uid=$feed_uid&change_op=NoDupcheck">disable duplicate checking</a></td></tr>
 #end if
-<tr class="odd"><td>Catch-up</td><td><a href="catch_up?feed_uid=$feed_uid">Mark as read</a> $unread unread articles</td></tr>
-<tr class="even"><td>Purge</td><td><a href="catch_up?reload=Y&feed_uid=$feed_uid">Purge and reload</a> $unread unread articles</td></tr>
-<tr class="odd"><td>Debug</td><td><a href="feed_debug?feed_uid=$feed_uid">Dump the parsed feed</a>, useful for writing <a href="rules">filtering rules</a></td></tr>
-<tr class="even"><td>Hard purge</td><td><a href="hard_purge?feed_uid=$feed_uid">Completely delete</a> $total articles
+<tr class="odd"><td>Refresh</td><td><a href="feed_info?feed_uid=$feed_uid&refresh=1">Manually refresh</a> feed</td></tr>
+<tr class="even"><td>Catch-up</td><td><a href="catch_up?feed_uid=$feed_uid">Mark as read</a> $unread unread articles</td></tr>
+<tr class="odd"><td>Purge</td><td><a href="catch_up?reload=Y&feed_uid=$feed_uid">Purge and reload</a> $unread unread articles</td></tr>
+<tr class="even"><td>Debug</td><td><a href="feed_debug?feed_uid=$feed_uid">Dump the parsed feed</a>, useful for writing <a href="rules">filtering rules</a></td></tr>
+<tr class="odd"><td>Hard purge</td><td><a href="hard_purge?feed_uid=$feed_uid">Completely delete</a> $total articles
 #if $interesting > 0
 (including $interesting flagged as interesting)
 #end if
