@@ -7,12 +7,16 @@ create table fm_feeds (
 	feed_title	varchar(255),
 	feed_desc	text,
 	feed_errors	int default 0,
-	-- 0=active, 1=suspended
 	feed_lang	varchar(2) default 'en',
 	feed_private	int default 0,
 	feed_dupcheck	int default 0,
 	feed_oldest	timestamp,
-	feed_status	int default 0
+	-- 0=active, 1=suspended
+	feed_status	int default 0,
+	-- 0=hourly, 1=daily, 2=weekly, 3=monthly
+	feed_frequency	int default 0,
+	feed_auth	varchar(255),
+	feed_filter	text
 );
 
 create table fm_items (

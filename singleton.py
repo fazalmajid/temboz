@@ -242,6 +242,37 @@ if not c.fetchone()[0]:
   from v_feeds""")
   db.commit()  
   print >> param.log, 'done.'
+# SQLite3 offers ALTER TABLE ADD COLUMN but not SQLite 2, so we do it the
+# hard way, which shouldn't be an issue for a small table like this
+c.execute("select count(*) from sqlite_master where name='fm_feeds' and sql like '%feed_filter%'")
+if not c.fetchone()[0]:
+  print >> param.log, 'WARNING: upgrading table fm_feeds...',
+  c.execute("""create table sop as select fm_feeds.*, 0 as feed_frequency, null as feed_auth, null as feed_filter from fm_feeds""")
+  c.execute('drop table fm_feeds')
+  c.execute("""create table fm_feeds (
+	feed_uid	integer primary key,
+	feed_xml	varchar(255) unique not null,
+	feed_etag	varchar(255),
+	feed_modified	varchar(255),
+	feed_html	varchar(255) not null,
+	feed_title	varchar(255),
+	feed_desc	text,
+	feed_errors	int default 0,
+	feed_lang	varchar(2) default 'en',
+	feed_private	int default 0,
+	feed_dupcheck	int default 0,
+	feed_oldest	timestamp,
+	-- 0=active, 1=suspended
+	feed_status	int default 0,
+	-- 0=hourly, 1=daily, 2=weekly, 3=monthly
+	feed_frequency	int default 0,
+	feed_auth	varchar(255),
+	feed_filter	text
+)""")
+  c.execute('insert into fm_feeds select * from sop')
+  c.execute('drop table sop')
+  db.commit()  
+  print >> param.log, 'done.'
 
 ########################################################################
 # user-defined aggregate function to calculate the mean and standard
