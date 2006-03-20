@@ -2,7 +2,7 @@
 # article, mostly to remove gunk like ads
 
 import sys, re, urllib2
-import util
+import param, util
 
 class Filter:
   """Virtual class with the interface for all degunking filters"""
@@ -95,6 +95,20 @@ class Dereference(Filter):
     item = args[1]
     if self.link_substr in item['link']:
       try:
+        # check if this item has not already been loaded before
+        guid = item['id']
+        from singleton import db
+        from update import escape
+        c = db.cursor()
+        c.execute("""select item_link from fm_items where item_guid='%s'""" \
+                  % escape(guid))
+        link = c.fetchone()
+        c.close()
+        if link:
+          print >> param.log, 'not dereferencing', guid, '->', link[0]
+          item['link'] = link[0]
+          return content
+        # we haven't seen this article before, buck up and load it
         deref = urllib2.urlopen(item['link']).read()
         m = self.re.search(deref)
         if m and m.groups():

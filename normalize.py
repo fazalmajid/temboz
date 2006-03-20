@@ -1,5 +1,5 @@
 import sys, time, re, codecs, string, traceback, md5
-import feedparser, transform, util
+import feedparser, transform, util, param
 
 # XXX TODO
 #
