@@ -55,6 +55,8 @@ filter_list = [
   # IDFuel URLs should point to full article, not teaser
   degunk.ReUrl(url=r'http://www.idfuel.com/index.php?p=\1&more=1',
                regex_url=r'http://www.idfuel.com/index.php\?p=([0-9]*)'),
+  # bypass Digg
+  degunk.Dereference('digg.com', '<h3 id="title1"><a href="([^"]*)"'),
   # Daily Python URL should link to actual articles, not to itself
   degunk.UseFirstLink('http://www.pythonware.com/daily/'),
   # possibly caused by bugs in feedparser

@@ -1,7 +1,8 @@
 # this module defines classes that can be used to massage the content of an
 # article, mostly to remove gunk like ads
 
-import sys, re
+import sys, re, urllib2
+import util
 
 class Filter:
   """Virtual class with the interface for all degunking filters"""
@@ -77,4 +78,27 @@ class UseFirstLink(Filter):
     urls = self.url_re.findall(content)
     if item['link'].startswith(self.prefix) and len(urls):
       item['link'] = urls[0]
+    return content
+
+class Dereference(Filter):
+  """Dereference the item link and use a regex to find a better link. Useful
+  for those annoying sites that try to force you to visit them first for banner
+  impressions (e.g. Digg).
+  The regex should include one group, used to extract the URL, If the regex
+  fails to match, the link is unchanged, so you can be as tight as you want.
+  """
+  url_re = re.compile('(?:href|src)="([^"]*)"', re.IGNORECASE)
+  def __init__(self, link_substr, regex):
+    self.link_substr = link_substr
+    self.re = re.compile(regex)
+  def apply(self, content, *args, **kwargs):
+    item = args[1]
+    if self.link_substr in item['link']:
+      try:
+        deref = urllib2.urlopen(item['link']).read()
+        m = self.re.search(deref)
+        if m and m.groups():
+          item['link'] = m.groups()[0]
+      except:
+        util.print_stack()
     return content
