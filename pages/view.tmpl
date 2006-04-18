@@ -117,7 +117,7 @@ function webop(op, uid) {
 }
 #end if
 function hide(id) {
-  elt = document.getElementById('art' + id);
+  var elt = document.getElementById('art' + id);
   if(elt.style.backgroundColor == "yellow") {
     elt.style.backgroundColor = "";
     webop('basic', id);
@@ -127,8 +127,18 @@ function hide(id) {
     webop('demote', id);
   }
 }
+function collapseToggle(id) {
+  var elt = document.getElementById('content' + id);
+  if(elt.style.display != "none") {
+    elt.style.display = "none";
+    document.getElementById('ctarrow' + id).innerHTML = '<img width="14" height="14" alt="hidden" src="<%=img_prefix%>a_rt.gif" />&nbsp;';
+  } else {
+    elt.style.display = "block";
+    document.getElementById('ctarrow' + id).innerHTML = '<img width="14" height="14" alt="hidden" src="<%=img_prefix%>a_dn.gif" />&nbsp;';
+  }
+}
 function highlight(id) {
-  elt = document.getElementById('art' + id);
+  var elt = document.getElementById('art' + id);
   elt.style.backgroundColor = "yellow";
   webop('promote', id);
 }
@@ -326,12 +336,12 @@ limit %d""" % overload_threshold)
 class="buttons"><img width="32" height="32" alt="down"
 src="<%=img_prefix%>down.gif" class="down" onclick="hide('$uid')"
 /><img width="32" height="32" alt="up" src="<%=img_prefix%>up.gif" class="up"
-onclick="highlight('$uid')" /></span><a href="<%=redirect%>" class="headline"
+onclick="highlight('$uid')" /></span><span class="ctarrow" id="ctarrow$uid" onclick="collapseToggle('$uid')"><img width="14" height="14" alt="hidden" src="<%=img_prefix%>a_dn.gif" />&nbsp;</span><a href="<%=redirect%>" class="headline"
 target="_blank" title="by $creator, cached at $loaded"
 onclick="highlight('$uid');">$title</a><br><a
 href="feed_info?feed_uid=$feed_uid" title="" class="source">$feed_title</a>
 $since_when<br></div><div
-class="content">
+class="content" id="content$uid">
 $content
 </div>
 #if getattr(param, 'thumbs_bottom', False)
