@@ -2,9 +2,9 @@
 <opml>
   <body>
     <outline description="Personal news and random pontification."
-             htmlurl="http://www.majid.info/mylos/"
+             htmlurl="http://www.majid.org/mylos/"
              title="Fazal Majid's low-intensity weblog"
-             xmlurl="http://www.majid.info/mylos/weblog/rss.xml"
+             xmlurl="http://www.majid.org/mylos/weblog/rss.xml"
     />
   </body>
 </opml>
