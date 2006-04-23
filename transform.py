@@ -55,6 +55,15 @@ filter_list = [
   # IDFuel URLs should point to full article, not teaser
   degunk.ReUrl(url=r'http://www.idfuel.com/index.php?p=\1&more=1',
                regex_url=r'http://www.idfuel.com/index.php\?p=([0-9]*)'),
+  # Strip The Register redirection that causes link_already() to fail
+  degunk.ReUrl(
+    url=r'\1', regex_url=r'http://go.theregister.com/feed/(http://.*)'),
+  # Same for I Cringely
+  degunk.ReUrl(
+  url=r'http://www.pbs.org/cringely/\1',
+  regex_url=r'http://www.pbs.org/cringely/rss1/redir/cringely/(.*)'),
+  # Register ads
+  degunk.Re('<strong>Advertisement</strong><br>'),
   # bypass Digg
   degunk.Dereference('digg.com', '<h3 id="title1"><a href="([^"]*)"'),
   # Daily Python URL should link to actual articles, not to itself

@@ -59,6 +59,11 @@ rules. They take a list of strings and search in the corresponding
 either title or contents). If any of the strings in the list matches, the
 function returns True.</p>
 
+<p>The function <tt>link_already(</tt><em>url</em><tt>)</tt> checks if the URL
+passed as its argument is that of an article that was already loaded. This is
+useful to filter out duplicates or echos from aggregated feeds like Digg or
+Slashdot.</p>
+
 <p>Other variables may be available on a feed-by-feed basis, also depending on
 which feed standard is used (e.g. Atom vs. RSS). Check the feed details page
 for the feed you are interested in for more details.</p>

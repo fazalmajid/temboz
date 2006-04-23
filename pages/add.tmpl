@@ -22,10 +22,10 @@ Subscribe to a RSS feed:<br>
 #if $getVar("feed_xml", None)
 #import update, urllib2
 #try
-#silent feed_uid, num_added, num_filtered = update.add_feed($feed_xml)
-<p>Subscribed successfully. 
+#silent feed_uid, feed_title, num_added, num_filtered = update.add_feed($feed_xml)
+<p>Subscribed successfully to <a href="feed_info?feed_uid=<%=feed_uid%>">$feed_title</a>.</p> 
 #if num_added > 0
-<%=num_added%> unread articles.&nbsp;&nbsp;
+<p><%=num_added%> unread articles.&nbsp;&nbsp;
 <a href="view?feed_uid=<%=feed_uid%>">view articles now</a>&nbsp;&nbsp;
 <a href="catch_up?feed_uid=<%=feed_uid%>">catch up</a>
 #end if

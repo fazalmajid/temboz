@@ -1,6 +1,9 @@
-import sys, md5, time, threading, socket, Queue, signal, sqlite, os, re
+import sys, md5, time, threading, socket, Queue, signal, os, re
 import textwrap, urllib2, urlparse, HTMLParser
-import param, feedparser, normalize, util, transform
+import param, feedparser, normalize, util, transform, singleton
+
+# pysqlite 1.x or 2.x, depending on what singleton.py decides
+sqlite = singleton.sqlite_module
 
 socket.setdefaulttimeout(10)
 feedparser.USER_AGENT = param.user_agent
@@ -98,7 +101,7 @@ def add_feed(feed_xml):
       feed_uid = c.lastrowid
       num_added, num_filtered = process_parsed_feed(f, c, feed_uid)
       db.commit()
-      return (feed_uid, num_added, num_filtered)
+      return feed_uid, feed['title'], num_added, num_filtered
     except sqlite.IntegrityError, e:
       if 'feed_xml' in str(e):
         db.rollback()
@@ -368,6 +371,17 @@ def union_any(obj_list, *words):
         return True
   return False
 
+def link_already(url):
+  from singleton import db
+  print >> param.log, 'checking for deja-vu for', url,
+  c = db.cursor()
+  c.execute("""select count(*) from fm_items where item_link like '%s%%'""" \
+            % escape(url))
+  l = c.fetchone()
+  c.close()
+  print >> param.log, l and l[0]
+  return l and l[0]
+
 def process_parsed_feed(f, c, feed_uid, feed_dupcheck=None):
   """Insert the entries from a feedparser parsed feed f in the database using
 the cursor c for feed feed_uid.
@@ -391,6 +405,8 @@ Returns a tuple (number of items added unread, number of filtered items)"""
       except KeyError:
         pass
     filter_dict.update(item)
+    # used to filter echos from sites like Digg
+    filter_dict['link_already'] = link_already
     # convenient shortcut functions
     filter_dict['title_any_words'] = curry(any, item['title_words'])
     filter_dict['content_any_words'] = curry(any, item['content_words'])
@@ -522,12 +538,19 @@ def cleanup(db=None, c=None):
     pass
   os.system((sqlite_cli + ' rss.db .dump | %s > backups/daily_' \
              + time.strftime('%Y-%m-%d') + '%s') % param.backup_compressor)
+  # rotate the log
+  os.rename('temboz.log', 'backups/log_' + time.strftime('%Y-%m-%d'))
+  param.log.close()
+  param.log = open(param.log_filename, 'a', 0)
+  os.dup2(param.log.fileno(), 1)
+  os.dup2(param.log.fileno(), 2)
   # delete old backups
   backup_re = re.compile(
     'daily_[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\\.')
+  log_re = re.compile(
+    'log_[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
   for fn in os.listdir('backups'):
-    m = backup_re.match(fn)
-    if m:
+    if backup_re.match(fn) or log_re.match(fn):
       elapsed = time.time() - os.stat('backups/' + fn).st_ctime
       if elapsed > 86400 * param.daily_backups:
         try:
