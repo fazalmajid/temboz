@@ -77,5 +77,14 @@ max_errors = 100
 debug = False
 
 # logging
-import sys
-log = sys.stderr
+import sys, os
+if '--server' in sys.argv:
+  log_filename = 'temboz.log'
+  # if you modify mode and buffer size, see also update.py:cleanup
+  # for the code that rotates this file daily
+  log = open(log_filename, 'a', 0)
+  os.dup2(log.fileno(), 1)
+  os.dup2(log.fileno(), 2)
+else:
+  log = sys.stderr
+# redirect stout and stderr to the log file
