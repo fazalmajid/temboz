@@ -125,9 +125,13 @@ def normalize(item, f, run_filters=True):
       if len(item[key]) == 1:
         item[key] = item[key][0]
       else:
-        # XXX not really sure how to handle these cases
-        print >> param.log, 'E' * 16, 'ambiguous RDF', item[key]
-        item[key] = item[key][0]
+        candidate = [i for i in item[key] if i.get('type') == 'text/html']
+        if len(candidate) == 1:
+          item[key] = candidate[0]
+        else:
+          # XXX not really sure how to handle these cases
+          print >> param.log, 'E' * 16, 'ambiguous RDF', key, item[key]
+          item[key] = item[key][0]
     if isinstance(item.get(key), dict) and 'value' in item[key]:
       item[key] = item[key]['value']
   ########################################################################
