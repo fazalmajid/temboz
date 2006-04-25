@@ -5,8 +5,8 @@
 import sys, thread, threading, signal, math, time
 import param
 
-# name of the command-line executable for SQLite
-sqlite_cli = 'sqlite'
+from pysqlite2 import dbapi2 as sqlite
+sqlite_cli = 'sqlite3'
 
 # support classes for SQLite3, essentially to catch the OperationalError
 # exceptions thrown when two writers collide
@@ -24,7 +24,6 @@ class PseudoCursor3(object):
     return getattr(self.c, name, None)
   def execute(self, *args, **kwargs):
     global db
-    from pysqlite2 import dbapi2 as sqlite
     # SQLite3 can deadlock when multiple writers collide, so we use a lock to
     # prevent this from happening
     if args[0].split()[0].lower() in ['insert', 'update', 'delete'] \
@@ -55,7 +54,6 @@ class PseudoCursor3(object):
 def commit_wrapper(method):
   """Provide locking error recovery for commit/rollback"""
   global db
-  from pysqlite2 import dbapi2 as sqlite
   backoff = 0.1
   done = False
   while not done:
@@ -110,7 +108,6 @@ well enough) so commits can be associated with the corresponding cursor call.
     t = threading.currentThread()
     db = getattr(t, '__singleton_db', None)
     if not db:
-      from pysqlite2 import dbapi2 as sqlite
       db = sqlite.connect('rss.db')
       setattr(t, '__singleton_db', db)
       setattr(t, '__singleton_locked', False)
@@ -122,68 +119,32 @@ well enough) so commits can be associated with the corresponding cursor call.
     else:
       return getattr(db, name)
 
-# support classes for SQLite2 to implement locking
-
-class PseudoCursor(object):
-  def __init__(self, db):
-    self.db = db
-    self.db.lock.acquire()
-    self.c = self.db.db.cursor()
-  def __del__(self):
-    self.db.lock.release()
-  def __str__(self):
-    return '<SQLite Cursor wrapper>'
-  def __repr__(self):
-    return self.__str__()
-  def __iter__(self):
-    return iter(self.c)
-  def __getattr__(self, name):
-    return getattr(self.c, name, None)
-  def __del__(self):
-    del self.c
-  def execute(self, *args, **kwargs):
-    before = time.time()
-    result = self.c.execute(*args, **kwargs)
-    elapsed = time.time() - before
-    if param.debug and elapsed > 5.0:
-      print >> param.log, 'Slow SQL:', elapsed, args, kwargs
-    return result
-  def sqlite_last_insert_rowid(self):
-    return self.db.db.db.sqlite_last_insert_rowid()
-  lastrowid = property(sqlite_last_insert_rowid)
-
 class PseudoDB:
   def __init__(self):
-    global sqlite_cli
     self.lock = threading.RLock()
     self.sqlite_last_insert_rowid = None        
     # try PySQLite2/SQLite3 first, fall back to PySQLite 1.0/SQLite2
+    self.db = sqlite.connect('rss.db')
     try:
-      from pysqlite2 import dbapi2 as sqlite
-      self.db = sqlite.connect('rss.db')
-      try:
-        # sanity checking
-        c = self.db.cursor()
-        c.execute('select count(*) from fm_feeds')
-        l = c.fetchone()
-        # black magic here, see this article for more info on the technique:
-        #     http://www.majid.info/mylos/weblog/2002/09/07-1.html
-        self.__class__ = SQLite3Factory
-        sqlite_cli = 'sqlite3'
-      except sqlite.DatabaseError, e:
-        if str(e) == 'file is encrypted or is not a database':
-          print >> param.log, 'NOTICE: rss.db uses the SQLite 2.x format'
-          print >> param.log, 'Upgrading to 3.x is recommended, see:'
-          print >> param.log, \
-                '\thttp://www.temboz.com/temboz/wiki?p=UpgradingSqlite'
-          raise ImportError
-        if 'no such table' in str(e):
-          print >> param.log, 'WARNING: empty database, populating...',
-          self.populate_tables()
-          print >> param.log, 'done.'
-    except ImportError:
-      import sqlite
-      self.db = sqlite.connect('rss.db', mode=077)
+      # sanity checking
+      c = self.db.cursor()
+      c.execute('select count(*) from fm_feeds')
+      l = c.fetchone()
+      # black magic here, see this article for more info on the technique:
+      #     http://www.majid.info/mylos/weblog/2002/09/07-1.html
+      self.__class__ = SQLite3Factory
+    except sqlite.DatabaseError, e:
+      if str(e) == 'file is encrypted or is not a database':
+        print >> param.log, 'NOTICE: rss.db uses the SQLite 2.x format'
+        print >> param.log, 'SQLite 2.x is no longer supported by Temboz'
+        print >> param.log, 'To upgrade to 3.x, see instructions at:'
+        print >> param.log, \
+              '\thttp://www.temboz.com/temboz/wiki?p=UpgradingSqlite'
+        raise
+      if 'no such table' in str(e):
+        print >> param.log, 'WARNING: empty database, populating...',
+        self.populate_tables()
+        print >> param.log, 'done.'
     self.c = self.db.cursor()
   def cursor(self):
     return PseudoCursor(self)

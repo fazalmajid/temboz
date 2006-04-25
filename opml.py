@@ -1,4 +1,5 @@
-import sys, os, re, pyRXP, sqlite
+import sys, os, re, pyRXP, singleton
+sqlite = singleton.sqlite
 
 def opml_process(tree, level=0, out=[]):
   if type(tree) != tuple:

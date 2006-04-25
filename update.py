@@ -2,14 +2,10 @@ import sys, md5, time, threading, socket, Queue, signal, os, re
 import textwrap, urllib2, urlparse, HTMLParser
 import param, feedparser, normalize, util, transform, singleton
 
-# pysqlite 1.x or 2.x, depending on what singleton.py decides
-sqlite = singleton.sqlite_module
+sqlite = singleton.sqlite
 
 socket.setdefaulttimeout(10)
 feedparser.USER_AGENT = param.user_agent
-
-def escape(str):
-  return str.replace("'", "''")
 
 class ParseError(Exception):
   pass
@@ -91,13 +87,12 @@ def add_feed(feed_xml):
       }
     for key, value in feed.items():
       if type(value) == str:
-        feed[key] = escape(value)
+        feed[key] = value
     load_rules()
     try:
       c.execute("""insert into fm_feeds
       (feed_xml, feed_etag, feed_html, feed_title, feed_desc) values
-      ('%(xmlUrl)s', '%(etag)s', '%(htmlUrl)s', '%(title)s',
-      '%(desc)s')""" % feed)
+      (:xmlUrl, :etag, :htmlUrl, :title, :desc)""", feed)
       feed_uid = c.lastrowid
       num_added, num_filtered = process_parsed_feed(f, c, feed_uid)
       db.commit()
@@ -126,9 +121,8 @@ def update_feed_xml(feed_uid, feed_xml):
   clear_errors(db, c, feed_uid, f)
   try:
     try:
-      c.execute("""update fm_feeds set feed_xml='%s', feed_html='%s'
-      where feed_uid=%d""" \
-                % (escape(feed_xml), escape(str(f.feed['link'])), feed_uid))
+      c.execute("update fm_feeds set feed_xml=?, feed_html=? where feed_uid=?",
+                [feed_xml, str(f.feed['link']), feed_uid])
     except sqlite.IntegrityError, e:
       if 'feed_xml' in str(e):
         db.rollback()
@@ -150,8 +144,8 @@ def update_feed_title(feed_uid, feed_title):
   from singleton import db
   c = db.cursor()
   try:
-    c.execute("""update fm_feeds set feed_title='%s' where feed_uid=%d""" \
-              % (escape(feed_title), feed_uid))
+    c.execute("update fm_feeds set feed_title=? where feed_uid=?",
+              [feed_title, feed_uid])
     db.commit()
   finally:
     c.close()
@@ -163,8 +157,8 @@ def update_feed_desc(feed_uid, feed_desc):
   from singleton import db
   c = db.cursor()
   try:
-    c.execute("""update fm_feeds set feed_desc='%s' where feed_uid=%d""" \
-              % (escape(feed_desc), feed_uid))
+    c.execute("update fm_feeds set feed_desc=? where feed_uid=?",
+              [feed_desc, feed_uid])
     db.commit()
   finally:
     c.close()
@@ -176,14 +170,14 @@ def update_feed_filter(feed_uid, feed_filter):
   if feed_filter:
     # check syntax
     compile(normalize_rule(feed_filter), 'web form', 'eval')
-    val = "'%s'" % escape(feed_filter)
+    val = feed_filter
   else:
-    val = 'NULL'
+    val = None
   from singleton import db
   c = db.cursor()
   try:
-    c.execute("""update fm_feeds set feed_filter=%s where feed_uid=%d""" \
-              % (val, feed_uid))
+    c.execute("update fm_feeds set feed_filter=? where feed_uid=?",
+              [val, feed_uid])
     db.commit()
   finally:
     c.close()
@@ -194,8 +188,8 @@ def update_feed_private(feed_uid, private):
   from singleton import db
   c = db.cursor()
   try:
-    c.execute("""update fm_feeds set feed_private=%d where feed_uid=%d""" \
-              % (private, feed_uid))
+    c.execute("update fm_feeds set feed_private=? where feed_uid=?",
+              [private, feed_uid])
     db.commit()
   finally:
     c.close()
@@ -207,9 +201,20 @@ def update_feed_dupcheck(feed_uid, dupcheck):
   from singleton import db
   c = db.cursor()
   try:
-    c.execute("""update fm_feeds set feed_dupcheck=%d where feed_uid=%d""" \
-              % (dupcheck, feed_uid))
+    c.execute("update fm_feeds set feed_dupcheck=? where feed_uid=?",
+              [dupcheck, feed_uid])
     db.commit()
+  finally:
+    c.close()
+
+def title_url(feed_uid):
+  feed_uid = int(feed_uid)
+  from singleton import db
+  c = db.cursor()
+  try:
+    c.execute("select feed_title, feed_html from fm_feeds where feed_uid=?",
+              [feed_uid])
+    return c.fetchone()
   finally:
     c.close()
 
@@ -219,7 +224,7 @@ def catch_up(feed_uid):
   c = db.cursor()
   try:
     c.execute("""update fm_items set item_rating=-1
-    where item_feed_uid=%d and item_rating=0""" % feed_uid)
+    where item_feed_uid=? and item_rating=0""", [feed_uid])
     db.commit()
   finally:
     c.close()
@@ -229,12 +234,11 @@ def purge_reload(feed_uid):
   from singleton import db
   c = db.cursor()
   try:
-    c.execute("""delete from fm_items
-    where item_feed_uid=%d and item_rating=0""" % feed_uid)
+    c.execute("delete from fm_items where item_feed_uid=? and item_rating=0",
+              [feed_uid])
     c.execute("""update fm_feeds set feed_modified=NULL, feed_etag=NULL
-    where feed_uid=%d""" % feed_uid)
-    c.execute("""select feed_xml from fm_feeds
-    where feed_uid=%d""" % feed_uid)
+    where feed_uid=?""", [feed_uid])
+    c.execute("select feed_xml from fm_feeds where feed_uid=?", [feed_uid])
     feed_xml = c.fetchone()[0]
     db.commit()
     f = feedparser.parse(feed_xml)
@@ -253,10 +257,8 @@ def hard_purge(feed_uid):
   from singleton import db
   c = db.cursor()
   try:
-    c.execute("""delete from fm_items
-    where item_feed_uid=%d""" % feed_uid)
-    c.execute("""delete from fm_feeds
-    where feed_uid=%d""" % feed_uid)
+    c.execute("delete from fm_items where item_feed_uid=?", [feed_uid])
+    c.execute("delete from fm_feeds where feed_uid=?", [feed_uid])
     db.commit()
   finally:
     c.close()
@@ -267,8 +269,8 @@ def set_status(feed_uid, status):
   from singleton import db
   c = db.cursor()
   try:
-    c.execute("""update fm_feeds set feed_status=%d where feed_uid=%d""" \
-              % (status, feed_uid))
+    c.execute("update fm_feeds set feed_status=? where feed_uid=?",
+              [status, feed_uid])
     db.commit()
   finally:
     c.close()
@@ -309,33 +311,37 @@ def fetch_feed(feed_uid, feed_xml, feed_etag, feed_modified):
 
 def increment_errors(db, c, feed_uid):
   """Increment the error counter, and suspend the feed if the threshold is
-  reached"""
-  c.execute('update fm_feeds set feed_errors=feed_errors+1 where feed_uid=%d' \
-            % feed_uid)
-  c.execute("""select feed_errors, feed_title
-  from fm_feeds where feed_uid=%d""" % feed_uid)
+  reached
+  """
+  c.execute("update fm_feeds set feed_errors=feed_errors+1 where feed_uid=?",
+            [feed_uid])
+  c.execute("select feed_errors, feed_title from fm_feeds where feed_uid=?",
+            [feed_uid])
   errors, feed_title = c.fetchone()
   max_errors = getattr(param, 'max_errors', 100)
   if max_errors != -1 and errors > max_errors:
     # XXX we should generate a service announcement item if this happens
     print >> param.log, 'EEEEE too many errors, suspending feed', feed_title
-    c.execute('update fm_feeds set feed_status = 1 where feed_uid=%d' \
-              % feed_uid)
+    c.execute("update fm_feeds set feed_status = 1 where feed_uid=?",
+              [feed_uid])
 
 def clear_errors(db, c, feed_uid, f):
   'On successful feed parse, reset etag and/or modified date and error count'
   stmt = 'update fm_feeds set feed_errors=0'
+  params = []
   if 'etag' in f and f['etag']:
-    stmt += ", feed_etag='%s'" % escape(f['etag'])
+    stmt += ", feed_etag=?"
+    params.append(f['etag'])
   else:
     stmt += ", feed_etag=NULL"
   if 'modified' in f and f['modified']:
-    stmt += ", feed_modified=julianday(%f, 'unixepoch')" \
-            % time.mktime(f['modified'])
+    stmt += ", feed_modified=julianday(?, 'unixepoch')"
+    params.append(time.mktime(f['modified']))
   else:
     stmt += ", feed_modified=NULL"
-  stmt += " where feed_uid=%d" % feed_uid
-  c.execute(stmt)
+  stmt += " where feed_uid=?"
+  params.append(feed_uid)
+  c.execute(stmt, params)
 
 def update_feed(db, c, f, feed_uid, feed_xml, feed_etag, feed_modified,
                 feed_dupcheck=None):
@@ -375,8 +381,8 @@ def link_already(url):
   from singleton import db
   print >> param.log, 'checking for deja-vu for', url,
   c = db.cursor()
-  c.execute("""select count(*) from fm_items where item_link like '%s%%'""" \
-            % escape(url))
+  c.execute("select count(*) from fm_items where item_link like ?",
+            [url + '%'])
   l = c.fetchone()
   c.close()
   print >> param.log, l and l[0]
@@ -390,8 +396,8 @@ Returns a tuple (number of items added unread, number of filtered items)"""
   num_filtered = 0
   # check if duplicate title checking is in effect
   if feed_dupcheck is None:
-    c.execute('select feed_dupcheck from fm_feeds where feed_uid=%d' \
-              % feed_uid)
+    c.execute("select feed_dupcheck from fm_feeds where feed_uid=?",
+              [feed_uid])
     feed_dupcheck = bool(c.fetchone()[0])
   # the Radio convention is reverse chronological order
   f['items'].reverse()
@@ -436,25 +442,22 @@ Returns a tuple (number of items added unread, number of filtered items)"""
     author = item['author']
     created = item['created']
     modified = item['modified']
-    if modified:
-      modified = "julianday('%s')" % escape(modified)
-    else:
-      modified = 'NULL'
+    if not modified:
+      modified = None
     content = item['content']
     # check if the item already exists, using the GUID as key
     c.execute("""select item_uid, item_link,
-               item_loaded, item_created, item_modified,
-               item_viewed, item_md5hex, item_title, item_content, item_creator
-               from fm_items
-               where item_feed_uid=%d and item_guid='%s'""" \
-               % (feed_uid, escape(guid)))
+    item_loaded, item_created, item_modified,
+    item_viewed, item_md5hex, item_title, item_content, item_creator
+    from fm_items where item_feed_uid=? and item_guid=?""",
+              [feed_uid, guid])
     l = c.fetchall()
     # unknown GUID, but title duplicate checking may be in effect
     if not l:
       if feed_dupcheck:
         c.execute("""select count(*) from fm_items
-        where item_feed_uid=%d and item_title='%s'""" \
-                  % (feed_uid, escape(title)))
+        where item_feed_uid=? and item_title=?""",
+                  [feed_uid, title])
         l = bool(c.fetchone()[0])
         if l:
           print >> param.log, 'DUPLICATE TITLE', title
@@ -474,18 +477,13 @@ Returns a tuple (number of items added unread, number of filtered items)"""
     # GUID doesn't exist yet, insert it
     if not l:
       try:
-        sql = """insert into fm_items (item_feed_uid, item_guid,
+        c.execute("""insert into fm_items (item_feed_uid, item_guid,
         item_created,   item_modified, item_viewed, item_link, item_md5hex,
-        item_title, item_content, item_creator, item_rating) values (%d, '%s',
-        julianday('%s'), %s,          NULL,        '%s',      '%s',
-        '%s',       '%s',         '%s', %d)""" % \
-        (feed_uid, escape(guid), escape(created), modified, escape(link),
-         md5.new(content).hexdigest(),
-         escape(title),
-         escape(content),
-         escape(author),
-         skip)
-        c.execute(sql)
+        item_title, item_content, item_creator, item_rating) values
+        (?, ?, julianday(?), julianday(?), NULL, ?, ?, ?, ?, ?, ?)""",
+                  [feed_uid, guid, created, modified, link,
+                   md5.new(content).hexdigest(),
+                   title, content, author, skip])
         if skip:
           num_filtered += 1
           print >> param.log, 'SKIP', title
@@ -498,13 +496,11 @@ Returns a tuple (number of items added unread, number of filtered items)"""
   # update timestamp of the oldest item still in the feed file
   if 'oldest' in f and f['oldest'] != '9999-99-99 99:99:99':
     if f['oldest'] == '1970-01-01 00:00:00' and 'oldest_ts' in f:
-      c.execute("""update fm_feeds
-      set feed_oldest=%s
-      where feed_uid=%d""" % (f['oldest_ts'], feed_uid))
+      c.execute("update fm_feeds set feed_oldest=? where feed_uid=?",
+                [f['oldest_ts'], feed_uid])
     else:
-      c.execute("""update fm_feeds
-      set feed_oldest=julianday('%s')
-      where feed_uid=%d""" % (f['oldest'], feed_uid))
+      c.execute("""update fm_feeds set feed_oldest=julianday(?)
+      where feed_uid=?""", [f['oldest'], feed_uid])
   
   return (num_added, num_filtered)
 
@@ -519,16 +515,15 @@ def cleanup(db=None, c=None):
     c = db.cursor()
   from singleton import sqlite_cli
   if getattr(param, 'garbage_contents', False):
-    c.execute("""update fm_items
-    set item_content=''
-    where item_rating<0 and item_created < julianday('now')-%d""" %
-               param.garbage_contents)
+    c.execute("""update fm_items set item_content=''
+    where item_rating<0 and item_created<julianday('now')-?""",
+              [param.garbage_contents])
     db.commit()
   if getattr(param, 'garbage_items', False):
     c.execute("""delete from fm_items where item_uid in (
       select item_uid from fm_items, fm_feeds
-      where item_created < min(julianday('now') - %d, feed_oldest - 7)
-      and item_rating < 0 and feed_uid=item_feed_uid)""" % param.garbage_items)
+      where item_created<min(julianday('now')-?, feed_oldest-7)
+      and item_rating<0 and feed_uid=item_feed_uid)""", [param.garbage_items])
     db.commit()
   c.execute('vacuum')
   # we still hold the PseudoCursor lock, this is a good opportunity to backup
@@ -575,8 +570,7 @@ def update():
     workers[-1].start()
   # assign work
   c.execute("""select feed_uid, feed_xml, feed_etag, feed_dupcheck,
-  strftime('%s', feed_modified)
-  from fm_feeds where feed_status=0""")
+  strftime('%s', feed_modified) from fm_feeds where feed_status=0""")
   for feed_uid, feed_xml, feed_etag, feed_dupcheck, feed_modified in c:
     if feed_modified:
       feed_modified = float(feed_modified)
@@ -648,14 +642,13 @@ def load_rules():
   from singleton import db
   c = db.cursor()
   try:
-    c.execute("""select rule_uid, rule_text
-    from fm_rules where rule_expires is null
-    or rule_expires > julianday('now')""")
+    c.execute("""select rule_uid, rule_text from fm_rules
+    where rule_expires is null or rule_expires > julianday('now')""")
     for uid, rule in c:
       rule = normalize_rule(rule)
       rules.append(compile(rule, 'rule' + `uid`, 'eval'))
-    c.execute("""select feed_uid, feed_filter
-    from fm_feeds where feed_filter is not null""")
+    c.execute("""select feed_uid, feed_filter from fm_feeds
+    where feed_filter is not null""")
     for uid, rule in c:
       rule = normalize_rule(rule)
       feed_rules[uid] = compile(rule, 'feed_filter' + `uid`, 'eval')
@@ -672,13 +665,11 @@ def update_rule(db, c, uid, expires, text, delete):
   # check syntax
   compile(normalize_rule(text), 'web form', 'eval')
   if uid == 'new':
-    c.execute("""insert into fm_rules (rule_expires, rule_text)
-    values (%s, '%s')""" \
-              % (expires, escape(text)))
+    c.execute("insert into fm_rules (rule_expires, rule_text) values (?, ?)",
+              [expires, text])
   elif delete == 'on':
-    c.execute("delete from fm_rules where rule_uid=%s" % uid)
+    c.execute("delete from fm_rules where rule_uid=?", [uid])
   else:
-    c.execute("""update fm_rules set rule_expires=%s, rule_text='%s'
-    where rule_uid=%s""" % (expires, escape(text), uid))
+    c.execute("""update fm_rules set rule_expires=?, rule_text=?
+    where rule_uid=?""", [expires, text, uid])
   db.commit()
-    

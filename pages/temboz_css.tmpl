@@ -135,3 +135,17 @@ a.error:link, a.error:visited {
 span.ctarrow {
   font-size: 18px;
 }
+div.overlay {
+  position: absolute;
+  overflow: hidden;
+  background-color: transparent;
+}
+div.overlay .translucent {
+  background-color: transparent;
+  -moz-opacity: 0.9;
+  filter:alpha(opacity=90);
+  opacity: 0.9;
+}
+div.overlay .opaque {
+  background-color: white;
+}

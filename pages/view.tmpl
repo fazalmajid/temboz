@@ -46,13 +46,15 @@
 #set item_desc = 'unread'
 #set where_clause = 'item_rating = 0'
 #end if
+#set params = []
 ########################################################################
 ##
 ## Optionally restrict view to a single feed
 ##
 ########################################################################
 #if $getVar('feed_uid', None)
-#set where_clause = where_clause + ' and item_feed_uid=' + $feed_uid
+#set where_clause = where_clause + ' and item_feed_uid=?'
+#silent params.append($feed_uid)
 #end if
 ########################################################################
 ##
@@ -65,9 +67,8 @@
 #else
 #set search_where = 'item_content'
 #end if
-#set where_clause = where_clause + ' and lower(' + search_where + ') like '
-#from update import escape
-#set where_clause = where_clause + "'%%%s%%'" % escape($getVar('search').lower())
+#set where_clause = where_clause + ' and lower(' + search_where + ') like ?'
+#silent params.append('%' + $getVar('search').lower() + '%')
 #end if
 ########################################################################
 ##
@@ -116,11 +117,16 @@ function webop(op, uid) {
   }
 }
 #end if
+## hide tag layer until it is ready
+#set taglayer_visibility = "none"
 function hide(id) {
   var elt = document.getElementById('art' + id);
   if(elt.style.backgroundColor == "yellow") {
     elt.style.backgroundColor = "";
     webop('basic', id);
+    if(elt.taglayer) {
+      elt.taglayer.style.display = "none";
+    }
   } else {
     hidden[hidden.length] = elt;
     elt.style.display = "none";
@@ -141,6 +147,17 @@ function highlight(id) {
   var elt = document.getElementById('art' + id);
   elt.style.backgroundColor = "yellow";
   webop('promote', id);
+  if(!elt.taglayer) {
+    var c = document.getElementById('content' + id);
+    elt.taglayer = document.createElement("div");
+    elt.taglayer.className = "overlay";
+    elt.taglayer.innerHTML = '<form id="tags' + id + '"><div class="translucent"><textarea id="notes" rows="4" cols="64"></textarea><br><textarea id="tags" rows="1" cols="64"></textarea></div><div class="opaque"><input type="submit" value="save"><a href="">Opaque link</a></div></form>';
+    c.insertBefore(elt.taglayer, c.firstChild);
+## XXX get rid of this once taglayer is made visible
+    elt.taglayer.style.display = "$taglayer_visibility";
+  } else {
+    elt.taglayer.style.display = "$taglayer_visibility";
+  }
 }
 function unhide_all() {
   for(i=0; i<hidden.length; i++) {
@@ -246,8 +263,8 @@ div.menu {
 ########################################################################
 #silent c.execute("""update fm_items set item_viewed=julianday('now') where item_uid in (select item_uid from fm_items where """ + where_clause + """
 order by item_created DESC, item_uid DESC
-limit %d offset %d)""" % (overload_threshold, offset))
-#silent c.execute("""select count(*) from fm_items where """ + where_clause)
+limit ? offset ?)""", params + [overload_threshold, offset])
+#silent c.execute("""select count(*) from fm_items where """ + where_clause, params)
 ########################################################################
 ##
 ## We try to get a balanced two-column design by having as many articles
@@ -307,7 +324,7 @@ feed_title, feed_html, feed_xml, julianday('now') - julianday(item_created)
 from fm_items, fm_feeds where item_feed_uid=feed_uid
 and """ + where_clause + ' and feed_private = 0' * public + """
 order by item_created DESC, item_uid DESC
-limit %d""" % overload_threshold)
+limit ?""", params + [overload_threshold])
 <div class="col1">
 #for uid, creator, title, link, content, loaded, created, feed_uid, feed_title, feed_html, feed_xml, delta_created in c
 #set count += 1

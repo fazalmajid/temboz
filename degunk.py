@@ -97,11 +97,13 @@ class Dereference(Filter):
       try:
         # check if this item has not already been loaded before
         guid = item['id']
-        from singleton import db
-        from update import escape
+        from singleton import db, sqlite
         c = db.cursor()
-        c.execute("""select item_link from fm_items where item_guid='%s'""" \
-                  % escape(guid))
+        if sqlite.paramstyle == 'qmark':
+          c.execute("select item_link from fm_items where item_guid=?", [guid])
+        elif sqlite.paramstyle == 'pyformat':
+          c.execute("select item_link from fm_items where item_guid=%guid)s",
+                    {'guid': guid})
         link = c.fetchone()
         c.close()
         if link:
