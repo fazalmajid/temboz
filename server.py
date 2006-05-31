@@ -5,6 +5,10 @@ import sys, os, stat, logging, base64, time
 import BaseHTTPServer, SocketServer, cgi, cStringIO
 import param
 
+# add the Cheetah template directory to the import path
+sys.path.append(os.path.dirname(sys.modules['__main__'].__file__)
+                + os.sep + 'pages')
+
 class Server(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
   pass
 
@@ -22,11 +26,9 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     pass
 
   def read_mime_query_list(self, mimeinfo):
-    """Voodoo magic to return attributes and attachments during a POST
-
+    """Magic to return attributes and attachments during a POST
     Keyword arguments:
     mimeinfo -- String of headers
-
     """
     stream = cStringIO.StringIO()
     stream.write(mimeinfo)
@@ -166,7 +168,9 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
                   'headers': self.headers.dict}
 
   def process_post_info(self):
-    """Processes POST variables coming in, either standard or form-data."""
+    """Processes POST variables coming in, either standard or
+    form-data.
+    """
     # XXXX: We may wantto check that content-length exists 
     # or catch KeyError as this shows up in the logs somewhat
     # often.  The question is, what we should do if this field
@@ -181,12 +185,6 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     self.input.update(dict(query_list))
 
   def do_POST(self):
-    """The main POST shell.
-
-    Keyword arguments:
-    none
-
-    """
     try:
       self.init_session()
       self.process_post_info()
@@ -195,12 +193,6 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
       raise
 
   def do_GET(self):
-    """The main GET shell.
-
-    Keyword arguments:
-    none
-
-    """
     try:
       self.init_session()
       self.process_request()
@@ -267,13 +259,13 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     else:
       self.mime_type = 'text/html'
 
-  def use_template(self, tmpl, searchlist, tmpl_dir='pages'):
-    """Use compiled-on-demand versions of Cheetah templates for speed,
-    specially with CGI
+  def use_template(self, tmpl, searchlist):
+    """Use compiled-on-demand versions of Cheetah templates for
+    speed, specially with CGI
     """
     self.set_mime_type(tmpl)
     tmpl = tmpl.replace('.', '_')
-    modname = tmpl_dir + '/' + tmpl
+    modname = 'pages/' + tmpl
     page = modname + '.tmpl'
     compiled = modname + '.py'
     try:
@@ -295,7 +287,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
       if tmpl in self.tmpl_cache:
         reload(self.tmpl_cache[tmpl])
     if tmpl not in self.tmpl_cache:
-      self.tmpl_cache[tmpl] = __import__(modname)
+      self.tmpl_cache[tmpl] = __import__(tmpl)
     module = self.tmpl_cache[tmpl]
     tmpl = getattr(module, tmpl)
     tmpl = tmpl(searchList=searchlist)
