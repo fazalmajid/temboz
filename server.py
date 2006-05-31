@@ -6,8 +6,12 @@ import BaseHTTPServer, SocketServer, cgi, cStringIO
 import param
 
 # add the Cheetah template directory to the import path
-sys.path.append(os.path.dirname(sys.modules['__main__'].__file__)
-                + os.sep + 'pages')
+tmpl_dir = os.path.dirname(sys.modules['__main__'].__file__)
+if tmpl_dir:
+  tmpl_dir += os.sep + 'pages'
+else:
+  tmpl_dir = 'pages'
+sys.path.append(tmpl_dir)
 
 class Server(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
   pass
