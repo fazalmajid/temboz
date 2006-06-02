@@ -1,6 +1,6 @@
 #!/usr/local/bin/python
 # $Id$
-import sys, os, stat, logging, base64, time
+import sys, os, stat, logging, base64, time, imp
 
 import BaseHTTPServer, SocketServer, cgi, cStringIO
 import param
@@ -8,10 +8,9 @@ import param
 # add the Cheetah template directory to the import path
 tmpl_dir = os.path.dirname(sys.modules['__main__'].__file__)
 if tmpl_dir:
-  tmpl_dir += os.sep + 'pages'
+  tmpl_dir += os.sep + 'pages' + os.sep
 else:
-  tmpl_dir = 'pages'
-sys.path.append(tmpl_dir)
+  tmpl_dir = 'pages' + os.sep
 
 class Server(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
   pass
@@ -291,7 +290,10 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
       if tmpl in self.tmpl_cache:
         reload(self.tmpl_cache[tmpl])
     if tmpl not in self.tmpl_cache:
-      self.tmpl_cache[tmpl] = __import__(tmpl)
+      filename = tmpl_dir + tmpl + '.pyc'
+      self.tmpl_cache[tmpl] = imp.load_module(
+        'tmpl_' + tmpl, open(filename, 'rb'), filename,
+        ('pyc', 'rb', imp.PY_COMPILED))
     module = self.tmpl_cache[tmpl]
     tmpl = getattr(module, tmpl)
     tmpl = tmpl(searchList=searchlist)
