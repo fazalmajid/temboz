@@ -8,9 +8,9 @@ import param
 # add the Cheetah template directory to the import path
 tmpl_dir = os.path.dirname(sys.modules['__main__'].__file__)
 if tmpl_dir:
-  tmpl_dir += os.sep + 'pages' + os.sep
+  tmpl_dir += os.sep + 'pages'
 else:
-  tmpl_dir = 'pages' + os.sep
+  tmpl_dir = 'pages'
 
 class Server(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
   pass
@@ -292,8 +292,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     if tmpl not in self.tmpl_cache:
       filename = tmpl_dir + tmpl + '.pyc'
       self.tmpl_cache[tmpl] = imp.load_module(
-        'tmpl_' + tmpl, open(filename, 'rb'), filename,
-        ('pyc', 'rb', imp.PY_COMPILED))
+        *(('tmpl_' + tmpl,) + imp.find_module(tmpl, [tmpl_dir])))
     module = self.tmpl_cache[tmpl]
     tmpl = getattr(module, tmpl)
     tmpl = tmpl(searchList=searchlist)
