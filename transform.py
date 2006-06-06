@@ -52,6 +52,9 @@ filter_list = [
   degunk.Re('<div><a href="http://www.pheedo[^"]*">\s*'
             '<img src="http://www.pheedo.com.*?</div>',
             re.MULTILINE + re.DOTALL),
+  degunk.Re('<a href="http://[^"]*.pheedo[^"]*">\s*'
+            '<img [^>]*src="http://www.pheedo.com.*?</a>',
+            re.MULTILINE + re.DOTALL),
   # IDFuel URLs should point to full article, not teaser
   degunk.ReUrl(url=r'http://www.idfuel.com/index.php?p=\1&more=1',
                regex_url=r'http://www.idfuel.com/index.php\?p=([0-9]*)'),
