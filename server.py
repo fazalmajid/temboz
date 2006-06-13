@@ -288,7 +288,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
       byte_compile([compiled], verbose=0)
       byte_compile([compiled], verbose=0, optimize=2)
       if tmpl in self.tmpl_cache:
-        reload(self.tmpl_cache[tmpl])
+        del self.tmpl_cache[tmpl]
     if tmpl not in self.tmpl_cache:
       filename = tmpl_dir + tmpl + '.pyc'
       self.tmpl_cache[tmpl] = imp.load_module(
