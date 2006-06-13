@@ -17,9 +17,9 @@
 #import time
 #set c = db.cursor()
 #silent c.execute("""select feed_uid, feed_title, feed_html, feed_xml,
-  last_modified, interesting, unread, uninteresting, filtered, total, snr,
-  feed_status, feed_private, feed_errors, feed_filter notnull
-from v_feed_stats order by feed_status ASC, """ \
+  last_modified, interesting, unread, uninteresting, filtered, total,
+  snr, feed_status, feed_private, feed_errors, feed_filter notnull
+from v_feeds_snr order by feed_status ASC, """ \
     + sort_key + ' ' + order + """, lower(feed_title)""")
 <table>
 <tr>
@@ -63,11 +63,6 @@ from v_feed_stats order by feed_status ASC, """ \
 #else
 #set total = int(total)
 #end if
-#if interesting + uninteresting > 0
-#set ratio = interesting*100/(interesting + uninteresting)
-#else
-#set ratio = 0
-#end if
 #silent assert interesting + uninteresting + unread + filtered == total, feed_title + ' interesting ' + repr(interesting) + ' uninteresting ' + repr(uninteresting) + ' unread ' + repr(unread) + ' filtered ' + repr(filtered) + ' total ' + repr(total) + ' does not add up'
 #set flags = ['suspended'] * status + ['private'] * private + ['filtered'] * has_filter
 #if flags
@@ -96,7 +91,7 @@ from v_feed_stats order by feed_status ASC, """ \
 #else
 #set error_flag = ''
 #end if
-<tr valign="top" class="$rowcolor"><td><a href="$feed_html">$feed_title</a>&nbsp;&nbsp;<a$error_flag href="$feed_xml">(XML)</a><a href="feed_info?feed_uid=$feed_uid"> (details)</a>$flags</td><td nowrap align="right">$since</td><td nowrap align="right"><a href="view?feed_uid=$feed_uid&show=unread">$unread</a></td><td nowrap align="right"><a href="view?feed_uid=$feed_uid&show=filtered">$filtered</a></td><td nowrap align="right"><a href="view?feed_uid=$feed_uid&show=up">$interesting</a></td><td nowrap align="right"><%=ratio%>%</td><td nowrap align="right"><a href="view?feed_uid=$feed_uid&show=all">$total</a></td><td nowrap>
+<tr valign="top" class="$rowcolor"><td><a href="$feed_html">$feed_title</a>&nbsp;&nbsp;<a$error_flag href="$feed_xml">(XML)</a><a href="feed_info?feed_uid=$feed_uid"> (details)</a>$flags</td><td nowrap align="right">$since</td><td nowrap align="right"><a href="view?feed_uid=$feed_uid&show=unread">$unread</a></td><td nowrap align="right"><a href="view?feed_uid=$feed_uid&show=filtered">$filtered</a></td><td nowrap align="right"><a href="view?feed_uid=$feed_uid&show=up">$interesting</a></td><td nowrap align="right"><%=int(100 * snr)%>%</td><td nowrap align="right"><a href="view?feed_uid=$feed_uid&show=all">$total</a></td><td nowrap>
 #if unread > 0
 <a href="catch_up?feed_uid=$feed_uid">catch up</a>
 #end if

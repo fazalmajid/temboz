@@ -8,6 +8,49 @@ import param
 from pysqlite2 import dbapi2 as sqlite
 sqlite_cli = 'sqlite3'
 
+########################################################################
+# custom aggregate function to calculate the exponentially decaying SNR
+
+class SNR:
+  """Calculates an exponentially decaying signal to noise ratio"""
+  def __init__(self):
+    self.reset()
+
+  def reset(self):
+    # it doesn't matter which date we use as a reference, as it just ends
+    # up as a scaling factor on numerator and denominator
+    # picking something close to localtime is preferrable so the exponents
+    # stay manageable, julianday('1970-01-01 00:00:00') = 2440587.5
+    self.ref_date = time.time() / 86400.0 + 2440587.5
+    # this is the decaying sum of all except filtered
+    self.sum_rated = 0.0
+    # this is the decaying sum of all interesting
+    self.sum_good = 0.0
+
+  def step(self, rating, date, decay):
+    """The aggregate function takes the following parameters:
+    status: value of item_rating
+    date:   value of item_created
+    decay:  half-life to use, in days
+    """
+    # articles older than param.garbage_items cannot be counted towards
+    # the SNR, as the uninteresting ones have been purged and thus skew
+    # the metric towards 100%
+    if self.ref_date - date < param.garbage_items:
+      # by convention, 0 means do not decay (i.e. infinite half-life)
+      if decay == 0:
+        decay = 1
+      else:
+        decay = .5 ** ((self.ref_date - date) / decay)
+      self.sum_rated += decay * int(rating not in [0, -2])
+      self.sum_good += decay * int(rating == 1)
+
+  def finalize(self):
+    if self.sum_rated == 0:
+      return 0
+    else:
+      return self.sum_good / self.sum_rated
+  
 # support classes for SQLite3, essentially to catch the OperationalError
 # exceptions thrown when two writers collide
 
@@ -71,16 +114,17 @@ def commit_wrapper(method):
       backoff = min(backoff * 2, 5.0)
 
 class SQLite3Factory:
-  """SQLite 3.x has a different, improved concurrency model, but it has also
-tightened checking. Among other things, database objects may not be shared
-between threads, apparently due to bugs in some RedHat Linux threading
-library implementations:
+  """SQLite 3.x has a different, improved concurrency model, but it
+has also tightened checking. Among other things, database objects
+may not be shared between threads, apparently due to bugs in some
+RedHat Linux threading library implementations:
     http://www.hwaci.com/sw/sqlite/faq.html#q8
 
-Thus for SQLite 3.x, singleton.db acts like an implicit factory object
-returning a new connection for each call. We cache the database connection
-objects in the threading.Thread object (not officially supported, but works
-well enough) so commits can be associated with the corresponding cursor call.
+Thus for SQLite 3.x, singleton.db acts like an implicit factory
+object returning a new connection for each call. We cache the
+database connection objects in the threading.Thread object (not
+officially supported, but works well enough) so commits can be
+associated with the corresponding cursor call.
 """
   lock = threading.Lock()
   def acquire(self):
@@ -111,6 +155,7 @@ well enough) so commits can be associated with the corresponding cursor call.
       db = sqlite.connect('rss.db')
       setattr(t, '__singleton_db', db)
       setattr(t, '__singleton_locked', False)
+      db.create_aggregate('snr_decay', 3, SNR)
     del t
     if name == 'cursor':
       return lambda: PseudoCursor3(db)
@@ -125,6 +170,7 @@ class PseudoDB:
     self.sqlite_last_insert_rowid = None        
     # try PySQLite2/SQLite3 first, fall back to PySQLite 1.0/SQLite2
     self.db = sqlite.connect('rss.db')
+    self.db.create_aggregate('snr_decay', 3, SNR)
     try:
       # sanity checking
       c = self.db.cursor()
@@ -158,51 +204,43 @@ class PseudoDB:
     
 db = PseudoDB()
 
+########################################################################
 # upgrade data model on demand
 c = db.cursor()
 c.execute("select sql from sqlite_master where name='v_feeds'")
 sql = c.fetchone()
-if sql and 'feed_filter' not in sql[0]:
+if sql:
   c.execute("""drop view v_feeds""")
   c.execute("""drop view v_feed_stats""")
   sql = None
-if not sql:
-  print >> param.log, 'WARNING: creating view v_feeds...',
-  c.execute("""create view v_feeds as
-  select feed_uid, feed_title, feed_html, feed_xml,
-    min(last_modified) as last_modified,
-    sum(case when item_rating=1 then cnt else 0 end) as interesting,
-    sum(case when item_rating=0 then cnt else 0 end) as unread,
-    sum(case when item_rating=-1 then cnt else 0 end) as uninteresting,
-    sum(case when item_rating=-2 then cnt else 0 end) as filtered,
-    sum(cnt) as total,
-    feed_status, feed_private, feed_errors, feed_desc, feed_filter
-  from fm_feeds left outer join (
-    select item_rating, item_feed_uid, count(*) as cnt,
-      julianday('now') - max(
-      ifnull(
-	julianday(item_modified),
-	julianday(item_created)
-      )
-    ) as last_modified
-    from fm_items
-    group by item_rating, item_feed_uid
-  ) on feed_uid=item_feed_uid
-  group by feed_uid, feed_title, feed_html, feed_xml""")
-  db.commit()  
-  print >> param.log, 'done.'
-c.execute("select count(*) from sqlite_master where name='v_feed_stats'")
-if not c.fetchone()[0]:
-  print >> param.log, 'WARNING: creating view v_feed_stats...',
-  c.execute("""create view v_feed_stats as
-  select feed_uid, feed_title, feed_html, feed_xml,
-    last_modified,
-    interesting, unread, uninteresting, filtered, total,
-    interesting * 100.0 / (total - filtered - unread) as snr,
-    feed_status, feed_private, feed_errors, feed_desc, feed_filter
-  from v_feeds""")
-  db.commit()  
-  print >> param.log, 'done.'
+
+# we have to recreate this view each time as param.decay may have changed
+c.execute("select sql from sqlite_master where name='v_feeds_snr'")
+sql = c.fetchone()
+if sql:
+  c.execute('drop view v_feeds_snr')
+c.execute("""create view v_feeds_snr as
+select feed_uid, feed_title, feed_html, feed_xml,
+min(julianday('now') - item_modified) as last_modified,
+sum(case when item_rating=1 then 1 else 0 end) as interesting,
+sum(case when item_rating=0 then 1 else 0 end) as unread,
+sum(case when item_rating=-1 then 1 else 0 end) as uninteresting,
+sum(case when item_rating=-2 then 1 else 0 end) as filtered,
+sum(1) as total,
+snr_decay(item_rating, item_created, %d) as snr,
+feed_status, feed_private, feed_errors, feed_desc, feed_filter
+from fm_feeds left outer join (
+  select item_rating, item_feed_uid, item_created,
+    ifnull(
+      julianday(item_modified),
+      julianday(item_created)
+    ) as item_modified
+  from fm_items
+) on feed_uid=item_feed_uid
+group by feed_uid, feed_title, feed_html, feed_xml""" %
+          getattr(param, 'decay', 30))
+db.commit()  
+
 # SQLite3 offers ALTER TABLE ADD COLUMN but not SQLite 2, so we do it the
 # hard way, which shouldn't be an issue for a small table like this
 c.execute("select count(*) from sqlite_master where name='fm_feeds' and sql like '%feed_filter%'")
@@ -234,30 +272,3 @@ if not c.fetchone()[0]:
   c.execute('drop table sop')
   db.commit()  
   print >> param.log, 'done.'
-
-########################################################################
-# user-defined aggregate function to calculate the mean and standard
-# deviation of inter-arrival times in a single pass on the database
-# This will segfault with versions of PySQLite older than 0.5.1
-
-class StdDev:
-  def __init__(self):
-    self.reset()
-
-  def reset(self):
-    self.n = 0
-    self.sx = 0
-    self.sxx = 0
-
-  def step(self, x):
-    x = float(x)
-    self.n += 1
-    self.sx += x
-    self.sxx += x * x
-
-  def finalize(self):
-    val = math.sqrt((self.n * self.sxx - self.sx * self.sx) / self.n / self.n)
-    self.reset()
-    return str(val)
-  
-db.db.create_aggregate('stddev', 1, StdDev)

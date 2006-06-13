@@ -20,6 +20,9 @@ overload_threshold = 200
 # feed polling interval in seconds
 refresh_interval = 3600
 
+# half-life of articles' contribution towards the SNR
+decay = 90
+
 # Whether "catch-up" links require user confirmation (default is yes)
 catch_up_confirm = True
 hard_purge_confirm = True

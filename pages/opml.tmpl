@@ -13,7 +13,7 @@
 #silent trans.mime_type = 'text/xml'
 #silent c.execute("""select feed_uid, feed_title, feed_desc,
   feed_html, feed_xml, snr
-from v_feed_stats
+from v_feeds_snr
 where feed_status=0 and feed_private=0
 order by snr desc, lower(feed_title)""")
 #for feed_uid, feed_title, feed_desc, feed_html, feed_xml, snr in c
