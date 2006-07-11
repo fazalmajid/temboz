@@ -345,6 +345,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
         if op in ['promote', 'demote', 'basic']:
           getattr(self, 'op_' + op)(item_uid)
         self.pixel()
+        return
 
       if path.startswith('/xmlfeedback/'):
         op, item_uid = path.split('/')[2::2]
@@ -354,6 +355,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
         if op in ['promote', 'demote', 'basic']:
           getattr(self, 'op_' + op)(item_uid)
         self.xml()
+        return
 
       tmpl = parts[0].split('/', 1)[1].strip('/')
       self.use_template(tmpl, [self.input])
