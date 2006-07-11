@@ -220,7 +220,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
   def favicon(self):
     self.browser_output(200, 'image/x-icon', self.images['favicon.ico'])
   def xml(self):
-    self.browser_output(200, 'text/xml', '<?xml version="1.0"?>')
+    self.browser_output(200, 'text/xml', '<?xml version="1.0"?><nothing />')
 
   def set_rating(self, item_uid, rating):
     from singleton import db
