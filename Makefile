@@ -35,7 +35,7 @@ cvsdist disttar:: distclean changelog
 	-rm -f .*~ *~
 	cp README INSTALL NEWS LICENSE UPGRADE ChangeLog temboz *.py temboz-$(VERSION)
 	cp ddl.sql me.opml .ht* temboz-$(VERSION)
-	cp -r pages images etc temboz-$(VERSION)
+	cp -r pages images etc tiny_mce temboz-$(VERSION)
 	(cd temboz-$(VERSION); mv param.py param.py.sample; mv transform.py transform.py.sample; find . -name \*.pyc -exec rm {} \;; find . -name \*.pyo -exec rm {} \;; find pages -name \*.py -exec rm {} \;)
 	-rm -f temboz-$(VERSION)/etc/.cvsignore
 	-rm -rf temboz-$(VERSION)/pages/CVS temboz-$(VERSION)/images/CVS

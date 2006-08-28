@@ -193,7 +193,7 @@ class PseudoDB:
         print >> param.log, 'done.'
     self.c = self.db.cursor()
   def cursor(self):
-    return PseudoCursor(self)
+    return PseudoCursor3(self.db)
   def commit(self, *args, **kwargs):
     self.db.commit(*args, **kwargs)
   def rollback(self, *args, **kwargs):

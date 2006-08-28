@@ -207,6 +207,17 @@ def update_feed_dupcheck(feed_uid, dupcheck):
   finally:
     c.close()
 
+def update_item(item_uid, link, title, content):
+  item_uid = int(item_uid)
+  from singleton import db
+  c = db.cursor()
+  try:
+    c.execute("""update fm_items set item_link=?, item_title=?, item_content=?
+    where item_uid=?""", [link, title, content, item_uid])
+    db.commit()
+  finally:
+    c.close()
+
 def title_url(feed_uid):
   feed_uid = int(feed_uid)
   from singleton import db

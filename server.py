@@ -318,6 +318,15 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
 
       if path.endswith('.gif') and path[1:] in self.images:
         self.browser_output(200, 'image/gif', self.images[path[1:]])
+        return
+
+      if path.startswith('/tiny_mce'):
+        # guard against attempts to subvert security using ../
+        path = os.path.normpath('.' + path)
+        assert path.startswith('tiny_mce')
+        self.set_mime_type(path)
+        self.browser_output(200, self.mime_type, open(path).read())
+        return
 
       if parts[0].count('favicon.ico') > 0:
         self.favicon()
