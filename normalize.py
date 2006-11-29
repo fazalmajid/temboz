@@ -1,5 +1,6 @@
 # -*- coding: iso-8859-1 -*-
 import sys, time, re, codecs, string, traceback, md5
+import unicodedata, htmlentitydefs
 import feedparser, transform, util, param
 
 # XXX TODO
@@ -176,13 +177,41 @@ for c in string.whitespace:
 del lc_map[32]
 for c in string.punctuation + '\'':
   punct_map[ord(c)] = 32
-lc_map.update(dict(zip(map(ord, string.uppercase),
-                       map(ord, string.lowercase))))
+
+# decode HTML entities with known Unicode equivalents
+ent_re = re.compile(r'\&([^;]*);')
+def ent_sub(m):
+  ent = m.groups()[0]
+  if ent in htmlentitydefs.name2codepoint:
+    return unichr(htmlentitydefs.name2codepoint[ent])
+  if ent.startswith('#'):
+    if ent.lower().startswith('#x'):
+      codepoint = int('0x' + ent[2:])
+    else:
+      codepoint = int(ent[1:])
+    if codepoint > 0 and codepoint < sys.maxunicode:
+      return unichr(codepoint)
+  # fallback - leave as-is
+  return '&%s;' % ent
+  
+def decode_entities(s):
+  return ent_re.sub(ent_sub, s)
+
+# strip diacritics. Unicode normalization form D (NFD) maps letters with
+# diacritics into the base letter followed by a combining diacritic, all
+# we need to do is get rid of the combining diacritics
+# this probably does not work with exotic characters like
+# U+FDF2 (Arabic ligature Allah)
+def stripc(c):
+  return unicodedata.normalize('NFD', c)[0]
+def strip_diacritics(s):
+  return ''.join(map(stripc, s))
+
 # XXX need to normalize for HTML entities as well
 # XXX need to strip diacritics
 def lower(s):
   s = unicode(s)
-  return s.translate(lc_map)
+  return strip_diacritics(decode_entities(s)).translate(lc_map).lower()
 
 strip_tags_re = re.compile('<[^>]*>')
 def get_words(s):
