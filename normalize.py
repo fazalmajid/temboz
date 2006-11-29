@@ -13,6 +13,16 @@ import feedparser, transform, util, param
 #date_fmt = '%a, %d %b %Y %H:%M:%S %Z'
 date_fmt = '%Y-%m-%d %H:%M:%S'
 
+# strip diacritics. Unicode normalization form D (NFD) maps letters with
+# diacritics into the base letter followed by a combining diacritic, all
+# we need to do is get rid of the combining diacritics
+# this probably does not work with exotic characters like
+# U+FDF2 (Arabic ligature Allah)
+def stripc(c):
+  return unicodedata.normalize('NFD', c)[0]
+def strip_diacritics(s):
+  return u''.join(map(stripc, s))
+
 stop_words = ['i', 't', 'am', 'no', 'do', 's', 'my', 'don', 'm', 'on',
               'get', 'in', 'you', 'me', 'd', 've']
 # list originally from: http://bll.epnet.com/help/ehost/Stop_Words.htm
@@ -50,7 +60,7 @@ stop_words += ['a', 'the', 'of', 'and', 'that', 'for', 'by', 'as', 'be',
 # XXX it's not good practice to mix languages like this, we should use
 # XXX feed language metadata and track what language a content is written in
 # XXX but that would require significant data model changes
-stop_words += [
+stop_words += [strip_diacritics(unicode(s, 'iso8859-15')) for s in [
   "a", "A", "à", "afin", "ah", "ai", "aie", "aient", "aies", "ailleurs",
   "ainsi", "ait", "alentour", "alias", "allais", "allaient",
   "allait", "allons", "allez", "alors", "Ap.", "Apr.", "après",
@@ -162,7 +172,7 @@ stop_words += [
   "vingt-quatre", "vingt-sept", "vingt-six", "vingt-trois",
   "vis-à-vis", "vite", "vitro", "vivo", "voici", "voilà", "voire",
   "volontiers", "vos", "votre", "vous", "-vous", "W", "X", "y", "-y",
-  "Z", "zéro"]
+  "Z", "zéro"]]
 
 stop_words = set(stop_words)
 
@@ -196,16 +206,6 @@ def ent_sub(m):
   
 def decode_entities(s):
   return ent_re.sub(ent_sub, s)
-
-# strip diacritics. Unicode normalization form D (NFD) maps letters with
-# diacritics into the base letter followed by a combining diacritic, all
-# we need to do is get rid of the combining diacritics
-# this probably does not work with exotic characters like
-# U+FDF2 (Arabic ligature Allah)
-def stripc(c):
-  return unicodedata.normalize('NFD', c)[0]
-def strip_diacritics(s):
-  return ''.join(map(stripc, s))
 
 # XXX need to normalize for HTML entities as well
 # XXX need to strip diacritics
