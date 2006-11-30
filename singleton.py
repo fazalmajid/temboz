@@ -5,7 +5,10 @@
 import sys, thread, threading, signal, math, time
 import param
 
-from pysqlite2 import dbapi2 as sqlite
+try:
+  from sqlite3 import dbapi2 as sqlite
+except ImportError:
+  from pysqlite2 import dbapi2 as sqlite
 sqlite_cli = 'sqlite3'
 
 ########################################################################
