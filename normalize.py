@@ -196,7 +196,7 @@ def ent_sub(m):
     return unichr(htmlentitydefs.name2codepoint[ent])
   if ent.startswith('#'):
     if ent.lower().startswith('#x'):
-      codepoint = int('0x' + ent[2:])
+      codepoint = int('0x' + ent[2:], 16)
     else:
       codepoint = int(ent[1:])
     if codepoint > 0 and codepoint < sys.maxunicode:
