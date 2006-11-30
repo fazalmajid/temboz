@@ -174,10 +174,8 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     """Processes POST variables coming in, either standard or
     form-data.
     """
-    # XXXX: We may wantto check that content-length exists 
-    # or catch KeyError as this shows up in the logs somewhat
-    # often.  The question is, what we should do if this field
-    # does not exist.  (fledo@kefta.com)
+    # XXX We may want to check that content-length exists 
+    # XXX or catch KeyError
     if self.headers.gettype() == 'multipart/form-data':
       mimeinfo = self.headers.__str__() + \
                  self.rfile.read(int(self.headers['content-length']))
