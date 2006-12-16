@@ -64,6 +64,26 @@ class ReUrl(Filter):
         item['link'] = url
     return content
 
+class ReTitle(Filter):
+  """Find an alternative item title
+  title: substitution to use as the title (can use backreferences like \1)
+  regex: regex to search for in the article content (only first match matters)
+  flags: flags for regex compilation
+  """
+  def __init__(self, title, regex, flags=0):
+    self.title = title
+    self.re_content = re.compile(regex, flags)
+  def apply(self, content, *args, **kwargs):
+    item = args[1]
+    if not item['title'] or item['title'] == 'Untitled':
+      item = args[1]
+      m = self.re_content.search(content)
+      if m:
+        title = m.expand(self.title).strip()
+        if title:
+          item['title'] = title
+      return content
+
 class UseFirstLink(Filter):
   """Use the first link in the body as the article link.
   Originally for the Daily Python URL feed, where the item link in the feed

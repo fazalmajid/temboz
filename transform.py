@@ -48,6 +48,8 @@ filter_list = [
             'Email this</a>.*?Comments</a>',
             re.IGNORECASE + re.DOTALL),
   degunk.Re('<p><font size="1"><hr />SPONSORED BY.*?</p>'),
+  # Engadget ads
+  degunk.Re('<hr /><p>SPONSORED BY.*?</p>\s*', re.MULTILINE),
   # Gawker cross-shilling
   degunk.Re('&nbsp;<br><a href=[^>]*>Comment on this post</a>\s*<br>Related.*',
             re.IGNORECASE + re.DOTALL),
@@ -76,6 +78,8 @@ filter_list = [
   degunk.Dereference('digg.com', '<h3 id="title1"><a href="([^"]*)"'),
   # Daily Python URL should link to actual articles, not to itself
   degunk.UseFirstLink('http://www.pythonware.com/daily/'),
+  degunk.ReTitle('\\1', '<div class="description">.*?<a href=.*?>(.*?)</a>',
+                 re.MULTILINE + re.DOTALL),
   # possibly caused by bugs in feedparser
   degunk.Re('<br>[.>]<br>', 0, '<br>', iterate=True),
   # unwarranted multiple empty lines
