@@ -74,6 +74,9 @@ filter_list = [
   regex_url=r'http://www.pbs.org/cringely/rss1/redir/cringely/(.*)'),
   # Register ads
   degunk.Re('<strong>Advertisement</strong><br>'),
+  # Salon ads
+  degunk.Re('<p><a href="http://feeds.salon.com/~a[^>]*><img '
+            '[^>]*></a></p><img[^>]*>'),
   # bypass Digg
   degunk.Dereference('digg.com', '<h3 id="title1"><a href="([^"]*)"'),
   # Daily Python URL should link to actual articles, not to itself
