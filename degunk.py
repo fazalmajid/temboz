@@ -82,7 +82,7 @@ class ReTitle(Filter):
         title = m.expand(self.title).strip()
         if title:
           item['title'] = title
-      return content
+    return content
 
 class UseFirstLink(Filter):
   """Use the first link in the body as the article link.
