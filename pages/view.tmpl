@@ -275,7 +275,7 @@ limit ? offset ?)""", params + [overload_threshold, offset])
 #set num_items = int(c.fetchone()[0])
 #set cutoff = (num_items + 1) / 2 + 1
 #set count = 0
-<div class="menu">
+<div id="menu" class="menu">
 #if not public
 <form method="GET" action="view" target="_blank" class="menu">
 #end if
@@ -325,14 +325,14 @@ from fm_items, fm_feeds where item_feed_uid=feed_uid
 and """ + where_clause + ' and feed_private = 0' * public + """
 order by item_created DESC, item_uid DESC
 limit ?""", params + [overload_threshold])
-<div class="col1">
+<div id="col1" class="col1">
 #for uid, creator, title, link, content, loaded, created, feed_uid, feed_title, feed_html, feed_xml, delta_created in c
 #set count += 1
 #if count == cutoff
 ## this empty paragraph prevents the right column from resizing when all items
 ## in the left column are dismissed
 <p></p>
-</div><div class="col2">
+</div><div id="col2" class="col2">
 #end if
 ########################################################################
 ##
@@ -383,4 +383,29 @@ repeat_headline();
 ##
 ########################################################################
 <div style="clear: both;" />
+<script language="JavaScript">
+function adjust_for_browser_width() {
+  var width = 0;
+  var node;
+
+  if (document.body) {
+    if (document.body.clientWidth) {
+      width = document.body.clientWidth;
+    } else if (document.body.offsetWidth) {
+      width = document.body.offsetWidth;
+    }
+  } else {
+    width = screen.width;
+  }
+  if (width < 600) {
+    node = document.getElementById("menu");
+    node.style.visibility = "hidden";
+    node = document.getElementById("col1");
+    node.className = "";
+    node = document.getElementById("col2");
+    node.className = "";
+  }
+}
+adjust_for_browser_width();
+</script>
 </body></html>
