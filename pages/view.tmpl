@@ -47,6 +47,8 @@
 #set where_clause = 'item_rating = 0'
 #end if
 #set params = []
+## optimizations for mobile devices
+#set mobile = bool($getVar('mobile', False))
 ########################################################################
 ##
 ## Optionally restrict view to a single feed
@@ -275,6 +277,7 @@ limit ? offset ?)""", params + [overload_threshold, offset])
 #set num_items = int(c.fetchone()[0])
 #set cutoff = (num_items + 1) / 2 + 1
 #set count = 0
+#if not mobile
 <div id="menu" class="menu">
 #if not public
 <form method="GET" action="view" target="_blank" class="menu">
@@ -313,6 +316,9 @@ limit ? offset ?)""", params + [overload_threshold, offset])
 <input type="submit" value="Search"></p></form>
 #end if
 </div>
+#else
+#set overload_threshold = 50
+#end if
 ########################################################################
 ##
 ## Fetch overload_threshold (default 200) items
@@ -325,14 +331,18 @@ from fm_items, fm_feeds where item_feed_uid=feed_uid
 and """ + where_clause + ' and feed_private = 0' * public + """
 order by item_created DESC, item_uid DESC
 limit ?""", params + [overload_threshold])
+#if not mobile
 <div id="col1" class="col1">
+#end if
 #for uid, creator, title, link, content, loaded, created, feed_uid, feed_title, feed_html, feed_xml, delta_created in c
 #set count += 1
 #if count == cutoff
 ## this empty paragraph prevents the right column from resizing when all items
 ## in the left column are dismissed
 <p></p>
+#if not mobile
 </div><div id="col2" class="col2">
+#end if
 #end if
 ########################################################################
 ##
@@ -360,8 +370,7 @@ $since_when
 #if not public
 <a href="edit?uid=$uid">edit</a>
 #end if
-<br></div><div
-class="content" id="content$uid">
+<br></div><div class="content" id="content$uid">
 $content
 </div>
 #if getattr(param, 'thumbs_bottom', False)
@@ -373,7 +382,9 @@ repeat_headline();
 #end if
 </div>
 #end for
+#if not mobile
 </div>
+#end if
 #silent db.commit()
 #silent c.close()
 ########################################################################
@@ -383,29 +394,4 @@ repeat_headline();
 ##
 ########################################################################
 <div style="clear: both;" />
-<script language="JavaScript">
-function adjust_for_browser_width() {
-  var width = 0;
-  var node;
-
-  if (document.body) {
-    if (document.body.clientWidth) {
-      width = document.body.clientWidth;
-    } else if (document.body.offsetWidth) {
-      width = document.body.offsetWidth;
-    }
-  } else {
-    width = screen.width;
-  }
-  if (width < 600) {
-    node = document.getElementById("menu");
-    node.style.visibility = "hidden";
-    node = document.getElementById("col1");
-    node.className = "";
-    node = document.getElementById("col2");
-    node.className = "";
-  }
-}
-adjust_for_browser_width();
-</script>
 </body></html>
