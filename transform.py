@@ -79,6 +79,9 @@ filter_list = [
             '[^>]*></a></p><img[^>]*>'),
   # bypass Digg
   degunk.Dereference('digg.com', '<h3 id="title1"><a href="([^"]*)"'),
+  # DoubleClick ads
+  degunk.Re('<a href="http://[^"]*doubleclick.*?</a>',
+            re.MULTILINE + re.DOTALL),
   # Daily Python URL should link to actual articles, not to itself
   degunk.UseFirstLink('http://www.pythonware.com/daily/'),
   degunk.ReTitle('\\1', '<div class="description">.*?<a href=.*?>(.*?)</a>',
