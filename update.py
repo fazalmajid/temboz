@@ -497,7 +497,7 @@ Returns a tuple (number of items added unread, number of filtered items)"""
                    title, content, author, skip])
         if skip:
           num_filtered += 1
-          print >> param.log, 'SKIP', title
+          print >> param.log, 'SKIP', title, rule.co_filename
         else:
           num_added += 1
           print >> param.log, ' ' * 4, title
