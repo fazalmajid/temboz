@@ -198,7 +198,10 @@ def ent_sub(m):
     if ent.lower().startswith('#x'):
       codepoint = int('0x' + ent[2:], 16)
     else:
-      codepoint = int(ent[1:])
+      try:
+        codepoint = int(ent[1:])
+      except ValueError:
+        return ent
     if codepoint > 0 and codepoint < sys.maxunicode:
       return unichr(codepoint)
   # fallback - leave as-is
@@ -256,6 +259,26 @@ def fix_date(date_tuple):
       return date_tuple
   else:
     return date_tuple
+
+def get_imbalance(text, begin, end):
+  """Simply taking the difference in counts of begin and close tags is not
+  sufficient to account for pathological real-world cases like:
+  </strong>...<strong><strong>
+  where imbalance = 2, not 1
+  """
+  i = 0
+  imbalance = 0
+  b, e = 0, 0
+  while b != -1 or e != -1:
+    if e == -1 or b != -1 and b < e:
+      imbalance += 1
+      i = b + len(begin)
+    elif b == -1 or e != -1 and e < b:
+      imbalance = max(0, imbalance - 1)
+      i = e + len(end)
+    b = text.find(begin, i)
+    e = text.find(end, i)
+  return imbalance
 
 url_re = re.compile('(?:href|src)="([^"]*)"', re.IGNORECASE)
 
@@ -386,15 +409,15 @@ def normalize(item, f, run_filters=True):
   content_lc = lower(content)
   # XXX this will not work correctly for <a name="..." />
   for tag in ['<b>', '<strong>', '<strike>', '<em>', '<i>', '<font ', '<a ',
-              '<small>', '<big>', '<cite>', '<blockquote>', '<pre>',
-              '<sub>', '<sup>', '<tt>', '<ul>', '<ol>',
+              '<p>', '<p ', '<small>', '<big>', '<cite>', '<blockquote>',
+              '<pre>', '<sub>', '<sup>', '<tt>', '<ul>', '<ol>',
               '<div>', '<div ', '<span>', '<span ',
               '<td>', '<td ', '<th>', '<th ', '<tr>', '<tr ',
               '<table>', '<table ']:
     end_tag = '</' + tag[1:]
     if '>' not in end_tag:
       end_tag = end_tag .strip() + '>'
-    imbalance = content_lc.count(tag) - content_lc.count(end_tag)
+    imbalance = get_imbalance(content_lc, tag, end_tag)
     if imbalance > 0:
       content += end_tag * imbalance
   # the content might have invalid 8-bit characters.
