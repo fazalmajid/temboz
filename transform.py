@@ -14,8 +14,12 @@ filter_list = [
             re.MULTILINE),
   # Feedburner ads
   degunk.Re('<a href[^>]*><img src="http://feeds.feedburner[^>]*></a>'),
+  degunk.Re('<a href[^>]*><img src="http://feeds.arstechnica.com[^>]*></a>'),
   # Feedburner web bug
   degunk.Re('<img src="http://feeds.feedburner.com.*?/>'),
+  # web bugs dumb enough to reveal themselves
+  degunk.Re('<img[^>]*width="1"[^>]*height="1"[^>]*>'),
+  degunk.Re('<img[^>]*height="1"[^>]*width="1"[^>]*>'),
   # Google ads
   degunk.Re('<a[^>]*href="http://imageads.googleadservices[^>]*>'
             '[^<>]*<img [^<>]*></a>', re.MULTILINE),
@@ -90,6 +94,8 @@ filter_list = [
   degunk.Re('<br>[.>]<br>', 0, '<br>', iterate=True),
   # unwarranted multiple empty lines
   degunk.Re('<br>(<br>)+', 0, '<br>'),
+  # junk
+  degunk.Re('<strong></strong>', 0, ''),
   # unwarranted final empty lines
   degunk.Re('(<br>)+$'),
   ]
