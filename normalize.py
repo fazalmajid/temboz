@@ -1,5 +1,5 @@
 # -*- coding: iso-8859-1 -*-
-import sys, time, re, codecs, string, traceback, md5
+import sys, time, re, codecs, string, traceback, md5, HTMLParser
 import unicodedata, htmlentitydefs
 import feedparser, transform, util, param
 
@@ -260,25 +260,31 @@ def fix_date(date_tuple):
   else:
     return date_tuple
 
-def get_imbalance(text, begin, end):
-  """Simply taking the difference in counts of begin and close tags is not
-  sufficient to account for pathological real-world cases like:
-  </strong>...<strong><strong>
-  where imbalance = 2, not 1
-  """
-  i = 0
-  imbalance = 0
-  b, e = 0, 0
-  while b != -1 or e != -1:
-    if e == -1 or b != -1 and b < e:
-      imbalance += 1
-      i = b + len(begin)
-    elif b == -1 or e != -1 and e < b:
-      imbalance = max(0, imbalance - 1)
-      i = e + len(end)
-    b = text.find(begin, i)
-    e = text.find(end, i)
-  return imbalance
+class Balancer(HTMLParser.HTMLParser):
+  """Detect unbalanced HTML tags"""
+  tags = set(['b', 'strong', 'strike', 'em', 'i', 'font', 'a', 'p',
+              'small', 'big', 'cite', 'blockquote', 'pre', 'sub', 'sup', 'tt',
+              'ul', 'ol', 'div', 'span', 'td', 'th', 'tr', 'table'])
+  def __init__(self):
+    HTMLParser.HTMLParser.__init__(self)
+    self.counts = dict()
+  def handle_starttag(self, tag, attrs):
+    if tag in self.tags:
+      if self.counts.get(tag, 0) <= 0:
+        self.counts[tag] = 1
+      else:
+        self.counts[tag] += 1
+  def handle_endtag(self, tag):
+    if tag in self.tags:
+      self.counts.setdefault(tag, 0)
+      self.counts[tag] -= 1
+  def imbalances(self, ):
+    imbalances = []
+    for tag in self.tags:
+      count = self.counts.get(tag, 0)
+      if count > 0:
+        imbalances.append((tag, count))
+    return imbalances
 
 url_re = re.compile('(?:href|src)="([^"]*)"', re.IGNORECASE)
 
@@ -401,25 +407,12 @@ def normalize(item, f, run_filters=True):
       content = filter.apply(content, f, item)
   except:
     util.print_stack(black_list=['item'])
-  ########################################################################
   # balance tags like <b>...</b>
-  # XXX should also simplify HTML entities, e.g. &eacute; -> e
-  # XXX unfortunately this is an open problem with Unicode, as demonstrated
-  # XXX by phishing using internationalized domain names
   content_lc = lower(content)
-  # XXX this will not work correctly for <a name="..." />
-  for tag in ['<b>', '<strong>', '<strike>', '<em>', '<i>', '<font ', '<a ',
-              '<p>', '<p ', '<small>', '<big>', '<cite>', '<blockquote>',
-              '<pre>', '<sub>', '<sup>', '<tt>', '<ul>', '<ol>',
-              '<div>', '<div ', '<span>', '<span ',
-              '<td>', '<td ', '<th>', '<th ', '<tr>', '<tr ',
-              '<table>', '<table ']:
-    end_tag = '</' + tag[1:]
-    if '>' not in end_tag:
-      end_tag = end_tag .strip() + '>'
-    imbalance = get_imbalance(content_lc, tag, end_tag)
-    if imbalance > 0:
-      content += end_tag * imbalance
+  b = Balancer()
+  b.feed(content_lc)
+  for tag, imbalance in b.imbalances():
+    content += ('</%s>' % tag) * imbalance
   # the content might have invalid 8-bit characters.
   # Heuristic suggested by Georg Bauer
   if type(content) != unicode:
