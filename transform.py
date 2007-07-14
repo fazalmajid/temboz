@@ -86,6 +86,8 @@ filter_list = [
   # DoubleClick ads
   degunk.Re('<a href="http://[^"]*doubleclick.*?</a>',
             re.MULTILINE + re.DOTALL),
+  # If I want to share, I can do it myself, thanks
+  degunk.Re('<p class="akst_link">.*?</p>', re.MULTILINE + re.DOTALL),
   # Daily Python URL should link to actual articles, not to itself
   degunk.UseFirstLink('http://www.pythonware.com/daily/'),
   degunk.ReTitle('\\1', '<div class="description">.*?<a href=.*?>(.*?)</a>',
