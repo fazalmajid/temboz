@@ -98,6 +98,8 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     """Print to the outfile (self.wfile), but ignore IO errors"""
     try:
       print >> self.wfile, msg
+    except UnicodeEncodeError:
+      print >> self.wfile, msg.encode('ascii', 'xmlcharrefreplace')
     except IOError:
       pass
 
