@@ -51,5 +51,24 @@ you need to find a valid feed URL.</p>
 </pre>
 #end try
 #end if
+########################################################################
+##
+## Support for Firefox feed subscriptions
+##
+########################################################################
+#if 'Firefox' in $headers.get('user-agent', '') and $headers.get('host', '') and getattr(trans, 'path')
+#set myself = $headers['host'] + trans.path
+<script language="JavaScript">
+function register() {
+  navigator.registerContentHandler(
+    'application/vnd.mozilla.maybe.feed',
+    'http://$myself?feed_xml=%s','Temboz'
+  );
+}
+</script>
+<p>You seem to be running Firefox. You can <a
+href="javascript:void(register());">register</a> this Temboz instance as a
+feed reader to allow one-click feed subscription from within Firefox.</p>
+#end if
 </body>
 </html>
