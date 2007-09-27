@@ -92,6 +92,11 @@ filter_list = [
   degunk.UseFirstLink('http://www.pythonware.com/daily/'),
   degunk.ReTitle('\\1', '<div class="description">.*?<a href=.*?>(.*?)</a>',
                  re.MULTILINE + re.DOTALL),
+  # Inquirer clutter
+  degunk.Re('<p><small>[^<>]*<a href="http://www.theinquirer.net[^<>]*><i>'
+            '[^<>]*Read the full article.*', re.MULTILINE + re.DOTALL),
+  degunk.Re('<p><small>[^<>]*<a href="http://www.theinquirer.net.*?<i>',
+            re.MULTILINE),
   # possibly caused by bugs in feedparser
   degunk.Re('<br>[.>]<br>', 0, '<br>', iterate=True),
   # unwarranted multiple empty lines
