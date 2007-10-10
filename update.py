@@ -413,7 +413,11 @@ Returns a tuple (number of items added unread, number of filtered items)"""
   # the Radio convention is reverse chronological order
   f['items'].reverse()
   for item in f['items']:
-    normalize.normalize(item, f)
+    try:
+      normalize.normalize(item, f)
+    except:
+      util.print_stack()
+      continue
     skip = 0
     filter_dict = {}
     for key in f.feed:
