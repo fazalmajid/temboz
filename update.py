@@ -444,7 +444,7 @@ Returns a tuple (number of items added unread, number of filtered items)"""
     # evaluate the rules
     for rule in rules + [r for r in [feed_rules.get(feed_uid, None)] if r]:
       try:
-        skip = eval(rule, filter_dict)
+        skip = bool(eval(rule, filter_dict))
         if skip:
           break
       except:
