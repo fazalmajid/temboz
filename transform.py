@@ -8,13 +8,10 @@ import re, degunk
 filter_list = [
   # don't mess with breaks
   degunk.Re('(<br\s+[^>]*>)', 0, '<br>'),
-  # Ziff-Davis Baseline ads
-  degunk.Re('\s+<p><a[^>]*href="http://feeds.ziffdavis.com/[^>]*>'
-            '<img src="http://feeds.ziffdavis.com[^>]*?></a></p>',
-            re.MULTILINE),
   # Feedburner ads
   degunk.Re('<a href[^>]*><img src="http://feeds.feedburner[^>]*></a>'),
-  degunk.Re('<a href[^>]*><img src="http://feeds.arstechnica.com[^>]*></a>'),
+  degunk.Re('<p><a href="(http://feeds\\.[^"/>]*/~./)[^"]*">'
+            '<img src="\\1[^>]*></a></p>'),
   # Feedburner web bug
   degunk.Re('<img src="http://feeds.feedburner.com.*?/>'),
   # web bugs dumb enough to reveal themselves
