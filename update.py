@@ -467,12 +467,12 @@ Returns a tuple (number of items added unread, number of filtered items)"""
     from fm_items where item_feed_uid=? and item_guid=?""",
               [feed_uid, guid])
     l = c.fetchall()
-    # unknown GUID, but title duplicate checking may be in effect
+    # unknown GUID, but title/link duplicate checking may be in effect
     if not l:
       if feed_dupcheck:
         c.execute("""select count(*) from fm_items
-        where item_feed_uid=? and item_title=?""",
-                  [feed_uid, title])
+        where item_feed_uid=? and (item_title=? or item_link=?)""",
+                  [feed_uid, title, link])
         l = bool(c.fetchone()[0])
         if l:
           print >> param.log, 'DUPLICATE TITLE', title
