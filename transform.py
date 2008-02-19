@@ -63,6 +63,9 @@ filter_list = [
   degunk.Re('<a href="http://[^"]*.pheedo[^"]*">\s*'
             '<img [^>]*src="http://www.pheedo.com.*?</a>',
             re.MULTILINE + re.DOTALL),
+  # Broken Pheedo links for IEEE Spectrum
+  degunk.ReUrl(url=r'http://pheedo.com\1',
+               regex_url=r'http://www.pheedo.com(.*)'),
   # IDFuel URLs should point to full article, not teaser
   degunk.ReUrl(url=r'http://www.idfuel.com/index.php?p=\1&more=1',
                regex_url=r'http://www.idfuel.com/index.php\?p=([0-9]*)'),
@@ -75,6 +78,8 @@ filter_list = [
   regex_url=r'http://www.pbs.org/cringely/rss1/redir/cringely/(.*)'),
   # Register ads
   degunk.Re('<strong>Advertisement</strong><br>'),
+  # Inquirer blegging
+  degunk.Re('<div class="mf-viral">.*</div>'),
   # Salon ads
   degunk.Re('<p><a href="http://feeds.salon.com/~a[^>]*><img '
             '[^>]*></a></p><img[^>]*>'),
