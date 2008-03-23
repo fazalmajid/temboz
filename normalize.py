@@ -211,7 +211,6 @@ def decode_entities(s):
   return ent_re.sub(ent_sub, s)
 
 # XXX need to normalize for HTML entities as well
-# XXX need to strip diacritics
 def lower(s):
   s = unicode(s)
   return strip_diacritics(decode_entities(s)).translate(lc_map).lower()
