@@ -66,6 +66,9 @@ filter_list = [
   # Broken Pheedo links for IEEE Spectrum
   degunk.ReUrl(url=r'http://pheedo.com\1',
                regex_url=r'http://www.pheedo.com(.*)'),
+  # Mediafed ads
+  degunk.Re('<br><a href="http://[^"]*.feedsportal.com/[^"]*"><img border="0" '
+            'src="http://[^"]*.feedsportal.com[^"]*" /></a>'),
   # IDFuel URLs should point to full article, not teaser
   degunk.ReUrl(url=r'http://www.idfuel.com/index.php?p=\1&more=1',
                regex_url=r'http://www.idfuel.com/index.php\?p=([0-9]*)'),
