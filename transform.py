@@ -8,6 +8,19 @@ import re, degunk
 filter_list = [
   # don't mess with breaks
   degunk.Re('(<br\s+[^>]*>)', 0, '<br>'),
+  # Blegs
+  degunk.Re('<a href="http://www.bloglines.com/sub/.*?</a>'),
+  degunk.Re('<a href="http://del.icio.us/post.*?</a>'),
+  degunk.Re('<a href="http://digg.com/submit.*?</a>'),
+  degunk.Re('<a href="http://www.furl.net/storeIt.jsp.*?</a>'),
+  degunk.Re('<a href="http://ma.gnolia.com/bookmarklet/add.*?</a>'),
+  degunk.Re('<a href="http://www.propeller.com/submit.*?</a>'),
+  degunk.Re('<a href="http://reddit.com/submit.*?</a>'),
+  degunk.Re('<a href="http://www.sphere.com/search\\?q=sphereit.*?</a>'),
+  degunk.Re('<a href="http://www.stumbleupon.com/submit.*?</a>'),
+  degunk.Re('<a href="http://tailrank.com/share/.*?</a>'),
+  degunk.Re('<a href="http://technorati.com/faves\\?add.*?</a>'),
+  degunk.Re('<a href="http://www.feedburner.com/fb/a/emailFlare.*?</a>'),
   # Feedburner ads
   degunk.Re('<a href[^>]*><img src="http://feeds.feedburner[^>]*></a>'),
   degunk.Re('<p><a href="(http://feeds\\.[^"/>]*/~./)[^"]*">'
