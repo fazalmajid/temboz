@@ -185,7 +185,7 @@ punct_map = {}
 for c in string.whitespace:
   lc_map[ord(c)] = 32
 del lc_map[32]
-for c in string.punctuation + '\'':
+for c in string.punctuation + '\'\xab\xbb':
   punct_map[ord(c)] = 32
 
 # decode HTML entities with known Unicode equivalents
