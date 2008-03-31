@@ -81,7 +81,7 @@ def add_feed(feed_xml):
     feed = {
       'xmlUrl': f['url'],
       'htmlUrl': str(f.feed['link']),
-      'etag': f['etag'],
+      'etag': f.get('etag'),
       'title': f.feed['title'].encode('ascii', 'xmlcharrefreplace'),
       'desc': f.feed['description'].encode('ascii', 'xmlcharrefreplace')
       }
