@@ -78,10 +78,7 @@
 ## articles, not fully implemented yet
 ##
 ########################################################################
-#if not $getVar('offset', None)
-#set offset = '0'
-#end if
-#set offset = int(offset)
+#set offset = int($getVar('offset', 0))
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head><title>Temboz - $item_desc items</title>
@@ -330,7 +327,7 @@ feed_title, feed_html, feed_xml, julianday('now') - julianday(item_created)
 from fm_items, fm_feeds where item_feed_uid=feed_uid
 and """ + where_clause + ' and feed_private = 0' * public + """
 order by item_created DESC, item_uid DESC
-limit ?""", params + [overload_threshold])
+limit ? offset ?""", params + [overload_threshold, offset])
 #if not mobile
 <div id="col1" class="col1">
 #end if
@@ -359,13 +356,18 @@ limit ?""", params + [overload_threshold])
 ## Actual article display
 ##
 ########################################################################
+#if public
+#set $feed_link = feed_html
+#else
+#set $feed_link = 'feed_info?feed_uid=' + feed_uid
+#end if
 <div class="article" id="art$uid"><div class="headline"><span
 class="buttons"><img width="32" height="32" alt="down"
 src="<%=img_prefix%>down.gif" class="down" onclick="hide('$uid')"
 /><img width="32" height="32" alt="up" src="<%=img_prefix%>up.gif" class="up"
 onclick="highlight('$uid')" /></span><span class="ctarrow" id="ctarrow$uid" onclick="collapseToggle('$uid')"><img width="14" height="14" alt="hidden" src="<%=img_prefix%>a_dn.gif" />&nbsp;</span><a href="<%=redirect%>" class="headline"
 target="_blank" title="by $creator, cached at $loaded">$title</a><br><a
-href="feed_info?feed_uid=$feed_uid" title="" class="source">$feed_title</a>
+href="$feed_link" title="" class="source">$feed_title</a>
 $since_when
 #if not public
 <a href="edit?uid=$uid">edit</a>
@@ -395,3 +397,4 @@ repeat_headline();
 ########################################################################
 <div style="clear: both;" />
 </body></html>
+
