@@ -359,7 +359,7 @@ limit ? offset ?""", params + [overload_threshold, offset])
 #if public
 #set $feed_link = feed_html
 #else
-#set $feed_link = 'feed_info?feed_uid=' + feed_uid
+#set $feed_link = 'feed_info?feed_uid=%d' % feed_uid
 #end if
 <div class="article" id="art$uid"><div class="headline"><span
 class="buttons"><img width="32" height="32" alt="down"
