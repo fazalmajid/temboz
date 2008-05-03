@@ -1,7 +1,6 @@
 #!/usr/local/bin/python
 # $Id$
-import sys, os, stat, logging, base64, time, imp
-
+import sys, os, stat, logging, base64, time, imp, gzip
 import BaseHTTPServer, SocketServer, cgi, cStringIO
 import param
 
@@ -20,7 +19,7 @@ from Cheetah.Compiler import Compiler
 from distutils.util import byte_compile
 
 # HTTP header to force caching
-no_expire = 'Expires: Mon, 18 Jan 2038 19:14:07 GMT'
+no_expire = 'Expires: Fri, 1 Jan 2038 00:00:00 GMT'
 
 
 class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
@@ -79,7 +78,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     file.pop()
     return (attr_list, attach_list)
 
-  def browser_output(self, response, ct, output, http_headers=[]):
+  def browser_output(self, response, ct, output, http_headers=None):
     """Compose an output to the browser.
 
     Keyword arguments:
@@ -90,8 +89,22 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
 
     """
     self.output_send_response(response)
+    if not http_headers:
+      http_headers = list()
     if ct:
       self.output_send_header('Content-Type', ct)
+    # gzip compression
+    if ct and ct.startswith('text') and len(output) > 1500 \
+           and 'accept-encoding' in self.headers.dict \
+           and 'gzip' in self.headers.dict['accept-encoding']:
+      http_headers.append('Content-Encoding: gzip')
+      gzbuf = cStringIO.StringIO()
+      gzfile = gzip.GzipFile(fileobj=gzbuf, mode='wb', compresslevel=9)
+      gzfile.write(output)
+      gzfile.close()
+      output = gzbuf.getvalue()
+      http_headers.append('Content-Length: %d' % len(output))
+      
     for i in http_headers:
       mname, mvalue = i.split(': ', 1)
       self.output_send_header(mname, mvalue)
