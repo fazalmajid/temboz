@@ -19,6 +19,10 @@ from TembozTemplate import TembozTemplate, Template
 from Cheetah.Compiler import Compiler
 from distutils.util import byte_compile
 
+# HTTP header to force caching
+no_expire = 'Expires: Mon, 18 Jan 2038 19:14:07 GMT'
+
+
 class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
   tmpl_cache = {}
   def version_string(self):
@@ -215,6 +219,10 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
   for fn in [fn for fn in os.listdir('images')
              if fn.endswith('.gif') or fn.endswith('.ico')]:
     images[fn] = open('images/' + fn).read()
+  rsrc = {}
+  for fn in [fn for fn in os.listdir('rsrc')
+             if fn.endswith('.js')]:
+    rsrc[fn] = open('rsrc/' + fn).read()
   def pixel(self):
     self.browser_output(200, 'image/gif', self.images['pixel.gif'])
   def favicon(self):
@@ -317,7 +325,13 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
         logging.info((self.command, self.path, self.request_version, vars))
 
       if path.endswith('.gif') and path[1:] in self.images:
-        self.browser_output(200, 'image/gif', self.images[path[1:]])
+        self.browser_output(200, 'image/gif', self.images[path[1:]],
+                            http_headers=[no_expire])
+        return
+
+      if path.endswith('.js') and path[1:] in self.rsrc:
+        self.browser_output(200, 'text/javascript', self.rsrc[path[1:]],
+                            http_headers=[no_expire])
         return
 
       if path.startswith('/tiny_mce'):
