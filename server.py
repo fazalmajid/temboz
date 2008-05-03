@@ -213,7 +213,15 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     self.output_buffer.append(output)
 
   def flush(self):
-    self.browser_output(200, self.mime_type, ''.join(self.output_buffer))
+    # make the browser cache temboz.css, which still needs to be dynamically
+    # generated for the browser because it is browser-dependent (to deal with
+    # IE standards noncompliance issues)
+    if self.mime_type == 'text/css':
+      http_headers = [no_expire]
+    else:
+      http_headers = []
+    self.browser_output(200, self.mime_type, ''.join(self.output_buffer),
+                        http_headers=http_headers)
 
   images = {}
   for fn in [fn for fn in os.listdir('images')
@@ -226,7 +234,8 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
   def pixel(self):
     self.browser_output(200, 'image/gif', self.images['pixel.gif'])
   def favicon(self):
-    self.browser_output(200, 'image/x-icon', self.images['favicon.ico'])
+    self.browser_output(200, 'image/x-icon', self.images['favicon.ico'],
+                        http_headers=[no_expire])
   def xml(self):
     self.browser_output(200, 'text/xml', '<?xml version="1.0"?><nothing />')
 
@@ -339,7 +348,8 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
         path = os.path.normpath('.' + path)
         assert path.startswith('tiny_mce')
         self.set_mime_type(path)
-        self.browser_output(200, self.mime_type, open(path).read())
+        self.browser_output(200, self.mime_type, open(path).read(),
+                            http_headers=[no_expire])
         return
 
       if parts[0].count('favicon.ico') > 0:
