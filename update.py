@@ -607,7 +607,9 @@ def update():
         update_feed(db, c, *feed_info)
       except:
         util.print_stack()
-  db.commit()
+      db.commit()
+    # give reader threads an opportunity to get their work done
+    time.sleep(1)
   c.close()
 
 class PeriodicUpdater(threading.Thread):
