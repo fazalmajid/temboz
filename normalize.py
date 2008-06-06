@@ -1,7 +1,7 @@
 # -*- coding: iso-8859-1 -*-
-import sys, time, re, codecs, string, traceback, md5, HTMLParser
-import unicodedata, htmlentitydefs
-import feedparser, transform, util, param
+import sys, time, re, codecs, string, traceback, md5, socket, HTMLParser
+import unicodedata, htmlentitydefs, urllib2, urlparse
+import feedparser, param, transform, util
 
 # XXX TODO
 #
@@ -259,6 +259,50 @@ def fix_date(date_tuple):
   else:
     return date_tuple
 
+# code to dereference URLs and follow redirects
+class Redirect(Exception):
+  def __init__(self, code, url):
+    self.code = code
+    self.url = url
+class DontHandleRedirect(urllib2.HTTPRedirectHandler):
+  """Override redirect handling to not dereference redirects for testing"""
+  def http_error_302(self, req, fp, code, msg, headers):
+    if 'location' in headers:
+      newurl = headers.getheaders('location')[0]
+    elif 'uri' in headers:
+      newurl = headers.getheaders('uri')[0]
+    else:
+      return
+    newurl = urlparse.urljoin(req.get_full_url(), newurl)
+    raise Redirect(code, newurl)
+  http_error_301 = http_error_303 = http_error_307 = http_error_302
+redirect_opener = urllib2.build_opener(DontHandleRedirect)
+socket.setdefaulttimeout(10)
+
+def dereference(url, seen=None):
+  """Recursively dereference a URL"""
+  # this set is used to detect redirection loops
+  if seen is None:
+    seen = set([url])
+  else:
+    seen.add(url)
+  try:
+    url_obj = redirect_opener.open(url)
+    # no redirect occurred
+    return url
+  except (urllib2.URLError, ValueError):
+    return url
+  except Redirect, e:
+    # break a redirection loop if it occurs
+    if e.url in seen:
+      return url
+    # there might be several levels of redirection
+    return dereference(e.url, seen)
+  except:
+    util.print_stack()
+    return url
+  
+# Balance HTML opening and closing tags
 class Balancer(HTMLParser.HTMLParser):
   """Detect unbalanced HTML tags"""
   tags = set(['b', 'strong', 'strike', 'em', 'i', 'font', 'a', 'p',

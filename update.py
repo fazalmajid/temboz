@@ -269,6 +269,7 @@ def hard_purge(feed_uid):
   c = db.cursor()
   try:
     c.execute("delete from fm_items where item_feed_uid=?", [feed_uid])
+    c.execute("delete from fm_rules where rule_feed_uid=?", [feed_uid])
     c.execute("delete from fm_feeds where feed_uid=?", [feed_uid])
     db.commit()
   finally:
@@ -491,6 +492,9 @@ Returns a tuple (number of items added unread, number of filtered items)"""
       # XXX update item here
     # GUID doesn't exist yet, insert it
     if not l:
+      # finally, dereference the URL to get rid of annoying tracking servers
+      # like feedburner, but only do this once to avoid wasting bandwidth
+      link = normalize.dereference(link)
       try:
         c.execute("""insert into fm_items (item_feed_uid, item_guid,
         item_created,   item_modified, item_viewed, item_link, item_md5hex,
@@ -651,6 +655,7 @@ def rule_lines(rule):
       lines += 1
   return lines
 
+# XXX it is wasteful to keep reloading and recompiling the rules
 def load_rules():
   global rules
   global feed_rules
@@ -659,11 +664,12 @@ def load_rules():
   from singleton import db
   c = db.cursor()
   try:
-    c.execute("""select rule_uid, rule_text from fm_rules
+    c.execute("""select rule_uid, rule_type, rule_text from fm_rules
     where rule_expires is null or rule_expires > julianday('now')""")
-    for uid, rule in c:
-      rule = normalize_rule(rule)
-      rules.append(compile(rule, 'rule' + `uid`, 'eval'))
+    for uid, rtype, rule in c:
+      if rtype == 'python':
+        rule = normalize_rule(rule)
+        rules.append(compile(rule, 'rule' + `uid`, 'eval'))
     c.execute("""select feed_uid, feed_filter from fm_feeds
     where feed_filter is not null""")
     for uid, rule in c:
