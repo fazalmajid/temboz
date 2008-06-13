@@ -100,7 +100,10 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
       http_headers.append('Content-Encoding: gzip')
       gzbuf = cStringIO.StringIO()
       gzfile = gzip.GzipFile(fileobj=gzbuf, mode='wb', compresslevel=9)
-      gzfile.write(output)
+      try:
+        gzfile.write(output)
+      except UnicodeEncodeError:
+        gzfile.write(output.encode('ascii', 'xmlcharrefreplace'))
       gzfile.close()
       output = gzbuf.getvalue()
       http_headers.append('Content-Length: %d' % len(output))
