@@ -21,6 +21,9 @@ filter_list = [
   degunk.Re('<a href="http://tailrank.com/share/.*?</a>'),
   degunk.Re('<a href="http://technorati.com/faves\\?add.*?</a>'),
   degunk.Re('<a href="http://www.feedburner.com/fb/a/emailFlare.*?</a>'),
+  degunk.Re('<a href="http://slashdot.org/bookmark.pl.*?</a>'),
+  degunk.Re('<a href="http://www.facebook.com/share.php.*?</a>'),
+  degunk.Re('<a href="http://www.google.com/bookmarks/mark.*?</a>'),
   # Feedburner ads
   degunk.Re('<a href[^>]*><img src="http://feeds.feedburner[^>]*></a>'),
   degunk.Re('<p><a href="(http://feeds\\.[^"/>]*/~./)[^"]*">'
