@@ -1,8 +1,8 @@
 ## -*- html -*-
 #extends TembozTemplate
 #implements respond
-#import threadframe, traceback, pprint
-#set frames = threadframe.dict()
+#import sys, traceback, pprint
+#set frames = sys._current_frames()
 #set row = 0
 #for thread_id, frame in frames.iteritems():
 #set row = row + 1

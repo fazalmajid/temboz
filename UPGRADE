@@ -1,3 +1,6 @@
+To 0.9
+SQLite 3.5 is required (well, at least 3.1.3 due to "alter table add column"
+------------------------------------------------------------------------
 From 0.4.4 to 0.5:
 
 First kill your running Temboz server.

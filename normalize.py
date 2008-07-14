@@ -212,8 +212,32 @@ def decode_entities(s):
 
 # XXX need to normalize for HTML entities as well
 def lower(s):
+  """Turn a string lower-case, including stripping accents"""
   s = unicode(s)
   return strip_diacritics(decode_entities(s)).translate(lc_map).lower()
+
+# XXX this implementation is hopefully correct, but inefficient
+# XXX we should be able to replace it with a finite state automaton in C
+# XXX for better performance
+# tested with u=u'\xe9sop\xe9sopfoo\xe9sop' and unicodedata.normalize('NFD', u)
+def replace_first(s, pat, repl):
+  """Case-insensitive replacement of the first occurrent of pat in s by repl"""
+  lc = lower(s)
+  pat = lower(pat)
+  start = lc.find(pat)
+  if start == -1:
+    return s
+  else:
+    # find the beginning of the pattern in the original string
+    # since we strip accent, the equivalent in the original string may be
+    # further than in the lower-case version
+    # i.e. we are assuming that len(lower(s)) <= len(s) for all Unicode s
+    while not lower(s[start:]).startswith(pat):
+      start += 1
+    end = start + len(pat)
+    while lower(s[start:end]) != pat:
+      end += 1
+    return s[:start] + repl + s[end:]
 
 strip_tags_re = re.compile('<[^>]*>')
 def get_words(s):

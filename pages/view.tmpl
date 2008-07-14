@@ -12,8 +12,9 @@
 ##
 ########################################################################
 #from singleton import db
-#import time
-#import param
+#set c = db.cursor()
+#import time, param, filters
+#silent filters.load_rules(db, c)
 ########################################################################
 ##
 ## What items to use
@@ -90,6 +91,7 @@
 ## XXX doesn't use XMLHttpRequest on IE6 as coded here
 ##
 ########################################################################
+<script language="JavaScript" src="temboz.js"></script>
 <script language="JavaScript">
 hidden = Array();
 #if public
@@ -103,19 +105,47 @@ function webop(op, uid) {
 #set img_prefix = ''
 var i = new Image();
 function webop(op, uid) {
-  if (window.XMLHttpRequest) {
-    var x = new XMLHttpRequest();
-  } else {
-    var x = false;
-  }
-  if (x) {
-    x.open('GET', 'xmlfeedback/' + op + '/' + Math.random().toString().substring(8) + '/' + uid + '.xml');
-    x.send(null);
-  } else {
-    i.src = 'feedback/' + op + '/' + Math.random().toString().substring(8) + '/' + uid + '.gif';
-  }
+  $.get('/xmlfeedback/' + op + '/' + Math.random().toString().substring(8) + '/' + uid + '.xml');
 }
 #end if
+## get user selection, empty string if none or unsupported browser
+function get_selection() {
+  var userSelection;
+  userSelection = "";
+  if(window.getSelection) {
+    userSelection = String(window.getSelection());
+  } else if (document.selection) {
+    userSelection = document.selection.createRange().text;
+  }
+  return jQuery.trim(userSelection);
+}
+function kw_dialog(id, kw) {
+  var tmpl = \$("div#kw_form_tmpl");
+  var body = '<div title="Add a keyword rule">' + tmpl.html() + '</div>';
+  body = body.replace(/__item_uid__/, id);
+  body = body.replace(/__feed_title__/, \$('#feed' + id + ':first').text());
+  \$(body).dialog({
+    buttons: {
+      "Add": function() {
+        \$(this).find("form").ajaxSubmit();
+        \$(this).dialog("destroy");
+      },
+      "Cancel": function() {
+        \$(this).dialog("destroy");
+      }
+    },
+    width: 500,
+    height: 250,
+##    modal: true,
+##    overlay: {
+##      opacity: 0.5,
+##      background: "black"
+##    }
+  }).find(":text").val(kw);
+  if(kw.search(" ") != -1 || kw.search("-") != -1) {
+    \$('.ui-dialog-content select[@name="match"]').val('phrase_lc');
+  }
+}
 ## hide tag layer until it is ready
 #set taglayer_visibility = "none"
 function hide(id) {
@@ -127,6 +157,10 @@ function hide(id) {
       elt.taglayer.style.display = "none";
     }
   } else {
+    var kw = $.trim(get_selection());
+    if(kw!="") {
+      kw_dialog(id, kw);
+    }
     hidden[hidden.length] = elt;
     elt.style.display = "none";
     webop('demote', id);
@@ -245,7 +279,6 @@ div.menu {
 <![endif]-->
 </head>
 <body class="unpadded">
-#set c = db.cursor()
 ########################################################################
 ##
 ## Support for arbitrary where clauses in the view script. Not directly
@@ -317,13 +350,41 @@ limit ? offset ?)""", params + [overload_threshold, offset])
 #set overload_threshold = 50
 #end if
 ########################################################################
+## Form used for adding keyword filtering rules
+########################################################################
+#if not public
+<div id="kw_form_tmpl" style="display:none">
+<form name="kw_form" method="GET" action="/add_kw_rule">
+<table>
+<tr><td>Keyword</td><td><input name="kw" size="30"></td></tr>
+<tr><td>Match type</td><td><select name="match">
+<option value="word" selected>Any words</option>
+<option value="all">All words</option>
+<option value="phrase_lc">Phrase</option>
+<option value="phrase">Phrase (case-sensitive)</option>
+</select></td></tr>
+<tr><td>Match on</td><td><select name="target">
+<option value="union" selected>Title or content</option>
+<option value="title">Title only</option>
+<option value="content">Content only</option>
+</select></td></tr>
+<tr><td>For <em>__feed_title__</em> only</td><td>
+<input name="feed_only" type="checkbox">
+<input name="item_uid" type="hidden" value="__item_uid__"></td></tr>
+##<tr><td>Apply retroactively</td><td><input name="retroactive" type="checkbox"></td></tr>
+</table>
+</form>
+</div>
+#end if
+########################################################################
 ##
 ## Fetch overload_threshold (default 200) items
 ##
 ########################################################################
 #silent c.execute("""select item_uid, item_creator, item_title, item_link,
 item_content, datetime(item_loaded), date(item_created), feed_uid,
-feed_title, feed_html, feed_xml, julianday('now') - julianday(item_created)
+feed_title, feed_html, feed_xml, julianday('now') - julianday(item_created),
+item_rating, item_rule_uid
 from fm_items, fm_feeds where item_feed_uid=feed_uid
 and """ + where_clause + ' and feed_private = 0' * public + """
 order by item_created DESC, item_uid DESC
@@ -331,7 +392,7 @@ limit ? offset ?""", params + [overload_threshold, offset])
 #if not mobile
 <div id="col1" class="col1">
 #end if
-#for uid, creator, title, link, content, loaded, created, feed_uid, feed_title, feed_html, feed_xml, delta_created in c
+#for uid, creator, title, link, content, loaded, created, feed_uid, feed_title, feed_html, feed_xml, delta_created, rating, filtered_by in c
 #set count += 1
 #if count == cutoff
 ## this empty paragraph prevents the right column from resizing when all items
@@ -361,13 +422,24 @@ limit ? offset ?""", params + [overload_threshold, offset])
 #else
 #set $feed_link = 'feed_info?feed_uid=%d' % feed_uid
 #end if
+#if rating == -2
+  #if filtered_by
+    #set rule = filters.Rule.registry.get(filtered_by)
+    #if rule
+      #set title = rule.highlight_title(title)
+      #set content = rule.highlight_content(content)
+    #end if
+  #elif filtered_by == 0
+    #set content = content + '<br><p>Filtered by feed-specific Python rule</p>'
+  #end if
+#end if
 <div class="article" id="art$uid"><div class="headline"><span
 class="buttons"><img width="32" height="32" alt="down"
 src="<%=img_prefix%>down.gif" class="down" onclick="hide('$uid')"
 /><img width="32" height="32" alt="up" src="<%=img_prefix%>up.gif" class="up"
 onclick="highlight('$uid')" /></span><span class="ctarrow" id="ctarrow$uid" onclick="collapseToggle('$uid')"><img width="14" height="14" alt="hidden" src="<%=img_prefix%>a_dn.gif" />&nbsp;</span><a href="<%=redirect%>" class="headline"
 target="_blank" title="by $creator, cached at $loaded">$title</a><br><a
-href="$feed_link" title="" class="source">$feed_title</a>
+href="$feed_link" title="" class="source" id="feed$uid">$feed_title</a>
 $since_when
 #if not public
 <a href="edit?uid=$uid">edit</a>
@@ -397,4 +469,3 @@ repeat_headline();
 ########################################################################
 <div style="clear: both;" />
 </body></html>
-

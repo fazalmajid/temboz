@@ -21,6 +21,12 @@ sync:
 	-mv feedparser.py feedparser.old
 	wget http://diveintomark.org/projects/feed_parser/feedparser.py
 
+JUI=	spool/jquery.ui-*[0-9]/ui
+js:
+	vcheck --verbose -d --file etc/vcheck
+	(cd spool; wget -c http://jqueryjs.googlecode.com/svn/trunk/plugins/form/jquery.form.js)
+	cat spool/jquery.ui-*[0-9]/jquery-[0-9]*.js spool/jquery.form.js $(JUI)/ui.core.js  $(JUI)/ui.dialog.js $(JUI)/ui.tabs.js| jsmin > rsrc/temboz.js
+	./temboz --kill
 changelog:
 	cvs2cl.pl --tags -g -q
 
@@ -57,7 +63,7 @@ distclean:
 
 clean: distclean
 	-rm -rf temboz-$(VERSION) temboz-$(VERSION).tar.gz
-	-rm -f pages/*.py pages/*.pyc pages/*.pyo pages/*.py.bak
+	-rm -f pages/*.py pages/*.pyc pages/*.pyo pages/*.py.bak *.js
 
 realclean: clean
 	-rm -rf rss.db

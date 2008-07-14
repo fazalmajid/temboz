@@ -1,8 +1,8 @@
 #!/usr/local/bin/python
 # $Id$
 import sys, os, stat, logging, base64, time, imp, gzip
-import BaseHTTPServer, SocketServer, cgi, cStringIO
-import param
+import BaseHTTPServer, SocketServer, cgi, cStringIO, urlparse
+import param, update, filters, util
 
 # add the Cheetah template directory to the import path
 tmpl_dir = os.path.dirname(sys.modules['__main__'].__file__)
@@ -204,7 +204,8 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
       (query_list, self.attach_list) = self.read_mime_query_list(mimeinfo)
     else:
       istr = self.rfile.read(int(self.headers['content-length']))
-      query_list = cgi.parse_qsl(istr, 1)
+      # parse_qsl does not comply with RFC 3986, we have to add a UTF-8 decode
+      query_list = [(n, v.decode('UTF-8')) for n, v in cgi.parse_qsl(istr, 1)]
     self.input.update(dict(query_list))
 
   def do_POST(self):
@@ -247,8 +248,6 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
   for fn in [fn for fn in os.listdir('rsrc')
              if fn.endswith('.js')]:
     rsrc[fn] = open('rsrc/' + fn).read()
-  def pixel(self):
-    self.browser_output(200, 'image/gif', self.images['pixel.gif'])
   def favicon(self):
     self.browser_output(200, 'image/x-icon', self.images['favicon.ico'],
                         http_headers=[no_expire])
@@ -295,39 +294,82 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     else:
       self.mime_type = 'text/html'
 
+  def compile(self, tmpl):
+    "Recursively compile Cheetah templates and their superclasses as required"
+    if tmpl == 'TembozTemplate':
+      return TembozTemplate
+    template_t, compiled_t = None, None
+    reloaded = False
+    tmpl = tmpl.replace('.', '_')
+    modname = 'pages/' + tmpl
+    page = modname + '.tmpl'
+    compiled = modname + '.py'
+    # get the timestamps of the template, and compiled version
+    try:
+      compiled_t = os.stat(compiled)[stat.ST_MTIME]
+    except OSError:
+      compiled_t = 0
+    template_t = os.stat(page)[stat.ST_MTIME]
+    ## Attempt to recompile this template, and anything it requires,
+    ## if the template is newer than the compiled version
+    if compiled_t < template_t:
+      # if the template is newer than the compiled version, compile it
+      print >> param.log, 'recompiling Cheetah module', page
+      newpage = cStringIO.StringIO(open(page).read())
+      # Compile the template using Cheetah
+      template = Compiler(file=newpage, moduleName=tmpl)
+      # Save off a string copy of this module for possible editing
+      template_str = str(template)
+      for k in template._finishedClasses():
+        for import_statement in template._importStatements:
+          if 'import %s' % k._baseClass in import_statement:
+            # recurse to ensure dependencies also get recompiled
+            module_class = self.compile(k._baseClass)
+            # If something went wrong, we may get None, so double check
+            if module_class:
+              # the second item in this import line should have the module name
+              imported_module = import_statement.split(' ')[1]
+              # replace "from page import page" style imports
+              # with "page = __import('path/to/page').page" style.
+              # this way we can have multiple modules with the same name loaded
+              # at one time.
+              template_str = template_str.replace(
+                "from %s import %s" % (imported_module, imported_module),
+                "%s = __import__('%s').%s" % (imported_module,
+                                              module_class.__module__,
+                                              imported_module))
+      # Write our newly compiled template as a python (.py) file.
+      f = open(compiled, 'w')
+      f.write(template_str)
+      f.close()
+      # force python to byte compile the file to generate the .pyc
+      byte_compile([compiled], verbose=0)
+      # and the .pyo
+      byte_compile([compiled], verbose=0, optimize=2)
+      if page in self.tmpl_cache:
+        # Force reload of the module
+        # Note:  this does not populate sys.modules at all! (a good thing)
+        reload(self.tmpl_cache[page])
+        reloaded = True
+    if page not in self.tmpl_cache:
+      # Import the module, using __import__ which allows us to import from a
+      # file path, instead of sys.path
+      module = __import__(modname)
+      # We need to verify that we have a class named tmpl in the module, or
+      # something may be very very wrong, then
+      if tmpl in module.__dict__:
+        # add the module to tmpl_cache
+        self.tmpl_cache[page] = module
+      else:
+        raise('Error loading compiled template: %s' % compiled,tmpl)
+    return getattr(self.tmpl_cache[page], tmpl)
+  
   def use_template(self, tmpl, searchlist):
     """Use compiled-on-demand versions of Cheetah templates for
     speed, specially with CGI
     """
     self.set_mime_type(tmpl)
-    tmpl = tmpl.replace('.', '_')
-    modname = 'pages/' + tmpl
-    page = modname + '.tmpl'
-    compiled = modname + '.py'
-    try:
-      compiled_t = os.stat(compiled)[stat.ST_CTIME]
-    except OSError:
-      compiled_t = 0
-    template_t = os.stat(page)[stat.ST_CTIME]
-    #print tmpl, 'edited', time.ctime(template_t),
-    #print 'compiled', time.ctime(compiled_t)
-    if compiled_t < template_t:
-      #print 'recompiling'
-      text = Compiler(file=page, moduleName=tmpl)
-      f = open(compiled, 'w')
-      f.write(str(text))
-      f.close()
-      del text
-      byte_compile([compiled], verbose=0)
-      byte_compile([compiled], verbose=0, optimize=2)
-      if tmpl in self.tmpl_cache:
-        del self.tmpl_cache[tmpl]
-    if tmpl not in self.tmpl_cache:
-      filename = tmpl_dir + tmpl + '.pyc'
-      self.tmpl_cache[tmpl] = imp.load_module(
-        *(('tmpl_' + tmpl,) + imp.find_module(tmpl, [tmpl_dir])))
-    module = self.tmpl_cache[tmpl]
-    tmpl = getattr(module, tmpl)
+    tmpl = self.compile(tmpl)
     tmpl = tmpl(searchList=searchlist)
     tmpl.respond(trans=self)
     self.flush()
@@ -336,15 +378,17 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     if not self.require_auth(param.auth_dict):
       return
     try:
-      parts = self.path.split('?', 2)
-      path = parts[0]
       if self.path in ['', '/']:
         self.browser_output(301, None, 'This document has moved.',
                             ['Location: /view'])
         return
+      path, query_string = urlparse.urlparse(self.path)[2:5:2]
       vars = []
-      if len(parts) == 2:
-        self.input.update(dict(cgi.parse_qsl(parts[1], 1)))
+      if query_string:
+        # parse_qsl does not comply with RFC 3986, we have to decode UTF-8
+        query_list = [(n, v.decode('UTF-8'))
+                      for n, v in cgi.parse_qsl(query_string, 1)]
+        self.input.update(dict(query_list))
 
       if param.debug:
         logging.info((self.command, self.path, self.request_version, vars))
@@ -368,7 +412,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
                             http_headers=[no_expire])
         return
 
-      if parts[0].count('favicon.ico') > 0:
+      if path.count('favicon.ico') > 0:
         self.favicon()
 
       if path.startswith('/redirect/'):
@@ -386,16 +430,6 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
                             ['Location: ' + redirect_url])
         return
 
-      if path.startswith('/feedback/'):
-        op, item_uid = path.split('/')[2::2]
-        item_uid = item_uid.split('.')[0]
-        item_uid = int(item_uid)
-        # for safety, these operations should be idempotent
-        if op in ['promote', 'demote', 'basic']:
-          getattr(self, 'op_' + op)(item_uid)
-        self.pixel()
-        return
-
       if path.startswith('/xmlfeedback/'):
         op, item_uid = path.split('/')[2::2]
         item_uid = item_uid.split('.')[0]
@@ -406,7 +440,31 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.xml()
         return
 
-      tmpl = parts[0].split('/', 1)[1].strip('/')
+      if path.startswith('/add_kw_rule'):
+        from singleton import db
+        c = db.cursor()
+        try:
+          filters.add_kw_rule(db, c, **self.input)
+        except:
+          util.print_stack()
+        db.commit()
+        c.close()
+        self.xml()
+        return
+
+      if path.startswith('/del_kw_rule'):
+        from singleton import db
+        c = db.cursor()
+        try:
+          filters.del_kw_rule(db, c, **self.input)
+        except:
+          util.print_stack()
+        db.commit()
+        c.close()
+        self.xml()
+        return
+
+      tmpl = path.split('/', 1)[1].strip('/')
       self.use_template(tmpl, [self.input])
     except:
       e = sys.exc_info()

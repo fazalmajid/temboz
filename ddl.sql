@@ -16,13 +16,14 @@ create table fm_feeds (
 	-- 0=hourly, 1=daily, 2=weekly, 3=monthly
 	feed_frequency	int default 0,
 	feed_auth	varchar(255),
-	feed_filter	text
+	feed_filter	text,
+	feed_exempt	int default 0
 );
 
 create table fm_items (
 	item_uid	integer primary key,
 	item_guid	varchar(255),
-	item_feed_uid	int,
+	item_feed_uid	integer,
 	-- references fm_feeds (feed_uid) on delete cascade,
 	item_loaded	timestamp,
 	item_created	timestamp,
@@ -34,7 +35,9 @@ create table fm_items (
 	item_content	text,
 	item_creator	varchar(255),
 	item_rating	default 0,
-	item_item_uid	int -- to cluster related items together
+	item_item_uid	int, -- to cluster related items together
+	item_rule_uid	integer,
+	-- references fm_rules (rule_uid) on delete cascade,
 );
 
 create trigger update_timestamp after insert on fm_items
@@ -50,6 +53,9 @@ create index item_title_i on fm_items(item_feed_uid, item_title);
 
 create table fm_rules (
 	rule_uid	integer primary key,
+	rule_type	varchar(16) not null default 'python',
+	rule_feed_uid	integer,
+	-- references fm_feeds (feed_uid) on delete cascade,
 	rule_expires	timestamp,
 	rule_text	text
 );

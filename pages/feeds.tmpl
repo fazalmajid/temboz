@@ -18,7 +18,7 @@
 #set c = db.cursor()
 #silent c.execute("""select feed_uid, feed_title, feed_html, feed_xml,
   last_modified, interesting, unread, uninteresting, filtered, total,
-  snr, feed_status, feed_private, feed_errors, feed_filter notnull
+  snr, feed_status, feed_private, feed_exempt, feed_errors, feed_filter notnull
 from v_feeds_snr order by feed_status ASC, """ \
     + sort_key + ' ' + order + """, lower(feed_title)""")
 <table>
@@ -52,7 +52,7 @@ from v_feeds_snr order by feed_status ASC, """ \
 ## Loop over feeds
 ##
 ########################################################################
-#for feed_uid, feed_title, feed_html, feed_xml, delta_t, interesting, unread, uninteresting, filtered, total, snr, status, private, errors, has_filter in c
+#for feed_uid, feed_title, feed_html, feed_xml, delta_t, interesting, unread, uninteresting, filtered, total, snr, status, private, exempt, errors, has_filter in c
 #set since = self.since(delta_t)
 #set unread = int(unread)
 #set interesting = int(interesting)
@@ -64,7 +64,7 @@ from v_feeds_snr order by feed_status ASC, """ \
 #set total = int(total)
 #end if
 #silent assert interesting + uninteresting + unread + filtered == total, feed_title + ' interesting ' + repr(interesting) + ' uninteresting ' + repr(uninteresting) + ' unread ' + repr(unread) + ' filtered ' + repr(filtered) + ' total ' + repr(total) + ' does not add up'
-#set flags = ['suspended'] * status + ['private'] * private + ['filtered'] * has_filter
+#set flags = ['suspended'] * status + ['private'] * private + ['exempt'] * exempt + ['filtered'] * has_filter
 #if flags
 #set flags = ' (' + ', '.join(flags) + ')'
 #else

@@ -1,6 +1,6 @@
 import sys, md5, time, threading, socket, Queue, signal, os, re
-import textwrap, urllib2, urlparse, HTMLParser
-import param, feedparser, normalize, util, transform, singleton
+import urllib2, urlparse, HTMLParser
+import param, feedparser, normalize, util, transform, singleton, filters
 
 sqlite = singleton.sqlite
 
@@ -88,13 +88,13 @@ def add_feed(feed_xml):
     for key, value in feed.items():
       if type(value) == str:
         feed[key] = value
-    load_rules()
+    filters.load_rules(db, c)
     try:
       c.execute("""insert into fm_feeds
       (feed_xml, feed_etag, feed_html, feed_title, feed_desc) values
       (:xmlUrl, :etag, :htmlUrl, :title, :desc)""", feed)
       feed_uid = c.lastrowid
-      num_added, num_filtered = process_parsed_feed(f, c, feed_uid)
+      num_added, num_filtered = process_parsed_feed(db, c, f, feed_uid)
       db.commit()
       return feed_uid, feed['title'], num_added, num_filtered
     except sqlite.IntegrityError, e:
@@ -130,8 +130,8 @@ def update_feed_xml(feed_uid, feed_xml):
       else:
         db.rollback()
         raise UnknownError(str(e))
-    load_rules()
-    num_added = process_parsed_feed(f, c, feed_uid)
+    filters.load_rules(db, c)
+    num_added = process_parsed_feed(db, c, f, feed_uid)
     db.commit()
     return num_added
   finally:
@@ -169,7 +169,7 @@ def update_feed_filter(feed_uid, feed_filter):
   feed_filter = feed_filter.strip()
   if feed_filter:
     # check syntax
-    compile(normalize_rule(feed_filter), 'web form', 'eval')
+    compile(filters.normalize_rule(feed_filter), 'web form', 'eval')
     val = feed_filter
   else:
     val = None
@@ -179,6 +179,7 @@ def update_feed_filter(feed_uid, feed_filter):
     c.execute("update fm_feeds set feed_filter=? where feed_uid=?",
               [val, feed_uid])
     db.commit()
+    filters.invalidate()
   finally:
     c.close()
 
@@ -190,6 +191,18 @@ def update_feed_private(feed_uid, private):
   try:
     c.execute("update fm_feeds set feed_private=? where feed_uid=?",
               [private, feed_uid])
+    db.commit()
+  finally:
+    c.close()
+
+def update_feed_exempt(feed_uid, exempt):
+  feed_uid = int(feed_uid)
+  exempt = int(bool(exempt))
+  from singleton import db
+  c = db.cursor()
+  try:
+    c.execute("update fm_feeds set feed_exempt=? where feed_uid=?",
+              [exempt, feed_uid])
     db.commit()
   finally:
     c.close()
@@ -257,8 +270,8 @@ def purge_reload(feed_uid):
       raise ParseError
     normalize.normalize_feed(f)
     clear_errors(db, c, feed_uid, f)
-    load_rules()
-    num_added = process_parsed_feed(f, c, feed_uid)
+    filters.load_rules(db, c)
+    num_added = process_parsed_feed(db, c, f, feed_uid)
     db.commit()
   finally:
     c.close()
@@ -274,6 +287,7 @@ def hard_purge(feed_uid):
     db.commit()
   finally:
     c.close()
+    filters.invalidate()
 
 def set_status(feed_uid, status):
   feed_uid = int(feed_uid)
@@ -367,50 +381,26 @@ def update_feed(db, c, f, feed_uid, feed_xml, feed_etag, feed_modified,
     # no error - reset etag and/or modified date and error count
     clear_errors(db, c, feed_uid, f)
   try:
-    process_parsed_feed(f, c, feed_uid, feed_dupcheck)
+    process_parsed_feed(db, c, f, feed_uid, feed_dupcheck)
   except:
     util.print_stack(['c', 'f'])
 
-# shades of LISP...
-def curry(fn, obj):
-  return lambda *args: fn(obj, *args)
-
-# obj can be a string, list or dictionary
-def any(obj, *words):
-  for w in words:
-    if w in obj:
-      return True
-  return False
-
-def union_any(obj_list, *words):
-  for w in words:
-    for obj in obj_list:
-      if w in obj:
-        return True
-  return False
-
-def link_already(url):
-  from singleton import db
-  print >> param.log, 'checking for deja-vu for', url,
-  c = db.cursor()
-  c.execute("select count(*) from fm_items where item_link like ?",
-            [url + '%'])
-  l = c.fetchone()
-  c.close()
-  print >> param.log, l and l[0]
-  return l and l[0]
-
-def process_parsed_feed(f, c, feed_uid, feed_dupcheck=None):
+def process_parsed_feed(db, c, f, feed_uid, feed_dupcheck=None, exempt=None):
   """Insert the entries from a feedparser parsed feed f in the database using
 the cursor c for feed feed_uid.
 Returns a tuple (number of items added unread, number of filtered items)"""
   num_added = 0
   num_filtered = 0
+  filters.load_rules(db, c)
   # check if duplicate title checking is in effect
   if feed_dupcheck is None:
     c.execute("select feed_dupcheck from fm_feeds where feed_uid=?",
               [feed_uid])
     feed_dupcheck = bool(c.fetchone()[0])
+  # check if the feed is exempt from filtering
+  if exempt is None:
+    c.execute("select feed_exempt from fm_feeds where feed_uid=?", [feed_uid])
+    exempt = bool(c.fetchone()[0])
   # the Radio convention is reverse chronological order
   f['items'].reverse()
   for item in f['items']:
@@ -419,39 +409,17 @@ Returns a tuple (number of items added unread, number of filtered items)"""
     except:
       util.print_stack()
       continue
-    skip = 0
-    filter_dict = {}
-    for key in f.feed:
-      try:
-        filter_dict['feed_' + key] = f.feed[key]
-      except KeyError:
-        pass
-    filter_dict.update(item)
-    # used to filter echos from sites like Digg
-    filter_dict['link_already'] = link_already
-    # convenient shortcut functions
-    filter_dict['title_any_words'] = curry(any, item['title_words'])
-    filter_dict['content_any_words'] = curry(any, item['content_words'])
-    filter_dict['union_any_words'] = curry(
-      union_any, [item['title_words'], item['content_words']])
-    filter_dict['title_any'] = curry(any, item['title'])
-    filter_dict['content_any'] = curry(any, item['content'])
-    filter_dict['union_any'] = curry(
-      union_any, [item['title'], item['content']])
-    filter_dict['title_any_lc'] = curry(any, item['title_lc'])
-    filter_dict['content_any_lc'] = curry(any, item['content_lc'])
-    filter_dict['union_any_lc'] = curry(
-      union_any, [item['title_lc'], item['content_lc']])
-    # evaluate the rules
-    for rule in rules + [r for r in [feed_rules.get(feed_uid, None)] if r]:
-      try:
-        skip = bool(eval(rule, filter_dict))
-        if skip:
-          break
-      except:
-        util.print_stack(['f'])
+    # evaluate the FilteringRules
+    skip, rule = filters.evaluate_rules(item, f, feed_uid, exempt)
+    filtered_by = None
     if skip:
       skip = -2
+      if type(rule.uid) == int:
+        filtered_by = rule.uid
+      else:
+        # XXX clunky convention for feed_rule, but that should disappear
+        # XXX eventually
+        filtered_by = 0
     title   = item['title']
     link    = item['link']
     guid    = item['id']
@@ -498,14 +466,15 @@ Returns a tuple (number of items added unread, number of filtered items)"""
       try:
         c.execute("""insert into fm_items (item_feed_uid, item_guid,
         item_created,   item_modified, item_viewed, item_link, item_md5hex,
-        item_title, item_content, item_creator, item_rating) values
-        (?, ?, julianday(?), julianday(?), NULL, ?, ?, ?, ?, ?, ?)""",
+        item_title, item_content, item_creator, item_rating, item_rule_uid)
+        values
+        (?, ?, julianday(?), julianday(?), NULL, ?, ?, ?, ?, ?, ?, ?)""",
                   [feed_uid, guid, created, modified, link,
                    md5.new(content).hexdigest(),
-                   title, content, author, skip])
+                   title, content, author, skip, filtered_by])
         if skip:
           num_filtered += 1
-          print >> param.log, 'SKIP', title, rule.co_filename
+          print >> param.log, 'SKIP', title, rule
         else:
           num_added += 1
           print >> param.log, ' ' * 4, title
@@ -576,7 +545,7 @@ def update():
   from singleton import db
   c = db.cursor()
   # refresh filtering rules
-  load_rules()
+  filters.load_rules(db, c)
   # at 3AM by default, perform house-cleaning
   if time.localtime()[3] == param.backup_hour:
     cleanup(db, c)
@@ -629,70 +598,3 @@ class PeriodicUpdater(threading.Thread):
         update()
       except:
         util.print_stack()
-
-##############################################################################
-#
-rules = []
-feed_rules = {}
-
-rule_comment_re = re.compile('^#.*$', re.MULTILINE)
-def normalize_rule(rule):
-  """allow embedded CR/LF and comments to make for more readable rules"""
-  return rule_comment_re.sub('', rule).replace(
-    '\n', ' ').replace('\r', ' ').strip()
-
-wrapper = textwrap.TextWrapper(width=80, break_long_words=False)
-# XXX this relies on texwrap implementation details to prevent wrapping on
-# XXX hyphens and em-dashes, only on spaces
-wrapper.wordsep_re = re.compile(r'(\s+)')
-def rule_lines(rule):
-  "Find how many lines are needed for the rule in a word-wrapped <textarea>"
-  lines = 0
-  for line in rule.splitlines():
-    if line.strip():
-      lines += len(wrapper.wrap(line))
-    else:
-      lines += 1
-  return lines
-
-# XXX it is wasteful to keep reloading and recompiling the rules
-def load_rules():
-  global rules
-  global feed_rules
-  rules = []
-  feed_rules = dict()
-  from singleton import db
-  c = db.cursor()
-  try:
-    c.execute("""select rule_uid, rule_type, rule_text from fm_rules
-    where rule_expires is null or rule_expires > julianday('now')""")
-    for uid, rtype, rule in c:
-      if rtype == 'python':
-        rule = normalize_rule(rule)
-        rules.append(compile(rule, 'rule' + `uid`, 'eval'))
-    c.execute("""select feed_uid, feed_filter from fm_feeds
-    where feed_filter is not null""")
-    for uid, rule in c:
-      rule = normalize_rule(rule)
-      feed_rules[uid] = compile(rule, 'feed_filter' + `uid`, 'eval')
-  finally:
-    c.close()
-  # reload the degunking filters as well
-  reload(transform)
-
-def update_rule(db, c, uid, expires, text, delete):
-  if expires == 'never':
-    expires = 'NULL'
-  else:
-    expires = "julianday('%s')" % expires
-  # check syntax
-  compile(normalize_rule(text), 'web form', 'eval')
-  if uid == 'new':
-    c.execute("insert into fm_rules (rule_expires, rule_text) values (?, ?)",
-              [expires, text])
-  elif delete == 'on':
-    c.execute("delete from fm_rules where rule_uid=?", [uid])
-  else:
-    c.execute("""update fm_rules set rule_expires=?, rule_text=?
-    where rule_uid=?""", [expires, text, uid])
-  db.commit()

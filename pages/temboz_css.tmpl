@@ -8,7 +8,7 @@ html {
 }
 body {
   line-height:10pt;
-  font-family: verdana, arial, sans-serif;
+  font-family: helvetica, verdana, arial, sans-serif;
   font-size:9pt;
   line-height:11pt;
 }
@@ -26,7 +26,7 @@ a.headline {
   font-weight:bold;
   line-height:14pt;
 }
-.source {
+.source, .ui-dialog form em {
   font-size:10pt;
   line-height:12px;
   color: gray;
@@ -40,7 +40,7 @@ span.buttons {
   padding: 6px;
   overflow: hidden;
 }
-/* work-around IE */
+## work-around IE
 body>div.menu {
   position: fixed;
   height: 1cm;
@@ -148,4 +148,84 @@ div.overlay .translucent {
 }
 div.overlay .opaque {
   background-color: white;
+}
+span.filter-highlight {
+  background-color: #fcc;
+}
+########################################################################
+## jQuery dialog
+div.ui-dialog {
+  background-color: white;
+  padding: 0px;
+  border: 6px ridge green;
+  width: 600px;
+}
+.ui-dialog-titlebar {
+  border-bottom: 1px solid #d8d2aa;
+  background: green;
+  color: white;
+  font-weight: bold;
+}
+.ui-dialog-titlebar, .ui-dialog-content, .ui-dialog-buttonpane {
+  padding: 6px;
+}
+.ui-dialog-buttonpane {
+  text-align: center;
+}
+.ui-dialog .ui-dialog-titlebar-close {
+  display: none;
+}
+.ui-dialog table {
+  width: 100%
+}
+########################################################################
+## tabs
+.ui-tabs-nav {
+  border-bottom: 1px solid #ccc;
+  margin: 0;
+  padding-bottom: 25px;
+  padding-left: 10px;
+}
+.ui-tabs-nav a {
+  outline: 0;
+}
+.ui-tabs-nav ul, .ui-tabs-nav li  {
+  display: inline;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.ui-tabs-nav li.ui-tabs-selected a:link,
+.ui-tabs-nav li.ui-tabs-selected a:active,
+.ui-tabs-nav li.ui-tabs-selected a:visited {
+  font-weight: bold;
+  background: white;
+  border-bottom: 1px solid white;
+  color: #000;
+}
+.ui-tabs-nav a:link,
+.ui-tabs-nav a:visited  {
+  background: #eee;
+  border: 1px solid #ccc;
+  color: #666;
+  float: left;
+  font-size: 12px;
+  line-height: 18px;
+  margin-right: 8px;
+  padding: 3px 10px 3px 10px;
+  text-decoration: none;
+}
+.ui-tabs-nav a:hover  {
+  color: #f00;
+}
+.ui-tab-nav li.ui-tabs-selected a {
+  background: white;
+  border-bottom: 1px solid white;
+  color: #000;
+}
+.ui-tabs-hide {
+  display: none;
+}
+.ui-tabs-nav ul a:hover {
+  color: #f00 !important;
 }

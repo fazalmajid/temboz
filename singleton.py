@@ -9,7 +9,8 @@ try:
   from sqlite3 import dbapi2 as sqlite
 except ImportError:
   from pysqlite2 import dbapi2 as sqlite
-sqlite_cli = 'sqlite3'
+# XXX need to use PATH instead
+sqlite_cli = '/usr/local/bin/sqlite3'
 
 ########################################################################
 # custom aggregate function to calculate the exponentially decaying SNR
@@ -217,33 +218,6 @@ if sql:
   c.execute("""drop view v_feed_stats""")
   sql = None
 
-# we have to recreate this view each time as param.decay may have changed
-c.execute("select sql from sqlite_master where name='v_feeds_snr'")
-sql = c.fetchone()
-if sql:
-  c.execute('drop view v_feeds_snr')
-c.execute("""create view v_feeds_snr as
-select feed_uid, feed_title, feed_html, feed_xml,
-min(julianday('now') - item_modified) as last_modified,
-sum(case when item_rating=1 then 1 else 0 end) as interesting,
-sum(case when item_rating=0 then 1 else 0 end) as unread,
-sum(case when item_rating=-1 then 1 else 0 end) as uninteresting,
-sum(case when item_rating=-2 then 1 else 0 end) as filtered,
-sum(1) as total,
-snr_decay(item_rating, item_created, %d) as snr,
-feed_status, feed_private, feed_errors, feed_desc, feed_filter
-from fm_feeds left outer join (
-  select item_rating, item_feed_uid, item_created,
-    ifnull(
-      julianday(item_modified),
-      julianday(item_created)
-    ) as item_modified
-  from fm_items
-) on feed_uid=item_feed_uid
-group by feed_uid, feed_title, feed_html, feed_xml""" %
-          getattr(param, 'decay', 30))
-db.commit()  
-
 # SQLite3 offers ALTER TABLE ADD COLUMN but not SQLite 2, so we do it the
 # hard way, which shouldn't be an issue for a small table like this
 c.execute("select count(*) from sqlite_master where name='fm_feeds' and sql like '%feed_filter%'")
@@ -275,3 +249,64 @@ if not c.fetchone()[0]:
   c.execute('drop table sop')
   db.commit()  
   print >> param.log, 'done.'
+
+c.execute("""select count(*) from sqlite_master
+where name='fm_rules' and sql like '%rule_type%'""")
+if not c.fetchone()[0]:
+  print >> param.log, 'WARNING: upgrading table fm_rules to add rule_type...',
+  c.execute("""alter table fm_rules
+  add column rule_type varchar(16) not null default 'python'""")
+  db.commit()  
+  print >> param.log, 'done.'
+
+c.execute("""select count(*) from sqlite_master
+where name='fm_rules' and sql like '%rule_feed%'""")
+if not c.fetchone()[0]:
+  print >> param.log, 'WARNING: upgrading table fm_rules to add rule_feed_uid...',
+  c.execute("""alter table fm_rules
+  add column rule_feed_uid integer""")
+  db.commit()  
+  print >> param.log, 'done.'
+
+c.execute("""select count(*) from sqlite_master
+where name='fm_items' and sql like '%item_rule_uid%'""")
+if not c.fetchone()[0]:
+  print >> param.log, 'WARNING: upgrading table fm_items to add item_rule_uid...',
+  c.execute("""alter table fm_items add column item_rule_uid integer""")
+  db.commit()  
+  print >> param.log, 'done.'
+
+c.execute("""select count(*) from sqlite_master
+where name='fm_feeds' and sql like '%feed_exempt%'""")
+if not c.fetchone()[0]:
+  print >> param.log, 'WARNING: upgrading table fm_feeds to add feed_exempt...',
+  c.execute("""alter table fm_feeds add column feed_exempt integer default 0""")
+  db.commit()  
+  print >> param.log, 'done.'
+
+# we have to recreate this view each time as param.decay may have changed
+c.execute("select sql from sqlite_master where name='v_feeds_snr'")
+sql = c.fetchone()
+if sql:
+  c.execute('drop view v_feeds_snr')
+c.execute("""create view v_feeds_snr as
+select feed_uid, feed_title, feed_html, feed_xml,
+min(julianday('now') - item_modified) as last_modified,
+sum(case when item_rating=1 then 1 else 0 end) as interesting,
+sum(case when item_rating=0 then 1 else 0 end) as unread,
+sum(case when item_rating=-1 then 1 else 0 end) as uninteresting,
+sum(case when item_rating=-2 then 1 else 0 end) as filtered,
+sum(1) as total,
+snr_decay(item_rating, item_created, %d) as snr,
+feed_status, feed_private, feed_exempt, feed_errors, feed_desc, feed_filter
+from fm_feeds left outer join (
+  select item_rating, item_feed_uid, item_created,
+    ifnull(
+      julianday(item_modified),
+      julianday(item_created)
+    ) as item_modified
+  from fm_items
+) on feed_uid=item_feed_uid
+group by feed_uid, feed_title, feed_html, feed_xml""" %
+          getattr(param, 'decay', 30))
+db.commit()  

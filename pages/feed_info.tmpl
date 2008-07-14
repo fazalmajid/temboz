@@ -1,16 +1,18 @@
 ## -*- html -*-
-#extends TembozTemplate
+#extends rules_common
 #implements respond
 <html>
 <head><title>Temboz - Feed details</title>
 <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
 <link rel="stylesheet" type="text/css" href="temboz.css">
+<script language="JavaScript" src="temboz.js"></script>
+$rule_head
 </head>
 <body>
 <p class="menu"><a href="view">All unread</a>&nbsp;&nbsp;<a href="add">Add feed</a>&nbsp;&nbsp;<a href="feeds">All feeds</a> <span class="help"><a href="http://www.temboz.com/temboz/wiki?p=FeedDetailsPage" target="_blank">Help</a></span></p>
 #set $feed_uid = $getVar('feed_uid')
 #from singleton import db
-#import time, pprint
+#import time, pprint, update, filters
 #set c = db.cursor()
 #silent c.execute("""select feed_title, feed_desc, feed_filter,
   feed_html, feed_xml,
@@ -20,7 +22,7 @@
   sum(case when item_rating=-1 then cnt else 0 end) as uninteresting,
   sum(case when item_rating=-2 then cnt else 0 end) as filtered,
   sum(cnt) as total,
-  feed_status, feed_private, feed_dupcheck, feed_errors
+  feed_status, feed_private, feed_exempt, feed_dupcheck, feed_errors
 from fm_feeds left outer join (
   select item_rating, item_feed_uid, count(*) as cnt,
     julianday('now') - max(
@@ -36,7 +38,7 @@ where feed_uid=""" + $feed_uid + """
 group by feed_uid, feed_title, feed_html, feed_xml
 """)
 
-#silent feed_title, feed_desc, feed_filter, feed_html, feed_xml, delta_t, interesting, unread, uninteresting, filtered, total, status, private, dupcheck, feed_errors = c.fetchone()
+#silent feed_title, feed_desc, feed_filter, feed_html, feed_xml, delta_t, interesting, unread, uninteresting, filtered, total, status, private, exempt, dupcheck, feed_errors = c.fetchone()
 #set since = self.since(delta_t)
 #set unread = int(unread)
 #set interesting = int(interesting)
@@ -60,19 +62,16 @@ group by feed_uid, feed_title, feed_html, feed_xml
 ##
 ########################################################################
 #if $getVar('feed_title', None) and $getVar('feed_title', None) != feed_title
-#import update
 #silent update.update_feed_title($feed_uid, $getVar('feed_title'))
 <p>Feed title updated successfully.</p>
 #set feed_title = $getVar('feed_title', feed_title)
 #end if
 #if $getVar('feed_desc', None) and $getVar('feed_desc', None) != feed_desc
-#import update
 #silent update.update_feed_desc($feed_uid, $getVar('feed_desc'))
 <p>Feed description updated successfully.</p>
 #set feed_desc = $getVar('feed_desc', feed_desc)
 #end if
 #if $getVar('feed_filter', '') and $getVar('feed_filter', '') != feed_filter
-#import update
 #silent update.update_feed_filter($feed_uid, $getVar('feed_filter'))
 <p>Feed filter updated successfully.</p>
 #set feed_filter = $getVar('feed_filter', feed_filter)
@@ -83,7 +82,6 @@ group by feed_uid, feed_title, feed_html, feed_xml
 ##
 ########################################################################
 #if $getVar('refresh', 0) == '1' or ($getVar('feed_xml', None) and $getVar('feed_xml', None) != feed_xml)
-#import update
 #try
 #silent num_added, num_filtered = update.update_feed_xml($feed_uid, $getVar('feed_xml', feed_xml))
 #silent unread += num_added
@@ -127,7 +125,7 @@ duplicates.</p>
 #set lines = max(4, len(feed_desc) // 80 + 1)
 <tr><td>Desc:</td><td><textarea cols="80" rows="$lines"
 name="feed_desc"><%=feed_desc%></textarea></td></tr>
-#set lines = max(4, update.rule_lines(feed_filter))
+#set lines = max(4, filters.rule_lines(feed_filter))
 <tr><td>Filter:</td><td><textarea cols="80" rows="$lines"
 name="feed_filter"><%=feed_filter%></textarea></td></tr>
 <tr><td colspan="2" align="center"><input type="button" value="Clear"
@@ -156,7 +154,6 @@ name="feed_filter"><%=feed_filter%></textarea></td></tr>
 ##
 ########################################################################
 #if $getVar('change_op', None)
-#import update
 #if $getVar('change_op') == 'Activate'
 <% status = 0 %>
 <% update.set_status(feed_uid, status) %>
@@ -175,6 +172,12 @@ name="feed_filter"><%=feed_filter%></textarea></td></tr>
 #elif $getVar('change_op') == 'NoDupcheck'
 <% dupcheck = 0 %>
 <% update.update_feed_dupcheck(feed_uid, dupcheck) %>
+#elif $getVar('change_op') == 'Exempt'
+<% exempt = 1 %>
+<% update.update_feed_exempt(feed_uid, exempt) %>
+#elif $getVar('change_op') == 'Reinstate'
+<% exempt = 0 %>
+<% update.update_feed_exempt(feed_uid, exempt) %>
 #end if
 #end if
 ########################################################################
@@ -206,22 +209,36 @@ name="feed_filter"><%=feed_filter%></textarea></td></tr>
 #end if
 <tr class="odd"><td>Privacy</td><td>$private_text&nbsp;<a href="feed_info?feed_uid=$feed_uid&change_op=$change_op">$change_op</a></td></tr>
 ########################################################################
-#if dupcheck == 0
-<tr class="even"><td>Duplicate<br>title<br>checking</td><td>No duplicate checks&nbsp;<a href="feed_info?feed_uid=$feed_uid&change_op=Dupcheck">check for duplicate titles</a></td></tr>
-#elif dupcheck == 1
-<tr class="even"><td>Duplicate<br>title<br>checking</td><td>Duplicate checking in effect&nbsp;<a href="feed_info?feed_uid=$feed_uid&change_op=NoDupcheck">disable duplicate checking</a></td></tr>
+#if exempt == 0
+#set exempt_text = 'Not exempt'
+#set change_op = 'Exempt'
+#elif exempt == 1
+#set exempt_text = 'Exempt'
+#set change_op = 'Reinstate'
 #else
-<tr class="even"><td>Duplicate<br>title<br>checking</td><td>Unknown&nbsp;<a href="feed_info?feed_uid=$feed_uid&change_op=NoDupcheck">disable duplicate checking</a></td></tr>
+#set exempt_text = 'Unknown'
+#set change_op = 'Exempt'
 #end if
-<tr class="odd"><td>Refresh</td><td><a href="feed_info?feed_uid=$feed_uid&refresh=1">Manually refresh</a> feed</td></tr>
-<tr class="even"><td>Catch-up</td><td><a href="catch_up?feed_uid=$feed_uid">Mark as read</a> $unread unread articles</td></tr>
-<tr class="odd"><td>Purge</td><td><a href="catch_up?reload=Y&feed_uid=$feed_uid">Purge and reload</a> $unread unread articles</td></tr>
-<tr class="even"><td>Debug</td><td><a href="feed_debug?feed_uid=$feed_uid">Dump the parsed feed</a>, useful for writing <a href="rules">filtering rules</a></td></tr>
-<tr class="odd"><td>Hard purge</td><td><a href="hard_purge?feed_uid=$feed_uid">Completely delete</a> $total articles
+<tr class="even"><td>Filtering exemption</td><td>$exempt_text&nbsp;<a href="feed_info?feed_uid=$feed_uid&change_op=$change_op">$change_op</a> (exempt feeds are still subject to feed-specific filtering rules).</td></tr>
+########################################################################
+#if dupcheck == 0
+<tr class="odd"><td>Duplicate<br>title<br>checking</td><td>No duplicate checks&nbsp;<a href="feed_info?feed_uid=$feed_uid&change_op=Dupcheck">check for duplicate titles</a></td></tr>
+#elif dupcheck == 1
+<tr class="odd"><td>Duplicate<br>title<br>checking</td><td>Duplicate checking in effect&nbsp;<a href="feed_info?feed_uid=$feed_uid&change_op=NoDupcheck">disable duplicate checking</a></td></tr>
+#else
+<tr class="odd"><td>Duplicate<br>title<br>checking</td><td>Unknown&nbsp;<a href="feed_info?feed_uid=$feed_uid&change_op=NoDupcheck">disable duplicate checking</a></td></tr>
+#end if
+<tr class="even"><td>Refresh</td><td><a href="feed_info?feed_uid=$feed_uid&refresh=1">Manually refresh</a> feed</td></tr>
+<tr class="odd"><td>Catch-up</td><td><a href="catch_up?feed_uid=$feed_uid">Mark as read</a> $unread unread articles</td></tr>
+<tr class="even"><td>Purge</td><td><a href="catch_up?reload=Y&feed_uid=$feed_uid">Purge and reload</a> $unread unread articles</td></tr>
+<tr class="odd"><td>Debug</td><td><a href="feed_debug?feed_uid=$feed_uid">Dump the parsed feed</a>, useful for writing <a href="rules">filtering rules</a></td></tr>
+<tr class="even"><td>Hard purge</td><td><a href="hard_purge?feed_uid=$feed_uid">Completely delete</a> $total articles
 #if $interesting > 0
 (including $interesting flagged as interesting)
 #end if
 </td></tr>
 #silent c.close()
 </table>
+<br>
+$rule_tabset(c, $feed_uid)
 </body></html>

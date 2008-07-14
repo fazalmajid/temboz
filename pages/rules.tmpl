@@ -1,113 +1,26 @@
 ## -*- html -*-
-#extends TembozTemplate
+#extends rules_common
 #implements respond
-<html>
-<head><title>Temboz - Filtering rules</title>
-<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
-<link rel="stylesheet" type="text/css" href="temboz.css">
-</head>
-<body>
-<p class="menu"><a href="view">All unread</a>&nbsp;&nbsp;<a href="view?show=filtered">All filtered</a>&nbsp;&nbsp;<a href="feeds">All feeds</a></p>
 #from singleton import db
-#import time
+#import filters
 #set c = db.cursor()
+<html>
+  <head><title>Temboz - Filtering rules</title>
+    <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    <link rel="stylesheet" type="text/css" href="temboz.css">
+    <script language="JavaScript" src="temboz.js"></script>
+    $rule_head
+  </head>
+  <body>
+    <p class="menu"><a href="view">All unread</a>&nbsp;&nbsp;<a
+    href="view?show=filtered">All filtered</a>&nbsp;&nbsp;<a href="feeds">All
+    feeds</a></p>
 
-#if $getVar("uid", None)
-#import update
-#set $status = update.update_rule(db, c, $uid, $expires, $text, $getVar("delete", None))
-#end if
+    #if $getVar("uid", None)
+      #set $status = filters.update_rule(db, c, $uid, $expires, $text,
+                                         $getVar("delete", None))
+    #end if
 
-#silent c.execute("""select rule_uid, date(rule_expires), rule_text
-from fm_rules
-order by rule_uid""")
-<table>
-<tr><th>Rule</th><th>Expires</th><th>Text</th><th>Delete</th><th>Update</th></tr>
-#for uid, expires, text in c
-#set lines = max(4, update.rule_lines(text))
-<tr valign="top"><form action="rules" method="get"><td>$uid<input type="hidden" name="uid" value="$uid"></td><td><input type="text" name="expires" value="$expires" size="10"></td><td><textarea cols="80" rows="$lines" name="text">$text</textarea></td><td><input type="checkbox" name="delete"></td><td><input type="submit" value="Update"></td></td></form></tr>
-#end for
-<tr valign="top"><form action="rules" method="get"><td><input type="hidden" name="uid" value="new"></td><td><input type="text" name="expires" size="10" value="never"></td><td><textarea cols="80" name="text">'XXX' in feed_title and 'YYY' in title</textarea></td><td></td><td><input type="submit" value="Add"></td></td></form></tr>
-#silent c.close()
-</table>
-
-<h2>Filter syntax:</h2>
-
-<p>The filtering rules are Python expressions that are evaluated as booleans. The following variables are always available:</p>
-
-<table>
-<tr><th class="nonsort">Variable</th><th class="nonsort">Description</th></tr>
-<tr class="odd"><td>feed_title</td><td>Title of the feed</td></tr>
-<tr class="even"><td>title</td><td>Title of the article</td></tr>
-<tr class="odd"><td>title_lc</td><td>Title of the article (all in lower
-case)</td></tr>
-<tr class="even"><td>title_words</td><td>List of lower-cased words in the
-title</td></tr>
-<tr class="odd"><td>content</td><td>Contents of the article</td></tr>
-<tr class="even"><td>content_lc</td><td>Contents of the article (all in lower
-case)</td>
-<tr class="odd"><td>union_lc</td><td>Union of the article (all in lower
-case)</td></tr>
-<tr class="even"><td>link</td><td>article URL</td></tr>
-</tr>
-</table>
-
-<p>In addition, the convenience functions <tt>title_any</tt>,
-<tt>content_any</tt>, <tt>union_any</tt>, <tt>title_any_lc</tt>,
-<tt>content_any_lc</tt>, <tt>union_any_lc</tt>, <tt>title_any_words</tt>,
-<tt>content_any_words</tt>, <tt>union_any_words</tt>are here to simplify
-rules. They take a list of strings and search in the corresponding
-<tt>title|content(|_lc|_words)</tt> (the <tt>union_</tt>* variants will match
-either title or contents). If any of the strings in the list matches, the
-function returns True.</p>
-
-<p>The function <tt>link_already(</tt><em>url</em><tt>)</tt> checks if the URL
-passed as its argument is that of an article that was already loaded. This is
-useful to filter out duplicates or echos from aggregated feeds like Digg or
-Slashdot.</p>
-
-<p>Other variables may be available on a feed-by-feed basis, also depending on
-which feed standard is used (e.g. Atom vs. RSS). Check the feed details page
-for the feed you are interested in for more details.</p>
-
-<p>If a variable does not exist, the expression evaluation will throw an
-exception, and the article will not be filtered out, but in a Python logical
-OR expression, if the first term evaluates true, the second term is not
-evaluated and the article will be filtered out even if the second term refers
-to a variable that does not exist.</p>
-
-<p>You can add comments by starting a line with the character <tt>#</tt>,
-and use carriage returns like whitespace for legibility</p>
-
-<h2>Examples</h2>
-
-<p>Should be self-explanatory:</p>
-
-<pre>
-'Salon' in feed_title and ('King Kaufman' in title or 'Letters' in title)
-</pre>
-
-<pre>
-'SAP' in title.split()
-</pre>
-
-<p>or almost equivalently:</p>
-
-<pre>
-'sap' in title_words
-</pre>
-
-<pre>
-'Guardian Unlimited' in feed_title and (content.startswith('Sport:')
- or 'football' in content_lc or 'cricket' in content_lc)
-</pre>
-
-<p>which is equivalent to:</p>
-
-<pre>
-'Guardian Unlimited' in feed_title and (content.startswith('Sport:')
-or content_any_lc('football', 'cricket'))
-</pre>
-
-<p>Filter articles referring to SAP, but as a word (i.e. do not filter out 'ASAP'): 
-
-</body></html>
+    $rule_tabset(c, None)
+  </body>
+</html>
