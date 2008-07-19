@@ -259,7 +259,8 @@ the feeds in blogroll I found interesting. Clicking the "thumbs up" icons will
 highlight the article, clicking "thumbs down" will make it disappear (or
 cancel the highlight if highlighted).</p>
 #else
-<link rel="stylesheet" type="text/css" href="temboz.css">
+<link rel="stylesheet" type="text/css" media="screen" href="temboz.css">
+<link rel="stylesheet" type="text/css" media="print" href="temboz.css?media=print">
 #end if
 ## work-around IE's defective position: fixed
 ## see also: http://www.enorg.org/faq/csshacks.html
@@ -418,9 +419,9 @@ limit ? offset ?""", params + [overload_threshold, offset])
 ##
 ########################################################################
 #if public
-#set $feed_link = feed_html
+#set $feed_link = ""
 #else
-#set $feed_link = 'feed_info?feed_uid=%d' % feed_uid
+#set $feed_link = 'onclick="location.href(\'feed_info?feed_uid=%d\');"' % feed_uid
 #end if
 #if rating == -2
   #if filtered_by
@@ -439,10 +440,10 @@ src="<%=img_prefix%>down.gif" class="down" onclick="hide('$uid')"
 /><img width="32" height="32" alt="up" src="<%=img_prefix%>up.gif" class="up"
 onclick="highlight('$uid')" /></span><span class="ctarrow" id="ctarrow$uid" onclick="collapseToggle('$uid')"><img width="14" height="14" alt="hidden" src="<%=img_prefix%>a_dn.gif" />&nbsp;</span><a href="<%=redirect%>" class="headline"
 target="_blank" title="by $creator, cached at $loaded">$title</a><br><a
-href="$feed_link" title="" class="source" id="feed$uid">$feed_title</a>
+href="feed_info?feed_uid=$feed_uid" title="" class="source screen" id="feed$uid">$feed_title</a><a href="$feed_html" title="" class="source print" id="feedprint$uid">$feed_title</a>
 $since_when
 #if not public
-<a href="edit?uid=$uid">edit</a>
+<a href="edit?uid=$uid" class="screen">edit</a>
 #end if
 <br></div><div class="content" id="content$uid">
 $content
