@@ -492,6 +492,8 @@ def normalize(item, f, run_filters=True):
   # we recalculate this as content may have changed due to tag rebalancing, etc
   item['content_lc'] = lower(content)
   item['content_words'] = get_words(item['content_lc'])
+  item['union_lc'] = item['title_lc'] + '\n' + item['content_lc']
+  item['union_words'] = item['title_words'].union(item['content_words'])
   item['urls'] = url_re.findall(content)
   ########################################################################
   # categories/tags

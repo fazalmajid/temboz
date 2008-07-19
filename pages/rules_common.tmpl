@@ -110,24 +110,28 @@
 
     <table>
       <tr>
-	<th class="nonsort">Variable</th>
-	<th class="nonsort">Description</th>
+	<th class="nonsort">Variable</th><th class="nonsort">Description</th>
       </tr>
       <tr class="odd"><td>feed_title</td><td>Title of the feed</td></tr>
       <tr class="even"><td>title</td><td>Title of the article</td></tr>
 
       <tr class="odd"><td>title_lc</td><td>Title of the article (all in
       lower case)</td></tr>
-      <tr class="even"><td>title_words</td><td>List of lower-cased words
-      in the title</td></tr>
+      <tr class="even"><td>title_words</td><td>Set of lower-cased and
+      diacritic-stripped words in the title</td></tr>
       <tr class="odd"><td>content</td><td>Contents of the article</td></tr>
       <tr class="even"><td>content_lc</td><td>Contents of the article (all
       in lower case)</td>
-      <tr class="odd"><td>union_lc</td><td>Union of the article (all in
+      <tr class="odd"><td>content_words</td><td>Set of lower-cased and
+      diacritic-stripped words in the content</td></tr>
+      <tr class="even"><td>union_lc</td><td>Union of the article (all in
       lower case)</td></tr>
-      <tr class="even"><td>link</td><td>article URL (before dereferencing)</td></tr>
-      <tr class="odd"><td>category</td><td>If present, set of categories for the article</td></tr>
-      </tr>
+      <tr class="odd"><td>union_words</td><td>Set of lower-cased and
+      diacritic-stripped words in both title and contents</td></tr>
+      <tr class="even"><td>link</td><td>article URL (before dereferencing)
+      </td></tr>
+      <tr class="odd"><td>category</td><td>If present, set of categories for
+      the article</td></tr>
     </table>
 
     <p>In addition, the convenience functions <tt>title_any</tt>,
