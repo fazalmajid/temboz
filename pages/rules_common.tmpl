@@ -75,7 +75,7 @@
   #else
     #silent c.execute("""select rule_uid, date(rule_expires), rule_text
 			 from fm_rules
-			 where rule_type='python' and rule_feed_uid=NULL
+			 where rule_type='python' and rule_feed_uid is NULL
 			 order by rule_uid""")
   #end if
   <div id="python">
