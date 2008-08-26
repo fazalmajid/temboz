@@ -247,6 +247,89 @@ def get_words(s):
              ).translate(punct_map).split()
     if word not in stop_words])
   
+########################################################################
+# HTML tag balancing logic
+#
+# from the HTML4 loose DTD http://www.w3.org/TR/html4/loose.dtd
+fontstyle = ('b', 'big', 'i', 's', 'small', 'strike', 'tt', 'u')
+phrase = ('abbr', 'acronym', 'cite', 'code', 'dfn', 'em', 'kbd', 'samp',
+          'strong', 'var')
+heading = ('h1', 'h2', 'h3', 'h4', 'h5', 'h6')
+html4_elts = ('a', 'address', 'applet', 'area', 'base', 'basefont', 'bdo',
+              'blockquote', 'body', 'br', 'button', 'caption', 'center',
+              'col', 'colgroup', 'dd', 'del', 'dir', 'div', 'dl', 'dt',
+              'fieldset', 'font', 'form', 'frame', 'frameset', 'head', 'hr',
+              'html', 'iframe', 'img', 'input', 'ins', 'isindex', 'label',
+              'legend', 'li', 'link', 'map', 'menu', 'meta', 'noframes',
+              'noscript', 'object', 'ol', 'optgroup', 'option', 'p', 'param',
+              'pre', 'q', 'script', 'select', 'span', 'style', 'sub', 'sup',
+              'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead',
+              'title', 'tr', 'ul') + fontstyle + phrase + heading
+inline_elts = ('a', 'abbr', 'acronym', 'address', 'bdo', 'caption', 'cite',
+               'code', 'dfn', 'dt', 'em', 'font', 'i',
+               'iframe', 'kbd', 'label', 'legend', 'p', 'pre', 'q', 's',
+               'samp', 'small', 'span', 'strike', 'strong', 'sub', 'sup',
+               'tt', 'u', 'var') + fontstyle + phrase + heading
+# strictly speaking the closing '</p> tag is optional, but let's close it
+# since it is so common
+closing = ('a', 'address', 'applet', 'bdo', 'blockquote', 'button', 'caption',
+           'center', 'del', 'dir', 'div', 'dl', 'fieldset', 'font', 'form',
+           'frameset', 'iframe', 'ins', 'label', 'legend', 'map', 'menu',
+           'noframes', 'noscript', 'object', 'ol', 'optgroup', 'pre', 'q',
+           'script', 'select', 'span', 'style', 'sub', 'sup', 'table',
+           'textarea', 'title', 'ul') + fontstyle + phrase + heading + ('p',)
+# <!ENTITY % block
+block = ('address', 'blockquote', 'center', 'dir', 'div', 'dl', 'fieldset',
+         'form', 'hr', 'isindex', 'menu', 'noframes', 'noscript', 'ol', 'p',
+         'pre', 'table', 'ul') + heading
+# speed up things a bit
+block = set(block)
+closing = set(closing)
+
+tag_re = re.compile('(<.*?>)')
+def balance(html):
+  #import pdb
+  #pdb.set_trace()
+  tokens = tag_re.split(html)
+  out = []
+  stack = []
+  for token in tokens:
+    if not token.startswith('<'):
+      out.append(token)
+      continue
+    if not token.endswith('>'): continue # invalid
+    element = token[1:-1].split()[0].lower()
+    if not element: continue # invalid
+
+    if element.startswith('/'):
+      element = element[1:]
+      if element in stack:
+        top = None
+        while stack and top != element:
+          top = stack.pop()
+          out.append('</%s>' % top)
+        continue
+      else:
+        continue
+
+    if element in block:
+      # close previous block if any
+      previous_block = []
+      for i in xrange(len(stack)):
+        if stack[i] in block:
+          stack, previous_block = stack[:i], stack[i:]
+      previous_block.reverse()
+      for tag in previous_block:
+        out.append('</%s>' % tag)
+      
+    if element in closing and not token.endswith('/>'):
+      stack.append(element)
+    out.append(token)
+  # flush the stack
+  out.extend(['</%s>' % element for element in reversed(stack)])
+  return ''.join(out)
+
+########################################################################
 def normalize_all(f):
   normalize_feed(f)
   for item in f.entries:
@@ -326,33 +409,6 @@ def dereference(url, seen=None):
     util.print_stack()
     return url
   
-# Balance HTML opening and closing tags
-class Balancer(HTMLParser.HTMLParser):
-  """Detect unbalanced HTML tags"""
-  tags = set(['b', 'strong', 'strike', 'em', 'i', 'font', 'a', 'p',
-              'small', 'big', 'cite', 'blockquote', 'pre', 'sub', 'sup', 'tt',
-              'ul', 'ol', 'div', 'span', 'td', 'th', 'tr', 'table'])
-  def __init__(self):
-    HTMLParser.HTMLParser.__init__(self)
-    self.counts = dict()
-  def handle_starttag(self, tag, attrs):
-    if tag in self.tags:
-      if self.counts.get(tag, 0) <= 0:
-        self.counts[tag] = 1
-      else:
-        self.counts[tag] += 1
-  def handle_endtag(self, tag):
-    if tag in self.tags:
-      self.counts.setdefault(tag, 0)
-      self.counts[tag] -= 1
-  def imbalances(self, ):
-    imbalances = []
-    for tag in self.tags:
-      count = self.counts.get(tag, 0)
-      if count > 0:
-        imbalances.append((tag, count))
-    return imbalances
-
 url_re = re.compile('(?:href|src)="([^"]*)"', re.IGNORECASE)
 
 def normalize(item, f, run_filters=True):
@@ -475,11 +531,8 @@ def normalize(item, f, run_filters=True):
   except:
     util.print_stack(black_list=['item'])
   # balance tags like <b>...</b>
+  content = balance(content)
   content_lc = lower(content)
-  b = Balancer()
-  b.feed(content_lc)
-  for tag, imbalance in b.imbalances():
-    content += ('</%s>' % tag) * imbalance
   # the content might have invalid 8-bit characters.
   # Heuristic suggested by Georg Bauer
   if type(content) != unicode:
