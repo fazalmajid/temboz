@@ -79,6 +79,8 @@ filter_list = [
   degunk.Re('<a href="http://[^"]*.pheedo[^"]*">\s*'
             '<img [^>]*src="http://www.pheedo.com.*?</a>',
             re.MULTILINE + re.DOTALL),
+  degunk.Re('<a href="http://www.pheedo.com/hosted.*?</a>',
+            re.MULTILINE + re.DOTALL),
   # Broken Pheedo links for IEEE Spectrum
   degunk.ReUrl(url=r'http://pheedo.com\1',
                regex_url=r'http://www.pheedo.com(.*)'),
@@ -118,12 +120,16 @@ filter_list = [
             '[^<>]*Read the full article.*', re.MULTILINE + re.DOTALL),
   degunk.Re('<p><small>[^<>]*<a href="http://www.theinquirer.net.*?<i>',
             re.MULTILINE),
+  # List apart T-shirt shilling
+  degunk.Re('<p><em><strong>Hide Your Shame:</strong> The A List Apart Store'
+            '.*?</p>', re.MULTILINE + re.DOTALL),
   # possibly caused by bugs in feedparser
   degunk.Re('<br>[.>]<br>', 0, '<br>', iterate=True),
   # unwarranted multiple empty lines
-  degunk.Re('<br>(<br>)+', 0, '<br>'),
+  degunk.Re('<br>\s*(<br>\s*)+', 0, '<br>'),
+  degunk.Re('<p>&nbsp;</p>'),
   # junk
   degunk.Re('<strong></strong>', 0, ''),
   # unwarranted final empty lines
-  degunk.Re('(<br>)+$'),
+  degunk.Re('(<br>\s*)+$'),
   ]
