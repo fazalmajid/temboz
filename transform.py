@@ -123,11 +123,15 @@ filter_list = [
   # List apart T-shirt shilling
   degunk.Re('<p><em><strong>Hide Your Shame:</strong> The A List Apart Store'
             '.*?</p>', re.MULTILINE + re.DOTALL),
+  # Other misc shilling
+  degunk.Re('<p>.*<a href="http://www.beyondsecurity.com.*?</p>',
+            re.MULTILINE + re.DOTALL),
   # possibly caused by bugs in feedparser
   degunk.Re('<br>[.>]<br>', 0, '<br>', iterate=True),
   # unwarranted multiple empty lines
   degunk.Re('<br>\s*(<br>\s*)+', 0, '<br>'),
   degunk.Re('<p>&nbsp;</p>'),
+  degunk.Re('<p>-</p>'),
   # junk
   degunk.Re('<strong></strong>', 0, ''),
   # unwarranted final empty lines
