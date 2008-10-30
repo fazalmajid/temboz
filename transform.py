@@ -67,6 +67,8 @@ filter_list = [
   degunk.Re('<p><font size="1"><hr />SPONSORED BY.*?</p>'),
   # Engadget ads
   degunk.Re('<hr /><p>SPONSORED BY.*?</p>\s*', re.MULTILINE),
+  degunk.Re('<p.*?originally appeared on.*?terms for use of feeds.*?</p>',
+            re.MULTILINE),
   # Gawker cross-shilling
   degunk.Re('&nbsp;<br><a href=[^>]*>Comment on this post</a>\s*<br>Related.*',
             re.IGNORECASE + re.DOTALL),
