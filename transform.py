@@ -128,6 +128,8 @@ filter_list = [
   # Other misc shilling
   degunk.Re('<p>.*<a href="http://www.beyondsecurity.com.*?</p>',
             re.MULTILINE + re.DOTALL),
+  degunk.Re('<fieldset class="zemanta-related">.*?</ul>',
+            re.MULTILINE + re.DOTALL),
   # possibly caused by bugs in feedparser
   degunk.Re('<br>[.>]<br>', 0, '<br>', iterate=True),
   # unwarranted multiple empty lines
@@ -138,4 +140,8 @@ filter_list = [
   degunk.Re('<strong></strong>', 0, ''),
   # unwarranted final empty lines
   degunk.Re('(<br>\s*)+$'),
+  # GigaOM annoyances
+  degunk.Re(r'<img[^>]*src="http://stats.wordpress.com.*?>'),
+  degunk.Re(r'\s*<hr[^>]*>\s*<p>\s*<a href="http://t.gigaom.com/.*?</p>',
+            re.MULTILINE + re.DOTALL),
   ]
