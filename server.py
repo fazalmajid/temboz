@@ -330,12 +330,13 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
               # the second item in this import line should have the module name
               imported_module = import_statement.split(' ')[1]
               # replace "from page import page" style imports
-              # with "page = __import('path/to/page').page" style.
+              # with "page = server.tmpl_import('path/to/page').page" style.
               # this way we can have multiple modules with the same name loaded
               # at one time.
               template_str = template_str.replace(
                 "from %s import %s" % (imported_module, imported_module),
-                "%s = __import__('%s').%s" % (imported_module,
+                "import server\n"
+                "%s = server.tmpl_import('%s').%s" % (imported_module,
                                               module_class.__module__,
                                               imported_module))
       # Write our newly compiled template as a python (.py) file.
@@ -352,9 +353,9 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
         reload(self.tmpl_cache[page])
         reloaded = True
     if page not in self.tmpl_cache:
-      # Import the module, using __import__ which allows us to import from a
+      # Import the module, using tmpl_import which allows us to import from a
       # file path, instead of sys.path
-      module = __import__(modname)
+      module = tmpl_import(modname)
       # We need to verify that we have a class named tmpl in the module, or
       # something may be very very wrong, then
       if tmpl in module.__dict__:
@@ -475,6 +476,21 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
       tmpl.e = None
       e = None
     return
+
+# Python 2.6 and later no longer allow specifying directories in the module
+# name so we have to create our own import function to override the path
+def tmpl_import(name):
+  if os.sep not in name:
+    return __import__(name)
+  else:
+    dir = os.path.dirname(name)
+    modname = os.path.basename(name)
+    import imp
+    modfile, pathname, description = imp.find_module(modname, [dir])
+    try:
+      return imp.load_module(modname, modfile, pathname, description)
+    finally:
+      modfile.close()
 
 def run():
   # force loading of the database so we don't have to wait an hour to detect
