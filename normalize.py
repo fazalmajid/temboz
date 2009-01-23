@@ -288,8 +288,6 @@ closing = set(closing)
 
 tag_re = re.compile('(<.*?>)')
 def balance(html):
-  #import pdb
-  #pdb.set_trace()
   tokens = tag_re.split(html)
   out = []
   stack = []
@@ -312,12 +310,11 @@ def balance(html):
       else:
         continue
 
-    if element in block:
+    if element in block and stack:
       # close previous block if any
-      previous_block = []
-      for i in xrange(len(stack)):
-        if stack[i] in block:
-          stack, previous_block = stack[:i], stack[i:]
+      for i in xrange(len(stack) - 1, -1, -1):
+        if stack[i] in block: break
+      stack, previous_block = stack[:i], stack[i:]
       previous_block.reverse()
       for tag in previous_block:
         out.append('</%s>' % tag)
