@@ -12,7 +12,7 @@ port = 9999
 # bind_address = '192.168.1.9'
 
 # number of RSS feeds fetched in parallel 
-feed_concurrency = 10
+feed_concurrency = 40
 
 # Maximum number of articles shown
 overload_threshold = 200
