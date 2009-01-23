@@ -271,6 +271,6 @@ def add_kw_rule(db, c, kw=None, item_uid=None, match='word', target='title',
 def del_kw_rule(db, c, rule_uid=None, **kwargs):
   c.execute("""update fm_items
   set item_rating=0, item_rule_uid=NULL
-  where item_rule_uid=?""", [rule_uid])
+  where item_rule_uid=? and item_content!=''""", [rule_uid])
   c.execute('delete from fm_rules where rule_uid=?', [rule_uid])
   invalidate()

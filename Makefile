@@ -22,10 +22,11 @@ sync:
 	wget http://diveintomark.org/projects/feed_parser/feedparser.py
 
 JUI=	spool/jquery.ui-*[0-9]/ui
-js:
+sync-js:
 	vcheck --verbose -d --file etc/vcheck
 	(cd spool; wget -c http://jqueryjs.googlecode.com/svn/trunk/plugins/form/jquery.form.js)
-	cat spool/jquery.ui-*[0-9]/jquery-[0-9]*.js spool/jquery.form.js $(JUI)/ui.core.js  $(JUI)/ui.dialog.js $(JUI)/ui.tabs.js| jsmin > rsrc/temboz.js
+js:
+	cat spool/jquery.ui-*[0-9]/jquery-[0-9]*.js spool/jquery.form.js $(JUI)/ui.core.js  $(JUI)/ui.dialog.js $(JUI)/ui.tabs.js | jsmin > rsrc/temboz.js
 	./temboz --kill
 changelog:
 	cvs2cl.pl --tags -g -q

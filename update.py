@@ -16,6 +16,14 @@ class FeedAlreadyExists(Exception):
 class UnknownError(Exception):
   pass
 
+ratings = [
+  ('all',      'all',           'All articles',     'item_rating is not null'),
+  ('unread',   'unread',        'Unread only',       'item_rating = 0'),
+  ('down',     'uninteresting', 'Uninteresting only','item_rating = -1'),
+  ('up',       'interesting',   'Interesting only',  'item_rating > 0'),
+  ('filtered', 'filtered',      'Filtered only',     'item_rating = -2')
+]
+
 class AutoDiscoveryHandler(HTMLParser.HTMLParser):
   """Find RSS autodiscovery info, as specified in:
     http://diveintomark.org/archives/2002/05/30/rss_autodiscovery

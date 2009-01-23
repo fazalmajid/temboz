@@ -5,7 +5,10 @@ import BaseHTTPServer, SocketServer, cgi, cStringIO, urlparse
 import param, update, filters, util
 
 # add the Cheetah template directory to the import path
-tmpl_dir = os.path.dirname(sys.modules['__main__'].__file__)
+try:
+  tmpl_dir = os.path.dirname(sys.modules['__main__'].__file__)
+except:
+  tmpl_dir = os.getcwd()
 if tmpl_dir:
   tmpl_dir += os.sep + 'pages'
 else:
@@ -299,7 +302,6 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     if tmpl == 'TembozTemplate':
       return TembozTemplate
     template_t, compiled_t = None, None
-    reloaded = False
     tmpl = tmpl.replace('.', '_')
     modname = 'pages/' + tmpl
     page = modname + '.tmpl'
@@ -347,22 +349,16 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
       byte_compile([compiled], verbose=0)
       # and the .pyo
       byte_compile([compiled], verbose=0, optimize=2)
-      if page in self.tmpl_cache:
-        # Force reload of the module
-        # Note:  this does not populate sys.modules at all! (a good thing)
-        reload(self.tmpl_cache[page])
-        reloaded = True
-    if page not in self.tmpl_cache:
-      # Import the module, using tmpl_import which allows us to import from a
-      # file path, instead of sys.path
-      module = tmpl_import(modname)
-      # We need to verify that we have a class named tmpl in the module, or
-      # something may be very very wrong, then
-      if tmpl in module.__dict__:
-        # add the module to tmpl_cache
-        self.tmpl_cache[page] = module
-      else:
-        raise('Error loading compiled template: %s' % compiled,tmpl)
+    # Import the module, using tmpl_import which allows us to import from a
+    # file path, instead of sys.path, and reloads as a side-effect
+    module = tmpl_import(modname)
+    # We need to verify that we have a class named tmpl in the module, or
+    # something may be very very wrong, then
+    if tmpl in module.__dict__:
+      # add the module to tmpl_cache
+      self.tmpl_cache[page] = module
+    else:
+      raise('Error loading compiled template: %s' % compiled,tmpl)
     return getattr(self.tmpl_cache[page], tmpl)
   
   def use_template(self, tmpl, searchlist):
@@ -488,7 +484,8 @@ def tmpl_import(name):
     import imp
     modfile, pathname, description = imp.find_module(modname, [dir])
     try:
-      return imp.load_module(modname, modfile, pathname, description)
+      return imp.load_module('template_' + modname,
+                             modfile, pathname, description)
     finally:
       modfile.close()
 

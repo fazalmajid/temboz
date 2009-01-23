@@ -13,7 +13,7 @@
 ########################################################################
 #from singleton import db
 #set c = db.cursor()
-#import time, param, filters
+#import time, param, filters, update
 #silent filters.load_rules(db, c)
 ########################################################################
 ##
@@ -27,26 +27,25 @@
 ########################################################################
 #set public = False
 #set $show = $getVar('show', 'unread')
-#if $show == 'up'
-#set item_desc = 'interesting'
-#set where_clause = 'item_rating > 0'
-#elif $show == 'mylos'
-#set public = True
-#set item_desc = 'interesting'
-#set where_clause = 'item_rating > 0'
-#elif $show == 'down'
-#set item_desc = 'uninteresting'
-#set where_clause = 'item_rating = -1'
-#elif $show == 'filtered'
-#set item_desc = 'filtered'
-#set where_clause = 'item_rating = -2'
-#elif $show == 'all'
-#set item_desc = 'all'
-#set where_clause = 'item_rating is not null'
+#set ratings = update.ratings
+#set $ratings_dict = dict((ratings[i][0], i) for i in range(len(ratings)))
+#if $show == 'mylos'
+  #set public = True
+  #set item_desc = 'interesting'
+  #set where_clause = 'item_rating > 0'
 #else
-#set item_desc = 'unread'
-#set where_clause = 'item_rating = 0'
+  #set $i = $ratings_dict.get($show, 1)
+  #set $show        = $ratings[$i][0]
+  #set item_desc    = $ratings[$i][1]
+  #set where_clause = $ratings[$i][3]
+  #if $show == 'filtered'
+    #set rule_uid = $getVar('rule_uid', None)
+    #if rule_uid
+      #set where_clause = where_clause + ' and item_rule_uid=' + rule_uid
+    #end if
+  #end if
 #end if
+
 #set params = []
 ## optimizations for mobile devices
 #set mobile = bool($getVar('mobile', False))
@@ -65,13 +64,13 @@
 ##
 ########################################################################
 #if $getVar('search', None)
-#if $getVar('search_in', 'title') == 'title'
-#set search_where = 'item_title'
-#else
-#set search_where = 'item_content'
-#end if
-#set where_clause = where_clause + ' and lower(' + search_where + ') like ?'
-#silent params.append('%' + $getVar('search').lower() + '%')
+  #if $getVar('search_in', 'title') == 'title'
+    #set search_where = 'item_title'
+  #else
+    #set search_where = 'item_content'
+  #end if
+  #set where_clause = where_clause + ' and lower(' + search_where + ') like ?'
+  #silent params.append('%' + $getVar('search').lower() + '%')
 #end if
 ########################################################################
 ##
@@ -95,8 +94,8 @@
 <script language="JavaScript">
 hidden = Array();
 #if public
-#set img_prefix = 'images/'
-#set overload_threshold = 50
+  #set img_prefix = 'images/'
+  #set overload_threshold = 50
 function webop(op, uid) {
   ; // don't do anything about up/down yet
 }
@@ -310,41 +309,61 @@ limit ? offset ?)""", params + [overload_threshold, offset])
 #set count = 0
 #if not mobile
 <div id="menu" class="menu">
+<p class="menu">$num_items 
 #if not public
-<form method="GET" action="view" target="_blank" class="menu">
+<span><form id="show_select" class="inline" method="GET">
+  #echo self.regurgitate_except('show')
+  <select name="show" onchange="document.forms['show_select'].submit();">
+  #for (rating_name, rating_desc, discard, discard) in $ratings
+    #if $item_desc == rating_desc
+      <option value="$rating_name" selected>$rating_desc</option>
+    #else
+      <option value="$rating_name">$rating_desc</option>
+    #end if
+  #end for
+  </select>
+</form></span>
+#else
+$item_desc
 #end if
-<p class="menu">$num_items $item_desc
 #if num_items > overload_threshold
-($overload_threshold shown)
-#set cutoff = (overload_threshold + 1) / 2 + 1
+  ($overload_threshold shown)
+  #set cutoff = (overload_threshold + 1) / 2 + 1
 #end if
 &nbsp;&nbsp;<a href="javascript:unhide_all();">Unhide all</a>&nbsp;&nbsp;<a href="javascript:unhide_last();">Unhide last</a>
 #if public
-</p>
+  </p>
 #else
-&nbsp;&nbsp;<a href="feeds">All feeds</a>&nbsp;&nbsp;<a href="add">Add feed</a>&nbsp;&nbsp;<a href="rules">Filters</a>&nbsp;&nbsp;
+  &nbsp;&nbsp;<a href="feeds">All feeds</a>&nbsp;&nbsp;
+  <a href="add">Add feed</a>&nbsp;&nbsp;<a href="rules">Filters</a>
+  &nbsp;&nbsp;
 ########################################################################
 ##
 ## Crude search functionality
 ##
 ########################################################################
-#if $getVar('feed_uid', None)
-<input name="feed_uid" type="hidden" value="$feed_uid">
-#end if
-<input name="show" type="hidden" value="$show">
-<input name="search" value="$getVar('search', '')">
-<select name="show">
-<option value="all" selected>All articles</option>
-<option value="unread">Unread only</option>
-<option value="down">Uninteresting only</option>
-<option value="up">Interesting only</option>
-<option value="filtered">Filtered only</option>
-</select>
-<select name="search_in">
-<option value="title" selected>in titles</option>
-<option value="content">in content</option>
-</select>
-<input type="submit" value="Search"></p></form>
+<span>
+  <form method="GET" action="view" target="_blank" class="inline">
+    #if $getVar('feed_uid', None)
+      <input name="feed_uid" type="hidden" value="$feed_uid">
+    #end if
+    <input name="show" type="hidden" value="$show">
+    <input name="search" value="$getVar('search', '')">
+    <select name="show">
+      <option value="all" selected>All articles</option>
+      <option value="unread">Unread only</option>
+      <option value="down">Uninteresting only</option>
+      <option value="up">Interesting only</option>
+      <option value="filtered">Filtered only</option>
+    </select>
+    <select name="search_in">
+      <option value="title" selected>in titles</option>
+      <option value="content">in content</option>
+    </select>
+    <input type="submit" value="Search">
+  </form>
+</span>
+</p>
 #end if
 </div>
 #else
@@ -355,26 +374,27 @@ limit ? offset ?)""", params + [overload_threshold, offset])
 ########################################################################
 #if not public
 <div id="kw_form_tmpl" style="display:none">
-<form name="kw_form" method="GET" action="/add_kw_rule">
-<table>
-<tr><td>Keyword</td><td><input name="kw" size="30"></td></tr>
-<tr><td>Match type</td><td><select name="match">
-<option value="word" selected>Any words</option>
-<option value="all">All words</option>
-<option value="phrase_lc">Phrase</option>
-<option value="phrase">Phrase (case-sensitive)</option>
-</select></td></tr>
-<tr><td>Match on</td><td><select name="target">
-<option value="union" selected>Title or content</option>
-<option value="title">Title only</option>
-<option value="content">Content only</option>
-</select></td></tr>
-<tr><td>For <em>__feed_title__</em> only</td><td>
-<input name="feed_only" type="checkbox">
-<input name="item_uid" type="hidden" value="__item_uid__"></td></tr>
-##<tr><td>Apply retroactively</td><td><input name="retroactive" type="checkbox"></td></tr>
-</table>
-</form>
+  <form name="kw_form" method="GET" action="/add_kw_rule">
+    <table>
+      <tr><td>Keyword</td><td><input name="kw" size="30"></td></tr>
+      <tr><td>Match type</td><td><select name="match">
+      <option value="word" selected>Any words</option>
+      <option value="all">All words</option>
+      <option value="phrase_lc">Phrase</option>
+      <option value="phrase">Phrase (case-sensitive)</option>
+      </select></td></tr>
+      <tr><td>Match on</td><td><select name="target">
+      <option value="union" selected>Title or content</option>
+      <option value="title">Title only</option>
+      <option value="content">Content only</option>
+      </select></td></tr>
+      <tr><td>For <em>__feed_title__</em> only</td><td>
+      <input name="feed_only" type="checkbox">
+      <input name="item_uid" type="hidden" value="__item_uid__"></td></tr>
+      ##<tr><td>Apply retroactively</td><td><input name="retroactive"
+      ## type="checkbox"></td></tr>
+    </table>
+  </form>
 </div>
 #end if
 ########################################################################

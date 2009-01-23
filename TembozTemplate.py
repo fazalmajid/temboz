@@ -1,4 +1,4 @@
-import time
+import time, string, urllib
 from Cheetah.Template import Template
 
 class TembozTemplate(Template):
@@ -18,3 +18,18 @@ class TembozTemplate(Template):
       return time.strftime('%Y-%m-%d',
                            time.localtime(time.time() - 86400 * delta_t))
 
+  # validate parameter names to guard against XSS attacks
+  valid_chars = set(string.letters + string.digits + '_')
+  def regurgitate_except(self, *exclude):
+    """Regurgitate query string parameters as <input type="hidden"> fields
+    to help maintain context in self-submitting forms"""
+    opts = {}
+    for d in self.searchList():
+      if type(d) == dict:
+        opts.update(d)
+    return '\n'.join('<input type="hidden" name="%s" value="%s">'
+                     % (name, urllib.quote_plus(value))
+                     for (name, value) in opts.iteritems()
+                     if set(name).issubset(self.valid_chars)
+                     and name not in ('referer', 'headers')
+                     and name not in exclude)

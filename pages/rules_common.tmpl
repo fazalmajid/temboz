@@ -18,16 +18,16 @@
   #set $rownum = 0
   #if feed_uid
     #silent c.execute("""select rule_uid, rule_type, date(rule_expires),
-			 rule_text
-			 from fm_rules
-			 where rule_type != 'python' and rule_feed_uid=?
-			 order by lower(rule_text)""", [feed_uid])
+                         rule_text
+                         from fm_rules
+                         where rule_type != 'python' and rule_feed_uid=?
+                         order by lower(rule_text)""", [feed_uid])
   #else
     #silent c.execute("""select rule_uid, rule_type, date(rule_expires),
-			 rule_text
-			 from fm_rules
-			 where rule_type != 'python' and rule_feed_uid is NULL
-			 order by lower(rule_text)""")
+                         rule_text
+                         from fm_rules
+                         where rule_type != 'python' and rule_feed_uid is NULL
+                         order by lower(rule_text)""")
   #end if
   #set tabs = {'0': list()}
   #for uid, rtype, expires, text in c
@@ -40,7 +40,7 @@
   <ul>
     #for $initial in '0' + string.uppercase
       #if not tabs.setdefault($initial, list())
-	#continue
+        #continue
       #end if
       <li><a href="#keyword_$initial"><span>$initial</span></a></li>
     #end for
@@ -52,47 +52,56 @@
     #end if
     <div id="keyword_$initial">
       <table>
-	<tr><th>Rule</th><th>Type</th><th>Text</th><th>Delete</th></tr>
-	#for uid, rtype, expires, text in tabs[$initial]
-	  #set $rownum = $rownum + 1
-	  #if $rownum % 2
-	    #set $rowclass = 'odd'
-	  #else
-	    #set $rowclass = 'even'
-	  #end if
-	  <tr valign="top" class="$rowclass" id="rule_$uid"><td>$uid</td>
-	  <td>$rtype</td><td>$text</td>
-	  <td><a href="javascript:del_kw_rule($uid);">delete</a></td></tr>
-	#end for
+        <tr>
+          <th>Rule</th><th>Type</th><th>Text</th><th>Filtered articles</th>
+          <th>Delete</th>
+        </tr>
+        #for uid, rtype, expires, text in tabs[$initial]
+          #set $rownum = $rownum + 1
+          #if $rownum % 2
+            #set $rowclass = 'odd'
+          #else
+            #set $rowclass = 'even'
+          #end if
+          <tr valign="top" class="$rowclass" id="rule_$uid"><td>$uid</td>
+          <td>$rtype</td><td>$text</td>
+          #set $feed_uid = $getVar('feed_uid', None)
+          #if $feed_uid
+            <td><a href="view?show=filtered&feed_uid=$feed_uid&rule_uid=$uid">show</a></td>
+          #else
+            <td><a href="view?show=filtered&rule_uid=$uid">show</a></td>
+          #end if
+          <td><a href="javascript:del_kw_rule($uid);">delete</a></td></tr>
+        #end for
       </table>
     </div>
   #end for
   #if feed_uid
     #silent c.execute("""select rule_uid, date(rule_expires), rule_text
-			 from fm_rules
-			 where rule_type='python' and rule_feed_uid=?
-			 order by rule_uid""", [feed_uid])
+                         from fm_rules
+                         where rule_type='python' and rule_feed_uid=?
+                         order by rule_uid""", [feed_uid])
   #else
     #silent c.execute("""select rule_uid, date(rule_expires), rule_text
-			 from fm_rules
-			 where rule_type='python' and rule_feed_uid is NULL
-			 order by rule_uid""")
+                         from fm_rules
+                         where rule_type='python' and rule_feed_uid is NULL
+                         order by rule_uid""")
   #end if
   <div id="python">
     <table>
       <tr>
-	<th>Rule</th><th>Expires</th><th>Text</th><th>Delete</th>
-	<th>Update</th>
+        <th>Rule</th><th>Expires</th><th>Text</th><th>Delete</th>
+        <th>Update</th>
       </tr>
       #for uid, expires, text in c
-	#set lines = max(4, filters.rule_lines(text))
-	<tr valign="top"><form name="form_python_$uid" action="rules"
-	method="get"><td>$uid<input type="hidden" name="uid"
-	value="$uid"></td><td><input type="text" name="expires"
-	value="$expires" size="10"></td><td><textarea cols="80"
-	rows="$lines" name="text">$text</textarea></td><td><input
-	type="checkbox" name="delete"></td><td><input type="submit"
-	value="Update"></td></form></tr>
+        #set lines = max(4, filters.rule_lines(text))
+        <tr valign="top"><form name="form_python_$uid" action="rules"
+        method="get"><td>$uid<input type="hidden" name="uid"
+        value="$uid"></td><td><input type="text" name="expires"
+        value="$expires" size="10"></td><td><textarea cols="80"
+        rows="$lines" name="text">$text</textarea></td><td><input
+        type="checkbox" name="delete"></td><td><input type="submit"
+        value="Update"></td></form></tr>
       #end for
       <tr valign="top"><form action="rules" method="get"><td><input
       type="hidden" name="uid" value="new"></td><td><input type="text"
@@ -110,7 +119,7 @@
 
     <table>
       <tr>
-	<th class="nonsort">Variable</th><th class="nonsort">Description</th>
+        <th class="nonsort">Variable</th><th class="nonsort">Description</th>
       </tr>
       <tr class="odd"><td>feed_title</td><td>Title of the feed</td></tr>
       <tr class="even"><td>title</td><td>Title of the article</td></tr>
