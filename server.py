@@ -1,6 +1,6 @@
 #!/usr/local/bin/python
 # $Id$
-import sys, os, stat, logging, base64, time, imp, gzip
+import sys, os, stat, logging, base64, time, imp, gzip, imp
 import BaseHTTPServer, SocketServer, cgi, cStringIO, urlparse
 import param, update, filters, util
 
@@ -338,9 +338,8 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
               template_str = template_str.replace(
                 "from %s import %s" % (imported_module, imported_module),
                 "import server\n"
-                "%s = server.tmpl_import('%s').%s" % (imported_module,
-                                              module_class.__module__,
-                                              imported_module))
+                "%s = server.tmpl_import('%s').%s"
+                % (imported_module, module_class.__module__, imported_module))
       # Write our newly compiled template as a python (.py) file.
       f = open(compiled, 'w')
       f.write(template_str)
@@ -477,11 +476,13 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
 # name so we have to create our own import function to override the path
 def tmpl_import(name):
   if os.sep not in name:
-    return __import__(name)
+    try:
+      return __import__(name)
+    except ImportError:
+      return tmpl_import('pages/' + name)
   else:
     dir = os.path.dirname(name)
     modname = os.path.basename(name)
-    import imp
     modfile, pathname, description = imp.find_module(modname, [dir])
     try:
       return imp.load_module('template_' + modname,
