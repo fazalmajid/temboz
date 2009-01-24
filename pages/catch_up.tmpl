@@ -5,9 +5,9 @@
 <head>
 #set $reload = $getVar("reload", 'N')
 #if $reload == 'Y'
-<title>Purge and reload</title>
+  <title>Purge and reload</title>
 #else
-<title>Catch up</title>
+  <title>Catch up</title>
 #end if
 <link rel="stylesheet" type="text/css" href="temboz.css">
 #import update
@@ -19,11 +19,11 @@
 ########################################################################
 #set $referrer = $getVar("referrer", '')
 #if not $referrer
-#if not $referer or 'http://' not in $referer
-#set $referrer = '/feeds'
-#else
-#set $referrer = $referer
-#end if
+  #if not $referer or 'http://' not in $referer
+    #set $referrer = '/feeds'
+  #else
+    #set $referrer = $referer
+  #end if
 #end if
 ########################################################################
 ##
@@ -34,41 +34,42 @@
 #if not getattr(param, 'catch_up_confirm', True) or $getVar("confirm", None)
 #import update
 #if $reload == 'Y'
-#set $status = update.purge_reload($feed_uid)
+  #set $status = update.purge_reload($feed_uid)
 #else
-#set $status = update.catch_up($feed_uid)
+  #set $status = update.catch_up($feed_uid)
 #end if
-#if $status
-</head>
-<body>
-Error: $status
-#else
-<meta http-equiv="refresh" content="0; URL=$referrer">
-</head>
-<body>
-#if $reload == 'Y'
-<b>Purged and reloaded unread articles in <a href="$url">$title</a></b>
-#else
-<b>Caught up with <a href="$url">$title</a></b>
-#end if
-#end if
+  #if $status
+    </head>
+    <body>
+    Error: $status
+  #else
+    <meta http-equiv="refresh" content="0; URL=$referrer">
+    </head>
+    <body>
+    #if $reload == 'Y'
+      <b>Purged and reloaded unread articles in <a href="$url">$title</a></b>
+    #else
+      <b>Caught up with <a href="$url">$title</a></b>
+    #end if
+  #end if
 #else
 </head>
 <body>
 <p class="menu"><a href="view">All unread</a>&nbsp;&nbsp;<a href="feeds">All feeds</a></p>
-<form action="catch_up?reload=$reload&feed_uid=$feed_uid" method="POST">
-<input type="hidden" name="referrer" value="$referrer">
-<input type="hidden" name="confirm" value="yes">
-#if $reload == 'Y':
-<p>This function is useful if you want to test changes to filters or
-transforms.</p>
-<p>Keep in mind for heavy traffic websites the entry you are trying
-to test may no longer be present in the RSS/Atom feed file.</p>
-<p>Please confirm you want to purge and reload unread articles in
-#else
-Please confirm you want to catch up with
-#end if
-<a href="$url">$title</a> <input type="submit" value="Confirm">
+<form method="POST">
+  #echo self.regurgitate_except()
+  <input type="hidden" name="referrer" value="$referrer">
+  <input type="hidden" name="confirm" value="yes">
+  #if $reload == 'Y':
+    <p>This function is useful if you want to test changes to filters or
+    transforms.</p>
+    <p>Keep in mind for heavy traffic websites the entry you are trying
+    to test may no longer be present in the RSS/Atom feed file.</p>
+    <p>Please confirm you want to purge and reload unread articles in
+  #else
+    Please confirm you want to catch up with
+  #end if
+  <a href="$url">$title</a> <input type="submit" value="Confirm">
 </form>
 #end if
 </body>

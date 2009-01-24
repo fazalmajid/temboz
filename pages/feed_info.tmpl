@@ -115,12 +115,13 @@ duplicates.</p>
 ## Display feed URL with option to change it
 ##
 ########################################################################
-<form method="POST" action="feed_info" name="feed_xml">
+<form method="POST" name="feed_xml">
 <table>
 <tr><td>Title:</td><td><input name="feed_title" size="80"
  value="<%=feed_title%>"></td></tr>
 <tr><td><a href="<%=feed_xml%>">Feed</a>:</td>
-<td><input type="hidden" name="feed_uid" value="$feed_uid">
+<td>
+#echo self.regurgitate_except()
 <input name="feed_xml" size="80" value="<%=feed_xml%>"></td></tr>
 #set lines = max(4, len(feed_desc) // 80 + 1)
 <tr><td>Desc:</td><td><textarea cols="80" rows="$lines"
