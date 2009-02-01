@@ -24,6 +24,7 @@ filter_list = [
   degunk.Re('<a href="http://slashdot.org/bookmark.pl.*?</a>'),
   degunk.Re('<a href="http://www.facebook.com/share.php.*?</a>'),
   degunk.Re('<a href="http://www.google.com/bookmarks/mark.*?</a>'),
+  degunk.Re('<p class="addtoany_.*?</p>', re.MULTILINE + re.DOTALL),
   # Feedburner ads
   degunk.Re('<a href[^>]*><img src="http://feeds.feedburner[^>]*></a>'),
   degunk.Re('<p><a href="(http://feeds\\.[^"/>]*/~./)[^"]*">'
