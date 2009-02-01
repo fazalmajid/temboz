@@ -483,6 +483,8 @@ def tmpl_import(name):
   else:
     dir = os.path.dirname(name)
     modname = os.path.basename(name)
+    if modname.startswith('template_'):
+      modname = modname[9:]
     modfile, pathname, description = imp.find_module(modname, [dir])
     try:
       return imp.load_module('template_' + modname,
