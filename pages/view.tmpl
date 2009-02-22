@@ -94,6 +94,7 @@
 <script language="JavaScript">
 hidden = Array();
 #if public
+  #import normalize
   #set img_prefix = 'images/'
   #set overload_threshold = 50
 function webop(op, uid) {
@@ -464,6 +465,12 @@ href="feed_info?feed_uid=$feed_uid" title="" class="source screen" id="feed$uid"
 $since_when
 #if not public
 <a href="edit?uid=$uid" class="screen">edit</a>
+#else
+#set $magic =  '<!--TEMBOZ_ELLIPSIS>'
+#set $content = normalize.balance($content, 50, $magic)
+#if $magic in $content
+#set $content = $content.replace($magic, ' ...') + '<a href="' + link + '">(more after the jump)</a>'
+#end if
 #end if
 <br></div><div class="content" id="content$uid">
 $content

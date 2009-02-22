@@ -287,13 +287,22 @@ block = set(block)
 closing = set(closing)
 
 tag_re = re.compile('(<.*?>)')
-def balance(html):
+def balance(html, limit_words=None, ellipsis=' ...'):
+  word_count = 0
   tokens = tag_re.split(html)
   out = []
   stack = []
   for token in tokens:
     if not token.startswith('<'):
-      out.append(token)
+      if limit_words and word_count > limit_words:
+        break
+      words = token.split()
+      word_count += len(words)
+      if limit_words and word_count > limit_words:
+        crop = limit_words - word_count
+        out.append(' '.join(words[:crop]) + ellipsis)
+      else:
+        out.append(token)
       continue
     if not token.endswith('>'): continue # invalid
     element = token[1:-1].split()[0].lower()
