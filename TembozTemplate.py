@@ -1,4 +1,4 @@
-import time, string, urllib
+import time, string, re, urllib
 from Cheetah.Template import Template
 
 class TembozTemplate(Template):
@@ -33,3 +33,22 @@ class TembozTemplate(Template):
                      if set(name).issubset(self.valid_chars)
                      and name not in ('referer', 'headers')
                      and name not in exclude)
+  def atom_content(self, content):
+    # XXX should strip out tags that are inappropriate in a RSS reader
+    # XXX such as <script>
+    # see:
+    #http://diveintomark.org/archives/2003/06/12/how_to_consume_rss_safely.html
+    return ent_re.sub(ent_sub_xml, content)
+
+# we do not support all HTML entities as only these are defined in XML
+ent_dict_xml = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&apos;'
+  }
+ent_re = re.compile('([&<>"\'\x80-\xff])')
+def ent_sub_xml(m):
+  c = m.groups()[0]
+  return ent_dict_xml.get(c, '&#%d;' % ord(c))
