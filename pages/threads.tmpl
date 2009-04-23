@@ -4,7 +4,7 @@
 #import sys, traceback, pprint
 #set frames = sys._current_frames()
 #set row = 0
-#for thread_id, frame in frames.iteritems():
+#for thread_id, frame in sorted(frames.iteritems()):
 #set row = row + 1
 #if row % 2
 #set color = '#ddd'
