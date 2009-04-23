@@ -21,12 +21,12 @@ sync:
 	-mv feedparser.py feedparser.old
 	wget http://diveintomark.org/projects/feed_parser/feedparser.py
 
-JUI=	spool/jquery.ui-*[0-9]/ui
+JUI=	spool/jquery-ui/development-bundle/ui
 sync-js:
 	vcheck --verbose -d --file etc/vcheck
-	(cd spool; wget -c http://jqueryjs.googlecode.com/svn/trunk/plugins/form/jquery.form.js)
+	(cd spool; wget -N http://jqueryjs.googlecode.com/svn/trunk/plugins/form/jquery.form.js)
 js:
-	cat spool/jquery.ui-*[0-9]/jquery-[0-9]*.js spool/jquery.form.js $(JUI)/ui.core.js  $(JUI)/ui.dialog.js $(JUI)/ui.tabs.js | jsmin > rsrc/temboz.js
+	cat $(JUI)/../jquery-[0-9]*.js spool/jquery.form.js $(JUI)/ui.core.js  $(JUI)/ui.dialog.js $(JUI)/ui.tabs.js spool/superfish-*[0-9]/js/superfish.js | jsmin > rsrc/temboz.js
 	./temboz --kill
 changelog:
 	cvs2cl.pl --tags -g -q
@@ -58,7 +58,7 @@ dist: disttar
 
 distclean:
 	-rm -f core *.pyc *~ pages/*~ *.old pages/*.py pages/*.pyc ChangeLog*
-	-find . -name .\#* -exec rm {} \;
+	-find . -name .\#\* -exec rm {} \;
 	-find . -name .\#~ -exec rm {} \;
 	-rm -f pages/*~
 
