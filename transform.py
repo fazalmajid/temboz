@@ -145,4 +145,7 @@ filter_list = [
   degunk.Re(r'<img[^>]*src="http://stats.wordpress.com.*?>'),
   degunk.Re(r'\s*<hr[^>]*>\s*<p>\s*<a href="http://t.gigaom.com/.*?</p>',
             re.MULTILINE + re.DOTALL),
+  # Coding Horror
+  degunk.Re(r'<table>.*?\[advertisement\].*?</table>',
+            re.MULTILINE + re.DOTALL),
   ]
