@@ -287,9 +287,8 @@ if not c.fetchone()[0]:
 # we have to recreate this view each time as param.decay may have changed
 c.execute("select sql from sqlite_master where name='v_feeds_snr'")
 sql = c.fetchone()
-if sql:
-  c.execute('drop view v_feeds_snr')
-c.execute("""create view v_feeds_snr as
+if not sql:
+  c.execute("""create view v_feeds_snr as
 select feed_uid, feed_title, feed_html, feed_xml,
 min(julianday('now') - item_modified) as last_modified,
 sum(case when item_rating=1 then 1 else 0 end) as interesting,
@@ -309,4 +308,4 @@ from fm_feeds left outer join (
 ) on feed_uid=item_feed_uid
 group by feed_uid, feed_title, feed_html, feed_xml""" %
           getattr(param, 'decay', 30))
-db.commit()  
+  db.commit()  
