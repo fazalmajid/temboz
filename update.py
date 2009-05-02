@@ -354,7 +354,9 @@ def increment_errors(db, c, feed_uid):
   errors, feed_title = c.fetchone()
   max_errors = getattr(param, 'max_errors', 100)
   if max_errors != -1 and errors > max_errors:
-    # XXX we should generate a service announcement item if this happens
+    notification(db, c, feed_uid, 'Service notification',
+                 'This feed was suspended because Temboz encountered '
+                 + str(errors) + ' consecutive errors')
     print >> param.log, 'EEEEE too many errors, suspending feed', feed_title
     c.execute("update fm_feeds set feed_status = 1 where feed_uid=?",
               [feed_uid])
@@ -499,6 +501,23 @@ Returns a tuple (number of items added unread, number of filtered items)"""
       where feed_uid=?""", [f['oldest'], feed_uid])
   
   return (num_added, num_filtered)
+
+def notification(db, c, feed_uid, title, content):
+  """Insert a service notification, e.g. to notify before a feed is disabled
+  due to too many errors"""
+  hash = md5.new(content).hexdigest()
+  guid = 'temboz://%s/%s' % (feed_uid, hash)
+  # do nothing if the link is clicked
+  link = 'javascript:void(nil);'
+  c.execute("""insert into fm_items (item_feed_uid, item_guid,
+  item_created, item_modified, item_viewed, item_link, item_md5hex,
+  item_title, item_content, item_creator, item_rating, item_rule_uid)
+  values
+  (?, ?, julianday('now'), julianday('now'), NULL, ?, ?,
+  ?, ?, ?, 0, NULL)""",
+            [feed_uid, guid, link, hash,
+             title, content, 'Temboz notifications'])
+  db.commit()
 
 def snr_mv(db, c):
   """SQLite does not have materialized views, so we use a conventional table
@@ -656,13 +675,13 @@ def cleanup(db=None, c=None):
   from singleton import sqlite_cli
   if getattr(param, 'garbage_contents', False):
     c.execute("""update fm_items set item_content=''
-    where item_rating<0 and item_created<julianday('now')-?""",
+    where item_rating < 0 and item_created < julianday('now')-?""",
               [param.garbage_contents])
     db.commit()
   if getattr(param, 'garbage_items', False):
     c.execute("""delete from fm_items where item_uid in (
       select item_uid from fm_items, fm_feeds
-      where item_created<min(julianday('now')-?, feed_oldest-7)
+      where item_created < min(julianday('now')-?, feed_oldest-7)
       and item_rating<0 and feed_uid=item_feed_uid)""", [param.garbage_items])
     db.commit()
   snr_mv(db, c)
@@ -694,7 +713,7 @@ def cleanup(db=None, c=None):
         except OSError:
           pass
   
-def update():
+def update(where_clause=''):
   from singleton import db
   c = db.cursor()
   # refresh filtering rules
@@ -711,7 +730,8 @@ def update():
     workers[-1].start()
   # assign work
   c.execute("""select feed_uid, feed_xml, feed_etag, feed_dupcheck,
-  strftime('%s', feed_modified) from fm_feeds where feed_status=0""")
+  strftime('%s', feed_modified) from fm_feeds where feed_status=0 """
+            + where_clause)
   for feed_uid, feed_xml, feed_etag, feed_dupcheck, feed_modified in c:
     if feed_modified:
       feed_modified = float(feed_modified)
