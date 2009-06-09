@@ -33,7 +33,8 @@ if __name__ == '__main__':
   import util
   opts, args = getopt.getopt(
     sys.argv[1:], 'vh',
-    ['refresh', 'server', 'import=', 'kill', 'help', 'clean', 'cleanup'])
+    ['refresh', 'resync', 'server', 'import=', 'kill', 'help',
+     'clean', 'cleanup'])
   if opts == []:
     # try to detect if we are being called as a CGI script
     cgi_ver = os.getenv('GATEWAY_INTERFACE')
@@ -49,6 +50,13 @@ if __name__ == '__main__':
       import update
       try:
         update.update()
+      except:
+        util.print_stack()
+        sys.exit(1)
+    if opt == '--resync':
+      import update
+      try:
+        update.update('and feed_errors > 0')
       except:
         util.print_stack()
         sys.exit(1)
