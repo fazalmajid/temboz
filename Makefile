@@ -19,7 +19,7 @@ init:
 
 sync:
 	-mv feedparser.py feedparser.old
-	wget http://diveintomark.org/projects/feed_parser/feedparser.py
+	wget http://feedparser.googlecode.com/svn/trunk/feedparser/feedparser.py
 
 JUI=	spool/jquery-ui/development-bundle/ui
 sync-js:
@@ -50,6 +50,7 @@ cvsdist disttar:: distclean changelog
 	# expurgate password
 	sed -e 's/auth_dict.=.*/auth_dict = {"login": "password"}/g' param.py > temboz-$(VERSION)/param.py
 	gtar zcvf temboz-$(TAR_VERSION).tar.gz temboz-$(VERSION)
+	zip -9r temboz-$(TAR_VERSION).zip temboz-$(VERSION)
 	-rm -rf temboz-$(VERSION)
 	-mv temboz-$(TAR_VERSION).tar.gz ../mylos/data/stories/2004/03/29
 
