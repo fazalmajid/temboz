@@ -205,11 +205,25 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
       mimeinfo = self.headers.__str__() + \
                  self.rfile.read(int(self.headers['content-length']))
       (query_list, self.attach_list) = self.read_mime_query_list(mimeinfo)
+      self.input.update(dict(query_list))
     else:
       istr = self.rfile.read(int(self.headers['content-length']))
-      # parse_qsl does not comply with RFC 3986, we have to add a UTF-8 decode
-      query_list = [(n, v.decode('UTF-8')) for n, v in cgi.parse_qsl(istr, 1)]
-    self.input.update(dict(query_list))
+      for name, value in cgi.parse_qsl(istr, 1):
+        # RFC3986 is the normative reference for urlencoded strings such
+        # as those sent in the default form encoding
+        # application/x-www-form-urlencoded
+        # RFC3986 specifies characters have to be encoded using UTF-8
+        # Unfortunately some older browsers encode as ISO-8859-1 instead
+        # (more likely Windows-1252), e.g. Firefox with the setting
+        # network.standard-url.encode-query-utf8=false (still the case as of
+        # Firefox 3.5, unfortunately), see Bugzilla bug 333859
+        # We will first attempt to decode using the RFC3986 standard, and if
+        # an exception is thrown, fall back to Windows-1252
+        try:
+          value = value.decode('UTF-8')
+        except UnicodeDecodeError:
+          value = value.decode('Windows-1252')
+        self.input[name] = value
 
   def do_POST(self):
     try:
