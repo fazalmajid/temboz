@@ -274,3 +274,12 @@ def del_kw_rule(db, c, rule_uid=None, **kwargs):
   where item_rule_uid=? and item_content!=''""", [rule_uid])
   c.execute('delete from fm_rules where rule_uid=?', [rule_uid])
   invalidate()
+
+def exempt_feed_retroactive(db, c, feed_uid, **kwargs):
+  """Retroactively unfilter a feed that is exempted from filtering"""
+  c.execute("""update fm_items
+  set item_rating=0, item_rule_uid=NULL
+  where item_feed_uid=? and item_content!='' and exists (
+    select rule_uid from fm_rules
+    where rule_feed_uid is null and item_rule_uid=rule_uid
+  )""", [feed_uid])

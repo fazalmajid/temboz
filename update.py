@@ -211,6 +211,8 @@ def update_feed_exempt(feed_uid, exempt):
   try:
     c.execute("update fm_feeds set feed_exempt=? where feed_uid=?",
               [exempt, feed_uid])
+    if exempt:
+      filters.exempt_feed_retroactive(db, c, feed_uid)
     db.commit()
   finally:
     c.close()
@@ -455,6 +457,11 @@ Returns a tuple (number of items added unread, number of filtered items)"""
         l = bool(c.fetchone()[0])
         if l:
           print >> param.log, 'DUPLICATE TITLE', title
+      # XXX Runt items (see normalize.py) are almost always spurious, we just
+      # XXX skip them, although we may revisit this decision in the future
+      if not l and item.get('RUNT', False):
+        print >> param.log, 'RUNT ITEM', item
+        l = True
     # GUID already exists, this is a change
     else:
       assert len(l) == 1
