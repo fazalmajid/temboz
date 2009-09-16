@@ -151,6 +151,8 @@ class PythonRule(Rule):
       except KeyError:
         pass
     filter_dict.update(item)
+    # for backward compatibility, see normalize.py
+    filter_dict['category'] = filter_dict['item_tags']
     # used to filter echos from sites like Digg
     filter_dict['link_already'] = link_already
     # convenient shortcut functions

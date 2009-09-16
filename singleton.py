@@ -284,6 +284,21 @@ if not c.fetchone()[0]:
   db.commit()  
   print >> param.log, 'done.'
 
+c.execute("""select count(*) from sqlite_master
+where name='fm_tags'""")
+if not c.fetchone()[0]:
+  print >> param.log, 'WARNING: creating table fm_tags...',
+  c.execute("""create table fm_tags (
+	tag_name        varchar(64) not null,
+	tag_item_uid    integer not null
+	references      fm_items (item_uid) on delete cascade,
+	tag_by          integer default 0
+	check (tag_by between 0 and 2),
+	primary key(tag_name, tag_item_uid, tag_by)
+  )""")
+  db.commit()  
+  print >> param.log, 'done.'
+
 # we have to recreate this view each time as param.decay may have changed
 c.execute("select sql from sqlite_master where name='v_feeds_snr'")
 sql = c.fetchone()

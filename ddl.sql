@@ -23,8 +23,8 @@ create table fm_feeds (
 create table fm_items (
 	item_uid	integer primary key,
 	item_guid	varchar(255),
-	item_feed_uid	integer,
-	-- references fm_feeds (feed_uid) on delete cascade,
+	item_feed_uid	integer
+	references fm_feeds (feed_uid) on delete cascade,
 	item_loaded	timestamp,
 	item_created	timestamp,
 	item_modified	timestamp,
@@ -34,10 +34,12 @@ create table fm_items (
 	item_title	text,
 	item_content	text,
 	item_creator	varchar(255),
-	item_rating	default 0,
-	item_item_uid	int, -- to cluster related items together
-	item_rule_uid	integer,
-	-- references fm_rules (rule_uid) on delete cascade,
+	-- 1=interesting, 0=unread, -1=uninteresting, -2=filtered
+	item_rating	integer default 0
+	check (item_rating between -2 and +1),
+	item_item_uid	integer, -- to cluster related items together
+	item_rule_uid	integer
+	references fm_rules (rule_uid) on delete cascade
 );
 
 create trigger update_timestamp after insert on fm_items
@@ -54,10 +56,20 @@ create index item_title_i on fm_items(item_feed_uid, item_title);
 create table fm_rules (
 	rule_uid	integer primary key,
 	rule_type	varchar(16) not null default 'python',
-	rule_feed_uid	integer,
-	-- references fm_feeds (feed_uid) on delete cascade,
+	rule_feed_uid	integer
+	references fm_feeds (feed_uid) on delete cascade,
 	rule_expires	timestamp,
 	rule_text	text
+);
+
+create table fm_tags (
+	tag_name	varchar(64) not null,
+	tag_item_uid	integer not null
+	references fm_items (item_uid) on delete cascade,
+	-- 0=by the feed, 1=by the user, 2=by an algorithm
+	tag_by		integer default 0
+	check (tag_by between 0 and 2),
+	primary key(tag_name, tag_item_uid, tag_by)
 );
 
 create view top20 as

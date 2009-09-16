@@ -270,6 +270,11 @@ def purge_reload(feed_uid):
   try:
     c.execute("delete from fm_items where item_feed_uid=? and item_rating=0",
               [feed_uid])
+    c.execute("""delete from fm_tags
+    where exists (
+      select item_uid from fm_items
+      where item_uid=tag_item_uid and item_feed_uid=? and item_rating=0
+    )""", [feed_uid])
     c.execute("""update fm_feeds set feed_modified=NULL, feed_etag=NULL
     where feed_uid=?""", [feed_uid])
     c.execute("select feed_xml from fm_feeds where feed_uid=?", [feed_uid])
@@ -475,6 +480,7 @@ Returns a tuple (number of items added unread, number of filtered items)"""
         else:
           f['oldest_ts'] = min(f['oldest_ts'], item_created)
       # XXX update item here
+      # XXX update tags if required
     # GUID doesn't exist yet, insert it
     if not l:
       # finally, dereference the URL to get rid of annoying tracking servers
@@ -489,6 +495,17 @@ Returns a tuple (number of items added unread, number of filtered items)"""
                   [feed_uid, guid, created, modified, link,
                    md5.new(content).hexdigest(),
                    title, content, author, skip, filtered_by])
+        # if we have tags, insert them
+        # note: feedparser.py handles 'category' as a special case, so we
+        # need to work around that to get to the data
+        if item['item_tags']:
+          c.execute("""select item_uid
+          from fm_items where item_feed_uid=? and item_guid=?""",
+                    [feed_uid, guid])
+          item_uid = c.fetchone()[0]
+          for tag in item['item_tags']:
+            c.execute("""insert into fm_tags (tag_name, tag_item_uid)
+            values (?, ?)""", [tag, item_uid])
         if skip:
           num_filtered += 1
           print >> param.log, 'SKIP', title, rule
@@ -692,6 +709,11 @@ def cleanup(db=None, c=None):
       and item_rating<0 and feed_uid=item_feed_uid)""", [param.garbage_items])
     db.commit()
   snr_mv(db, c)
+  c.execute("""delete from fm_tags
+  where not exists(
+    select item_uid from fm_items where item_uid=tag_item_uid
+  )""")
+  db.commit()
   c.execute('vacuum')
   # we still hold the PseudoCursor lock, this is a good opportunity to backup
   try:

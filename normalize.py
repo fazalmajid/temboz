@@ -451,12 +451,14 @@ def normalize(item, f, run_filters=True):
   #
   # The RSS 2.0 specification allows items not to have a link if the entry
   # is complete in itself
+  # that said this is almost always spurious, so we filter it below
   if 'link' not in item:
     item['link'] = f['channel']['link']
     # We have to be careful not to assign a default URL as the GUID
     # otherwise only one item will ever be recorded
     if 'id' not in item:
       item['id'] = 'HASH_CONTENT'
+      item['RUNT'] = True
   if type(item['link']) == unicode:
     item['link'] = str(item['link'])
   if type(item['link']) != str:
@@ -531,11 +533,14 @@ def normalize(item, f, run_filters=True):
   # strip embedded NULs as a defensive measure
   content = content.replace('\0', '')
   # apply ad filters and other degunking to content
-  try:
-    for filter in transform.filter_list:
-      content = filter.apply(content, f, item)
-  except:
-    util.print_stack(black_list=['item'])
+  old_content = None
+  while old_content != content:
+    old_content = content
+    try:
+      for filter in transform.filter_list:
+        content = filter.apply(content, f, item)
+    except:
+      util.print_stack(black_list=['item'])
   # balance tags like <b>...</b>
   content = balance(content)
   content_lc = lower(content)
@@ -556,10 +561,13 @@ def normalize(item, f, run_filters=True):
   item['urls'] = url_re.findall(content)
   ########################################################################
   # categories/tags
+  # we used 'category' before, but 'category' and 'categories' are
+  # intercepted by feedparser.FeedParserDict.__getitemm__ and treated as
+  # special case
   if 'tags' in item and type(item['tags']) == list:
-    item['category'] = set([t['term'].lower() for t in item['tags']])
+    item['item_tags'] = set([t['term'].lower() for t in item['tags']])
   else:
-    item['category'] = []
+    item['item_tags'] = []
   ########################################################################
   # map unicode
   for key in ['title', 'link', 'created', 'modified', 'author', 'content']:
