@@ -294,7 +294,7 @@ if not c.fetchone()[0]:
 	references      fm_items (item_uid) on delete cascade,
 	tag_by          integer default 0
 	check (tag_by between 0 and 2),
-	primary key(tag_name, tag_item_uid, tag_by)
+	primary key(tag_item_uid, tag_name, tag_by)
   )""")
   db.commit()  
   print >> param.log, 'done.'

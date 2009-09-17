@@ -69,7 +69,7 @@ create table fm_tags (
 	-- 0=by the feed, 1=by the user, 2=by an algorithm
 	tag_by		integer default 0
 	check (tag_by between 0 and 2),
-	primary key(tag_name, tag_item_uid, tag_by)
+	primary key(tag_item_uid, tag_name, tag_by)
 );
 
 create view top20 as
