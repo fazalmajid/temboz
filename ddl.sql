@@ -71,6 +71,7 @@ create table fm_tags (
 	check (tag_by between 0 and 2),
 	primary key(tag_item_uid, tag_name, tag_by)
 );
+create index fm_tags_name_i on fm_tags (tag_name);
 
 create view top20 as
   select

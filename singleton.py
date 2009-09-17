@@ -296,6 +296,7 @@ if not c.fetchone()[0]:
 	check (tag_by between 0 and 2),
 	primary key(tag_item_uid, tag_name, tag_by)
   )""")
+  c.execute('create index fm_tags_name_i on fm_tags (tag_name)')
   db.commit()  
   print >> param.log, 'done.'
 
