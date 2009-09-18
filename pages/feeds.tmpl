@@ -6,8 +6,11 @@
 <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
 <link rel="stylesheet" type="text/css" href="temboz.css">
 </head>
-<body>
-<p class="menu"><a href="view">All unread</a>&nbsp;&nbsp;<a href="add">Add feed</a>&nbsp;&nbsp;<a href="opml">as OPML</a>&nbsp;&nbsp;<a href="rules">Filtering</a> <span class="help"><a href="http://www.temboz.com/temboz/wiki?p=AllFeedsPage" target="_blank">Help</a></span></p>
+<body class="unpadded">
+<div class="menu"><a href="view">All unread</a>&nbsp;&nbsp;<a href="add">Add
+feed</a>&nbsp;&nbsp;<a href="opml">as OPML</a>&nbsp;&nbsp;<a
+href="rules">Filtering</a> <span class="help"><a
+href="http://www.temboz.com/temboz/wiki?p=AllFeedsPage" target="_blank">Help</a></span></div>
 #set sort_key = $getVar('sort', '(unread > 0) DESC, snr')
 #if sort_key == 'feed_title'
 #set sort_key = 'lower(feed_title)'
@@ -22,7 +25,7 @@
 from v_feeds_snr order by feed_status ASC, """ \
     + sort_key + ' ' + order + """, lower(feed_title)""")
 <table>
-<tr>
+<tr class="header">
 ########################################################################
 ##
 ## Produce column headings with appropriate sort order

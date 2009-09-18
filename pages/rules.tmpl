@@ -11,10 +11,10 @@
     <script language="JavaScript" src="temboz.js"></script>
     $rule_head
   </head>
-  <body>
-    <p class="menu"><a href="view">All unread</a>&nbsp;&nbsp;<a
+  <body class="unpadded>
+    <div class="menu"><a href="view">All unread</a>&nbsp;&nbsp;<a
     href="view?show=filtered">All filtered</a>&nbsp;&nbsp;<a href="feeds">All
-    feeds</a></p>
+    feeds</a></div>
 
     #if $getVar("uid", None)
       #set $status = filters.update_rule(db, c, $uid, $expires, $text,

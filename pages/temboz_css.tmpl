@@ -20,7 +20,7 @@ body.unpadded {
   right: 0px;
   padding:0px;
   margin:0px;
-  margin-top: 1cm;
+  margin-top: 3em;
 }
 a.headline {
   font-size:12pt;
@@ -86,6 +86,21 @@ div.overlay .opaque {
 span.filter-highlight {
   background-color: #fcc;
 }
+div.tag_info {
+  display: none;
+}
+span.item_tag {
+  background-color: #bfff80;
+  padding-left: 1ex;
+  padding-right: 1ex;
+  -moz-border-radius: 1ex;
+  -webkit-border-radius: 1ex;
+  border-radius: 1ex;
+}
+span.item_tag.highlighted {
+  color: white;
+  background-color: red;
+}
 ########################################################################
 ## SCREEN ONLY
 #if $media == 'screen'
@@ -95,28 +110,21 @@ span.buttons {float: right}
 ## work-around IE
 body>div.menu {
   position: fixed;
-  height: 1cm;
+  height: 2em;
 }
 div.menu {
-  padding: 0px;
+  padding: .5em;
   top: 0; left: 0; width: 100%;
-  background: #BFFF80;
+  background: #bfff80;
   z-index: 2;
 }
-p.menu {
-  margin-top: 5px;
-  margin-bottom: 0px;
-  margin-left: 0px;
-  margin-right: 0px;
-  background: #BFFF80;
-  width: 100%;
-}
-p.menu span.help {
+div.menu span.help {
   position: absolute;
-  right: 10px;
+  right: 2em;
 }
 form.inline {
   display: inline;
+  margin-bottom: 0px;
 }
 body.unpadded p.menu {
   padding-top: 0px;

@@ -6,8 +6,9 @@
 <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
 <link rel="stylesheet" type="text/css" href="temboz.css">
 </head>
-<body>
-<p class="menu"><a href="view">All unread</a>&nbsp;&nbsp;<a href="feeds">All feeds</a></p>
+<body class="unpadded">
+<div class="menu"><a href="view">All unread</a>&nbsp;&nbsp;<a
+href="feeds">All feeds</a></div>
 
 Subscribe to a RSS feed:<br>
 <form action="add" method="POST">
@@ -42,7 +43,7 @@ you need to find a valid feed URL.</p>
 #except urllib2.URLError, e
 <p>Error loading URL during autodiscovery attempt:<p>
 <pre>
-<%=e.args[0]%>
+<%=e%>
 </pre>
 #except update.UnknownError, e
 <p>Unknown error:<p>

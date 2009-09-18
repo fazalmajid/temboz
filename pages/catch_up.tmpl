@@ -54,8 +54,9 @@
   #end if
 #else
 </head>
-<body>
-<p class="menu"><a href="view">All unread</a>&nbsp;&nbsp;<a href="feeds">All feeds</a></p>
+<body class="unpadded">
+<div class="menu"><a href="view">All unread</a>&nbsp;&nbsp;<a
+href="feeds">All feeds</a></div>
 <form method="POST">
   #echo self.regurgitate_except()
   <input type="hidden" name="referrer" value="$referrer">

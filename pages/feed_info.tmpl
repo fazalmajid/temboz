@@ -8,9 +8,51 @@
 <script language="JavaScript" src="temboz.js"></script>
 $rule_head
 </head>
-<body>
-<p class="menu"><a href="view">All unread</a>&nbsp;&nbsp;<a href="add">Add feed</a>&nbsp;&nbsp;<a href="feeds">All feeds</a> <span class="help"><a href="http://www.temboz.com/temboz/wiki?p=FeedDetailsPage" target="_blank">Help</a></span></p>
+<body class="unpadded">
+<div class="menu"><a href="view">All unread</a>&nbsp;&nbsp;<a href="add">Add
+feed</a>&nbsp;&nbsp;<a href="feeds">All feeds</a> <span class="help"><a
+href="http://www.temboz.com/temboz/wiki?p=FeedDetailsPage"
+target="_blank">Help</a></span></div>
 #set $feed_uid = $getVar('feed_uid')
+########################################################################
+##
+## Suspend or activate feed, mark it private/public or set duplicate title
+## checking if requested
+##
+########################################################################
+#if $getVar('change_op', None)
+#if $getVar('change_op') == 'Activate'
+<% status = 0 %>
+<% update.set_status(feed_uid, status) %>
+#elif $getVar('change_op') == 'Suspend'
+<% status = 1 %>
+<% update.set_status(feed_uid, status) %>
+#elif $getVar('change_op') == 'Private'
+<% private = 1 %>
+<% update.update_feed_private(feed_uid, private) %>
+#elif $getVar('change_op') == 'Public'
+<% private = 0 %>
+<% update.update_feed_private(feed_uid, private) %>
+#elif $getVar('change_op') == 'Dupcheck'
+<% dupcheck = 1 %>
+<% update.update_feed_dupcheck(feed_uid, dupcheck) %>
+#elif $getVar('change_op') == 'NoDupcheck'
+<% dupcheck = 0 %>
+<% update.update_feed_dupcheck(feed_uid, dupcheck) %>
+#elif $getVar('change_op') == 'Exempt'
+<% exempt = 1 %>
+<% update.update_feed_exempt(feed_uid, exempt) %>
+#elif $getVar('change_op') == 'Reinstate'
+<% exempt = 0 %>
+<% update.update_feed_exempt(feed_uid, exempt) %>
+#end if
+#end if
+
+########################################################################
+##
+## Get feed statistics
+##
+########################################################################
 #from singleton import db
 #import time, pprint, update, filters
 #set c = db.cursor()
@@ -108,7 +150,7 @@ duplicates.</p>
 #end try
 #end if
 
-<h1><a href="<%=feed_html%>"><%=feed_title%></a></h2>
+<h1><a href="<%=feed_html%>"><%=feed_title%></a></h1>
 
 ########################################################################
 ##
@@ -148,39 +190,6 @@ name="feed_filter"><%=feed_filter%></textarea></td></tr>
 <tr class="even"><td>Hit ratio</td><td align="right">$ratio %</td></tr>
 <tr class="odd"><td>Errors</td><td align="right"><%=feed_errors%></td></tr>
 
-########################################################################
-##
-## Suspend or activate feed, mark it private/public or set duplicate title
-## checking if requested
-##
-########################################################################
-#if $getVar('change_op', None)
-#if $getVar('change_op') == 'Activate'
-<% status = 0 %>
-<% update.set_status(feed_uid, status) %>
-#elif $getVar('change_op') == 'Suspend'
-<% status = 1 %>
-<% update.set_status(feed_uid, status) %>
-#elif $getVar('change_op') == 'Private'
-<% private = 1 %>
-<% update.update_feed_private(feed_uid, private) %>
-#elif $getVar('change_op') == 'Public'
-<% private = 0 %>
-<% update.update_feed_private(feed_uid, private) %>
-#elif $getVar('change_op') == 'Dupcheck'
-<% dupcheck = 1 %>
-<% update.update_feed_dupcheck(feed_uid, dupcheck) %>
-#elif $getVar('change_op') == 'NoDupcheck'
-<% dupcheck = 0 %>
-<% update.update_feed_dupcheck(feed_uid, dupcheck) %>
-#elif $getVar('change_op') == 'Exempt'
-<% exempt = 1 %>
-<% update.update_feed_exempt(feed_uid, exempt) %>
-#elif $getVar('change_op') == 'Reinstate'
-<% exempt = 0 %>
-<% update.update_feed_exempt(feed_uid, exempt) %>
-#end if
-#end if
 ########################################################################
 ##
 ## Display feed flags with option to change it

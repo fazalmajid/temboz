@@ -1,5 +1,5 @@
 ## -*- html -*-
-#extends TembozTemplate
+#extends menubar
 #implements respond
 ########################################################################
 ##
@@ -119,7 +119,7 @@ function get_selection() {
   }
   return jQuery.trim(userSelection);
 }
-function kw_dialog(id, kw) {
+function kw_dialog(id, kw, context) {
   var tmpl = \$("div#kw_form_tmpl");
   var body = '<div title="Add a keyword rule">' + tmpl.html() + '</div>';
   body = body.replace(/__item_uid__/, id);
@@ -142,8 +142,24 @@ function kw_dialog(id, kw) {
 ##      background: "black"
 ##    }
   }).find(":text").val(kw);
+  \$('.ui-dialog-content select[name="match"]').change(function() {
+    if(\$(this).val() == "tag") {
+      \$('.ui-dialog-content select[name="target"]').hide();
+    } else {
+      \$('.ui-dialog-content select[name="target"]').show();
+    }
+  })
   if(kw.search(" ") != -1 || kw.search("-") != -1) {
-    \$('.ui-dialog-content select[@name="match"]').val('phrase_lc');
+    \$('.ui-dialog-content select[name="match"]').val('phrase_lc');
+  }
+  if(context) {
+    if(context == "tag") {
+      \$('.ui-dialog-content select[name="match"]').val(context);
+      \$('.ui-dialog-content select[name="target"]').hide();
+      \$('.ui-dialog-content :checkbox').val(["feed_only"]);
+    } else if(context == "title") {
+      \$('.ui-dialog-content select[name="target"]').val(context);
+    }
   }
 }
 ## hide tag layer until it is ready
@@ -157,9 +173,18 @@ function hide(id) {
       elt.taglayer.style.display = "none";
     }
   } else {
-    var kw = $.trim(get_selection());
-    if(kw!="") {
-      kw_dialog(id, kw);
+    var kw = \$.trim(get_selection());
+    if(kw!="" && elt.innerHTML.indexOf(kw)!=-1) {
+      if (\$(elt).find("a.headline").html().indexOf(kw)!=-1) {
+        kw_dialog(id, kw, "title");
+      } else {
+        kw_dialog(id, kw);
+      }
+    } else {
+      var tags = \$(elt).find("span.item_tag.highlighted").html();
+      if(tags) {
+        kw_dialog(id, tags, 'tag');
+      }
     }
     hidden[hidden.length] = elt;
     elt.style.display = "none";
@@ -176,6 +201,15 @@ function collapseToggle(id) {
     document.getElementById('ctarrow' + id).innerHTML = '<img width="14" height="14" alt="hidden" src="<%=img_prefix%>a_dn.gif" />&nbsp;';
   }
 }
+function toggle_tags(id) {
+  \$("div#tags_" + id).toggle();
+}
+function toggle_tag() {
+  \$(this).toggleClass("highlighted");
+}
+\$(document).ready(function() {
+  \$("span.item_tag").click(toggle_tag);
+});
 function highlight(id) {
   var elt = document.getElementById('art' + id);
   elt.style.backgroundColor = "yellow";
@@ -310,7 +344,7 @@ limit ? offset ?)""", params + [overload_threshold, offset])
 #set count = 0
 #if not mobile
 <div id="menu" class="menu">
-<p class="menu">$num_items 
+$num_items 
 #if not public
 <span><form id="show_select" class="inline" method="GET">
   #echo self.regurgitate_except('show')
@@ -364,9 +398,9 @@ $item_desc
     <input type="submit" value="Search">
   </form>
 </span>
-</p>
 #end if
 </div>
+##$menubar
 #else
 #set overload_threshold = 50
 #end if
@@ -383,6 +417,7 @@ $item_desc
       <option value="all">All words</option>
       <option value="phrase_lc">Phrase</option>
       <option value="phrase">Phrase (case-sensitive)</option>
+      <option value="tag">Tag</option>
       </select></td></tr>
       <tr><td>Match on</td><td><select name="target">
       <option value="union" selected>Title or content</option>
@@ -402,6 +437,19 @@ $item_desc
 ##
 ## Fetch overload_threshold (default 200) items
 ##
+########################################################################
+#set tag_dict = {}
+#silent c.execute("""select tag_item_uid, tag_name, tag_by
+from  fm_tags, (
+  select item_uid from fm_items, fm_feeds
+  where item_feed_uid=feed_uid
+  and """ + where_clause + ' and feed_private = 0' * public + """
+  order by item_created DESC, item_uid DESC
+  limit ? offset ?)
+where tag_item_uid=item_uid""", params + [overload_threshold, offset])
+#for item_uid, tag_name, tag_by in c
+#silent tag_dict.setdefault(item_uid, []).append(tag_name)
+#end for
 ########################################################################
 #silent c.execute("""select item_uid, item_creator, item_title, item_link,
 item_content, datetime(item_loaded), date(item_created), feed_uid,
@@ -455,6 +503,15 @@ limit ? offset ?""", params + [overload_threshold, offset])
     #set content = content + '<br><p>Filtered by feed-specific Python rule</p>'
   #end if
 #end if
+#if $uid in tag_dict
+## XXX should probably escape the Unicode here
+#set $tag_info = ' '.join('<span class="item_tag">%s</span>' % t for t in tag_dict[$uid])
+#set $tag_info = '<div class="tag_info" id="tags_%s">' % $uid + $tag_info + '</div>'
+#set $tag_call = '<a href="javascript:toggle_tags(%s);">tags</a>' % $uid
+#else
+#set $tag_info = ''
+#set $tag_call = '(no tags)'
+#end if
 <div class="article" id="art$uid"><div class="headline"><span
 class="buttons"><img width="32" height="32" alt="down"
 src="<%=img_prefix%>down.gif" class="down" onclick="hide('$uid')"
@@ -463,6 +520,7 @@ onclick="highlight('$uid')" /></span><span class="ctarrow" id="ctarrow$uid" oncl
 target="_blank" title="by $creator, cached at $loaded">$title</a><br><a
 href="feed_info?feed_uid=$feed_uid" title="" class="source screen" id="feed$uid">$feed_title</a><a href="$feed_html" title="" class="source print" id="feedprint$uid">$feed_title</a>
 $since_when
+$tag_call
 #if not public
 <a href="edit?uid=$uid" class="screen">edit</a>
 #else
@@ -472,7 +530,7 @@ $since_when
 #set $content = $content.replace($magic, ' ...') + '<a href="' + link + '">(more after the jump)</a>'
 #end if
 #end if
-<br></div><div class="content" id="content$uid">
+<br></div>$tag_info<div class="content" id="content$uid">
 $content
 </div>
 #if getattr(param, 'thumbs_bottom', False)

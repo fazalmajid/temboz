@@ -28,6 +28,10 @@ class Rule:
     return self.__str__()
   def check_expires(self):
     return self.expires and time.time() > self.expires
+  def highlight_title(self, html):
+    return html
+  def highlight_content(self, html):
+    return html
 
 class KeywordRule(Rule):
   def __init__(self, uid, expires, rule, rtype):
@@ -79,6 +83,20 @@ class KeywordRule(Rule):
     if self.target == 'content':
       return  self.highlight(html)
     return html
+
+class TagRule(Rule):
+  def __init__(self, uid, expires, rule):
+    Rule.__init__(self, uid, expires)
+    self.rule = rule
+  def __str__(self):
+    return '<TagRule %s %s>' % (self.uid, self.rule)
+  def test(self, item, feed, feed_uid):
+    if self.check_expires():
+      return False
+    return self.rule in item['item_tags']
+  def highlight_content(self, html):
+    return '%s<br><p>Filtered for tag <span class="item_tag highlighted">%s</span></p>' \
+           % (html, self.rule)
 
 ########################################################################
 # functions used inside Python rules
@@ -194,6 +212,9 @@ def load_rules(db, c):
         if rtype == 'python':
           rule = PythonRule(uid, expires, rule)
           container.append(rule)
+        elif rtype == 'tag':
+          rule = TagRule(uid, expires, rule)
+          container.append(rule)
         elif rtype.startswith('union_'):
           # XXX this convention of adding a second rule object with UID -uid
           # XXX is a ugly hack
@@ -250,7 +271,9 @@ def add_kw_rule(db, c, kw=None, item_uid=None, match='word', target='title',
     item_uid = None
 
   if not kw: return
-  if match == 'word':
+  if match == 'tag':
+    words = [normalize.lower(kw)]
+  elif match == 'word':
     words = normalize.get_words(kw)
   elif match == 'all':
     words = [' '.join(normalize.get_words(kw))]
@@ -261,7 +284,10 @@ def add_kw_rule(db, c, kw=None, item_uid=None, match='word', target='title',
   else:
     return
   
-  rule_type = target + '_' + match
+  if match == 'tag':
+    rule_type = 'tag'
+  else:
+    rule_type = target + '_' + match
 
   for word in words:
     print >> param.log, 'ADD_KW_RULES', rule_type, item_uid, word

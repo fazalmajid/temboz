@@ -371,7 +371,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
       # add the module to tmpl_cache
       self.tmpl_cache[page] = module
     else:
-      raise('Error loading compiled template: %s' % compiled,tmpl)
+      raise Exception('Error loading compiled template: %s' % compiled,tmpl)
     return getattr(self.tmpl_cache[page], tmpl)
   
   def use_template(self, tmpl, searchlist):
