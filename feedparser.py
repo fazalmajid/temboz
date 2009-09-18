@@ -523,7 +523,7 @@ class _FeedParserMixin:
                     attrs.append(('xmlns',namespace))
                 if tag=='svg' and namespace=='http://www.w3.org/2000/svg':
                     attrs.append(('xmlns',namespace))
-            if tag == 'svg': self.svgOK = 1
+            if tag == 'svg': self.svgOK += 1
             return self.handle_data('<%s%s>' % (tag, self.strattrs(attrs)), escape=0)
 
         # match namespaces
@@ -559,7 +559,7 @@ class _FeedParserMixin:
         prefix = self.namespacemap.get(prefix, prefix)
         if prefix:
             prefix = prefix + '_'
-        if suffix == 'svg': self.svgOK = 0
+        if suffix == 'svg' and self.svgOK: self.svgOK -= 1
 
         # call special handler (if defined) or default handler
         methodname = '_end_' + prefix + suffix
@@ -1532,6 +1532,24 @@ class _FeedParserMixin:
         value = self.pop('itunes_explicit', 0)
         self._getContext()['itunes_explicit'] = (value == 'yes') and 1 or 0
 
+    def _start_media_content(self, attrsD):
+        context = self._getContext()
+        context.setdefault('media_content', [])
+        context['media_content'].append(attrsD)
+
+    def _start_media_thumbnail(self, attrsD):
+        context = self._getContext()
+        context.setdefault('media_thumbnail', [])
+        self.push('url', 1) # new
+        context['media_thumbnail'].append(attrsD)
+
+    def _end_media_thumbnail(self):
+        url = self.pop('url')
+        context = self._getContext()
+        if url != None and len(url.strip()) != 0:
+            if not context['media_thumbnail'][-1].has_key('url'):
+                context['media_thumbnail'][-1]['url'] = url
+
 if _XML_AVAILABLE:
     class _StrictFeedParser(_FeedParserMixin, xml.sax.handler.ContentHandler):
         def __init__(self, baseuri, baselang, encoding):
@@ -1654,7 +1672,7 @@ class _BaseHTMLProcessor(sgmllib.SGMLParser):
     def feed(self, data):
         data = re.compile(r'<!((?!DOCTYPE|--|\[))', re.IGNORECASE).sub(r'&lt;!\1', data)
         #data = re.sub(r'<(\S+?)\s*?/>', self._shorttag_replace, data) # bug [ 1399464 ] Bad regexp for _shorttag_replace
-        data = re.sub(r'<([^<\s]+?)\s*/>', self._shorttag_replace, data) 
+        data = re.sub(r'<([^<>\s]+?)\s*/>', self._shorttag_replace, data) 
         data = data.replace('&#39;', "'")
         data = data.replace('&#34;', '"')
         if self.encoding and type(data) == type(u''):
@@ -2282,14 +2300,14 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
       'tr', 'tt', 'u', 'ul', 'var', 'video', 'noscript']
 
     acceptable_attributes = ['abbr', 'accept', 'accept-charset', 'accesskey',
-      'action', 'align', 'alt', 'autoplay', 'autocomplete', 'autofocus', 'axis',
+      'action', 'align', 'alt', 'autocomplete', 'autofocus', 'axis',
       'background', 'balance', 'bgcolor', 'bgproperties', 'border',
       'bordercolor', 'bordercolordark', 'bordercolorlight', 'bottompadding',
       'cellpadding', 'cellspacing', 'ch', 'challenge', 'char', 'charoff',
       'choff', 'charset', 'checked', 'cite', 'class', 'clear', 'color', 'cols',
-      'colspan', 'compact', 'contenteditable', 'coords', 'data', 'datafld',
-      'datapagesize', 'datasrc', 'datetime', 'default', 'delay', 'dir',
-      'disabled', 'draggable', 'dynsrc', 'enctype', 'end', 'face', 'for',
+      'colspan', 'compact', 'contenteditable', 'controls', 'coords', 'data',
+      'datafld', 'datapagesize', 'datasrc', 'datetime', 'default', 'delay',
+      'dir', 'disabled', 'draggable', 'dynsrc', 'enctype', 'end', 'face', 'for',
       'form', 'frame', 'galleryimg', 'gutter', 'headers', 'height', 'hidefocus',
       'hidden', 'high', 'href', 'hreflang', 'hspace', 'icon', 'id', 'inputmode',
       'ismap', 'keytype', 'label', 'leftspacing', 'lang', 'list', 'longdesc',
@@ -2404,9 +2422,9 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
 
             # not otherwise acceptable, perhaps it is MathML or SVG?
             if tag=='math' and ('xmlns','http://www.w3.org/1998/Math/MathML') in attrs:
-                self.mathmlOK = 1
+                self.mathmlOK += 1
             if tag=='svg' and ('xmlns','http://www.w3.org/2000/svg') in attrs:
-                self.svgOK = 1
+                self.svgOK += 1
 
             # chose acceptable attributes based on tag class, else bail
             if  self.mathmlOK and tag in self.mathml_elements:
@@ -2451,10 +2469,10 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
             if tag in self.unacceptable_elements_with_end_tag:
                 self.unacceptablestack -= 1
             if self.mathmlOK and tag in self.mathml_elements:
-                if tag == 'math': self.mathmlOK = 0
+                if tag == 'math' and self.mathmlOK: self.mathmlOK -= 1
             elif self.svgOK and tag in self.svg_elements:
                 tag = self.svg_elem_map.get(tag,tag)
-                if tag == 'svg': self.svgOK = 0
+                if tag == 'svg' and self.svgOK: self.svgOK -= 1
             else:
                 return
         _BaseHTMLProcessor.unknown_endtag(self, tag)
