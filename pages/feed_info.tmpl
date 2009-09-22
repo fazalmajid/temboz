@@ -100,13 +100,18 @@ group by feed_uid, feed_title, feed_html, feed_xml
 
 ########################################################################
 ##
-## Change feed title/desc/filter if requested
+## Change feed title/html/desc/filter if requested
 ##
 ########################################################################
 #if $getVar('feed_title', None) and $getVar('feed_title', None) != feed_title
 #silent update.update_feed_title($feed_uid, $getVar('feed_title'))
 <p>Feed title updated successfully.</p>
 #set feed_title = $getVar('feed_title', feed_title)
+#end if
+#if $getVar('feed_html', None) and $getVar('feed_html', None) != feed_html
+#silent update.update_feed_html($feed_uid, $getVar('feed_html'))
+<p>Feed HTML link updated successfully.</p>
+#set feed_html = $getVar('feed_html', feed_html)
 #end if
 #if $getVar('feed_desc', None) and $getVar('feed_desc', None) != feed_desc
 #silent update.update_feed_desc($feed_uid, $getVar('feed_desc'))
@@ -159,17 +164,20 @@ duplicates.</p>
 ########################################################################
 <form method="POST" name="feed_xml">
 <table>
-<tr><td>Title:</td><td><input name="feed_title" size="80"
+<tr><td>Title</td><td><input name="feed_title" size="80"
  value="<%=feed_title%>"></td></tr>
-<tr><td><a href="<%=feed_xml%>">Feed</a>:</td>
+<tr><td><a href="<%=feed_html%>">Site</a></td>
+<td><input name="feed_html" size="80" value="<%=feed_html%>"></td></tr>
+</tr>
+<tr><td><a href="<%=feed_xml%>">Feed</a></td>
 <td>
 #echo self.regurgitate_except()
 <input name="feed_xml" size="80" value="<%=feed_xml%>"></td></tr>
 #set lines = max(4, len(feed_desc) // 80 + 1)
-<tr><td>Desc:</td><td><textarea cols="80" rows="$lines"
+<tr><td>Desc</td><td><textarea cols="80" rows="$lines"
 name="feed_desc"><%=feed_desc%></textarea></td></tr>
 #set lines = max(4, filters.rule_lines(feed_filter))
-<tr><td>Filter:</td><td><textarea cols="80" rows="$lines"
+<tr><td>Filter</td><td><textarea cols="80" rows="$lines"
 name="feed_filter"><%=feed_filter%></textarea></td></tr>
 <tr><td colspan="2" align="center"><input type="button" value="Clear"
  onclick="document.forms.feed_xml.feed_xml.value='';document.forms.feed_xml.feed_title.value='';document.forms.feed_xml.feed_desc.value='';document.forms.feed_xml.feed_xml.focus();">

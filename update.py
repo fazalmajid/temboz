@@ -158,6 +158,19 @@ def update_feed_title(feed_uid, feed_title):
   finally:
     c.close()
 
+def update_feed_html(feed_uid, feed_html):
+  """Update a feed HTML link"""
+  feed_uid = int(feed_uid)
+
+  from singleton import db
+  c = db.cursor()
+  try:
+    c.execute("update fm_feeds set feed_html=? where feed_uid=?",
+              [feed_html, feed_uid])
+    db.commit()
+  finally:
+    c.close()
+
 def update_feed_desc(feed_uid, feed_desc):
   """Update a feed desc"""
   feed_uid = int(feed_uid)
