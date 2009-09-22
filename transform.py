@@ -22,32 +22,49 @@ filter_list = [
   degunk.Re('<a href="http://technorati.com/faves\\?add.*?</a>'),
   degunk.Re('<a href="http://www.feedburner.com/fb/a/emailFlare.*?</a>'),
   degunk.Re('<a href="http://slashdot.org/bookmark.pl.*?</a>'),
-  degunk.Re('<a href="http://www.facebook.com/share.php.*?</a>'),
+  degunk.Re('<a href="http://www.facebook.com/sharer?.php.*?</a>'),
   degunk.Re('<a href="http://www.google.com/bookmarks/mark.*?</a>'),
+  degunk.Re('<a href="http://blinklist.com.*?</a>'),
+  degunk.Re('<a href="http://del.irio.us.*?</a>'),
+  degunk.Re('<a href="http://www.kaboodle.com.*?</a>'),
+  degunk.Re('<a href="http://www.newsvine.com.*?</a>'),
   degunk.Re('<p class="addtoany_.*?</p>', re.MULTILINE + re.DOTALL),
-  # Feedburner ads
+  degunk.Re('<a[^>]*href="[^"]*addtoany.com.*?</a>', re.MULTILINE + re.DOTALL),
+  degunk.Re('<div class="social_bookmark">.*?</div>',
+            re.MULTILINE + re.DOTALL),
+  degunk.Re(r'<a href="http://www.pheedcontent.com.*?</a>\s*'),
+  degunk.Re('<div class="zemanta.*?</div>', re.MULTILINE + re.DOTALL),
+  degunk.Re('<p>Follow us on Twitter.*?</p>',
+            re.MULTILINE + re.DOTALL + re.IGNORECASE),
+  degunk.Re('<div class="tweetmeme_button".*?</div>',
+            re.MULTILINE + re.DOTALL + re.IGNORECASE),
+  degunk.Re('<p><a href="[^"]*sharethis.com.*?</p>',
+            re.MULTILINE + re.DOTALL + re.IGNORECASE),
+  # Feedburner annoyances
   degunk.Re('<a href[^>]*><img src="http://feeds.feedburner[^>]*></a>'),
   degunk.Re('<p><a href="(http://feeds\\.[^"/>]*/~./)[^"]*">'
             '<img src="\\1[^>]*></a></p>'),
-  # Feedburner web bug
   degunk.Re('<img src="http://feeds.feedburner.com.*?/>'),
   # web bugs dumb enough to reveal themselves
   degunk.Re('<img[^>]*width="1"[^>]*height="1"[^>]*>'),
   degunk.Re('<img[^>]*height="1"[^>]*width="1"[^>]*>'),
   # Google ads
-  degunk.Re('<a[^>]*href="http://imageads.googleadservices[^>]*>'
-            '[^<>]*<img [^<>]*></a>', re.MULTILINE),
+  degunk.Re('(<p>)?<a[^>]*href="http://[a-z]*ads.googleadservices[^>]*>'
+            '[^<>]*<img [^<>]*></a>(</p>)?', re.MULTILINE),
   degunk.Re('<a[^>]*href="http://www.google.com/ads_by_google[^>]*>[^<>]*</a>',
             re.MULTILINE),
   degunk.Re('<p><map[^>]*><area[^>]*href="http://imageads.google.*?</p>',
             re.MULTILINE),
+  # Wordpress stats
+  degunk.Re('<img[^>]*src="http://feeds.wordpress[^>]*>'),
   # Falk AG ads
   degunk.Re('<div><br>\s*<strong>.*?<a href="[^"]*falkag.net[^>]*>.*?</strong>'
             '<br>.*?</div>', re.IGNORECASE + re.DOTALL),
   degunk.Re('<a href="[^"]*falkag.net[^>]*><img[^>]*></a>'),
   # Empty paragraphs used as spacers in front of ads
   degunk.Re('<p>&#160;</p>'),
-  degunk.Re('<p><br />\s*</p>\s*', re.MULTILINE),
+  degunk.Re(r'<p><br />\s*</p>\s*', re.MULTILINE),
+  degunk.Re(r'\s*(<br>)?<p>\s*<br>\s*</p>\s*', re.MULTILINE),
   # DoubleClick ads
   degunk.Re('<a[^>]*href="http://ad.doubleclick.net[^>]*>.*?</a>',
             re.MULTILINE),
@@ -75,14 +92,19 @@ filter_list = [
             re.IGNORECASE + re.DOTALL),
   degunk.Re('<div class="feedflare">.*?</div>', re.IGNORECASE + re.DOTALL),
   # Pheedo ads
-  degunk.Re('<p><a href="http://www.pheedo.*?</p>', re.MULTILINE + re.DOTALL),
+  degunk.Re('<p><a href="http://[^"]*.pheedo.*?</p>',
+            re.MULTILINE + re.DOTALL),
   degunk.Re('<div><a href="http://www.pheedo[^"]*">\s*'
             '<img src="http://www.pheedo.com.*?</div>',
             re.MULTILINE + re.DOTALL),
-  degunk.Re('<a href="http://[^"]*.pheedo[^"]*">\s*'
-            '<img [^>]*src="http://www.pheedo.com.*?</a>',
+  degunk.Re('(<br>)?<a href="http://[^"]*.pheedo[^"]*">\s*'
+            '<img [^>]*src="http://[^"]*.pheedo.com.*?</a>',
             re.MULTILINE + re.DOTALL),
-  degunk.Re('<a href="http://www.pheedo.com/hosted.*?</a>',
+  degunk.Re('<a href="http://[^"]*.pheedo.com/hosted.*?</a>',
+            re.MULTILINE + re.DOTALL),
+  degunk.Re('<div style="font-size: xx-small; color: gray; padding-bottom:'
+            '0.5em;">Presented By:</div>[^<>]*<div><a href="http://ads.pheedo'
+            '.*?</div>.*?</div>',
             re.MULTILINE + re.DOTALL),
   # Broken Pheedo links for IEEE Spectrum
   degunk.ReUrl(url=r'http://pheedo.com\1',
@@ -102,6 +124,8 @@ filter_list = [
   regex_url=r'http://www.pbs.org/cringely/rss1/redir/cringely/(.*)'),
   # Register ads
   degunk.Re('<strong>Advertisement</strong><br>'),
+  degunk.Re('<p><a[^>]*href="http://whitepapers.theregister.co.uk.*?</p>',
+            re.MULTILINE),
   # Inquirer blegging
   degunk.Re('<div class="mf-viral">.*</div>'),
   # Salon ads
@@ -137,6 +161,7 @@ filter_list = [
   degunk.Re('<br>\s*(<br>\s*)+', 0, '<br>'),
   degunk.Re('<p>&nbsp;</p>'),
   degunk.Re('<p>-</p>'),
+  degunk.Re('<span[^>]*></span>', 0, '', iterate=True),
   # junk
   degunk.Re('<strong></strong>', 0, ''),
   # unwarranted final empty lines
@@ -145,7 +170,19 @@ filter_list = [
   degunk.Re(r'<img[^>]*src="http://stats.wordpress.com.*?>'),
   degunk.Re(r'\s*<hr[^>]*>\s*<p>\s*<a href="http://t.gigaom.com/.*?</p>',
             re.MULTILINE + re.DOTALL),
+  degunk.Re(r'<hr\s?/?>\s*<a href="http://events.gigaom.com/.*</a>',
+            re.MULTILINE + re.DOTALL),
+  degunk.Re(r'<hr\s?/?>\s*<a href="http://pro.gigaom.com/.*</a>',
+            re.MULTILINE + re.DOTALL),
+  # Ars Technica
+  degunk.Re(r'<a [^>]* title="Click here to continue reading.*?</a>',
+            re.MULTILINE + re.DOTALL),
   # Coding Horror
   degunk.Re(r'<table>.*?\[advertisement\].*?</table>',
+            re.MULTILINE + re.DOTALL),
+  # Fooducate
+  degunk.Re(r'<p><span[^>]*><strong>Get Fooducated.*?</p>',
+            re.MULTILINE + re.DOTALL),
+  degunk.Re(r'<p>[^>]*<a href="http://alpha.fooducate.com.*?</p>',
             re.MULTILINE + re.DOTALL),
   ]
