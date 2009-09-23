@@ -153,13 +153,9 @@ function kw_dialog(id, kw, context) {
     \$('.ui-dialog-content select[name="match"]').val('phrase_lc');
   }
   if(context) {
-    if(context == "tag") {
-      \$('.ui-dialog-content select[name="match"]').val(context);
-      \$('.ui-dialog-content select[name="target"]').hide();
-      \$('.ui-dialog-content :checkbox').val(["feed_only"]);
-    } else if(context == "title") {
-      \$('.ui-dialog-content select[name="target"]').val(context);
-    }
+    \$('.ui-dialog-content select[name="match"]').val(context);
+    \$('.ui-dialog-content select[name="target"]').hide();
+    \$('.ui-dialog-content :checkbox').val(["feed_only"]);
   }
 }
 ## hide tag layer until it is ready
@@ -175,11 +171,7 @@ function hide(id) {
   } else {
     var kw = \$.trim(get_selection());
     if(kw!="" && elt.innerHTML.indexOf(kw)!=-1) {
-      if (\$(elt).find("a.headline").html().indexOf(kw)!=-1) {
-        kw_dialog(id, kw, "title");
-      } else {
-        kw_dialog(id, kw);
-      }
+      kw_dialog(id, kw);
     } else {
       var tags = \$(elt).find("span.item_tag.highlighted").html();
       if(tags) {
