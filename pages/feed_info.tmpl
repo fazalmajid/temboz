@@ -134,13 +134,17 @@ group by feed_uid, feed_title, feed_html, feed_xml
 #silent unread += num_added
 #silent filtered += num_filtered
 #silent feed_errors = 0
-<p>Feed refreshed successfully.
-#if num_added > 0
-<%=num_added%> new unread articles.&nbsp;&nbsp;
-<a href="view?feed_uid=$feed_uid">view articles now</a>&nbsp;&nbsp;
-<a href="catch_up?feed_uid=$feed_uid">catch up</a>
+<p>Feed refreshed successfully.</p>
+#if status == 1
+#set status = 0
+#silent update.set_status(feed_uid, status)
+<p>Feed reactivated</p>
 #end if
-</p>
+#if num_added > 0
+<p><%=num_added%> new unread articles.&nbsp;&nbsp;
+<a href="view?feed_uid=$feed_uid">view articles now</a>&nbsp;&nbsp;
+<a href="catch_up?feed_uid=$feed_uid">catch up</a></p>
+#end if
 #except update.ParseError
 <p><b>Connection or parse error in attempting to subscribe to</b> $feed_xml,
 check URL</p>
