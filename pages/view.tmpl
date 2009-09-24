@@ -143,7 +143,7 @@ function kw_dialog(id, kw, context) {
 ##    }
   }).find(":text").val(kw);
   \$('.ui-dialog-content select[name="match"]').change(function() {
-    if(\$(this).val() == "tag") {
+    if(\$(this).val() == "tag" || \$(this).val() == "author") {
       \$('.ui-dialog-content select[name="target"]').hide();
     } else {
       \$('.ui-dialog-content select[name="target"]').show();
@@ -173,9 +173,14 @@ function hide(id) {
     if(kw!="" && elt.innerHTML.indexOf(kw)!=-1) {
       kw_dialog(id, kw);
     } else {
-      var tags = \$(elt).find("span.item_tag.highlighted").html();
+      var tags = \$(elt).find("span.author.tag.highlighted").html();
       if(tags) {
-        kw_dialog(id, tags, 'tag');
+        kw_dialog(id, tags, 'author');
+      } else {
+        var tags = \$(elt).find("span.item.tag.highlighted").html();
+        if(tags) {
+          kw_dialog(id, tags, 'tag');
+        }
       }
     }
     hidden[hidden.length] = elt;
@@ -200,7 +205,7 @@ function toggle_tag() {
   \$(this).toggleClass("highlighted");
 }
 \$(document).ready(function() {
-  \$("span.item_tag").click(toggle_tag);
+  \$("span.tag").click(toggle_tag);
 });
 function highlight(id) {
   var elt = document.getElementById('art' + id);
@@ -409,6 +414,7 @@ $item_desc
       <option value="all">All words</option>
       <option value="phrase_lc">Phrase</option>
       <option value="phrase">Phrase (case-sensitive)</option>
+      <option value="author">Author</option>
       <option value="tag">Tag</option>
       </select></td></tr>
       <tr><td>Match on</td><td><select name="target">
@@ -495,9 +501,12 @@ limit ? offset ?""", params + [overload_threshold, offset])
     #set content = content + '<br><p>Filtered by feed-specific Python rule</p>'
   #end if
 #end if
-#if $uid in tag_dict
+#if $uid in tag_dict or ($creator and $creator != 'Unknown')
 ## XXX should probably escape the Unicode here
-#set $tag_info = ' '.join('<span class="item_tag">%s</span>' % t for t in tag_dict[$uid])
+#set $tag_info = ' '.join('<span class="item tag">%s</span>' % t for t in tag_dict.get($uid, []))
+#if $creator and $creator != 'Unknown'
+#set $tag_info = '%s<span class="author tag">%s</span>' % ($tag_info, $creator)
+#end if
 #set $tag_info = '<div class="tag_info" id="tags_%s">' % $uid + $tag_info + '</div>'
 #set $tag_call = '<a href="javascript:toggle_tags(%s);">tags</a>' % $uid
 #else

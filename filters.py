@@ -95,7 +95,21 @@ class TagRule(Rule):
       return False
     return self.rule in item['item_tags']
   def highlight_content(self, html):
-    return '%s<br><p>Filtered for tag <span class="item_tag highlighted">%s</span></p>' \
+    return '%s<br><p>Filtered for tag <span class="item tag highlighted">%s</span></p>' \
+           % (html, self.rule)
+
+class AuthorRule(Rule):
+  def __init__(self, uid, expires, rule):
+    Rule.__init__(self, uid, expires)
+    self.rule = rule
+  def __str__(self):
+    return '<AuthorRule %s %s>' % (self.uid, self.rule)
+  def test(self, item, feed, feed_uid):
+    if self.check_expires():
+      return False
+    return self.rule == normalize.lower(item['author'])
+  def highlight_content(self, html):
+    return '%s<br><p>Filtered for author <span class="author tag highlighted">%s</span></p>' \
            % (html, self.rule)
 
 ########################################################################
@@ -215,6 +229,9 @@ def load_rules(db, c):
         elif rtype == 'tag':
           rule = TagRule(uid, expires, rule)
           container.append(rule)
+        elif rtype == 'author':
+          rule = AuthorRule(uid, expires, rule)
+          container.append(rule)
         elif rtype.startswith('union_'):
           # XXX this convention of adding a second rule object with UID -uid
           # XXX is a ugly hack
@@ -271,21 +288,19 @@ def add_kw_rule(db, c, kw=None, item_uid=None, match='word', target='title',
     item_uid = None
 
   if not kw: return
-  if match == 'tag':
+  if match in ['author', 'tag', 'phrase_lc']:
     words = [normalize.lower(kw)]
   elif match == 'word':
     words = normalize.get_words(kw)
   elif match == 'all':
     words = [' '.join(normalize.get_words(kw))]
-  elif match == 'phrase_lc':
-    words = [normalize.lower(kw)]
   elif match == 'phrase':
       words = [kw]
   else:
     return
   
-  if match == 'tag':
-    rule_type = 'tag'
+  if match in ['author', 'tag']:
+    rule_type = match
   else:
     rule_type = target + '_' + match
 
