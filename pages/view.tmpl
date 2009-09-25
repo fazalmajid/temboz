@@ -119,6 +119,9 @@ function get_selection() {
   }
   return jQuery.trim(userSelection);
 }
+function capitalize(s) {
+  return s.charAt(0).toUpperCase() + s.substring(1);
+}
 function kw_dialog(id, kw, context) {
   var tmpl = \$("div#kw_form_tmpl");
   var body = '<div title="Add a keyword rule">' + tmpl.html() + '</div>';
@@ -143,19 +146,30 @@ function kw_dialog(id, kw, context) {
 ##    }
   }).find(":text").val(kw);
   \$('.ui-dialog-content select[name="match"]').change(function() {
-    if(\$(this).val() == "tag" || \$(this).val() == "author") {
+    var context = \$(this).val();
+    if(context == "tag" || context == "author") {
       \$('.ui-dialog-content select[name="target"]').hide();
+      \$('.ui-dialog-content td:first').html(capitalize(context));
     } else {
       \$('.ui-dialog-content select[name="target"]').show();
+      if(context == "word") {
+        \$('.ui-dialog-content td:first').html("Keyword");
+      } else if(context == "all") {
+        \$('.ui-dialog-content td:first').html("Keywords");
+      } else {
+        \$('.ui-dialog-content td:first').html("Phrase");
+      }
     }
   })
   if(kw.search(" ") != -1 || kw.search("-") != -1) {
     \$('.ui-dialog-content select[name="match"]').val('phrase_lc');
+    \$('.ui-dialog-content td:first').html("Phrase");
   }
   if(context) {
-    \$('.ui-dialog-content select[name="match"]').val(context);
+    \$('.ui-dialog-content select[name="match"]').val(context.toLowerCase());
     \$('.ui-dialog-content select[name="target"]').hide();
     \$('.ui-dialog-content :checkbox').val(["feed_only"]);
+    \$('.ui-dialog-content td:first').html(context);
   }
 }
 ## hide tag layer until it is ready
@@ -175,11 +189,11 @@ function hide(id) {
     } else {
       var tags = \$(elt).find("span.author.tag.highlighted").html();
       if(tags) {
-        kw_dialog(id, tags, 'author');
+        kw_dialog(id, tags, 'Author');
       } else {
         var tags = \$(elt).find("span.item.tag.highlighted").html();
         if(tags) {
-          kw_dialog(id, tags, 'tag');
+          kw_dialog(id, tags, 'Tag');
         }
       }
     }
