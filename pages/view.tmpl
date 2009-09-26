@@ -90,7 +90,11 @@
 ## XXX doesn't use XMLHttpRequest on IE6 as coded here
 ##
 ########################################################################
+#if public
+<script language="JavaScript" src="gems/temboz.js"></script>
+#else
 <script language="JavaScript" src="temboz.js"></script>
+#end if
 <script language="JavaScript">
 hidden = Array();
 #if public
