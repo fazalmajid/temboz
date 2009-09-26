@@ -99,7 +99,9 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     # gzip compression
     if ct and ct.startswith('text') and len(output) > 1500 \
            and 'accept-encoding' in self.headers.dict \
-           and 'gzip' in self.headers.dict['accept-encoding']:
+           and 'gzip' in self.headers.dict['accept-encoding'] \
+           and 'user-agent' in self.headers.dict \
+           and 'MSIE' not in self.headers.dict['user-agent']:
       http_headers.append('Content-Encoding: gzip')
       gzbuf = cStringIO.StringIO()
       gzfile = gzip.GzipFile(fileobj=gzbuf, mode='wb', compresslevel=9)
