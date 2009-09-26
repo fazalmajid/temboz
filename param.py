@@ -27,14 +27,6 @@ decay = 90
 catch_up_confirm = True
 hard_purge_confirm = True
 
-# Should the "thumbs up" and "thumbs down" icons be shown at the bottom
-# of long articles? False by default as this can slow down page rendering
-# with certain browsers as they have to wait for all the images to be loaded
-# on a page before they can determine whether an article is long enough to
-# require the links at the bottom
-#thumbs_bottom = True
-thumbs_bottom = False
-
 # automatic backups
 # stream compression utility to use for backups
 backup_compressor = ('gzip -9c', '.gz')
@@ -54,6 +46,7 @@ garbage_contents = 7
 # after a longer period of time, the articles themselves are purged, assuming
 # they are no longer in the feed files (otherwise they would reappear the next
 # time the feed is loaded)
+# Note: this needs to be set much higher than the healf life for SNR
 garbage_items = 180
 # garbage_items = None
 
