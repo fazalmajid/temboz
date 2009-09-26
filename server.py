@@ -1,7 +1,7 @@
 #!/usr/local/bin/python
 # $Id$
 import sys, os, stat, logging, base64, time, imp, gzip, imp
-import BaseHTTPServer, SocketServer, cgi, cStringIO, urlparse
+import BaseHTTPServer, SocketServer, cStringIO, urlparse, urllib
 import param, update, filters, util
 
 # add the Cheetah template directory to the import path
@@ -210,7 +210,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
       self.input.update(dict(query_list))
     else:
       istr = self.rfile.read(int(self.headers['content-length']))
-      for name, value in cgi.parse_qsl(istr, 1):
+      for name, value in urlparse.parse_qsl(istr, 1):
         # RFC3986 is the normative reference for urlencoded strings such
         # as those sent in the default form encoding
         # application/x-www-form-urlencoded
@@ -399,7 +399,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
       if query_string:
         # parse_qsl does not comply with RFC 3986, we have to decode UTF-8
         query_list = [(n, v.decode('UTF-8'))
-                      for n, v in cgi.parse_qsl(query_string, 1)]
+                      for n, v in urlparse.parse_qsl(query_string, 1)]
         self.input.update(dict(query_list))
 
       if param.debug:
@@ -487,6 +487,14 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
       tmpl.e = None
       e = None
     return
+
+  def change_param(self, *arg, **kwargs):
+    parts = urlparse.urlparse(self.path)
+    parts = list(parts)
+    param = urlparse.parse_qs(parts[4])
+    param.update(kwargs)
+    parts[4] = urllib.urlencode(param, True)
+    return urlparse.urlunparse(tuple(parts))
 
 # Python 2.6 and later no longer allow specifying directories in the module
 # name so we have to create our own import function to override the path

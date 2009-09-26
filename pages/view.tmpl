@@ -1,4 +1,5 @@
 ## -*- html -*-
+<!DOCTYPE HTML>
 #extends menubar
 #implements respond
 ########################################################################
@@ -45,7 +46,7 @@
     #end if
   #end if
 #end if
-
+##
 #set params = []
 ## optimizations for mobile devices
 #set mobile = bool($getVar('mobile', False))
@@ -79,7 +80,6 @@
 ##
 ########################################################################
 #set offset = int($getVar('offset', 0))
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head><title>Temboz - $item_desc items</title>
 <meta name="robots" content="noarchive,noindex,follow,nocache">
@@ -117,7 +117,7 @@ function get_selection() {
   } else if (document.selection) {
     userSelection = document.selection.createRange().text;
   }
-  return jQuery.trim(userSelection);
+  return \$.trim(userSelection);
 }
 function capitalize(s) {
   return s.charAt(0).toUpperCase() + s.substring(1);
@@ -172,16 +172,11 @@ function kw_dialog(id, kw, context) {
     \$('.ui-dialog-content td:first').html(context);
   }
 }
-## hide tag layer until it is ready
-#set taglayer_visibility = "none"
 function hide(id) {
   var elt = document.getElementById('art' + id);
   if(elt.style.backgroundColor == "yellow") {
     elt.style.backgroundColor = "";
     webop('basic', id);
-    if(elt.taglayer) {
-      elt.taglayer.style.display = "none";
-    }
   } else {
     var kw = \$.trim(get_selection());
     if(kw!="" && elt.innerHTML.indexOf(kw)!=-1) {
@@ -218,24 +213,10 @@ function toggle_tags(id) {
 function toggle_tag() {
   \$(this).toggleClass("highlighted");
 }
-\$(document).ready(function() {
-  \$("span.tag").click(toggle_tag);
-});
 function highlight(id) {
   var elt = document.getElementById('art' + id);
   elt.style.backgroundColor = "yellow";
   webop('promote', id);
-  if(!elt.taglayer) {
-    var c = document.getElementById('content' + id);
-    elt.taglayer = document.createElement("div");
-    elt.taglayer.className = "overlay";
-    elt.taglayer.innerHTML = '<form id="tags' + id + '"><div class="translucent"><textarea id="notes" rows="4" cols="64"></textarea><br><textarea id="tags" rows="1" cols="64"></textarea></div><div class="opaque"><input type="submit" value="save"><a href="">Opaque link</a></div></form>';
-    c.insertBefore(elt.taglayer, c.firstChild);
-## XXX get rid of this once taglayer is made visible
-    elt.taglayer.style.display = "$taglayer_visibility";
-  } else {
-    elt.taglayer.style.display = "$taglayer_visibility";
-  }
 }
 function unhide_all() {
   for(i=0; i<hidden.length; i++) {
@@ -256,39 +237,29 @@ function unhide_last() {
 function toggle(item) {
   document.items[item].checked = !document.items[item].checked;
 }
-#if getattr(param, 'thumbs_bottom', False)
-## see:
-## http://www.quirksmode.org/viewport/compatibility.html
-cached_window_height = null;
-function window_height() {
-  var window_height;
-
-  if (cached_window_height) {
-    return cached_window_height;
-  }
-  if (self.innerHeight) {
-    window_height = self.innerHeight;
-  } else if (document.documentElement && document.documentElement.clientHeight) {
-    window_height = document.documentElement.clientHeight;
-  } else if (document.body) {
-    window_height = document.body.clientHeight;
-  } else {
-    alert(document.body);
-  }
-  cached_window_height = window_height;
-  return window_height;
+function place_popup() {
+  var popup = \$("div#popup_" + this.id);
+  var callout_pos = \$(this).position();
+  popup.css("left", callout_pos.left);
+  popup.css("top", callout_pos.top + \$(this).height() + 3);
+  this.popup = popup;
 }
-function repeat_headline() {
-  var article, content;
-  article = document.body.lastChild.lastChild;
-  content = article.childNodes[1];
-  if(content.offsetHeight && content.offsetHeight > 0.8 * window_height()) {
-    document.write('<p align="right">');
-    document.write(article.childNodes[0].firstChild.innerHTML);
-    document.write('</p>');
-  }
+function hide_popups() {
+  \$(document).unbind("click", hide_popups);
+  \$("div.popup").hide();
 }
-#end if
+function show_popup(event) {
+  event.stopPropagation();
+  this.popup.toggle();
+  \$(document).click(hide_popups);
+}
+\$(document).ready(function() {
+  \$("span.tag").click(toggle_tag);
+  \$("a.callout").each(place_popup);
+  \$("a.callout").click(show_popup);
+  \$(document).bind("keydown", "ctrl+z", unhide_last);
+  \$(document).bind("keydown", "meta+z", unhide_last);
+});
 </script>
 ########################################################################
 ##
@@ -307,22 +278,6 @@ cancel the highlight if highlighted).</p>
 <link rel="stylesheet" type="text/css" media="screen" href="temboz.css">
 <link rel="stylesheet" type="text/css" media="print" href="temboz.css?media=print">
 #end if
-## work-around IE's defective position: fixed
-## see also: http://www.enorg.org/faq/csshacks.html
-<!--[if IE]>
-<style type="text/css">
-body.unpadded {
-  margin-top: 0px;
-}
-div.menu {
-  margin-top: 0px;
-  padding-top: 0px;
-}
-.col1, .col2 {
-  top: 1cm;
-}
-</style>
-<![endif]-->
 </head>
 <body class="unpadded">
 ########################################################################
@@ -354,29 +309,18 @@ limit ? offset ?)""", params + [overload_threshold, offset])
 #set cutoff = (num_items + 1) / 2 + 1
 #set count = 0
 #if not mobile
-<div id="menu" class="menu">
-$num_items 
+<div id="menu" class="menu"><nobr>
+$num_items
 #if not public
-<span><form id="show_select" class="inline" method="GET">
-  #echo self.regurgitate_except('show')
-  <select name="show" onchange="document.forms['show_select'].submit();">
-  #for (rating_name, rating_desc, discard, discard) in $ratings
-    #if $item_desc == rating_desc
-      <option value="$rating_name" selected>$rating_desc</option>
-    #else
-      <option value="$rating_name">$rating_desc</option>
-    #end if
-  #end for
-  </select>
-</form></span>
+  <a id="rating" class="callout"><u>$item_desc</u> <small>&#9660;</small></a>
 #else
-$item_desc
+  $item_desc
 #end if
 #if num_items > overload_threshold
-  ($overload_threshold shown)
+  ($overload_threshold shown)&nbsp;&nbsp;
   #set cutoff = (overload_threshold + 1) / 2 + 1
 #end if
-&nbsp;&nbsp;<a href="javascript:unhide_all();">Unhide all</a>&nbsp;&nbsp;<a href="javascript:unhide_last();">Unhide last</a>
+  <a id="view" class="callout"><u>View</u> <small>&#9660;</small></a>
 #if public
   </p>
 #else
@@ -410,8 +354,22 @@ $item_desc
   </form>
 </span>
 #end if
+  <div id="popup_rating" class="popup">
+    <ul>
+      #for (rating_name, rating_desc, discard, discard) in $ratings
+	#set $url = trans.change_param(show=rating_name)
+	<li><a href="$url">$rating_desc</a></li>
+      #end for
+    </ul>
+  </div>
+  <div id="popup_view" class="popup">
+    <ul>
+      <li><a href="javascript:unhide_last();">Undo last hide</a></li>
+      <li><a href="javascript:unhide_all();">Undo all hides</a></li>
+    </ul>
+  </div>
+</nobr>
 </div>
-##$menubar
 #else
 #set overload_threshold = 50
 #end if
@@ -499,11 +457,6 @@ limit ? offset ?""", params + [overload_threshold, offset])
 ## Actual article display
 ##
 ########################################################################
-#if public
-#set $feed_link = ""
-#else
-#set $feed_link = 'onclick="location.href(\'feed_info?feed_uid=%d\');"' % feed_uid
-#end if
 #if rating == -2
   #if filtered_by
     #set rule = filters.Rule.registry.get(filtered_by)
@@ -539,7 +492,7 @@ $tag_call
 #if not public
 <a href="edit?uid=$uid" class="screen">edit</a>
 #else
-#set $magic =  '<!--TEMBOZ_ELLIPSIS>'
+#set $magic = '<!--TEMBOZ_ELLIPSIS>'
 #set $content = normalize.balance($content, 50, $magic)
 #if $magic in $content
 #set $content = $content.replace($magic, ' ...') + '<a href="' + link + '">(more after the jump)</a>'
@@ -548,13 +501,6 @@ $tag_call
 <br></div>$tag_info<div class="content" id="content$uid">
 $content
 </div>
-#if getattr(param, 'thumbs_bottom', False)
-## insert buttons at the bottom of long articles so users don't have to scroll
-## all the way back up
-<script language="JavaScript">
-repeat_headline();
-</script>
-#end if
 </div>
 #end for
 #if not mobile

@@ -106,6 +106,24 @@ span.tag.highlighted {
   color: white;
   background-color: red;
 }
+div.popup {
+  display: none;
+  position: absolute;
+  border: 1px solid;
+  z-index: 2;
+  background: white;
+}
+div.popup ul {
+  list-style-type: none;
+  margin: 6px;
+  padding: 0;
+}
+div.popup li:hover {
+  background-color: #BFFF80;
+}
+a.callout, div.popup li a {
+  text-decoration: none;
+}
 ########################################################################
 ## SCREEN ONLY
 #if $media == 'screen'
