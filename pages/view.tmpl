@@ -1,4 +1,5 @@
 ## -*- html -*-
+#block ENTIRE_PAGE
 <!DOCTYPE HTML>
 #extends menubar
 #implements respond
@@ -26,24 +27,19 @@
 ##   mylos:    read-only view, e.g. http://www.majid.info/mylos/temboz.html
 ##
 ########################################################################
-#set public = False
-#set $show = $getVar('show', 'unread')
-#set ratings = update.ratings
-#set $ratings_dict = dict((ratings[i][0], i) for i in range(len(ratings)))
-#if $show == 'mylos'
-  #set public = True
-  #set item_desc = 'interesting'
-  #set where_clause = 'item_rating > 0'
-#else
-  #set $i = $ratings_dict.get($show, 1)
-  #set $show        = $ratings[$i][0]
-  #set item_desc    = $ratings[$i][1]
-  #set where_clause = $ratings[$i][3]
-  #if $show == 'filtered'
-    #set rule_uid = $getVar('rule_uid', None)
-    #if rule_uid
-      #set where_clause = where_clause + ' and item_rule_uid=' + rule_uid
-    #end if
+#set global $show = $getVar('show', 'unread')
+#set global $ratings = update.ratings
+#set $ratings_dict = dict(($ratings[i][0], i) for i in range(len($ratings)))
+#set $i = $ratings_dict.get($show, 1)
+#set global $show      = $ratings[$i][0]
+#set global $item_desc = $ratings[$i][1]
+#set global $where     = $ratings[$i][3]
+#block EXTRA_WHERE_CLAUSE
+#end block
+#if $show == 'filtered'
+  #set rule_uid = $getVar('rule_uid', None)
+  #if rule_uid
+    #set global $where = $where + ' and item_rule_uid=' + rule_uid
   #end if
 #end if
 ##
@@ -56,7 +52,7 @@
 ##
 ########################################################################
 #if $getVar('feed_uid', None)
-#set where_clause = where_clause + ' and item_feed_uid=?'
+#set global $where = $where + ' and item_feed_uid=?'
 #silent params.append($feed_uid)
 #end if
 ########################################################################
@@ -70,7 +66,7 @@
   #else
     #set search_where = 'item_content'
   #end if
-  #set where_clause = where_clause + ' and lower(' + search_where + ') like ?'
+  #set global $where = $where + ' and lower(' + search_where + ') like ?'
   #silent params.append('%' + $getVar('search').lower() + '%')
 #end if
 ########################################################################
@@ -90,28 +86,19 @@
 ## XXX doesn't use XMLHttpRequest on IE6 as coded here
 ##
 ########################################################################
-#if public
-<script language="JavaScript" src="gems/temboz.js"></script>
-#else
+#block TEMBOZ_JS
 <script language="JavaScript" src="temboz.js"></script>
-#end if
+#end block
 <script language="JavaScript">
 hidden = Array();
-#if public
-  #import normalize
-  #set img_prefix = 'images/'
-  #set overload_threshold = 50
-function webop(op, uid) {
-  ; // don't do anything about up/down yet
-}
-#else
-#set overload_threshold = param.overload_threshold
-#set img_prefix = ''
+#block SET_OVERLOAD_THRESHOLD
+#set global $overload_threshold = param.overload_threshold
+#set global $img_prefix = ''
 var i = new Image();
 function webop(op, uid) {
   $.get('/xmlfeedback/' + op + '/' + Math.random().toString().substring(8) + '/' + uid + '.xml');
 }
-#end if
+#end block
 ## get user selection, empty string if none or unsupported browser
 function get_selection() {
   var userSelection;
@@ -205,10 +192,10 @@ function collapseToggle(id) {
   var elt = document.getElementById('content' + id);
   if(elt.style.display != "none") {
     elt.style.display = "none";
-    document.getElementById('ctarrow' + id).innerHTML = '<img width="14" height="14" alt="hidden" src="<%=img_prefix%>a_rt.gif" />&nbsp;';
+    document.getElementById('ctarrow' + id).innerHTML = '<img width="14" height="14" alt="hidden" src="${img_prefix}a_rt.gif" />&nbsp;';
   } else {
     elt.style.display = "block";
-    document.getElementById('ctarrow' + id).innerHTML = '<img width="14" height="14" alt="hidden" src="<%=img_prefix%>a_dn.gif" />&nbsp;';
+    document.getElementById('ctarrow' + id).innerHTML = '<img width="14" height="14" alt="hidden" src="${img_prefix}a_dn.gif" />&nbsp;';
   }
 }
 function toggle_tags(id) {
@@ -271,17 +258,7 @@ function show_popup(event) {
 ## (by default) items
 ##
 ########################################################################
-#if public
-<link rel="stylesheet" type="text/css" href="gems/temboz.css">
-<p class="menu">This page is produced automatically from my RSS aggregator, <a
-href="http://www.temboz.com/">Temboz</a>. It shows the last 50 articles from
-the feeds in blogroll I found interesting. Clicking the "thumbs up" icons will
-highlight the article, clicking "thumbs down" will make it disappear (or
-cancel the highlight if highlighted).</p>
-#else
-<link rel="stylesheet" type="text/css" media="screen" href="temboz.css">
-<link rel="stylesheet" type="text/css" media="print" href="temboz.css?media=print">
-#end if
+$CSS
 </head>
 <body class="unpadded">
 ########################################################################
@@ -291,17 +268,22 @@ cancel the highlight if highlighted).</p>
 ##
 ########################################################################
 #if $getVar('where_clause', False)
-#set where_clause = where_clause + ' and ' + $getVar('where_clause')
+#set global $where = $where + ' and ' + $getVar('where_clause')
 #end if
 ########################################################################
 ##
 ## Update the view timestamp
 ##
 ########################################################################
-#silent c.execute("""update fm_items set item_viewed=julianday('now') where item_uid in (select item_uid from fm_items where """ + where_clause + """
-order by item_created DESC, item_uid DESC
-limit ? offset ?)""", params + [overload_threshold, offset])
-#silent c.execute("""select count(*) from fm_items where """ + where_clause, params)
+#silent c.execute("""update fm_items set item_viewed=julianday('now')
+where item_uid in (
+  select item_uid from fm_items, fm_feeds
+  where item_feed_uid=feed_uid and """ + $where + """
+  order by item_created DESC, item_uid DESC
+  limit ? offset ?)""", params + [$overload_threshold, offset])
+##
+#silent c.execute("""select count(*) from fm_items, fm_feeds
+where item_feed_uid=feed_uid and """ + $where, params)
 ########################################################################
 ##
 ## We try to get a balanced two-column design by having as many articles
@@ -309,55 +291,21 @@ limit ? offset ?)""", params + [overload_threshold, offset])
 ## works reasonably well in practice.
 ##
 ########################################################################
-#set num_items = int(c.fetchone()[0])
-#set cutoff = (num_items + 1) / 2 + 1
+#set global $num_items = int(c.fetchone()[0])
+#set cutoff = ($num_items + 1) / 2 + 1
 #set count = 0
-#if not mobile
-<div id="menu" class="menu"><nobr>
+########################################################################
+#def CONTEXT_MENU
 $num_items
-#if not public
+#def RATING_CALLOUT($item_desc)
   <a id="rating" class="callout"><u>$item_desc</u> <small>&#9660;</small></a>
-#else
-  $item_desc
-#end if
-#if num_items > overload_threshold
+#end def
+$RATING_CALLOUT($item_desc)
+#if $num_items > $overload_threshold
   ($overload_threshold shown)&nbsp;&nbsp;
-  #set cutoff = (overload_threshold + 1) / 2 + 1
+  #set cutoff = ($overload_threshold + 1) / 2 + 1
 #end if
   <a id="view" class="callout"><u>View</u> <small>&#9660;</small></a>
-#if public
-  </p>
-#else
-  &nbsp;&nbsp;<a href="feeds">All feeds</a>&nbsp;&nbsp;
-  <a href="add">Add feed</a>&nbsp;&nbsp;<a href="rules">Filters</a>
-  &nbsp;&nbsp;
-########################################################################
-##
-## Crude search functionality
-##
-########################################################################
-<span>
-  <form method="GET" action="view" target="_blank" class="inline">
-    #if $getVar('feed_uid', None)
-      <input name="feed_uid" type="hidden" value="$feed_uid">
-    #end if
-    <input name="show" type="hidden" value="$show">
-    <input name="search" value="$getVar('search', '')">
-    <select name="show">
-      <option value="all" selected>All articles</option>
-      <option value="unread">Unread only</option>
-      <option value="down">Uninteresting only</option>
-      <option value="up">Interesting only</option>
-      <option value="filtered">Filtered only</option>
-    </select>
-    <select name="search_in">
-      <option value="title" selected>in titles</option>
-      <option value="content">in content</option>
-    </select>
-    <input type="submit" value="Search">
-  </form>
-</span>
-#end if
   <div id="popup_rating" class="popup">
     <ul>
       #for (rating_name, rating_desc, discard, discard) in $ratings
@@ -366,21 +314,12 @@ $num_items
       #end for
     </ul>
   </div>
-  <div id="popup_view" class="popup">
-    <ul>
-      <li><a href="javascript:unhide_last();">Undo last hide</a></li>
-      <li><a href="javascript:unhide_all();">Undo all hides</a></li>
-    </ul>
-  </div>
-</nobr>
-</div>
-#else
-#set overload_threshold = 50
-#end if
+#end def
+$MENUBAR(trans=trans)
 ########################################################################
 ## Form used for adding keyword filtering rules
 ########################################################################
-#if not public
+#block FILTER_FORM_TEMPLATE
 <div id="kw_form_tmpl" style="display:none">
   <form name="kw_form" method="GET" action="/add_kw_rule">
     <table>
@@ -406,7 +345,7 @@ $num_items
     </table>
   </form>
 </div>
-#end if
+#end block
 ########################################################################
 ##
 ## Fetch overload_threshold (default 200) items
@@ -417,10 +356,10 @@ $num_items
 from  fm_tags, (
   select item_uid from fm_items, fm_feeds
   where item_feed_uid=feed_uid
-  and """ + where_clause + ' and feed_private = 0' * public + """
+  and """ + $where + """
   order by item_created DESC, item_uid DESC
   limit ? offset ?)
-where tag_item_uid=item_uid""", params + [overload_threshold, offset])
+where tag_item_uid=item_uid""", params + [$overload_threshold, offset])
 #for item_uid, tag_name, tag_by in c
 #silent tag_dict.setdefault(item_uid, []).append(tag_name)
 #end for
@@ -430,9 +369,9 @@ item_content, datetime(item_loaded), date(item_created), feed_uid,
 feed_title, feed_html, feed_xml, julianday('now') - julianday(item_created),
 item_rating, item_rule_uid
 from fm_items, fm_feeds where item_feed_uid=feed_uid
-and """ + where_clause + ' and feed_private = 0' * public + """
+and """ + $where + """
 order by item_created DESC, item_uid DESC
-limit ? offset ?""", params + [overload_threshold, offset])
+limit ? offset ?""", params + [$overload_threshold, offset])
 #if not mobile
 <div id="col1" class="col1">
 #end if
@@ -486,25 +425,21 @@ limit ? offset ?""", params + [overload_threshold, offset])
 #end if
 <div class="article" id="art$uid"><div class="headline"><span
 class="buttons"><img width="32" height="32" alt="down"
-src="<%=img_prefix%>down.gif" class="down" onclick="hide('$uid')"
-/><img width="32" height="32" alt="up" src="<%=img_prefix%>up.gif" class="up"
-onclick="highlight('$uid')" /></span><span class="ctarrow" id="ctarrow$uid" onclick="collapseToggle('$uid')"><img width="14" height="14" alt="hidden" src="<%=img_prefix%>a_dn.gif" />&nbsp;</span><a href="<%=redirect%>" class="headline"
+src="${img_prefix}down.gif" class="down" onclick="hide('$uid')"
+/><img width="32" height="32" alt="up" src="${img_prefix}up.gif" class="up"
+onclick="highlight('$uid')" /></span><span class="ctarrow" id="ctarrow$uid" onclick="collapseToggle('$uid')"><img width="14" height="14" alt="hidden" src="${img_prefix}a_dn.gif" />&nbsp;</span><a href="<%=redirect%>" class="headline"
 target="_blank" title="by $creator, cached at $loaded">$title</a><br><a
 href="feed_info?feed_uid=$feed_uid" title="" class="source screen" id="feed$uid">$feed_title</a><a href="$feed_html" title="" class="source print" id="feedprint$uid">$feed_title</a>
 $since_when
 $tag_call
-#if not public
+#def ITEM_CONTENT(uid, tag_info, content)
 <a href="edit?uid=$uid" class="screen">edit</a>
-#else
-#set $magic = '<!--TEMBOZ_ELLIPSIS>'
-#set $content = normalize.balance($content, 50, $magic)
-#if $magic in $content
-#set $content = $content.replace($magic, ' ...') + '<a href="' + link + '">(more after the jump)</a>'
-#end if
-#end if
-<br></div>$tag_info<div class="content" id="content$uid">
+<br></div>$tag_info
+<div class="content" id="content$uid">
 $content
 </div>
+#end def
+$ITEM_CONTENT($uid, $tag_info, $content)
 </div>
 #end for
 #if not mobile
@@ -520,3 +455,4 @@ $content
 ########################################################################
 <div style="clear: both;" />
 </body></html>
+#end block

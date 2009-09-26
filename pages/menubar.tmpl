@@ -1,2 +1,55 @@
 #extends TembozTemplate
 #implements respond
+
+#block CSS
+<link rel="stylesheet" type="text/css" media="screen" href="temboz.css">
+<link rel="stylesheet" type="text/css" media="print" href="temboz.css?media=print">
+#end block
+
+#block MENUBAR
+<div id="menu" class="menu"><nobr>
+#block CONTEXT_MENU
+#end block
+#block SEARCH_FORM
+  &nbsp;&nbsp;<a href="feeds">All feeds</a>&nbsp;&nbsp;
+  <a href="add">Add feed</a>&nbsp;&nbsp;<a href="rules">Filters</a>
+  &nbsp;&nbsp;
+########################################################################
+##
+## Crude search functionality
+##
+########################################################################
+<span>
+  <form method="GET" action="view" target="_blank" class="inline">
+    #if $getVar('feed_uid', None)
+      <input name="feed_uid" type="hidden" value="$feed_uid">
+    #end if
+    <input name="show" type="hidden" value="$show">
+    <input name="search" value="$getVar('search', '')">
+    <select name="show">
+      <option value="all" selected>All articles</option>
+      <option value="unread">Unread only</option>
+      <option value="down">Uninteresting only</option>
+      <option value="up">Interesting only</option>
+      <option value="filtered">Filtered only</option>
+    </select>
+    <select name="search_in">
+      <option value="title" selected>in titles</option>
+      <option value="content">in content</option>
+    </select>
+    <input type="submit" value="Search">
+  </form>
+</span>
+#end block
+  <div id="popup_view" class="popup">
+    <ul>
+      <li><a href="javascript:unhide_last();">Undo last hide</a></li>
+      <li><a href="javascript:unhide_all();">Undo all hides</a></li>
+    </ul>
+  </div>
+#block HELP
+<span class="help"><a href="settings">Settings</a>&nbsp;&nbsp;<a href="http://www.temboz.com/help<%=trans.path%>" target="_blank">Help</a></span>
+#end block
+</nobr>
+</div>
+#end block
