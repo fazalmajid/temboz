@@ -216,11 +216,10 @@ function toggle(item) {
 }
 \$(document).ready(function() {
   \$("span.tag").click(toggle_tag);
-  \$("a.callout").each(place_popup);
-  \$("a.callout").click(show_popup);
   \$(document).bind("keydown", "ctrl+z", unhide_last);
   \$(document).bind("keydown", "meta+z", unhide_last);
 });
+init_popups();
 </script>
 ########################################################################
 $CSS

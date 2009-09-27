@@ -29,3 +29,9 @@ function show_popup(event) {
   this.popup.toggle();
   $(document).click(hide_popups);
 }
+function init_popups() {
+  $(document).ready(function() {
+    $("a.callout").each(place_popup);
+    $("a.callout").click(show_popup);
+  });
+}

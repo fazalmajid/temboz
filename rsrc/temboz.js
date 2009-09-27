@@ -607,3 +607,4 @@ function capitalize(s){return s.charAt(0).toUpperCase()+s.substring(1);}
 function place_popup(){var popup=$("div#popup_"+this.id);var callout_pos=$(this).position();popup.css("left",callout_pos.left);popup.css("top",callout_pos.top+$(this).height()+3);this.popup=popup;}
 function hide_popups(){$(document).unbind("click",hide_popups);$("div.popup").hide();}
 function show_popup(event){event.stopPropagation();this.popup.toggle();$(document).click(hide_popups);}
+function init_popups(){$(document).ready(function(){$("a.callout").each(place_popup);$("a.callout").click(show_popup);});}
