@@ -11,9 +11,12 @@
 #block CONTEXT_MENU
 #end block
 #block SEARCH_FORM
-  &nbsp;&nbsp;<a href="feeds">All feeds</a>&nbsp;&nbsp;
-  <a href="add">Add feed</a>&nbsp;&nbsp;<a href="rules">Filters</a>
   &nbsp;&nbsp;
+  #for (name, link) in [('All unread', 'view'), ('All feeds', 'feeds'), ('Add feed', 'add'), ('Filters', 'rules')]
+    #if not trans.path[1:].startswith(link)
+      <a href="$link">$name</a>&nbsp;&nbsp;
+    #end if
+  #end for
 ########################################################################
 ##
 ## Crude search functionality
@@ -24,7 +27,6 @@
     #if $getVar('feed_uid', None)
       <input name="feed_uid" type="hidden" value="$feed_uid">
     #end if
-    <input name="show" type="hidden" value="$show">
     <input name="search" value="$getVar('search', '')">
     <select name="show">
       <option value="all" selected>All articles</option>

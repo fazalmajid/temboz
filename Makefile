@@ -26,7 +26,7 @@ sync-js:
 	vcheck --verbose -d --file etc/vcheck
 	(cd spool; wget -N http://jquery.malsup.com/form/jquery.form.js)
 js:
-	cat $(JUI)/../jquery-[0-9]*.js spool/jquery.form.js $(JUI)/ui.core.js  $(JUI)/ui.dialog.js $(JUI)/ui.tabs.js spool/jquery.hotkeys.meta.js | jsmin > rsrc/temboz.js
+	cat $(JUI)/../jquery-[0-9]*.js spool/jquery.form.js $(JUI)/ui.core.js  $(JUI)/ui.dialog.js $(JUI)/ui.tabs.js spool/jquery.hotkeys.meta.js rsrc/specific.js | jsmin > rsrc/temboz.js
 	./temboz --kill
 changelog:
 	cvs2cl.pl --tags -g -q

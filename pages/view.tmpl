@@ -99,20 +99,6 @@ function webop(op, uid) {
   $.get('/xmlfeedback/' + op + '/' + Math.random().toString().substring(8) + '/' + uid + '.xml');
 }
 #end block
-## get user selection, empty string if none or unsupported browser
-function get_selection() {
-  var userSelection;
-  userSelection = "";
-  if(window.getSelection) {
-    userSelection = String(window.getSelection());
-  } else if (document.selection) {
-    userSelection = document.selection.createRange().text;
-  }
-  return \$.trim(userSelection);
-}
-function capitalize(s) {
-  return s.charAt(0).toUpperCase() + s.substring(1);
-}
 function kw_dialog(id, kw, context) {
   var tmpl = \$("div#kw_form_tmpl");
   var body = '<div title="Add a keyword rule">' + tmpl.html() + '</div>';
@@ -227,22 +213,6 @@ function unhide_last() {
 }
 function toggle(item) {
   document.items[item].checked = !document.items[item].checked;
-}
-function place_popup() {
-  var popup = \$("div#popup_" + this.id);
-  var callout_pos = \$(this).position();
-  popup.css("left", callout_pos.left);
-  popup.css("top", callout_pos.top + \$(this).height() + 3);
-  this.popup = popup;
-}
-function hide_popups() {
-  \$(document).unbind("click", hide_popups);
-  \$("div.popup").hide();
-}
-function show_popup(event) {
-  event.stopPropagation();
-  this.popup.toggle();
-  \$(document).click(hide_popups);
 }
 \$(document).ready(function() {
   \$("span.tag").click(toggle_tag);
