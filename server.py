@@ -265,7 +265,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     images[fn] = open('images/' + fn).read()
   rsrc = {}
   for fn in [fn for fn in os.listdir('rsrc')
-             if fn.endswith('.js')]:
+             if fn.endswith('.js') and not fn.startswith('.')]:
     rsrc[fn] = open('rsrc/' + fn).read()
   def favicon(self):
     self.browser_output(200, 'image/x-icon', self.images['favicon.ico'],

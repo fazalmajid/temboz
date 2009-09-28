@@ -15,9 +15,6 @@ function capitalize(s) {
 /* pop-up menus */
 function place_popup() {
   var popup = $("div#popup_" + this.id);
-  var callout_pos = $(this).position();
-  popup.css("left", callout_pos.left);
-  popup.css("top", callout_pos.top + $(this).height() + 3);
   this.popup = popup;
 }
 function hide_popups() {
@@ -26,6 +23,12 @@ function hide_popups() {
 }
 function show_popup(event) {
   event.stopPropagation();
+
+  var callout = $(this).offset();
+  var container = $(this).offsetParent().offset();
+  this.popup.css("left", callout.left - container.left);
+  this.popup.css("top", callout.top - container.top + $(this).height() + 3);
+
   this.popup.toggle();
   $(document).click(hide_popups);
 }
