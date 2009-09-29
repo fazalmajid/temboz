@@ -218,6 +218,8 @@ function toggle(item) {
   \$("span.tag").click(toggle_tag);
   \$(document).bind("keydown", "ctrl+z", unhide_last);
   \$(document).bind("keydown", "meta+z", unhide_last);
+  \$(document).bind("keydown", "meta+ctrl+z", unhide_last);
+  \$(document).bind("keydown", "ctrl+meta+z", unhide_last);
 });
 init_popups();
 </script>
@@ -269,7 +271,7 @@ $RATING_CALLOUT($item_desc)
   ($overload_threshold shown)&nbsp;&nbsp;
   #set cutoff = ($overload_threshold + 1) / 2 + 1
 #end if
-  <a id="view" class="callout"><u>View</u> <small>&#9660;</small></a>
+  <a id="view" class="callout"><u>Edit</u> <small>&#9660;</small></a>
   <div id="popup_rating" class="popup">
     <ul>
       #for (rating_name, rating_desc, discard, discard) in $ratings
