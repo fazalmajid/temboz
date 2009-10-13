@@ -23,6 +23,11 @@ ratings = [
   ('up',       'interesting',   'Interesting only',  'item_rating > 0'),
   ('filtered', 'filtered',      'Filtered only',     'item_rating = -2')
 ]
+sorts = [
+  ('created',  'article date',  'Article date',      'item_created DESC'),
+  ('seen',     'cached date',   'Cached date',       'item_uid DESC'),
+  ('snr',      'feed SNR',      'Feed SNR',          'snr DESC'),
+]
 
 class AutoDiscoveryHandler(HTMLParser.HTMLParser):
   """Find RSS autodiscovery info, as specified in:
@@ -545,7 +550,7 @@ def notification(db, c, feed_uid, title, content):
   hash = md5.new(content).hexdigest()
   guid = 'temboz://%s/%s' % (feed_uid, hash)
   # do nothing if the link is clicked
-  link = 'javascript:void(nil);'
+  link = '/feed_info?feed_uid=%d' % feed_uid
   c.execute("""insert into fm_items (item_feed_uid, item_guid,
   item_created, item_modified, item_viewed, item_link, item_md5hex,
   item_title, item_content, item_creator, item_rating, item_rule_uid)

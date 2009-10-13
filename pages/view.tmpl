@@ -34,6 +34,13 @@
 #set global $show      = $ratings[$i][0]
 #set global $item_desc = $ratings[$i][1]
 #set global $where     = $ratings[$i][3]
+#set global $sort = $getVar('sort', 'created')
+#set global $sorts = update.sorts
+#set $sorts_dict = dict(($sorts[i][0], i) for i in range(len($sorts)))
+#set $i = $sorts_dict.get($sort, 1)
+#set global $sort      = $sorts[$i][0]
+#set global $sort_desc = $sorts[$i][1]
+#set global $order_by  = $sorts[$i][3]
 #block EXTRA_WHERE_CLAUSE
 #end block
 #if $show == 'filtered'
@@ -243,12 +250,12 @@ $CSS
 ########################################################################
 #silent c.execute("""update fm_items set item_viewed=julianday('now')
 where item_uid in (
-  select item_uid from fm_items, fm_feeds
+  select item_uid from fm_items, v_feeds_snr
   where item_feed_uid=feed_uid and """ + $where + """
   order by item_created DESC, item_uid DESC
   limit ? offset ?)""", params + [$overload_threshold, offset])
 ##
-#silent c.execute("""select count(*) from fm_items, fm_feeds
+#silent c.execute("""select count(*) from fm_items, v_feeds_snr
 where item_feed_uid=feed_uid and """ + $where, params)
 ########################################################################
 ##
@@ -271,6 +278,17 @@ $RATING_CALLOUT($item_desc)
   ($overload_threshold shown)&nbsp;&nbsp;
   #set cutoff = ($overload_threshold + 1) / 2 + 1
 #end if
+  sorted by
+  <a id="sort" class="callout"><u>$sort_desc</u> <small>&#9660;</small></a>
+  <div id="popup_sort" class="popup">
+    <ul>
+      #for (sort_name, sort_desc, discard, discard) in $sorts
+	#set $url = trans.change_param(sort=sort_name)
+	<li><a href="$url">$sort_desc</a></li>
+      #end for
+    </ul>
+  </div>
+  &nbsp;&nbsp;
   <a id="view" class="callout"><u>Edit</u> <small>&#9660;</small></a>
   <div id="popup_rating" class="popup">
     <ul>
@@ -320,10 +338,10 @@ $MENUBAR(trans=trans)
 #set tag_dict = {}
 #silent c.execute("""select tag_item_uid, tag_name, tag_by
 from  fm_tags, (
-  select item_uid from fm_items, fm_feeds
+  select item_uid from fm_items, v_feeds_snr
   where item_feed_uid=feed_uid
   and """ + $where + """
-  order by item_created DESC, item_uid DESC
+  order by """ + $order_by + """, item_uid DESC
   limit ? offset ?)
 where tag_item_uid=item_uid""", params + [$overload_threshold, offset])
 #for item_uid, tag_name, tag_by in c
@@ -334,9 +352,9 @@ where tag_item_uid=item_uid""", params + [$overload_threshold, offset])
 item_content, datetime(item_loaded), date(item_created), feed_uid,
 feed_title, feed_html, feed_xml, julianday('now') - julianday(item_created),
 item_rating, item_rule_uid
-from fm_items, fm_feeds where item_feed_uid=feed_uid
+from fm_items, v_feeds_snr where item_feed_uid=feed_uid
 and """ + $where + """
-order by item_created DESC, item_uid DESC
+order by """ + $order_by + """, item_uid DESC
 limit ? offset ?""", params + [$overload_threshold, offset])
 #if not mobile
 <div id="col1" class="col1">
