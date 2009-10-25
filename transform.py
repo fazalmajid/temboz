@@ -128,6 +128,9 @@ filter_list = [
             re.MULTILINE),
   # Inquirer blegging
   degunk.Re('<div class="mf-viral">.*</div>'),
+  # Feediz ads
+  degunk.Re('<p>.*?feediz.com.*?</p>', re.MULTILINE + re.DOTALL),
+  degunk.Re('<a[^>]*feediz.com*?</a>', re.MULTILINE + re.DOTALL),
   # Salon ads
   degunk.Re('<p><a href="http://feeds.salon.com/~a[^>]*><img '
             '[^>]*></a></p><img[^>]*>'),
