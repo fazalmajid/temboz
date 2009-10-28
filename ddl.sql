@@ -28,7 +28,6 @@ create table fm_items (
 	item_loaded	timestamp,
 	item_created	timestamp,
 	item_modified	timestamp,
-	item_viewed	timestamp,
 	item_link	varchar(255),
 	item_md5hex	char(32) not null,
 	item_title	text,
