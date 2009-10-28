@@ -434,9 +434,6 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
         c.execute('select item_link from fm_items where item_uid=%d'
                   % item_uid)
         redirect_url = c.fetchone()[0]
-        c.execute("""update fm_items set item_viewed=julianday("now")
-        where item_uid=%d""" % item_uid)
-        db.commit()
         c.close()
         self.browser_output(301, None, 'This document has moved.',
                             ['Location: ' + redirect_url])

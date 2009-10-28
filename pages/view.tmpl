@@ -243,17 +243,6 @@ $CSS
 #if $getVar('where_clause', False)
 #set global $where = $where + ' and ' + $getVar('where_clause')
 #end if
-########################################################################
-##
-## Update the view timestamp
-##
-########################################################################
-#silent c.execute("""update fm_items set item_viewed=julianday('now')
-where item_uid in (
-  select item_uid from fm_items, v_feeds_snr
-  where item_feed_uid=feed_uid and """ + $where + """
-  order by item_created DESC, item_uid DESC
-  limit ? offset ?)""", params + [$overload_threshold, offset])
 ##
 #silent c.execute("""select count(*) from fm_items, v_feeds_snr
 where item_feed_uid=feed_uid and """ + $where, params)
@@ -265,19 +254,20 @@ where item_feed_uid=feed_uid and """ + $where, params)
 ##
 ########################################################################
 #set global $num_items = int(c.fetchone()[0])
-#set cutoff = ($num_items + 1) / 2 + 1
+#set global $cutoff = ($num_items + 1) / 2 + 1
 #set count = 0
 ########################################################################
 #def CONTEXT_MENU
+#if $num_items > $overload_threshold
+$overload_threshold / $num_items
+  #set global $cutoff = ($overload_threshold + 1) / 2 + 1
+#else
 $num_items
+#end if
 #def RATING_CALLOUT($item_desc)
   <a id="rating" class="callout"><u>$item_desc</u> <small>&#9660;</small></a>
 #end def
 $RATING_CALLOUT($item_desc)
-#if $num_items > $overload_threshold
-  ($overload_threshold shown)&nbsp;&nbsp;
-  #set cutoff = ($overload_threshold + 1) / 2 + 1
-#end if
   sorted by
   <a id="sort" class="callout"><u>$sort_desc</u> <small>&#9660;</small></a>
   <div id="popup_sort" class="popup">
@@ -289,7 +279,13 @@ $RATING_CALLOUT($item_desc)
     </ul>
   </div>
   &nbsp;&nbsp;
-  <a id="view" class="callout"><u>Edit</u> <small>&#9660;</small></a>
+  <a id="view" class="callout"><u>More</u> <small>&#9660;</small></a>
+  <div id="popup_view" class="popup">
+    <ul>
+      <li><a href="javascript:unhide_last();">Undo last hide (Ctrl-Z)</a></li>
+      <li><a href="javascript:unhide_all();">Undo all hides</a></li>
+    </ul>
+  </div>
   <div id="popup_rating" class="popup">
     <ul>
       #for (rating_name, rating_desc, discard, discard) in $ratings
@@ -361,7 +357,7 @@ limit ? offset ?""", params + [$overload_threshold, offset])
 #end if
 #for uid, creator, title, link, content, loaded, created, feed_uid, feed_title, feed_html, feed_xml, delta_created, rating, filtered_by in c
 #set count += 1
-#if count == cutoff
+#if count == $cutoff
 ## this empty paragraph prevents the right column from resizing when all items
 ## in the left column are dismissed
 <p></p>

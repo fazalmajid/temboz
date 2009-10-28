@@ -467,7 +467,7 @@ Returns a tuple (number of items added unread, number of filtered items)"""
     # check if the item already exists, using the GUID as key
     c.execute("""select item_uid, item_link,
     item_loaded, item_created, item_modified,
-    item_viewed, item_md5hex, item_title, item_content, item_creator
+    item_md5hex, item_title, item_content, item_creator
     from fm_items where item_feed_uid=? and item_guid=?""",
               [feed_uid, guid])
     l = c.fetchall()
@@ -489,7 +489,7 @@ Returns a tuple (number of items added unread, number of filtered items)"""
     else:
       assert len(l) == 1
       (item_uid, item_link, item_loaded, item_created, item_modified,
-       item_viewed, item_md5hex, item_title, item_content, item_creator) = l[0]
+       item_md5hex, item_title, item_content, item_creator) = l[0]
       # if this is a feed without timestamps, use our timestamp to determine
       # the oldest item in the feed XML file
       if 'oldest' in f and f['oldest'] == '1970-01-01 00:00:00':
@@ -506,10 +506,10 @@ Returns a tuple (number of items added unread, number of filtered items)"""
       link = normalize.dereference(link)
       try:
         c.execute("""insert into fm_items (item_feed_uid, item_guid,
-        item_created,   item_modified, item_viewed, item_link, item_md5hex,
+        item_created,   item_modified, item_link, item_md5hex,
         item_title, item_content, item_creator, item_rating, item_rule_uid)
         values
-        (?, ?, julianday(?), julianday(?), NULL, ?, ?, ?, ?, ?, ?, ?)""",
+        (?, ?, julianday(?), julianday(?), ?, ?, ?, ?, ?, ?, ?)""",
                   [feed_uid, guid, created, modified, link,
                    md5.new(content).hexdigest(),
                    title, content, author, skip, filtered_by])
@@ -552,10 +552,10 @@ def notification(db, c, feed_uid, title, content):
   # do nothing if the link is clicked
   link = '/feed_info?feed_uid=%d' % feed_uid
   c.execute("""insert into fm_items (item_feed_uid, item_guid,
-  item_created, item_modified, item_viewed, item_link, item_md5hex,
+  item_created, item_modified, item_link, item_md5hex,
   item_title, item_content, item_creator, item_rating, item_rule_uid)
   values
-  (?, ?, julianday('now'), julianday('now'), NULL, ?, ?,
+  (?, ?, julianday('now'), julianday('now'), ?, ?,
   ?, ?, ?, 0, NULL)""",
             [feed_uid, guid, link, hash,
              title, content, 'Temboz notifications'])
