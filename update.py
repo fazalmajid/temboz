@@ -28,6 +28,7 @@ sorts = [
   ('seen',     'cached date',   'Cached date',       'item_uid DESC'),
   ('snr',      'feed SNR',      'Feed SNR',          'snr DESC'),
 ]
+sorts_dict = dict((sorts[i][0], i) for i in range(len(sorts)))
 
 class AutoDiscoveryHandler(HTMLParser.HTMLParser):
   """Find RSS autodiscovery info, as specified in:
@@ -818,3 +819,23 @@ class PeriodicUpdater(threading.Thread):
         update()
       except:
         util.print_stack()
+
+def view_sql(c, where_clause, sort, params, overload_threshold):
+  c.execute("""create temp table articles as select
+    item_uid, item_creator, item_title, item_link, item_content,
+    datetime(item_loaded), date(item_created) as item_created,
+    julianday('now') - julianday(item_created) as delta_created, item_rating,
+    item_rule_uid, item_feed_uid
+  from fm_items
+  where """ + where_clause + """ limit ?""",
+  params + [overload_threshold])
+  c.execute("""create index articles_i on articles(item_uid)""")
+  c.execute("""select tag_item_uid, tag_name, tag_by
+  from  fm_tags, articles where tag_item_uid=item_uid""")
+  tag_dict = dict()
+  for item_uid, tag_name, tag_by in c:
+    tag_dict.setdefault(item_uid, []).append(tag_name)
+  c.execute("""select articles.*, feed_title, feed_html, feed_xml
+  from articles, v_feeds_snr
+  where item_feed_uid=feed_uid order by """ + sort + """, item_uid DESC""")
+  return tag_dict

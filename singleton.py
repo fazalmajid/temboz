@@ -73,7 +73,7 @@ class PseudoCursor3(object):
     global db
     # SQLite3 can deadlock when multiple writers collide, so we use a lock to
     # prevent this from happening
-    if args[0].split()[0].lower() in ['insert', 'update', 'delete'] \
+    if args[0].split()[0].lower() in ['insert', 'update', 'delete', 'create'] \
            and not self.locked:
       db.acquire()
     before = time.time()
@@ -92,10 +92,11 @@ class PseudoCursor3(object):
         time.sleep(backoff)
         backoff = min(backoff * 2, 5.0)
     elapsed = time.time() - before
-    if param.debug:
+    if param.get('debug_sql', False):
       if elapsed > 5.0:
         print >> param.log, 'Slow SQL:', elapsed, args, kwargs
-      print >> param.log, thread.get_ident(), time.time(), 'done'
+      if param.debug:
+        print >> param.log, thread.get_ident(), time.time(), 'done'
     return result
 
 def commit_wrapper(method):

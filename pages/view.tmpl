@@ -10,7 +10,6 @@
 ##   feed_uid
 ##   search
 ##   where_clause
-##   offset
 ##
 ########################################################################
 #from singleton import db
@@ -36,8 +35,7 @@
 #set global $where     = $ratings[$i][3]
 #set global $sort = $getVar('sort', 'created')
 #set global $sorts = update.sorts
-#set $sorts_dict = dict(($sorts[i][0], i) for i in range(len($sorts)))
-#set $i = $sorts_dict.get($sort, 1)
+#set $i = update.sorts_dict.get($sort, 1)
 #set global $sort      = $sorts[$i][0]
 #set global $sort_desc = $sorts[$i][1]
 #set global $order_by  = $sorts[$i][3]
@@ -221,12 +219,26 @@ function unhide_last() {
 function toggle(item) {
   document.items[item].checked = !document.items[item].checked;
 }
+function assign_column() {
+  var height = \$(this).height();
+  var left = \$("div#col1").height();
+  var right = \$("div#col2").height();
+
+  if(Math.abs(left + height - right) > Math.abs(right + height - left)) {
+    \$(this).appendTo("div#col2");
+  } else {
+    \$(this).appendTo("div#col1");
+  }
+}
 \$(document).ready(function() {
   \$("span.tag").click(toggle_tag);
   \$(document).bind("keydown", "ctrl+z", unhide_last);
   \$(document).bind("keydown", "meta+z", unhide_last);
   \$(document).bind("keydown", "meta+ctrl+z", unhide_last);
   \$(document).bind("keydown", "ctrl+meta+z", unhide_last);
+  var articles = \$("div.article");
+  articles.each(assign_column);
+  \$("span#count").html(String(articles.size()));
 });
 init_popups();
 </script>
@@ -243,27 +255,9 @@ $CSS
 #if $getVar('where_clause', False)
 #set global $where = $where + ' and ' + $getVar('where_clause')
 #end if
-##
-#silent c.execute("""select count(*) from fm_items, v_feeds_snr
-where item_feed_uid=feed_uid and """ + $where, params)
-########################################################################
-##
-## We try to get a balanced two-column design by having as many articles
-## on either side. Very long articles will unbalance the flow, but this
-## works reasonably well in practice.
-##
-########################################################################
-#set global $num_items = int(c.fetchone()[0])
-#set global $cutoff = ($num_items + 1) / 2 + 1
-#set count = 0
 ########################################################################
 #def CONTEXT_MENU
-#if $num_items > $overload_threshold
-$overload_threshold / $num_items
-  #set global $cutoff = ($overload_threshold + 1) / 2 + 1
-#else
-$num_items
-#end if
+<span id="count">???</span>
 #def RATING_CALLOUT($item_desc)
   <a id="rating" class="callout"><u>$item_desc</u> <small>&#9660;</small></a>
 #end def
@@ -328,43 +322,20 @@ $MENUBAR(trans=trans)
 #end block
 ########################################################################
 ##
+## Column placeholders will be filled by assign_column after DOM has loaded
+##
+########################################################################
+<div id="col1" class="col1"></div>
+<div id="col2" class="col2"></div>
+<div style="clear: both;" />
+<div id="initial" class="col1">
+########################################################################
+##
 ## Fetch overload_threshold (default 200) items
 ##
 ########################################################################
-#set tag_dict = {}
-#silent c.execute("""select tag_item_uid, tag_name, tag_by
-from  fm_tags, (
-  select item_uid from fm_items, v_feeds_snr
-  where item_feed_uid=feed_uid
-  and """ + $where + """
-  order by """ + $order_by + """, item_uid DESC
-  limit ? offset ?)
-where tag_item_uid=item_uid""", params + [$overload_threshold, offset])
-#for item_uid, tag_name, tag_by in c
-#silent tag_dict.setdefault(item_uid, []).append(tag_name)
-#end for
-########################################################################
-#silent c.execute("""select item_uid, item_creator, item_title, item_link,
-item_content, datetime(item_loaded), date(item_created), feed_uid,
-feed_title, feed_html, feed_xml, julianday('now') - julianday(item_created),
-item_rating, item_rule_uid
-from fm_items, v_feeds_snr where item_feed_uid=feed_uid
-and """ + $where + """
-order by """ + $order_by + """, item_uid DESC
-limit ? offset ?""", params + [$overload_threshold, offset])
-#if not mobile
-<div id="col1" class="col1">
-#end if
-#for uid, creator, title, link, content, loaded, created, feed_uid, feed_title, feed_html, feed_xml, delta_created, rating, filtered_by in c
-#set count += 1
-#if count == $cutoff
-## this empty paragraph prevents the right column from resizing when all items
-## in the left column are dismissed
-<p></p>
-#if not mobile
-</div><div id="col2" class="col2">
-#end if
-#end if
+#set tag_dict = update.view_sql(c, $where, $order_by, $params, $overload_threshold)
+#for uid, creator, title, link, content, loaded, created, delta_created, rating, filtered_by, feed_uid, feed_title, feed_html, feed_xml in c
 ########################################################################
 ##
 ## URL to use for the article title link
@@ -422,11 +393,9 @@ $content
 $ITEM_CONTENT($uid, $tag_info, $content)
 </div>
 #end for
-#if not mobile
-</div>
-#end if
 #silent db.commit()
 #silent c.close()
+</div>
 ########################################################################
 ##
 ## If we want to put stuff at the page footer, make sure we do not collide
