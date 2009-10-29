@@ -92,7 +92,7 @@ class PseudoCursor3(object):
         time.sleep(backoff)
         backoff = min(backoff * 2, 5.0)
     elapsed = time.time() - before
-    if param.get('debug_sql', False):
+    if getattr(param, 'debug_sql', False):
       if elapsed > 5.0:
         print >> param.log, 'Slow SQL:', elapsed, args, kwargs
       if param.debug:

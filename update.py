@@ -820,14 +820,15 @@ class PeriodicUpdater(threading.Thread):
       except:
         util.print_stack()
 
-def view_sql(c, where_clause, sort, params, overload_threshold):
+def view_sql(c, where, sort, params, overload_threshold):
   c.execute("""create temp table articles as select
     item_uid, item_creator, item_title, item_link, item_content,
     datetime(item_loaded), date(item_created) as item_created,
     julianday('now') - julianday(item_created) as delta_created, item_rating,
-    item_rule_uid, item_feed_uid
-  from fm_items
-  where """ + where_clause + """ limit ?""",
+    item_rule_uid, item_feed_uid, feed_title, feed_html, feed_xml
+  from fm_items, v_feeds_snr
+  where item_feed_uid=feed_uid and """ + where + """
+  order by """ + sort + """ limit ?""",
   params + [overload_threshold])
   c.execute("""create index articles_i on articles(item_uid)""")
   c.execute("""select tag_item_uid, tag_name, tag_by
@@ -835,7 +836,6 @@ def view_sql(c, where_clause, sort, params, overload_threshold):
   tag_dict = dict()
   for item_uid, tag_name, tag_by in c:
     tag_dict.setdefault(item_uid, []).append(tag_name)
-  c.execute("""select articles.*, feed_title, feed_html, feed_xml
-  from articles, v_feeds_snr
-  where item_feed_uid=feed_uid order by """ + sort + """, item_uid DESC""")
+  c.execute("""select * from articles
+  order by """ + sort + """, item_uid DESC""")
   return tag_dict

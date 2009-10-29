@@ -84,6 +84,7 @@
 <html>
 <head><title>Temboz - $item_desc items</title>
 <meta name="robots" content="noarchive,noindex,follow,nocache">
+<meta name="viewport" content="initial-scale=1.0">
 ########################################################################
 ##
 ## This script handle Thumbs up/down using the XMLHttpRequest method
@@ -237,8 +238,13 @@ function assign_column() {
   \$(document).bind("keydown", "meta+ctrl+z", unhide_last);
   \$(document).bind("keydown", "ctrl+meta+z", unhide_last);
   var articles = \$("div.article");
-  articles.each(assign_column);
-  \$("span#count").html(String(articles.size()));
+  \$("b#count").html(String(articles.size()));
+## use only one column for browsers with less than 600px wide
+  if(\$("body").width() < 800) {
+    \$("div#initial").removeClass("col1");
+  } else {
+    articles.each(assign_column);
+  }
 });
 init_popups();
 </script>
@@ -257,13 +263,15 @@ $CSS
 #end if
 ########################################################################
 #def CONTEXT_MENU
-<span id="count">???</span>
+<b id="count">?</b>
 #def RATING_CALLOUT($item_desc)
   <a id="rating" class="callout"><u>$item_desc</u> <small>&#9660;</small></a>
 #end def
 $RATING_CALLOUT($item_desc)
   sorted by
   <a id="sort" class="callout"><u>$sort_desc</u> <small>&#9660;</small></a>
+  &nbsp;&nbsp;
+  <a id="view" class="callout"><u>More</u> <small>&#9660;</small></a>
   <div id="popup_sort" class="popup">
     <ul>
       #for (sort_name, sort_desc, discard, discard) in $sorts
@@ -272,8 +280,6 @@ $RATING_CALLOUT($item_desc)
       #end for
     </ul>
   </div>
-  &nbsp;&nbsp;
-  <a id="view" class="callout"><u>More</u> <small>&#9660;</small></a>
   <div id="popup_view" class="popup">
     <ul>
       <li><a href="javascript:unhide_last();">Undo last hide (Ctrl-Z)</a></li>
