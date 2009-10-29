@@ -825,7 +825,7 @@ def view_sql(c, where, sort, params, overload_threshold):
     item_uid, item_creator, item_title, item_link, item_content,
     datetime(item_loaded), date(item_created) as item_created,
     julianday('now') - julianday(item_created) as delta_created, item_rating,
-    item_rule_uid, item_feed_uid, feed_title, feed_html, feed_xml
+    item_rule_uid, item_feed_uid, feed_title, feed_html, feed_xml, snr
   from fm_items, v_feeds_snr
   where item_feed_uid=feed_uid and """ + where + """
   order by """ + sort + """ limit ?""",
