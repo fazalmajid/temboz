@@ -33,7 +33,7 @@
 #set global $show      = $ratings[$i][0]
 #set global $item_desc = $ratings[$i][1]
 #set global $where     = $ratings[$i][3]
-#set global $sort = $getVar('sort', 'created')
+#set global $sort = $getVar('sort', 'seen')
 #set global $sorts = update.sorts
 #set $i = update.sorts_dict.get($sort, 1)
 #set global $sort      = $sorts[$i][0]
@@ -238,7 +238,11 @@ function assign_column() {
   \$(document).bind("keydown", "meta+ctrl+z", unhide_last);
   \$(document).bind("keydown", "ctrl+meta+z", unhide_last);
   var articles = \$("div.article");
-  \$("b#count").html(String(articles.size()));
+  if(articles.size() < $overload_threshold) {
+    \$("b#count").html(String(articles.size()));
+  } else {
+    \$("b#count").html(String(articles.size()) + "+");
+  }
 ## use only one column for browsers with less than 600px wide
   if(\$("body").width() < 800) {
     \$("div#initial").removeClass("col1");
