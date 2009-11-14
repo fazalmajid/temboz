@@ -26,6 +26,7 @@ ratings = [
 sorts = [
   ('created',  'article date',  'Article date',      'item_created DESC'),
   ('seen',     'cached date',   'Cached date',       'item_uid DESC'),
+  ('rated',    'rated on',      'Rated on',          'item_rated DESC'),
   ('snr',      'feed SNR',      'Feed SNR',          'snr DESC'),
 ]
 sorts_dict = dict((sorts[i][0], i) for i in range(len(sorts)))
@@ -270,6 +271,15 @@ def title_url(feed_uid):
     return c.fetchone()
   finally:
     c.close()
+
+def set_rating(item_uid, rating):
+  from singleton import db
+  c = db.cursor()
+  c.execute("""update fm_items
+  set item_rating=?, item_rated=julianday('now')
+  where item_uid=?""", [rating, item_uid])
+  db.commit()
+  c.close()
 
 def catch_up(feed_uid):
   feed_uid = int(feed_uid)
@@ -824,11 +834,12 @@ def view_sql(c, where, sort, params, overload_threshold):
   c.execute("""create temp table articles as select
     item_uid, item_creator, item_title, item_link, item_content,
     datetime(item_loaded), date(item_created) as item_created,
+    datetime(item_rated) as item_rated,
     julianday('now') - julianday(item_created) as delta_created, item_rating,
     item_rule_uid, item_feed_uid, feed_title, feed_html, feed_xml, snr
   from fm_items, v_feeds_snr
   where item_feed_uid=feed_uid and """ + where + """
-  order by """ + sort + """ limit ?""",
+  order by """ + sort + """, item_uid DESC limit ?""",
   params + [overload_threshold])
   c.execute("""create index articles_i on articles(item_uid)""")
   c.execute("""select tag_item_uid, tag_name, tag_by

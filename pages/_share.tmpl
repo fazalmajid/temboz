@@ -26,19 +26,24 @@ item_content, feed_title,
 strftime('%Y-%m-%dT%H:%M:%SZ', item_created)
 from fm_items, fm_feeds where item_feed_uid=feed_uid
 and item_rating=1 and feed_private = 0
-order by item_created DESC, item_uid DESC
+order by item_rated DESC, item_uid DESC
 limit 50""")
 #for guid, creator, title, link, content, feed_title, created in c
-  #set $content = normalize.balance($content, 50, magic)
+  #set content = self.atom_content(normalize.balance($content, 50, magic))
+  #set feed_title = self.atom_content(feed_title)
+  #set title = self.atom_content(title)
   #if creator == 'Unknown'
     #set $creator = $feed_title
   #end if
+  #set creator = self.atom_content(creator)
+  #set link = normalize.escape_xml(link)
+  #set guid = normalize.escape_xml(guid)
   <entry>
     <id>$guid</id>
     <title>$feed_title: $title</title>
     <updated>$created</updated>
     <author><name>$creator</name></author>
-    <content type="html"><%=self.atom_content(content)%></content>
+    <content type="html">$content</content>
     <link rel="alternate" href="$link" />
 ##    <category term="Macintosh" />
   </entry>

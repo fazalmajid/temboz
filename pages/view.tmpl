@@ -16,6 +16,8 @@
 #set c = db.cursor()
 #import time, param, filters, update
 #silent filters.load_rules(db, c)
+## width below which a single-column layout is shown
+#set $TWOCOL_WIDTH = 800
 ########################################################################
 ##
 ## What items to use
@@ -243,10 +245,7 @@ function assign_column() {
   } else {
     \$("b#count").html(String(articles.size()) + "+");
   }
-## use only one column for browsers with less than 600px wide
-  if(\$("body").width() < 800) {
-    \$("div#initial").removeClass("col1");
-  } else {
+  if(\$("body").width() >= $TWOCOL_WIDTH) {
     articles.each(assign_column);
   }
 });
@@ -338,14 +337,21 @@ $MENUBAR(trans=trans)
 <div id="col1" class="col1"></div>
 <div id="col2" class="col2"></div>
 <div style="clear: both;" />
-<div id="initial" class="col1">
+<script language="JavaScript">
+if(\$("body").width() < $TWOCOL_WIDTH) {
+  document.write('<div id="initial">');
+} else {
+  document.write('<div id="initial" class="col1">');
+}
+</script>
+
 ########################################################################
 ##
 ## Fetch overload_threshold (default 200) items
 ##
 ########################################################################
 #set tag_dict = update.view_sql(c, $where, $order_by, $params, $overload_threshold)
-#for uid, creator, title, link, content, loaded, created, delta_created, rating, filtered_by, feed_uid, feed_title, feed_html, feed_xml, feed_snr in c
+#for uid, creator, title, link, content, loaded, created, rated, delta_created, rating, filtered_by, feed_uid, feed_title, feed_html, feed_xml, feed_snr in c
 ########################################################################
 ##
 ## URL to use for the article title link

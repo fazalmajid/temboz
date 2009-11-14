@@ -273,22 +273,14 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
   def xml(self):
     self.browser_output(200, 'text/xml', '<?xml version="1.0"?><nothing />')
 
-  def set_rating(self, item_uid, rating):
-    from singleton import db
-    c = db.cursor()
-    c.execute('update fm_items set item_rating=%d where item_uid=%d'
-              % (rating, item_uid))
-    db.commit()
-    c.close()
-
   def op_demote(self, item_uid):
-    self.set_rating(item_uid, -1)
+    update.set_rating(item_uid, -1)
     
   def op_basic(self, item_uid):
-    self.set_rating(item_uid, 0)
+    update.set_rating(item_uid, 0)
     
   def op_promote(self, item_uid):
-    self.set_rating(item_uid, 1)
+    update.set_rating(item_uid, 1)
 
   def set_mime_type(self, tmpl):
     if type(tmpl) in [list, tuple]:

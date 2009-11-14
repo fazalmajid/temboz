@@ -301,6 +301,14 @@ if not c.fetchone()[0]:
   db.commit()  
   print >> param.log, 'done.'
 
+c.execute("""select count(*) from sqlite_master
+where name='fm_items' and sql like '%item_rated%'""")
+if not c.fetchone()[0]:
+  print >> param.log, 'WARNING: upgrading table fm_items to add item_rated...',
+  c.execute("""alter table fm_items add column item_rated timestamp""")
+  db.commit()  
+  print >> param.log, 'done.'
+
 # we have to recreate this view each time as param.decay may have changed
 c.execute("select sql from sqlite_master where name='v_feeds_snr'")
 sql = c.fetchone()
