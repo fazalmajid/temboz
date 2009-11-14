@@ -54,17 +54,27 @@ from v_feeds_snr order by feed_status ASC, """ \
 ## Loop over feeds
 ##
 ########################################################################
+#set sum_unread = 0
+#set sum_filtered = 0
+#set sum_interesting = 0
+#set sum_total = 0
 #for feed_uid, feed_title, feed_html, feed_xml, delta_t, interesting, unread, uninteresting, filtered, total, snr, status, private, exempt, errors, has_filter in c
 #set since = self.since(delta_t)
+#set filtered = int(filtered)
 #set unread = int(unread)
 #set interesting = int(interesting)
 #set uninteresting = int(uninteresting)
-#set filtered = int(filtered)
 #if not total
 #set total = 0
 #else
 #set total = int(total)
 #end if
+##
+#set sum_unread = sum_unread + unread
+#set sum_filtered = sum_filtered + filtered
+#set sum_interesting = sum_interesting + interesting
+#set sum_total = sum_total + total
+##
 #silent assert interesting + uninteresting + unread + filtered == total, feed_title + ' interesting ' + repr(interesting) + ' uninteresting ' + repr(uninteresting) + ' unread ' + repr(unread) + ' filtered ' + repr(filtered) + ' total ' + repr(total) + ' does not add up'
 #set flags = ['suspended'] * status + ['private'] * private + ['exempt'] * exempt + ['filtered'] * has_filter
 #if flags
@@ -101,5 +111,15 @@ from v_feeds_snr order by feed_status ASC, """ \
 #end for
 #silent db.commit()
 #silent c.close()
+<tr class="footer">
+  <td>Total</td>
+  <td></td>
+  <td align="right">$sum_unread</td>
+  <td align="right">$sum_filtered</td>
+  <td align="right">$sum_interesting</td>
+  <td></td>
+  <td align="right">$sum_total</td>
+  <td></td>
+</tr>
 </table>
 </body></html>
