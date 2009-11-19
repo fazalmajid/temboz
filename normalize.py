@@ -282,10 +282,14 @@ closing = ('a', 'address', 'applet', 'bdo', 'blockquote', 'button', 'caption',
 block = ('address', 'blockquote', 'center', 'dir', 'div', 'dl', 'fieldset',
          'form', 'hr', 'isindex', 'menu', 'noframes', 'noscript', 'ol', 'p',
          'pre', 'table', 'ul') + heading
+# for XSS attacks, as feedparser is not completely immune
+banned = ('script', 'applet', 'style')
 # speed up things a bit
 block = set(block)
 closing = set(closing)
+banned = set(banned)
 
+# XXX should really use html5lib for this
 tag_re = re.compile('(<.*?>)')
 def balance(html, limit_words=None, ellipsis=' ...'):
   word_count = 0
@@ -307,9 +311,15 @@ def balance(html, limit_words=None, ellipsis=' ...'):
     if not token.endswith('>'): continue # invalid
     element = token[1:-1].split()[0].lower()
     if not element: continue # invalid
+    if element in banned:
+      element = 'pre'
+      token = '<pre>'
 
     if element.startswith('/'):
       element = element[1:]
+      if element in banned:
+        element = 'pre'
+        token = '</pre>'
       if element in stack:
         top = None
         while stack and top != element:
