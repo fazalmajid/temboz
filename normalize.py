@@ -1,5 +1,5 @@
 # -*- coding: iso-8859-1 -*-
-import sys, time, re, codecs, string, traceback, md5, socket, HTMLParser
+import sys, time, re, codecs, string, traceback, socket, HTMLParser, hashlib
 import unicodedata, htmlentitydefs, urllib2, urlparse
 import feedparser, param, transform, util
 
@@ -585,7 +585,7 @@ def normalize(item, f, run_filters=True):
       item[key] = item[key].encode('ascii', 'xmlcharrefreplace')
   # hash the content as the GUID if required
   if item['id'] == 'HASH_CONTENT':
-    item['id']= md5.new(item['title'] + item['content']).hexdigest()
+    item['id']= hashlib.md5(item['title'] + item['content']).hexdigest()
   
 def escape_xml(s):
   """Escape entities for a XML target"""

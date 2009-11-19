@@ -1,4 +1,4 @@
-import sys, md5, time, threading, socket, Queue, signal, os, re
+import sys, hashlib, time, threading, socket, Queue, signal, os, re
 import urllib2, urlparse, HTMLParser
 import param, feedparser, normalize, util, transform, singleton, filters
 
@@ -522,7 +522,7 @@ Returns a tuple (number of items added unread, number of filtered items)"""
         values
         (?, ?, julianday(?), julianday(?), ?, ?, ?, ?, ?, ?, ?)""",
                   [feed_uid, guid, created, modified, link,
-                   md5.new(content).hexdigest(),
+                   hashlib.md5(content).hexdigest(),
                    title, content, author, skip, filtered_by])
         # if we have tags, insert them
         # note: feedparser.py handles 'category' as a special case, so we
@@ -558,7 +558,7 @@ Returns a tuple (number of items added unread, number of filtered items)"""
 def notification(db, c, feed_uid, title, content):
   """Insert a service notification, e.g. to notify before a feed is disabled
   due to too many errors"""
-  hash = md5.new(content).hexdigest()
+  hash = hashlib.md5(content).hexdigest()
   guid = 'temboz://%s/%s' % (feed_uid, hash)
   # do nothing if the link is clicked
   link = '/feed_info?feed_uid=%d' % feed_uid
