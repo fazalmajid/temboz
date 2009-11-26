@@ -107,6 +107,15 @@ function webop(op, uid) {
   $.get('/xmlfeedback/' + op + '/' + Math.random().toString().substring(8) + '/' + uid + '.xml');
 }
 #end block
+function refresh_counter() {
+  var articles = \$("div.article:visible");
+  if(articles.size() < $overload_threshold) {
+    \$("b#count").html(String(articles.size()));
+  } else {
+    \$("b#count").html(String(articles.size()) + "+");
+  }
+  return articles;
+}
 function kw_dialog(id, kw, context) {
   var tmpl = \$("div#kw_form_tmpl");
   var body = '<div title="Add a keyword rule">' + tmpl.html() + '</div>';
@@ -162,6 +171,7 @@ function hide(id) {
   if(elt.style.backgroundColor == "yellow") {
     elt.style.backgroundColor = "";
     webop('basic', id);
+    refresh_counter();
   } else {
     var kw = \$.trim(get_selection());
     if(kw!="" && elt.innerHTML.indexOf(kw)!=-1) {
@@ -180,6 +190,7 @@ function hide(id) {
     hidden[hidden.length] = elt;
     elt.style.display = "none";
     webop('demote', id);
+    refresh_counter();
   }
 }
 function collapseToggle(id) {
@@ -202,12 +213,14 @@ function highlight(id) {
   var elt = document.getElementById('art' + id);
   elt.style.backgroundColor = "yellow";
   webop('promote', id);
+  refresh_counter();
 }
 function unhide_all() {
   for(i=0; i<hidden.length; i++) {
     elt = hidden[i];
     elt.style.display = "block";
     webop('basic', elt.id.substring(3));
+    refresh_counter();
   }
   hidden = Array();
 }
@@ -216,6 +229,7 @@ function unhide_last() {
     elt = hidden[hidden.length - 1];
     elt.style.display = "block";
     webop('basic', elt.id.substring(3));
+    refresh_counter();
     hidden.length = hidden.length - 1
   }
 }
@@ -239,12 +253,8 @@ function assign_column() {
   \$(document).bind("keydown", "meta+z", unhide_last);
   \$(document).bind("keydown", "meta+ctrl+z", unhide_last);
   \$(document).bind("keydown", "ctrl+meta+z", unhide_last);
+  refresh_counter();
   var articles = \$("div.article");
-  if(articles.size() < $overload_threshold) {
-    \$("b#count").html(String(articles.size()));
-  } else {
-    \$("b#count").html(String(articles.size()) + "+");
-  }
   if(\$("body").width() >= $TWOCOL_WIDTH) {
     articles.each(assign_column);
   }
