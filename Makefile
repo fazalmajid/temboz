@@ -53,8 +53,8 @@ cvsdist disttar:: distclean changelog
 	gtar zcvf temboz-$(TAR_VERSION).tar.gz temboz-$(VERSION)
 	zip -9r temboz-$(TAR_VERSION).zip temboz-$(VERSION)
 	-rm -rf temboz-$(VERSION)
-	-mv temboz-$(TAR_VERSION).tar.gz ../mylos/data/stories/2004/03/29
-	-mv temboz-$(TAR_VERSION).zip ../mylos/data/stories/2004/03/29
+	-mv temboz-$(TAR_VERSION).tar.gz $$HOME/web/root/temboz
+	-mv temboz-$(TAR_VERSION).zip $$HOME/web/root/temboz
 
 dist: disttar
 	-$${EDITOR} ../mylos/data/stories/2004/03/29/temboz.html
