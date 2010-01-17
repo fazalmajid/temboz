@@ -329,7 +329,7 @@ def balance(html, limit_words=None, ellipsis=' ...'):
       else:
         continue
 
-    if element in block and stack:
+    if element in block and stack and stack[-1] not in block:
       # close previous block if any
       for i in xrange(len(stack) - 1, -1, -1):
         if stack[i] in block: break
