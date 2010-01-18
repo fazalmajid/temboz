@@ -289,8 +289,9 @@ block = set(block)
 closing = set(closing)
 banned = set(banned)
 
-# XXX should really use html5lib for this
-tag_re = re.compile('(<.*?>)')
+# XXX should really use html5lib for this, as this lexer is not robust, e.g.
+# XXX <a href="javascript:alert('foo>bar')">
+tag_re = re.compile('(<.*?>)', re.DOTALL)
 def balance(html, limit_words=None, ellipsis=' ...'):
   word_count = 0
   tokens = tag_re.split(html)
