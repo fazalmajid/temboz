@@ -300,7 +300,6 @@ def balance(html, limit_words=None, ellipsis=' ...'):
   out = []
   stack = []
   for token in tokens:
-    print '@'*8, token, stack
     if not token.startswith('<'):
       if limit_words and word_count > limit_words:
         break
