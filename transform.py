@@ -177,6 +177,9 @@ filter_list = [
             re.MULTILINE + re.DOTALL),
   degunk.Re(r'<hr\s?/?>\s*<a href="http://pro.gigaom.com/.*</a>',
             re.MULTILINE + re.DOTALL),
+  # Guardian Related sidebar
+  degunk.Re(r'<div class="related" style="float.*?</div>',
+            re.MULTILINE + re.DOTALL),
   # Ars Technica
   degunk.Re(r'<a [^>]* title="Click here to continue reading.*?</a>',
             re.MULTILINE + re.DOTALL),
@@ -188,4 +191,8 @@ filter_list = [
             re.MULTILINE + re.DOTALL),
   degunk.Re(r'<p>[^>]*<a href="http://alpha.fooducate.com.*?</p>',
             re.MULTILINE + re.DOTALL),
+  # ReadWriteWeb ads
+  degunk.Re(r'<p align="right"><em>Sponsor</em><br>.*?</p>',
+            re.MULTILINE + re.DOTALL),
+  
   ]
