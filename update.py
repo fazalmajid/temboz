@@ -273,14 +273,28 @@ def title_url(feed_uid):
   finally:
     c.close()
 
-def set_rating(item_uid, rating):
-  from singleton import db
-  c = db.cursor()
-  c.execute("""update fm_items
-  set item_rating=?, item_rated=julianday('now')
-  where item_uid=?""", [rating, item_uid])
-  db.commit()
-  c.close()
+ratings_q = Queue.Queue()
+def set_rating(*args):
+  ratings_q.put(args)
+
+class RatingsWorker(threading.Thread):
+  def __init__(self, in_q):
+    threading.Thread.__init__(self)
+    self.in_q = in_q
+    # we need to do this so temboz --refresh honors Ctrl-C
+    self.setDaemon(True)
+  def run(self):
+    from singleton import db
+    c = db.cursor()
+    while True:
+      item_uid, rating = self.in_q.get()
+      try:
+        c.execute("""update fm_items
+        set item_rating=?, item_rated=julianday('now')
+        where item_uid=?""", [rating, item_uid])
+        db.commit()
+      except:
+        util.print_stack()
 
 def catch_up(feed_uid):
   feed_uid = int(feed_uid)

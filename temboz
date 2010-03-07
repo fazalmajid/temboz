@@ -74,6 +74,8 @@ if __name__ == '__main__':
         pass
       updater = update.PeriodicUpdater()
       updater.start()
+      rater = update.RatingsWorker(update.ratings_q)
+      rater.start()
       server.run()
     elif opt == '--kill':
       import os

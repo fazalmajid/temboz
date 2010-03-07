@@ -87,13 +87,16 @@ class KeywordRule(Rule):
 class TagRule(Rule):
   def __init__(self, uid, expires, rule):
     Rule.__init__(self, uid, expires)
-    self.rule = rule
+    self.rule = normalize.lower(rule)
   def __str__(self):
     return '<TagRule %s %s>' % (self.uid, self.rule)
   def test(self, item, feed, feed_uid):
     if self.check_expires():
       return False
-    return self.rule in item['item_tags']
+    for tag in item['item_tags']:
+      if self.rule == normalize.lower(tag):
+        return True
+    return False
   def highlight_content(self, html):
     return '%s<br><p>Filtered for tag <span class="item tag highlighted">%s</span></p>' \
            % (html, self.rule)
