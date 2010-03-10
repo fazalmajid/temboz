@@ -292,7 +292,7 @@ banned = set(banned)
 # XXX should really use html5lib for this once it has stabilized,
 # XXX as this lexer is not robust, e.g.
 # XXX <a href="javascript:alert('foo>bar')">
-tag_re = re.compile(r'(<>|<[^!].*?>|<!\[CDATA\[|\]\]>)',
+tag_re = re.compile(r'(<>|<[^!].*?>|<!\[CDATA\[|\]\]>|<!--.*?-->|<[!]>)',
                     re.DOTALL | re.MULTILINE)
 def balance(html, limit_words=None, ellipsis=' ...'):
   word_count = 0
@@ -311,7 +311,7 @@ def balance(html, limit_words=None, ellipsis=' ...'):
       else:
         out.append(token)
       continue
-    if token == '<![CDATA[': continue
+    if token.startswith('<!'): continue
     if token == ']]>': continue
     if not token.endswith('>'): continue # invalid
     element = token[1:-1].split()[0].lower()
