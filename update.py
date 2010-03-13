@@ -77,6 +77,15 @@ def add_feed(feed_xml):
     # see:
     # http://sourceforge.net/tracker/index.php?func=detail&aid=1379172&group_id=112328&atid=661937
     if not f.feed or ('link' not in f.feed or 'title' not in f.feed):
+      # some feeds have multiple links, one for self and one for PuSH
+      if f.feed and 'link' not in f.feed and 'links' in f.feed:
+        try:
+          for l in f.feed['links']:
+            if l['rel'] == 'self':
+              f.feed['link'] = l['href']
+        except KeyError:
+          pass
+    if not f.feed or ('link' not in f.feed or 'title' not in f.feed):
       # try autodiscovery
       try:
         feed_xml = AutoDiscoveryHandler().feed_url(feed_xml)
