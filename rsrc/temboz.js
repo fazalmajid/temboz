@@ -608,3 +608,4 @@ function place_popup(){var popup=$("div#popup_"+this.id);this.popup=popup;}
 function hide_popups(){$(document).unbind("click",hide_popups);$("div.popup").hide();}
 function show_popup(event){event.stopPropagation();var callout=$(this).offset();var container=$(this).offsetParent().offset();this.popup.css("left",callout.left-container.left);this.popup.css("top",callout.top-container.top+$(this).height()+3);this.popup.toggle();$(document).click(hide_popups);}
 function init_popups(){$(document).ready(function(){$("a.callout").each(place_popup);$("a.callout").click(show_popup);});}
+function rand(){return Math.random().toString().substring(8);}

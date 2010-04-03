@@ -17,7 +17,7 @@
 #import time, param, filters, update
 #silent filters.load_rules(db, c)
 ## width below which a single-column layout is shown
-#set $TWOCOL_WIDTH = 800
+#set $TWOCOL_WIDTH = 760
 ########################################################################
 ##
 ## What items to use
@@ -104,7 +104,7 @@ hidden = Array();
 #set global $img_prefix = ''
 var i = new Image();
 function webop(op, uid) {
-  $.get('/xmlfeedback/' + op + '/' + Math.random().toString().substring(8) + '/' + uid + '.xml');
+  $.get('/xmlfeedback/' + op + '/' + rand() + '/' + uid + '.xml');
 }
 #end block
 function refresh_counter() {

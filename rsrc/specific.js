@@ -38,3 +38,6 @@ function init_popups() {
     $("a.callout").click(show_popup);
   });
 }
+function rand() {
+  return Math.random().toString().substring(8);
+}
