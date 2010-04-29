@@ -194,5 +194,7 @@ filter_list = [
   # ReadWriteWeb ads
   degunk.Re(r'<p align="right"><em>Sponsor</em><br>.*?</p>',
             re.MULTILINE + re.DOTALL),
-  
+  # Noupe/Smashing
+  degunk.Re('<table.*?<img[^>]*commindo-media.*?</table>',
+            re.MULTILINE + re.DOTALL),
   ]
