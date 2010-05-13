@@ -183,6 +183,9 @@ filter_list = [
   # Ars Technica
   degunk.Re(r'<a [^>]* title="Click here to continue reading.*?</a>',
             re.MULTILINE + re.DOTALL),
+  degunk.Re('<a href="http://arstechnica.com[^>]*>[^<>]*'
+            '<img [^>]*brief_icons.*?</a>',
+            re.MULTILINE + re.DOTALL),
   # Coding Horror
   degunk.Re(r'<table>.*?\[advertisement\].*?</table>',
             re.MULTILINE + re.DOTALL),
