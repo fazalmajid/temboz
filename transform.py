@@ -40,6 +40,8 @@ filter_list = [
             re.MULTILINE + re.DOTALL + re.IGNORECASE),
   degunk.Re('<p><a href="[^"]*sharethis.com.*?</p>',
             re.MULTILINE + re.DOTALL + re.IGNORECASE),
+  degunk.Re('<a href="[^">]*.tweetmeme.com.*?</a>',
+            re.MULTILINE + re.DOTALL + re.IGNORECASE),
   # Feedburner annoyances
   degunk.Re('<a href[^>]*><img src="http://feeds.feedburner[^>]*></a>'),
   degunk.Re('<p><a href="(http://feeds\\.[^"/>]*/~./)[^"]*">'
@@ -92,23 +94,23 @@ filter_list = [
             re.IGNORECASE + re.DOTALL),
   degunk.Re('<div class="feedflare">.*?</div>', re.IGNORECASE + re.DOTALL),
   # Pheedo ads
-  degunk.Re('<p><a href="http://[^"]*.pheedo.*?</p>',
-            re.MULTILINE + re.DOTALL),
-  degunk.Re('<div><a href="http://www.pheedo[^"]*">\s*'
-            '<img src="http://www.pheedo.com.*?</div>',
-            re.MULTILINE + re.DOTALL),
-  degunk.Re('(<br>)?<a href="http://[^"]*.pheedo[^"]*">\s*'
-            '<img [^>]*src="http://[^"]*.pheedo.com.*?</a>',
-            re.MULTILINE + re.DOTALL),
-  degunk.Re('<a href="http://[^"]*.pheedo.com/hosted.*?</a>',
-            re.MULTILINE + re.DOTALL),
   degunk.Re('<div style="font-size: xx-small; color: gray; padding-bottom:'
             '0.5em;">Presented By:</div>[^<>]*<div><a href="http://ads.pheedo'
             '.*?</div>.*?</div>',
             re.MULTILINE + re.DOTALL),
+  degunk.Re('<a[^>]*href="http://[^">]*pheedo.com.*?</a>',
+            re.MULTILINE + re.DOTALL),
+  degunk.Re('<img[^>]*src="http://[^">]*pheedo.com.*?>',
+            re.MULTILINE + re.DOTALL),
   # Broken Pheedo links for IEEE Spectrum
   degunk.ReUrl(url=r'http://pheedo.com\1',
                regex_url=r'http://www.pheedo.com(.*)'),
+  # Triggit ads
+  degunk.Re('(<br>)*<img[^>]*triggit.com.*?>', re.MULTILINE + re.DOTALL),
+  # Web bugs
+  degunk.Re('<img[^>]*quantserve.com.*?>', re.MULTILINE + re.DOTALL),
+  degunk.Re('<img [^>]*invitemedia.com[^>]*>',
+            re.MULTILINE + re.DOTALL + re.IGNORECASE),
   # Mediafed ads
   degunk.Re('<br><a href="http://[^"]*.feedsportal.com/[^"]*"><img border="0" '
             'src="http://[^"]*.feedsportal.com[^"]*" /></a>'),
@@ -169,6 +171,8 @@ filter_list = [
   degunk.Re('<strong></strong>', 0, ''),
   # unwarranted final empty lines
   degunk.Re('(<br>\s*)+$'),
+  # leftover from blegs or ads
+  degunk.Re('-\s+(-\s+)+'),
   # GigaOM annoyances
   degunk.Re(r'<img[^>]*src="http://stats.wordpress.com.*?>'),
   degunk.Re(r'\s*<hr[^>]*>\s*<p>\s*<a href="http://t.gigaom.com/.*?</p>',
