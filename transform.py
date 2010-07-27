@@ -42,6 +42,8 @@ filter_list = [
             re.MULTILINE + re.DOTALL + re.IGNORECASE),
   degunk.Re('<a href="[^">]*.tweetmeme.com.*?</a>',
             re.MULTILINE + re.DOTALL + re.IGNORECASE),
+  degunk.Re('<a [^>]* href="http://twitter.com/home/[?]status.*?</a>',
+            re.MULTILINE + re.DOTALL + re.IGNORECASE),
   # Feedburner annoyances
   degunk.Re('<a href[^>]*><img src="http://feeds.feedburner[^>]*></a>'),
   degunk.Re('<p><a href="(http://feeds\\.[^"/>]*/~./)[^"]*">'
@@ -165,6 +167,7 @@ filter_list = [
   # unwarranted multiple empty lines
   degunk.Re('<br>\s*(<br>\s*)+', 0, '<br>'),
   degunk.Re('<p>&nbsp;</p>'),
+  degunk.Re('<p [^>]*></p>'),
   degunk.Re('<p>-</p>'),
   degunk.Re('<span[^>]*></span>', 0, '', iterate=True),
   # junk
