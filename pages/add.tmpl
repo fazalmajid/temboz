@@ -1,17 +1,22 @@
 ## -*- html -*-
-#extends TembozTemplate
+#extends menubar
 #implements respond
+<!DOCTYPE HTML>
 <html>
-<head><title>Temboz - Add a feed</title>
-<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
-<link rel="stylesheet" type="text/css" href="temboz_css">
-</head>
-<body class="unpadded">
-<div class="menu"><a href="view">All unread</a>&nbsp;&nbsp;<a
-href="feeds">All feeds</a></div>
+  <head><title>Temboz - Add a feed</title>
+    <meta name="ROBOTS" content="NOINDEX, NOFOLLOW">
+    <link rel="stylesheet" type="text/css" href="temboz_css">
+    <script>
+    $MENUBAR_JQUERY
+    </script>
+  </head>
+  <body>
+#def CONTEXT_MENU
+#end def
+$MENUBAR(trans=trans)
 
-Subscribe to a RSS feed:<br>
-<form action="add" method="POST">
+<p>Subscribe to a RSS feed:</p>
+<form class="add" action="add" method="POST">
 <input size=64 name="feed_xml"><input type="submit" value="Subscribe">
 </form>
 

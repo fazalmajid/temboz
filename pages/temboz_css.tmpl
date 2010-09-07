@@ -12,6 +12,15 @@ html {
   width: 100%;
   height: 100%;
 }
+ul, ol {
+  margin-left: 24px;
+}
+ol li {
+  list-style: decimal outside;        
+}
+ul li {
+  list-style: disc outside;
+}
 body {
   line-height:10pt;
   font-family: helvetica, verdana, arial, sans-serif;
@@ -137,7 +146,7 @@ a.ff {
 form.inline select {
   width: 4em;
 }
-form.feed_info {
+form.feed_info, form.add, div#tabset, div#settings, .padded {
   padding: 12px;
 }
 ########################################################################
@@ -153,6 +162,7 @@ body>ul.menu {
 ul.menu {
   background: #bfff80;
   padding: 0 1em 0 1em;
+  margin: 0;
   width: 100%;
   z-index: 2;
 }
@@ -180,17 +190,14 @@ ul.menu span.button>a, ul.menu li.help span a {
   -moz-border-radius: 3px;
   border-radius: 3px;
   padding: 3px;
-
   border: 1px solid rgba(0, 0, 0, 0.6);
-
-  background-color: #e0e0e0;
-
+  background-color: #fff;
+  background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ccc));
+  background: -moz-linear-gradient(#fff, #ccc);
   text-shadow: rgba(255, 255, 255, 0.4) 0px 1px;
-
   -webkit-box-shadow: rgba(255, 255, 255, 0.4) 0 1px;
   -moz-box-shadow: rgba(255, 255, 255, 0.4) 0 1px;
   box-shadow: rgba(255, 255, 255, 0.4) 0 1px;
-
   -webkit-user-select: none;
   -moz-user-select: none;
   cursor: default;
@@ -207,11 +214,17 @@ ul.menu li ul {
   display: none;
   background: #fff;
   border: 1px solid #000;
-  width: 120px;
+  width: 160px;
+  margin: 0;
 }
 ul.menu li ul li {
   display: list-item;
   float: none;
+}
+ul.menu li ul li a {
+  display: block;
+  padding: 3px;
+  border: 1px solid #ccc;
 }
 ul.menu li:hover ul {
   display: block;
@@ -242,12 +255,12 @@ div#settings div.ui-tabs-panel td {
   padding: 6px;
 }
 .col1 .article {
-  margin-left:  20px;
-  margin-right: 10px;
+  margin-left:  12px;
+  margin-right: 6px;
 }
 .col2 .article {
-  margin-left:  10px;
-  margin-right: 20px;
+  margin-left:  6px;
+  margin-right: 12px;
 }
 .col1 {
   width: 49.9%;
