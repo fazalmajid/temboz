@@ -4,7 +4,7 @@
 <html>
 <head><title>Temboz - Add a feed</title>
 <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
-<link rel="stylesheet" type="text/css" href="temboz.css">
+<link rel="stylesheet" type="text/css" href="temboz_css">
 </head>
 <body class="unpadded">
 <div class="menu"><a href="view">All unread</a>&nbsp;&nbsp;<a
@@ -63,7 +63,7 @@ you need to find a valid feed URL.</p>
 function register() {
   navigator.registerContentHandler(
     'application/vnd.mozilla.maybe.feed',
-    'http://$myself?feed_xml=%s','Temboz'
+    'https://$myself?feed_xml=%s','Temboz'
   );
 }
 </script>

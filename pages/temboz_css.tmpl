@@ -1,9 +1,14 @@
 #extends TembozTemplate
 #set $media = $getVar('media', 'screen')
 #implements respond
-html {
+* {
   margin: 0;
   padding: 0;
+}
+*.hidden {
+  display: none;
+}
+html {
   width: 100%;
   height: 100%;
 }
@@ -13,14 +18,19 @@ body {
   font-size:9pt;
   line-height:11pt;
 }
+h1 {
+  font-size: 24px;
+  margin: 12px 12px;
+}
+h2 {
+  font-size: 18px;
+  margin: 9px 12px;
+}
 body.unpadded {
   position: absolute;
   top: 0px;
   left: 0px;
   right: 0px;
-  padding:0px;
-  margin:0px;
-  margin-top: 3em;
 }
 a.headline {
   font-size:12pt;
@@ -41,6 +51,9 @@ a.headline {
 th.nonsort {
   background: #eee;
   font-weight: normal;
+}
+table.feeds {
+  width: 100%;
 }
 th.sortASC {
   background: #ddf;
@@ -114,31 +127,6 @@ span.tag.highlighted {
   color: white;
   background-color: red;
 }
-div.popup {
-  display: none;
-  position: absolute;
-  border: 1px solid;
-  z-index: 2;
-  background: white;
-}
-div.popup ul {
-  list-style-type: none;
-  margin-top: 6px;
-  margin-bottom: 6px;
-  padding: 0;
-}
-div.popup ul hr {
-  width: 100%;
-  border-left: 0px;
-  border-right: 0px;
-}
-div.popup ul li {
-  padding-left: .5em;
-  padding-right: .5em;
-}
-div.popup li:hover {
-  background-color: #BFFF80;
-}
 a.callout, div.popup li a {
   text-decoration: none;
 }
@@ -149,6 +137,9 @@ a.ff {
 form.inline select {
   width: 4em;
 }
+form.feed_info {
+  padding: 12px;
+}
 ########################################################################
 ## SCREEN ONLY
 #if $media == 'screen'
@@ -156,19 +147,80 @@ form.inline select {
 span.ctarrow {font-size: 18px}
 span.buttons {float: right}
 ## work-around IE
-body>div.menu {
+body>ul.menu {
   position: fixed;
-  height: 2em;
 }
-div.menu {
-  padding: .5em;
-  top: 0; left: 0; width: 100%;
+ul.menu {
   background: #bfff80;
+  padding: 0 1em 0 1em;
+  width: 100%;
   z-index: 2;
 }
-div.menu span.help {
+ul.menu {
+  background-color: #d9ffb3;
+  background: -webkit-gradient(linear, left top, left bottom, from(#d9ffb3), to(#99cc66));
+  background: -moz-linear-gradient(#d9ffb3, #99cc66);
+}
+ul.menu li {
+  display: inline;
+  list-style-type: none;
+  float: left;
+  /* margin: 3px; */
+  height: 100%;
+  margin: 0 3px 0 3px;
+  position: relative;
+}
+ul.menu li span, ul.menu li.help span, ul.menu>li>a {
+  display: block;
+  padding: 9px 0 6px 0;
+}
+
+ul.menu span.button>a, ul.menu li.help span a {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  padding: 3px;
+
+  border: 1px solid rgba(0, 0, 0, 0.6);
+
+  background-color: #e0e0e0;
+
+  text-shadow: rgba(255, 255, 255, 0.4) 0px 1px;
+
+  -webkit-box-shadow: rgba(255, 255, 255, 0.4) 0 1px;
+  -moz-box-shadow: rgba(255, 255, 255, 0.4) 0 1px;
+  box-shadow: rgba(255, 255, 255, 0.4) 0 1px;
+
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  cursor: default;
+}
+ul.menu li.help {
+  position: relative;
+  float: right;
+  padding-right: 1em;
+}
+ul.menu li ul {
   position: absolute;
-  right: 2em;
+  left: 0;
+  top: 100%;
+  display: none;
+  background: #fff;
+  border: 1px solid #000;
+  width: 120px;
+}
+ul.menu li ul li {
+  display: list-item;
+  float: none;
+}
+ul.menu li:hover ul {
+  display: block;
+}
+ul.menu a {
+  text-decoration: none;
+}
+div.spacer {
+  height: 34px;
 }
 form.inline {
   display: inline;
@@ -200,8 +252,6 @@ div#settings div.ui-tabs-panel td {
 .col1 {
   width: 49.9%;
   float: left;
-  padding: 0px;
-  margin: 0px;
   margin-top: 10px;
   border: 0px;
   overflow: hidden;
@@ -212,8 +262,6 @@ div#settings div.ui-tabs-panel td {
   width: 49.9%;
   float: right;
 #end if
-  padding: 0px;
-  margin: 0px;
   margin-top: 10px;
   border: 0px;
   overflow: hidden;
@@ -224,7 +272,7 @@ div#settings div.ui-tabs-panel td {
 .screen {display: none}
 span.ctarrow {display: none}
 span.buttons {display:none}
-div.menu {display: none}
+ul.menu {display: none}
 #end if
 ########################################################################
 ## jQuery dialog
@@ -248,7 +296,6 @@ div.ui-dialog {
 ## tabs
 .ui-tabs-nav {
   border-bottom: 1px solid #ccc;
-  margin: 0;
   padding-bottom: 25px;
   padding-left: 10px;
 }
@@ -256,8 +303,6 @@ div.ui-dialog {
 .ui-tabs-nav ul, .ui-tabs-nav li  {
   display: inline;
   list-style-type: none;
-  margin: 0;
-  padding: 0;
 }
 .ui-tabs-nav li.ui-tabs-selected a:link,
 .ui-tabs-nav li.ui-tabs-selected a:active,

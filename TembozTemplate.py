@@ -1,7 +1,11 @@
 import time, string, re, urllib
-from Cheetah.Template import Template
+import Cheetah.Template
 
-class TembozTemplate(Template):
+class Redirect(Exception):
+  pass
+
+class TembozTemplate(Cheetah.Template.Template):
+  redirect = Redirect
   def since(self, delta_t):
     if not delta_t:
       return 'never'

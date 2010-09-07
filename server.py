@@ -1,32 +1,34 @@
 #!/usr/local/bin/python
 # $Id$
-import sys, os, stat, logging, base64, time, imp, gzip, imp
+import sys, os, stat, logging, base64, time, imp, gzip
 import BaseHTTPServer, SocketServer, cStringIO, urlparse, urllib
-import param, update, filters, util
+import TembozTemplate, param, update, filters, util
 
 # add the Cheetah template directory to the import path
+import Cheetah.ImportHooks
+Cheetah.ImportHooks.install()
 try:
   tmpl_dir = os.path.dirname(sys.modules['__main__'].__file__)
 except:
   tmpl_dir = os.getcwd()
 if tmpl_dir:
+  Cheetah.ImportHooks.setCacheDir(tmpl_dir + os.sep + 'modules')
   tmpl_dir += os.sep + 'pages'
 else:
   tmpl_dir = 'pages'
+  Cheetah.ImportHooks.setCacheDir('modules')
+sys.path.append(tmpl_dir)
 
 class Server(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
   pass
 
-from TembozTemplate import TembozTemplate, Template
-from Cheetah.Compiler import Compiler
-from distutils.util import byte_compile
-
 # HTTP header to force caching
 no_expire = 'Expires: Fri, 1 Jan 2038 00:00:00 GMT'
 
-
 class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
   tmpl_cache = {}
+  dep_cache = {}
+  load_t = {}
   def version_string(self):
     """Return the server software version string."""
     return param.user_agent
@@ -249,7 +251,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     self.output_buffer.append(output)
 
   def flush(self):
-    # make the browser cache temboz.css, which still needs to be dynamically
+    # make the browser cache temboz_css, which still needs to be dynamically
     # generated for the browser because it is browser-dependent (to deal with
     # IE standards noncompliance issues)
     if self.mime_type == 'text/css':
@@ -282,11 +284,18 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
   def op_promote(self, item_uid):
     update.set_rating(item_uid, 1)
 
+  def op_yappi(self, command):
+    import yappi
+    assert command in ['start', 'stop', 'clear_stats']
+    getattr(yappi, command)()
+
   def set_mime_type(self, tmpl):
     if type(tmpl) in [list, tuple]:
       tmpl = tmpl[-1]
     tmpl = tmpl.lower()
     if tmpl.endswith('.css'):
+      self.mime_type = 'text/css'
+    if tmpl.endswith('_css'):
       self.mime_type = 'text/css'
     elif tmpl.endswith('.gif'):
       self.mime_type = 'image/gif'
@@ -305,75 +314,12 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     else:
       self.mime_type = 'text/html'
 
-  def compile(self, tmpl):
-    "Recursively compile Cheetah templates and their superclasses as required"
-    if tmpl == 'TembozTemplate':
-      return TembozTemplate
-    template_t, compiled_t = None, None
-    tmpl = tmpl.replace('.', '_')
-    modname = 'pages/' + tmpl
-    page = modname + '.tmpl'
-    compiled = modname + '.py'
-    # get the timestamps of the template, and compiled version
-    try:
-      compiled_t = os.stat(compiled)[stat.ST_MTIME]
-    except OSError:
-      compiled_t = 0
-    template_t = os.stat(page)[stat.ST_MTIME]
-    ## Attempt to recompile this template, and anything it requires,
-    ## if the template is newer than the compiled version
-    if compiled_t < template_t:
-      # if the template is newer than the compiled version, compile it
-      print >> param.log, 'recompiling Cheetah module', page
-      newpage = cStringIO.StringIO(open(page).read())
-      # Compile the template using Cheetah
-      template = Compiler(file=newpage, moduleName=tmpl)
-      # Save off a string copy of this module for possible editing
-      template_str = str(template)
-      for k in template._finishedClasses():
-        for import_statement in template._importStatements:
-          if 'import %s' % k._baseClass in import_statement:
-            # recurse to ensure dependencies also get recompiled
-            module_class = self.compile(k._baseClass)
-            # If something went wrong, we may get None, so double check
-            if module_class:
-              # the second item in this import line should have the module name
-              imported_module = import_statement.split(' ')[1]
-              # replace "from page import page" style imports
-              # with "page = server.tmpl_import('path/to/page').page" style.
-              # this way we can have multiple modules with the same name loaded
-              # at one time.
-              template_str = template_str.replace(
-                "from %s import %s" % (imported_module, imported_module),
-                "import server\n"
-                "%s = server.tmpl_import('%s').%s"
-                % (imported_module, module_class.__module__, imported_module))
-      # Write our newly compiled template as a python (.py) file.
-      f = open(compiled, 'w')
-      f.write(template_str)
-      f.close()
-      # force python to byte compile the file to generate the .pyc
-      byte_compile([compiled], verbose=0)
-      # and the .pyo
-      byte_compile([compiled], verbose=0, optimize=2)
-    # Import the module, using tmpl_import which allows us to import from a
-    # file path, instead of sys.path, and reloads as a side-effect
-    module = tmpl_import(modname)
-    # We need to verify that we have a class named tmpl in the module, or
-    # something may be very very wrong, then
-    if tmpl in module.__dict__:
-      # add the module to tmpl_cache
-      self.tmpl_cache[page] = module
-    else:
-      raise Exception('Error loading compiled template: %s' % compiled,tmpl)
-    return getattr(self.tmpl_cache[page], tmpl)
-  
   def use_template(self, tmpl, searchlist):
     """Use compiled-on-demand versions of Cheetah templates for
     speed, specially with CGI
     """
     self.set_mime_type(tmpl)
-    tmpl = self.compile(tmpl)
+    tmpl = getattr(__import__(tmpl), tmpl)
     tmpl = tmpl(searchList=searchlist)
     tmpl.respond(trans=self)
     self.flush()
@@ -434,9 +380,10 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
       if path.startswith('/xmlfeedback/'):
         op, item_uid = path.split('/')[2::2]
         item_uid = item_uid.split('.')[0]
-        item_uid = int(item_uid)
         # for safety, these operations should be idempotent
-        if op in ['promote', 'demote', 'basic']:
+        if op in ['promote', 'demote', 'basic', 'yappi']:
+          if op != 'yappi':
+            item_uid = int(item_uid)
           getattr(self, 'op_' + op)(item_uid)
         self.xml()
         return
@@ -467,13 +414,15 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
 
       tmpl = path.split('/', 1)[1].strip('/')
       self.use_template(tmpl, [self.input])
+    except TembozTemplate.Redirect, e:
+      redirect_url = e.args[0]
+      self.browser_output(301, None, 'This document has moved.',
+                          ['Location: ' + redirect_url])
+      return
     except:
       e = sys.exc_info()
-      tmpl = Template(file='pages/error.tmpl')
-      tmpl.e = e
-      tmpl.respond(trans=self)
+      self.use_template('error', [self.input, {'e': e}])
       self.flush()
-      tmpl.e = None
       e = None
     return
 
@@ -485,30 +434,13 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     parts[4] = urllib.urlencode(param, True)
     return urlparse.urlunparse(tuple(parts))
 
-# Python 2.6 and later no longer allow specifying directories in the module
-# name so we have to create our own import function to override the path
-def tmpl_import(name):
-  if os.sep not in name:
-    try:
-      return __import__(name)
-    except ImportError:
-      return tmpl_import('pages/' + name)
-  else:
-    dir = os.path.dirname(name)
-    modname = os.path.basename(name)
-    if modname.startswith('template_'):
-      modname = modname[9:]
-    modfile, pathname, description = imp.find_module(modname, [dir])
-    try:
-      return imp.load_module('template_' + modname,
-                             modfile, pathname, description)
-    finally:
-      modfile.close()
-
 def run():
   # force loading of the database so we don't have to wait an hour to detect
   # a database format issue
   from singleton import db
+  c = db.cursor()
+  update.load_settings(db, c)
+  c.close()
   
   logging.getLogger().setLevel(logging.INFO)
   server = Server((getattr(param, 'bind_address', ''), param.port), Handler)

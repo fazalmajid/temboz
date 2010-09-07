@@ -84,7 +84,10 @@
 ########################################################################
 #set offset = int($getVar('offset', 0))
 <html>
-<head><title>Temboz - $item_desc items</title>
+<head>
+########################################################################
+$CSS
+<title>Temboz - $item_desc items</title>
 <meta name="robots" content="noarchive,noindex,follow,nocache">
 <meta name="viewport" content="initial-scale=1.0">
 ########################################################################
@@ -95,9 +98,9 @@
 ##
 ########################################################################
 #block TEMBOZ_JS
-<script language="JavaScript" src="temboz.js"></script>
+<script src="temboz.js"></script>
 #end block
-<script language="JavaScript">
+<script>
 hidden = Array();
 #block SET_OVERLOAD_THRESHOLD
 #set global $overload_threshold = param.overload_threshold
@@ -259,10 +262,9 @@ function assign_column() {
     articles.each(assign_column);
   }
 });
+$MENUBAR_JQUERY
 init_popups();
 </script>
-########################################################################
-$CSS
 </head>
 <body class="unpadded">
 ########################################################################
@@ -276,37 +278,30 @@ $CSS
 #end if
 ########################################################################
 #def CONTEXT_MENU
-<b id="count">?</b>
-#def RATING_CALLOUT($item_desc)
-  <a id="rating" class="callout"><u>$item_desc</u> <small>&#9660;</small></a>
-#end def
-$RATING_CALLOUT($item_desc)
-  sorted by
-  <a id="sort" class="callout"><u>$sort_desc</u> <small>&#9660;</small></a>
-  &nbsp;&nbsp;
-  <a id="view" class="callout"><u>More</u> <small>&#9660;</small></a>
-  <div id="popup_sort" class="popup">
-    <ul>
-      #for (sort_name, sort_desc, discard, discard) in $sorts
-	#set $url = trans.change_param(sort=sort_name)
-	<li><a href="$url">$sort_desc</a></li>
-      #end for
-    </ul>
-  </div>
-  <div id="popup_view" class="popup">
-    <ul>
-      <li><a href="javascript:unhide_last();">Undo last hide (Ctrl-Z)</a></li>
-      <li><a href="javascript:unhide_all();">Undo all hides</a></li>
-    </ul>
-  </div>
-  <div id="popup_rating" class="popup">
-    <ul>
-      #for (rating_name, rating_desc, discard, discard) in $ratings
-	#set $url = trans.change_param(show=rating_name)
-	<li><a href="$url">$rating_desc</a></li>
-      #end for
-    </ul>
-  </div>
+<li><span><b id="count">?</b></span></li>
+<li><span class="button"><a href="#">$item_desc</a></span>
+  <ul>
+  #for (rating_name, rating_desc, discard, discard) in $ratings
+    #set $url = trans.change_param(show=rating_name)
+    <li><a href="$url">$rating_desc</a></li>
+  #end for
+  </ul>
+</li>
+<li><span>sorted by</span></li>
+<li><span class="button"><a href="#">$sort_desc</a></span>
+  <ul>
+#for (sort_name, sort_desc, discard, discard) in $sorts
+  #set $url = trans.change_param(sort=sort_name)
+    <li><a href="$url">$sort_desc</a></li>
+#end for
+  </ul>
+</li>
+<li><span class="button"><a href="#">More</a></span>
+  <ul>
+    <li><a href="javascript:unhide_last();">Undo last hide (Ctrl-Z)</a></li>
+    <li><a href="javascript:unhide_all();">Undo all hides</a></li>
+  </ul>
+</li>
 #end def
 $MENUBAR(trans=trans)
 ########################################################################

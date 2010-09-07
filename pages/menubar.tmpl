@@ -1,20 +1,22 @@
 #extends TembozTemplate
 #implements respond
-
+#import param
 #block CSS
-<link rel="stylesheet" type="text/css" media="screen" href="temboz.css">
-<link rel="stylesheet" type="text/css" media="print" href="temboz.css?media=print">
+<link rel="stylesheet" type="text/css" media="screen" href="temboz_css">
+<link rel="stylesheet" type="text/css" media="print" href="temboz_css?media=print">
 #end block
 
 #block MENUBAR
-<div id="menu" class="menu"><nobr>
+<ul id="menu" class="menu">
 #block CONTEXT_MENU
 #end block
 #block SEARCH_FORM
   &nbsp;&nbsp;
   #for (name, link) in [('All unread', 'view'), ('All feeds', 'feeds'), ('Add feed', 'add'), ('Filters', 'rules')]
     #if not trans.path[1:].startswith(link)
-      <a href="$link">$name</a>&nbsp;&nbsp;
+  <li>
+      <a href="$link">$name</a>
+  </li>
     #end if
   #end for
 ########################################################################
@@ -22,30 +24,43 @@
 ## Crude search functionality
 ##
 ########################################################################
-<span>
-  <form method="GET" action="view" target="_blank" class="inline">
-    #if $getVar('feed_uid', None)
-      <input name="feed_uid" type="hidden" value="$feed_uid">
-    #end if
-    <input name="search" value="$getVar('search', '')">
-    <select name="show">
-      <option value="all" selected>All articles</option>
-      <option value="unread">Unread only</option>
-      <option value="down">Uninteresting only</option>
-      <option value="up">Interesting only</option>
-      <option value="filtered">Filtered only</option>
-    </select>
-    <select name="search_in">
-      <option value="title" selected>in titles</option>
-      <option value="content">in content</option>
-    </select>
-    <input type="submit" value="Search">
-  </form>
-</span>
+  <li><span>
+    <form method="GET" action="view" target="_blank" class="inline">
+      #if $getVar('feed_uid', None)
+	<input name="feed_uid" type="hidden" value="$feed_uid">
+      #end if
+      <input name="search" id="search" value="$getVar('search', '')">
+      <select name="show" class="hidden">
+	<option value="all" selected>All articles</option>
+	<option value="unread">Unread only</option>
+	<option value="down">Uninteresting only</option>
+	<option value="up">Interesting only</option>
+	<option value="filtered">Filtered only</option>
+      </select>
+      <select name="search_in" class="hidden">
+	<option value="title" selected>in titles</option>
+	<option value="content">in content</option>
+      </select>
+      <input type="submit" value="Search">
+    </form></span>
+  </li>
 #end block
 #block HELP
-<span class="help"><a href="settings">Settings</a>&nbsp;&nbsp;<a href="http://www.temboz.com/help<%=trans.path%>" target="_blank">Help</a></span>
+<li class="help">
+  <span><a href="http://www.temboz.com/help<%=trans.path%>" target="_blank">Help</a></span>
+</li><li class="help">
+  <span><a href="settings">Settings</a></span>
+</li>
 #end block
-</nobr>
-</div>
+</ul>
+<div class="spacer">&nbsp;</div>
 #end block
+
+#def MENUBAR_JQUERY
+\$(document).ready(function() {
+##  \$("div.spacer").css("height", \$("ul#menu").css("height"));
+  \$("input#search").focus(function() {
+    \$(".hidden").show();
+  });
+});
+#end def

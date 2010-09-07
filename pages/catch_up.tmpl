@@ -9,7 +9,7 @@
 #else
   <title>Catch up</title>
 #end if
-<link rel="stylesheet" type="text/css" href="temboz.css">
+<link rel="stylesheet" type="text/css" href="temboz_css">
 #import update
 #silent title, url = update.title_url($feed_uid)
 ########################################################################
@@ -32,7 +32,6 @@
 ########################################################################
 #import param
 #if not getattr(param, 'catch_up_confirm', True) or $getVar("confirm", None)
-#import update
 #if $reload == 'Y'
   #set $status = update.purge_reload($feed_uid)
 #else

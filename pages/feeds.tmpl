@@ -1,15 +1,19 @@
 ## -*- html -*-
-#extends TembozTemplate
+#extends menubar
 #implements respond
 <html>
 <head><title>Temboz - All feeds</title>
 <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
-<link rel="stylesheet" type="text/css" href="temboz.css">
+<link rel="stylesheet" type="text/css" href="temboz_css">
+<script>
+$MENUBAR_JQUERY
+</script>
 </head>
 <body class="unpadded">
-<div class="menu"><a href="view">All unread</a>&nbsp;&nbsp;<a href="add">Add
-feed</a>&nbsp;&nbsp;<a href="opml">as OPML</a>&nbsp;&nbsp;<a
-href="rules">Filtering</a> <span class="help"><a href="settings">Settings</a>&nbsp;&nbsp;<a href="http://www.temboz.com/temboz/wiki?p=AllFeedsPage" target="_blank">Help</a></span></div>
+#def CONTEXT_MENU
+  <li><a href="opml">OPML</a></li>
+#end def
+$MENUBAR(trans=trans)
 #set sort_key = $getVar('sort', '(unread > 0) DESC, snr')
 #if sort_key == 'feed_title'
 #set sort_key = 'lower(feed_title)'
@@ -23,8 +27,9 @@ href="rules">Filtering</a> <span class="help"><a href="settings">Settings</a>&nb
   snr, feed_status, feed_private, feed_exempt, feed_errors, feed_filter notnull
 from v_feeds_snr order by feed_status ASC, """ \
     + sort_key + ' ' + order + """, lower(feed_title)""")
-<table>
-<tr class="header">
+<table class="feeds">
+  <thead class="fixed">
+    <tr class="header">
 ########################################################################
 ##
 ## Produce column headings with appropriate sort order
@@ -45,9 +50,12 @@ from v_feeds_snr order by feed_status ASC, """ \
 #set alt_order = 'DESC'
 #end if
 #end if
-<th$css><a href="feeds?sort=$col&order=$alt_order">$title</a></th>
+      <th$css><a href="feeds?sort=$col&order=$alt_order">$title</a></th>
 #end for
-</tr>
+      <th class="nonsort">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
 #set rownum = 0
 ########################################################################
 ##
@@ -111,15 +119,16 @@ from v_feeds_snr order by feed_status ASC, """ \
 #end for
 #silent db.commit()
 #silent c.close()
-<tr class="footer">
-  <td>Total</td>
-  <td></td>
-  <td align="right">$sum_unread</td>
-  <td align="right">$sum_filtered</td>
-  <td align="right">$sum_interesting</td>
-  <td></td>
-  <td align="right">$sum_total</td>
-  <td></td>
-</tr>
+    <tr class="footer">
+      <td>Total</td>
+      <td></td>
+      <td align="right">$sum_unread</td>
+      <td align="right">$sum_filtered</td>
+      <td align="right">$sum_interesting</td>
+      <td></td>
+      <td align="right">$sum_total</td>
+      <td></td>
+    </tr>
+  </tbody>
 </table>
 </body></html>

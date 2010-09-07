@@ -1,18 +1,18 @@
 ## -*- html -*-
 #extends rules_common
 #implements respond
+#import update
 <html>
 <head><title>Temboz - Feed details</title>
 <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
-<link rel="stylesheet" type="text/css" href="temboz.css">
+<link rel="stylesheet" type="text/css" href="temboz_css">
 <script language="JavaScript" src="temboz.js"></script>
 $rule_head
 </head>
 <body class="unpadded">
-<div class="menu"><a href="view">All unread</a>&nbsp;&nbsp;<a href="add">Add
-feed</a>&nbsp;&nbsp;<a href="feeds">All feeds</a> <span class="help"><a
-href="http://www.temboz.com/temboz/wiki?p=FeedDetailsPage"
-target="_blank">Help</a></span></div>
+#def CONTEXT_MENU
+#end def
+$MENUBAR(trans=trans)
 #set $feed_uid = $getVar('feed_uid')
 ########################################################################
 ##
@@ -57,7 +57,7 @@ target="_blank">Help</a></span></div>
 #import time, pprint, update, filters
 #set c = db.cursor()
 #silent update.feed_info_sql(db, c, $feed_uid)
-#silent feed_title, feed_desc, feed_filter, feed_html, feed_xml, delta_t, interesting, unread, uninteresting, filtered, total, status, private, exempt, dupcheck, feed_errors = c.fetchone()
+#silent feed_title, feed_desc, feed_filter, feed_html, feed_xml, feed_pubxml, delta_t, interesting, unread, uninteresting, filtered, total, status, private, exempt, dupcheck, feed_errors = c.fetchone()
 #set since = self.since(delta_t)
 #set unread = int(unread)
 #set interesting = int(interesting)
@@ -99,6 +99,11 @@ target="_blank">Help</a></span></div>
 #silent update.update_feed_filter($feed_uid, $getVar('feed_filter'))
 <p>Feed filter updated successfully.</p>
 #set feed_filter = $getVar('feed_filter', feed_filter)
+#end if
+#if $getVar('feed_pubxml', None) and $getVar('feed_pubxml', None) != feed_pubxml
+#silent update.update_feed_pubxml($feed_uid, $getVar('feed_pubxml'))
+<p>Feed public XML link updated successfully.</p>
+#set feed_pubxml = $getVar('feed_pubxml', feed_pubxml)
 #end if
 ########################################################################
 ##
@@ -143,7 +148,7 @@ duplicates.</p>
 ## Display feed URL with option to change it
 ##
 ########################################################################
-<form method="POST" name="feed_xml">
+<form method="POST" class="feed_info" name="feed_xml">
 <table>
 <tr><td>Title</td><td><input name="feed_title" size="80"
  value="<%=feed_title%>"></td></tr>
@@ -152,8 +157,12 @@ duplicates.</p>
 </tr>
 <tr><td><a href="<%=feed_xml%>">Feed</a></td>
 <td>
-#echo self.regurgitate_except()
 <input name="feed_xml" size="80" value="<%=feed_xml%>"></td></tr>
+<tr><td>Public feed</a></td>
+<td>
+#echo self.regurgitate_except()
+<input name="feed_pubxml" size="80" value="<%=feed_pubxml%>">
+(if the Feed XML is not shareable)</td></tr>
 #set lines = max(4, len(feed_desc) // 80 + 1)
 <tr><td>Desc</td><td><textarea cols="80" rows="$lines"
 name="feed_desc"><%=feed_desc%></textarea></td></tr>
