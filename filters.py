@@ -252,7 +252,6 @@ def load_rules(db, c):
     except:
       util.print_stack()
   finally:
-    c.close()
     loaded = True
 
 def invalidate():
