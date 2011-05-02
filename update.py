@@ -1,6 +1,7 @@
 import sys, hashlib, time, threading, socket, Queue, signal, os, re
-import urllib2, urlparse, HTMLParser
+import urllib2, urlparse, HTMLParser, random
 import param, feedparser, normalize, util, transform, singleton, filters
+import social
 
 sqlite = singleton.sqlite
 
@@ -162,6 +163,19 @@ def update_feed_xml(feed_uid, feed_xml):
   finally:
     c.close()
 
+def update_feed_pubxml(feed_uid, feed_pubxml):
+  """Update a feed HTML link"""
+  feed_uid = int(feed_uid)
+
+  from singleton import db
+  c = db.cursor()
+  try:
+    c.execute("update fm_feeds set feed_pubxml=? where feed_uid=?",
+              [feed_pubxml, feed_uid])
+    db.commit()
+  finally:
+    c.close()
+
 def update_feed_title(feed_uid, feed_title):
   """Update a feed title"""
   feed_uid = int(feed_uid)
@@ -301,9 +315,23 @@ class RatingsWorker(threading.Thread):
         c.execute("""update fm_items
         set item_rating=?, item_rated=julianday('now')
         where item_uid=?""", [rating, item_uid])
+        fb_token = param.settings.get('fb_token', None)
+        if rating == 1 and fb_token:
+          c.execute("""select item_link, item_title, feed_private
+          from fm_items, fm_feeds
+          where item_uid=? and feed_uid=item_feed_uid""",
+                    [item_uid])
+          url, title, private = c.fetchone()
         db.commit()
+        if rating == 1 and fb_token and not private:
+          callout = random.choice(
+            ['Interesting: ', 'Notable: ', 'Recommended: ', 'Thumbs-up: ',
+             'Noteworthy: ', 'FYI: ', 'Worth reading: '])
+          social.fb_post(fb_token, callout + title, url)
       except:
         util.print_stack()
+    # this will never be reached
+    c.close()
 
 def catch_up(feed_uid):
   feed_uid = int(feed_uid)
@@ -317,10 +345,15 @@ def catch_up(feed_uid):
     c.close()
 
 def purge_reload(feed_uid):
+  reload(transform)
   feed_uid = int(feed_uid)
+  if feed_uid in feed_guid_cache:
+    del feed_guid_cache[feed_uid]
   from singleton import db
   c = db.cursor()
   try:
+    # refresh filtering rules
+    filters.load_rules(db, c)
     c.execute("delete from fm_items where item_feed_uid=? and item_rating=0",
               [feed_uid])
     c.execute("""delete from fm_tags
@@ -387,7 +420,7 @@ class FeedWorker(threading.Thread):
       self.out_q.put(None)
   def fetch_feed(self, feed_uid, feed_xml, feed_etag, feed_modified,
                  feed_dupcheck):
-    print >> param.log, self.id, feed_xml
+    print >> param.activity, self.id, feed_xml
     return fetch_feed(feed_uid, feed_xml, feed_etag, feed_modified)
 
 def fetch_feed(feed_uid, feed_xml, feed_etag, feed_modified):
@@ -400,6 +433,10 @@ def fetch_feed(feed_uid, feed_xml, feed_etag, feed_modified):
   except socket.timeout:
     if param.debug:
       print >> param.log, 'EEEEE error fetching feed', feed_xml
+    f = {'channel': {}, 'items': []}
+  except:
+    if param.debug:
+      util.print_stack()
     f = {'channel': {}, 'items': []}
   return f
 
@@ -441,9 +478,10 @@ def clear_errors(db, c, feed_uid, f):
 
 def update_feed(db, c, f, feed_uid, feed_xml, feed_etag, feed_modified,
                 feed_dupcheck=None):
-  print >> param.log, feed_xml
+  print >> param.activity, feed_xml
   # check for errors - HTTP code 304 means no change
-  if 'title' not in f.feed and 'link' not in f.feed and \
+  if not hasattr(f, 'feed') or 'status' not in f or \
+         'title' not in f.feed and 'link' not in f.feed and \
          ('status' not in f or f['status'] not in [304]):
     # error or timeout - increment error count
     increment_errors(db, c, feed_uid)
@@ -454,6 +492,15 @@ def update_feed(db, c, f, feed_uid, feed_xml, feed_etag, feed_modified,
     process_parsed_feed(db, c, f, feed_uid, feed_dupcheck)
   except:
     util.print_stack(['c', 'f'])
+
+feed_guid_cache = {}
+
+def prune_feed_guid_cache():
+  yesterday = time.time() - 86400
+  for feed_uid in feed_guid_cache:
+    for guid in feed_guid_cache[feed_uid].keys()[:]:
+      if feed_guid_cache[feed_uid][guid] < yesterday:
+        del feed_guid_cache[feed_uid][guid]
 
 def process_parsed_feed(db, c, f, feed_uid, feed_dupcheck=None, exempt=None):
   """Insert the entries from a feedparser parsed feed f in the database using
@@ -500,6 +547,18 @@ Returns a tuple (number of items added unread, number of filtered items)"""
       modified = None
     content = item['content']
     # check if the item already exists, using the GUID as key
+    # but cache all seen GUIDs in a dictionary first, since most articles are
+    # existing ones and we can save a database query this way
+    if feed_uid in feed_guid_cache and guid in feed_guid_cache[feed_uid]:
+      # existing entry and we've seen it before in this process instance
+      # update the time stamp to prevent premature garbage-collection
+      # in prune_feed_guid_cache
+      feed_guid_cache.setdefault(feed_uid, dict())[guid] = time.time()
+      continue
+    else:
+      feed_guid_cache.setdefault(feed_uid, dict())[guid] = time.time()
+    # not seen yet, it may or may not be a duplicate, we have to find out the
+    # hard way
     c.execute("""select item_uid, item_link,
     item_loaded, item_created, item_modified,
     item_md5hex, item_title, item_content, item_creator
@@ -514,11 +573,11 @@ Returns a tuple (number of items added unread, number of filtered items)"""
                   [feed_uid, title, link])
         l = bool(c.fetchone()[0])
         if l:
-          print >> param.log, 'DUPLICATE TITLE', title
+          print >> param.activity, 'DUPLICATE TITLE', title
       # XXX Runt items (see normalize.py) are almost always spurious, we just
       # XXX skip them, although we may revisit this decision in the future
       if not l and item.get('RUNT', False):
-        print >> param.log, 'RUNT ITEM', item
+        print >> param.activity, 'RUNT ITEM', item
         l = True
     # GUID already exists, this is a change
     else:
@@ -561,10 +620,10 @@ Returns a tuple (number of items added unread, number of filtered items)"""
             values (?, ?)""", [tag, item_uid])
         if skip:
           num_filtered += 1
-          print >> param.log, 'SKIP', title, rule
+          print >> param.activity, 'SKIP', title, rule
         else:
           num_added += 1
-          print >> param.log, ' ' * 4, title
+          print >> param.activity, ' ' * 4, title
       except:
         util.print_stack(['c', 'f'])
         continue
@@ -629,6 +688,7 @@ def cleanup(db=None, c=None):
     os.mkdir('backups')
   except OSError:
     pass
+  prune_feed_guid_cache()
   os.system((sqlite_cli + ' rss.db .dump | %s > backups/daily_' \
              + time.strftime('%Y-%m-%d') + '%s') % param.backup_compressor)
   # rotate the log
@@ -698,17 +758,19 @@ def update(where_clause=''):
 
 class PeriodicUpdater(threading.Thread):
   def __init__(self):
+    self.event = threading.Event()
     threading.Thread.__init__(self)
     self.setDaemon(True)
   def run(self):
     while True:
       # XXX should wrap this in a try/except clause
-      time.sleep(param.refresh_interval)
-      print >> param.log, time.ctime(), '- refreshing feeds'
+      self.event.wait(param.refresh_interval)
+      print >> param.activity, time.ctime(), '- refreshing feeds'
       try:
         update()
       except:
         util.print_stack()
+      self.event.clear()
 
 def view_sql(db, c, where, sort, params, overload_threshold):
   singleton.mv_on_demand(db, c)
@@ -735,10 +797,25 @@ def view_sql(db, c, where, sort, params, overload_threshold):
 def feed_info_sql(db, c, feed_uid):
   singleton.mv_on_demand(db, c)
   c.execute("""select feed_title, feed_desc, feed_filter,
-  feed_html, feed_xml,
+  feed_html, feed_xml, feed_pubxml,
   last_modified, interesting, unread, uninteresting, filtered, total,
   feed_status, feed_private, feed_exempt, feed_dupcheck, feed_errors
   from v_feeds_snr
   where feed_uid=?
   group by feed_uid, feed_title, feed_html, feed_xml
   """, [feed_uid])
+
+def load_settings(db, c):
+  c.execute("select name, value from fm_settings")
+  setattr(param, 'settings', dict(c.fetchall()))
+  
+def setting(db, c, **kwargs):
+  for name, value in kwargs.iteritems():
+    try:
+      c.execute("insert into fm_settings (name, value) values (?, ?)",
+                [name, str(value)])
+    except sqlite.IntegrityError, e:
+      c.execute("update fm_settings set value=? where name=?",
+                [value, name])
+  db.commit()
+  
