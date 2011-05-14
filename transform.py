@@ -184,6 +184,8 @@ filter_list = [
             re.MULTILINE + re.DOTALL),
   degunk.Re(r'<hr\s?/?>\s*<a href="http://pro.gigaom.com/.*</a>',
             re.MULTILINE + re.DOTALL),
+  degunk.Re(r'\s*<hr[^>]*>\s*<p>\s*<a href="http://gigaom.com/sponsor.*?</p>',
+            re.MULTILINE + re.DOTALL),
   # Guardian Related sidebar
   degunk.Re(r'<div class="related" style="float.*?</div>',
             re.MULTILINE + re.DOTALL),
@@ -204,7 +206,8 @@ filter_list = [
   # ReadWriteWeb ads
   degunk.Re(r'<p align="right"><em>Sponsor</em><br>.*?</p>',
             re.MULTILINE + re.DOTALL),
-  # Noupe/Smashing
-  degunk.Re('<table.*?<img[^>]*commindo-media.*?</table>',
+  # Laughing Squid
+  degunk.Re('<p><hr />\s*<p>\\s*<a href="http://laughingsquid.us/">'
+            '.*?Laughing Squid Web Hosting</a>.</p></p>',
             re.MULTILINE + re.DOTALL),
   ]
