@@ -71,6 +71,7 @@ def add_feed(feed_xml):
   """Try to add a feed. Returns a tuple (feed_uid, num_added, num_filtered)"""
   from singleton import db
   c = db.cursor()
+  feed_xml = feed_xml.replace('feed://', 'http://')
   try:
     # verify the feed
     f = feedparser.parse(feed_xml)
