@@ -45,6 +45,10 @@ class AutoDiscoveryHandler(HTMLParser.HTMLParser):
       attrs = dict(attrs)
       if attrs.get('rel', '').strip().lower() != 'alternate':
         return
+      if 'comments' in attrs.get('href', '').strip().lower():
+        return
+      if 'comments feed' in attrs.get('title', '').strip().lower():
+        return
       if attrs.get('type') == 'application/rss+xml' and 'href' in attrs:
         self.autodiscovery['rss'] = attrs['href']
       if attrs.get('type') == 'application/atom+xml' and 'href' in attrs:
