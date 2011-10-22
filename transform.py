@@ -75,6 +75,9 @@ filter_list = [
   degunk.Re('<p>ADVERTISEMENT.*?</p>'),
   # Yahoo ads
   degunk.Re('<p class="adv">.*?</p>'),
+  # Commindo ads
+  degunk.Re('<div.*<img[^>]*commindo-media.*?</div>',
+            re.MULTILINE + re.DOTALL),
   # annoying forms inside posts, e.g. Russell Beattie
   degunk.Re('<form.*?</form>', re.IGNORECASE + re.DOTALL),
   # Weblogs Inc, ads
@@ -138,6 +141,8 @@ filter_list = [
   # Salon ads
   degunk.Re('<p><a href="http://feeds.salon.com/~a[^>]*><img '
             '[^>]*></a></p><img[^>]*>'),
+  # RWW ads
+  degunk.Re('<p align="right" class="ad">.*?</p>'),
   # bypass Digg
   degunk.Dereference('digg.com', '<h3 id="title1"><a href="([^"]*)"'),
   # DoubleClick ads
@@ -189,6 +194,8 @@ filter_list = [
   # Guardian Related sidebar
   degunk.Re(r'<div class="related" style="float.*?</div>',
             re.MULTILINE + re.DOTALL),
+  # PopSci Related sidebar
+  degunk.Re(r'<div class="relatedinfo".*?</div>', re.MULTILINE + re.DOTALL),
   # Ars Technica
   degunk.Re(r'<a [^>]* title="Click here to continue reading.*?</a>',
             re.MULTILINE + re.DOTALL),
