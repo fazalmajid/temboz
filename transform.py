@@ -52,6 +52,8 @@ filter_list = [
   # web bugs dumb enough to reveal themselves
   degunk.Re('<img[^>]*width="1"[^>]*height="1"[^>]*>'),
   degunk.Re('<img[^>]*height="1"[^>]*width="1"[^>]*>'),
+  degunk.Re('<img[^>]*width="0"[^>]*height="0"[^>]*>'),
+  degunk.Re('<img[^>]*height="0"[^>]*width="0"[^>]*>'),
   # Google ads
   degunk.Re('(<p>)?<a[^>]*href="http://[a-z]*ads.googleadservices[^>]*>'
             '[^<>]*<img [^<>]*></a>(</p>)?', re.MULTILINE),
