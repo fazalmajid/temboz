@@ -1,0 +1,2292 @@
+<?xml version="1.0" encoding='utf-8'?>
+<?xml-stylesheet type="text/xsl" href="http://blogs.sun.com/roller-ui/styles/atom.xsl" media="screen"?><feed xmlns="http://www.w3.org/2005/Atom">
+    <title type="html">Glenn Brunette&apos;s Security Weblog</title>
+    <subtitle type="html">Rambling musings and practical tips (mostly related to security).</subtitle>
+    <id>http://blogs.sun.com/gbrunett/feed/entries/atom</id>
+            <link rel="self" type="application/atom+xml" href="http://blogs.sun.com/gbrunett/feed/entries/atom" />
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/" />
+        <updated>2007-10-09T10:28:36-07:00</updated>
+    <generator uri="http://rollerweblogger.org" version="4.0-dev (20070731024821:ag92114)">Apache Roller (incubating)</generator>
+        <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/sun_sparc_enterprise_t5x20s_a</id>
+        <title type="html">Sun SPARC Enterprise T5x20s: A Security Geeks Point of View</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/sun_sparc_enterprise_t5x20s_a"/>
+        <published>2007-10-09T10:28:36-07:00</published>
+        <updated>2007-10-09T10:28:36-07:00</updated> 
+        <category term="/General Security" label="General Security" />
+        <category term="cmt" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="crypto" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="eco" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="ldoms" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="niagara" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="security" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="sparc" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="sun" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="t2" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="t5120" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="t5220" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="t6320" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="ultrasparc" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="virtualization" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;META NAME=&quot;KEYWORDS&quot; CONTENT=&quot;UltraSPARC T2, Niagara 2, T5120, T5220, Solaris, Cryptography&quot;&gt;
+&lt;P&gt;&lt;P&gt;
+
+What an exciting day!  Today, Sun has officially &lt;A HREF=&quot;http://www.sun.com/launch/2007-1009/feature.jsp?intcmp=hp2007oct09_launch_read&quot;&gt;launches&lt;/A&gt; the
+Sun SPARC Enterprise &lt;A HREF=&quot;http://www.sun.com/servers/coolthreads/t5120/&quot;&gt;T5120&lt;/A&gt; and 
+&lt;A HREF=&quot;http://www.sun.com/servers/coolthreads/t5220/&quot;&gt;T5220&lt;/A&gt; rack-mount systems along with the 
+&lt;A HREF=&quot;http://www.sun.com/servers/blades/t6320/&quot;&gt;Sun Blade T6320&lt;/A&gt; blade server, the first to be designed for the &lt;A HREF=&quot;http://www.sun.com/processors/UltraSPARC-T2/&quot;&gt;UltraSPARC T2&lt;/A&gt; processor.  From the point of
+view of a security geek, there is a lot to be happy about.  The UltraSPARC T2 has support for eight
+(8) &lt;A HREF=&quot;http://frsun.downloads.edgesuite.net/sun/08A01108/08A01108_01.mp3&quot;&gt;cryptographic processing units&lt;/A&gt;, each of which supports ten (10) different cryptographic algorithms 
+and a hardware-based random number generator.  &lt;A HREF=&quot;http://blogs.sun.com/sprack/&quot;&gt;Lawrence&lt;/A&gt;
+has done a fantastic job of talking about these capabilities and performance if you are interested.
+It is simply mind blowing.
+&lt;P&gt;&lt;P&gt;
+
+So, what else is new?  Well, we now have actual servers that can leverage the computing power of
+these chips.  This means that companies can now begin to rethink about how they have deployed 
+cryptography in their environments.  In particular, it is now much more practical to deploy 
+cryptographic services more widely across an enterprise environment due to the performance gains
+achieved by offloading the work to the cryptographic processing units.  For example, why not 
+ensure that all of your internal web, directory and mail services are fitted for encryption?
+(Hint: you should be doing this already, but now you can do it while not sacrificing the 
+performance of your CPUs!)  Net-net: strong security + excellent performance + eco-friendly is
+a &lt;A HREF=http://www.sun.com/servers/coolthreads/overview/index.jsp&quot;&gt;win-win&lt;/A&gt; for everyone.
+&lt;P&gt;&lt;P&gt;
+
+In addition to enabling the wider use of cryptographic services, I would also encourage any
+organization to consider how the performance and power benefits of these systems can be 
+applied to their existing environments and workloads.  In particular, when used in concert with
+Sun&apos;s &lt;A HREF=&quot;http://www.sun.com/servers/coolthreads/ldoms/&quot;&gt;Logical Domains&lt;/A&gt; (LDoms) technology, organizations can get the benefits of performance,
+&lt;HREF=&quot;http://www.sun.com/servers/coolthreads/ldoms/wp.pdf&quot;&gt;virtualization&lt;/A&gt; and security together in one system.  Did I mention that today we are also 
+announcing version 1.0.1 of our LDoms technology?  &lt;A HREF=&quot;http://blogs.sun.com/hlsu/entry/logical_domains_1_0_1&quot;&gt;Honglin&lt;/A&gt;
+has all the details.  Of particular interest to us security geeks is the support for minimized
+and hardened logical domains!  Combine that with the security isolation capabilities of the
+LDoms hypervisor, a boat-load of crypto performance, and a &lt;A HREF=&quot;http://www.sun.com/solaris/&quot;&gt;
+rock-solid, security, and scalable operating system&lt;/A&gt; - you just can&apos;t go wrong.
+&lt;P&gt;&lt;P&gt;
+
+Talk about &quot;zero cost security&quot;!  Taken as a whole, you get all of the performance (did I
+mention the 64 threads?), power and virtualization benefits with security just baked into
+the design!  What&apos;s not to like?  At least from where this security geek is standing, the
+view is simply unbeatable.  &lt;A HREF=&quot;http://www.sun.com/servers/coolthreads/overview/index.jsp&quot;&gt;See&lt;/A&gt;
+it all for yourself!
+&lt;P&gt;&lt;P&gt;
+
+Glenn
+&lt;P&gt;&lt;P&gt;
+
+
+&lt;small&gt; Technorati Tag:
+&lt;a href=&quot;http://technorati.com/tag/ultrasparc&quot; rel=&quot;tag&quot;&gt;UltraSPARC&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/niagara&quot; rel=&quot;tag&quot;&gt;Niagara&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/solaris&quot; rel=&quot;tag&quot;&gt;Solaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/security&quot; rel=&quot;tag&quot;&gt;security&lt;/a&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/brief_vacation_in_niagara_falls1</id>
+        <title type="html">Brief Vacation in Niagara Falls</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/brief_vacation_in_niagara_falls1"/>
+        <published>2007-08-20T10:13:10-07:00</published>
+        <updated>2007-08-20T10:17:54-07:00</updated> 
+        <category term="/Personal" label="Personal" />
+        <category term="personal" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="photos" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="vacation" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;div style=&quot;float: right; margin-left: 10px; margin-bottom: 10px;&quot;&gt;
+ &lt;a href=&quot;http://www.flickr.com/photos/gbrunett/1182454405/&quot; title=&quot;photo sharing&quot;&gt;&lt;img src=&quot;http://farm2.static.flickr.com/1179/1182454405_5ac9a9bfc2_m.jpg&quot; alt=&quot;&quot; style=&quot;border: solid 2px #000000;&quot; /&gt;&lt;/a&gt;
+ &lt;br /&gt;
+ &lt;span style=&quot;font-size: 0.9em; margin-top: 0px;&quot;&gt;
+  &lt;a href=&quot;http://www.flickr.com/photos/gbrunett/1182454405/&quot;&gt;IMG_1246.JPG&lt;/a&gt;
+  &lt;br /&gt;
+  Originally uploaded by &lt;a href=&quot;http://www.flickr.com/people/gbrunett/&quot;&gt;gbrunett&lt;/a&gt;
+ &lt;/span&gt;
+&lt;/div&gt;
+&lt;P&gt;&lt;P&gt;
+It was time for a little mini-vacation.  For a few days last week, my family and I traveled to &lt;A HREF=&quot;http://www.city.niagarafalls.on.ca/&quot;&gt;Niagara Falls, Ontario, Canada&lt;/A&gt;.  We had an excellent trip and with views such as &lt;A HREF=&quot;http://www.flickr.com/photos/gbrunett/sets/72157601563662330/&quot;&gt;
+these&lt;/A&gt;, you can easily see why!  What a beautiful place to take in a wonder of nature.
+&lt;P&gt;&lt;P&gt;
+
+Not only that, but it was a great excuse to try out my new &lt;A HREF=&quot;http://www.usa.canon.com/consumer/controller?act=ModelInfoAct&amp;fcategoryid=139&amp;modelid=11933&quot;&gt;camera&lt;/A&gt;.
+*grin*  I have a few other pictures that I will upload soon that were taken closer to home.
+&lt;P&gt;&lt;P&gt;
+
+Gotta get back to work!&lt;br /&gt;
+&lt;P&gt;&lt;P&gt;
+
+Take care,
+&lt;P&gt;
+Glenn
+&lt;P&gt;&lt;P&gt;
+
+&lt;small&gt; Technorati Tag:
+&lt;a href=&quot;http://technorati.com/tag/niagarafalls&quot; rel=&quot;tag&quot;&gt;Niagara Falls&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/ontario&quot; rel=&quot;tag&quot;&gt;Ontario&lt;/a&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/solaris_fingerprint_companion_v0_5</id>
+        <title type="html">Solaris Fingerprint Companion v0.5</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/solaris_fingerprint_companion_v0_5"/>
+        <published>2007-08-13T14:04:22-07:00</published>
+        <updated>2007-08-13T14:04:22-07:00</updated> 
+        <category term="/Solaris 10 Security" label="Solaris 10 Security" />
+        <category term="fingerprint" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="nevada" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="opensolaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="security" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="sfpdb" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="solaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="tool-sfpc" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;META NAME=&quot;KEYWORDS&quot; CONTENT=&quot;Solaris, Solaris 10, sfpDB, sfpC, security, fingerprint, database, integrity&quot;&gt;
+&lt;P&gt;&lt;P&gt;
+
+For some reason, the links to things on &lt;A HREF=&quot;http://sunsolve.sun.com/&quot;&gt;SunSolve&lt;/A&gt; like the &lt;A HREF=&quot;http://sunsolve.sun.com/fileFingerprints.do&quot;&gt;Solaris Fingerprint Database&lt;/A&gt; have changed and as a result, tools like my &lt;A HREF=&quot;http://www.opensolaris.org/os/community/security/projects/sfpdb&quot;&gt;Solaris Fingerprint Companion&lt;/A&gt; stopped working.  I would like to publicly thank Richard Mayebo for being the first to let me know of this issue.  In addition to just fixing the links, it felt like an excellent opportunity to re-test the tool with the latest versions of &lt;A HREF=&quot;http://www.perl.com/&quot;&gt;Perl&lt;/A&gt; shipping on both &lt;A HREF=&quot;http://www.opensolaris.org/os/project/onnv/&quot;&gt;Nevada&lt;/A&gt; as well as &lt;A HREF=&quot;http://www.ubuntu.com/&quot;&gt;Ubuntu&lt;/A&gt;.  I am very happy to report that the &lt;A HREF=&quot;&quot;&gt;Solaris Fingerprint Database Companion&lt;/A&gt; tool continues to work just fine (after the required add-ons are installed).  I have posted the latest and greatest version 
+&lt;A HREF=&quot;http://www.opensolaris.org/os/community/security/files/sfpC-v0.5.tar.bz2&quot;&gt;here&lt;/A&gt; as part of the &lt;A HREF=&quot;http://www.opensolaris.org/os/community/security&quot;&gt;OpenSolaris Security Community&lt;/A&gt;.
+&lt;P&gt;&lt;P&gt;
+
+Give it a try and let me know what you think!
+&lt;P&gt;&lt;P&gt;
+
+Take care,
+&lt;P&gt;
+Glenn
+&lt;P&gt;&lt;P&gt;
+
+&lt;small&gt; Technorati Tag:
+&lt;a href=&quot;http://technorati.com/tag/opensolaris&quot; rel=&quot;tag&quot;&gt;OpenSolaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/solaris&quot; rel=&quot;tag&quot;&gt;Solaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/security&quot; rel=&quot;tag&quot;&gt;security&lt;/a&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/solaris_non_executable_stack_concluded</id>
+        <title type="html">Solaris Non-Executable Stack Concluded</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/solaris_non_executable_stack_concluded"/>
+        <published>2007-08-01T12:57:07-07:00</published>
+        <updated>2007-08-05T11:07:54-07:00</updated> 
+        <category term="/Solaris 10 Security" label="Solaris 10 Security" />
+        <category term="nevada" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="noexstk" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="opensolaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="security" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="software" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="solaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;META NAME=&quot;KEYWORDS&quot; CONTENT=&quot;Solaris, Solaris 10, Solaris 11, Nevada, OpenSolaris, security, solaris security, opensolaris security, nx, dx, non-exec user stack, buffer overflow, stack, execution&quot;&gt;
+&lt;P&gt;&lt;P&gt;
+
+Since publishing my &lt;A HREF=&quot;http://blogs.sun.com/gbrunett/entry/solaris_non_executable_stack_overview&quot;&gt;two&lt;/A&gt; 
+&lt;A HREF=&quot;http://blogs.sun.com/gbrunett/entry/solaris_non_executable_stack_continued&quot;&gt;part&lt;/A&gt; series on non-executable
+stacks in the &lt;A HREF=&quot;http://www.sun.com/solaris&quot;&gt;Solaris&lt;/A&gt; operating system, I received some very useful feedback
+and clarifications that I wanted to share with everyone.  First, &lt;A HREF=&quot;http://blogs.sun.com/vlad&quot;&gt;Vladimir Kotal&lt;/A&gt; commented on my first article that:
+&lt;P&gt;&lt;P&gt;
+
+&lt;BLOCKQUOTE&gt;
+Having to grep(1) for the CPU features is really clumsy. Maybe psrinfo(1M) could be extended to print them out? 
+(for every (virtual) CPU present in the system)
+&lt;/BLOCKQUOTE&gt;
+&lt;P&gt;&lt;P&gt;
+
+Frankly, I agree.  After asking around however, today there does not appear to be a cleaner interface (although there 
+is a bunch of discussion around adding one).  Sherry Moore and Joe Bonasera were kind enough to point out that there is
+a programmatic way to access this information in the form of &lt;I&gt;cpuid(7d)&lt;/I&gt;.  Joe also shared the following with me
+that you may find interesting:
+&lt;P&gt;&lt;P&gt;
+
+&lt;BLOCKQUOTE&gt;
+The NX information doesn&apos;t belong in isainfo. isainfo, I&apos;m told, is only meant to reflect processor capability information that is directly usable from user mode.&lt;BR&gt;&lt;BR&gt;
+
+The NX bit feature has to do with page table construction which is not something you do from userland. What&apos;s a
+more interesting thing to know is &quot;Does not specifying PROT_EXEC have any effect on this system, or is PROT_EXEC
+implicit for all PROT_READ segments?&quot; Even cpuid doesn&apos;t help with that information as various bits of the OS 
+memory subsystems might do different things along the way.  For example if for some reason you&apos;re running a 
+non-PAE 32 bit kernel, even though cpuid says that NX is supported, NX bits wont be used.&lt;BR&gt;&lt;BR&gt;
+
+A similar issue has come up in the Open Solaris Xen project, in that many people want to know if their processor
+supports AMD-V or Intel VT-x. That information comes from CPUID, but is only usable from supervisor (either kernel
+or hypervisor) code, hence we haven&apos;t added it to isainfo.  But it is a valid question to ask if the cpu/bios you
+have would support running such software w/o actually having it. 
+&lt;/BLOCKQUOTE&gt;
+&lt;P&gt;&lt;P&gt;
+
+That said, Sherry did clue me in on a program called &lt;A HREF=&quot;http://www.etallen.com/cpuid.html&quot;&gt;cpuid&lt;/A&gt; which
+can allow us to get this information and a lot more (subject to the issues noted by Joe above).  Unfortunately, the
+&lt;I&gt;cpuid&lt;/I&gt; program was developed for Linux and will not compile by default on Solaris:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+blackhole$ &lt;B&gt;gmake&lt;/B&gt;
+cc -g -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return 
+-Wstrict-prototypes -Wmissing-prototypes -D_FILE_OFFSET_BITS=64 -DVERSION=20070801 -o cpuid cpuid.c
+cpuid.c:26:25: linux/major.h: No such file or directory
+cpuid.c: In function `explain_errno&apos;:
+cpuid.c:3191: error: `CPUID_MAJOR&apos; undeclared (first use in this function)
+cpuid.c:3191: error: (Each undeclared identifier is reported only once
+cpuid.c:3191: error: for each function it appears in.)
+cpuid.c: In function `real_setup&apos;:
+cpuid.c:3472: warning: implicit declaration of function `makedev&apos;
+cpuid.c:3472: error: `CPUID_MAJOR&apos; undeclared (first use in this function)
+cpuid.c: In function `main&apos;:
+cpuid.c:3751: warning: initialization discards qualifiers from pointer target type
+cpuid.c:3752: warning: initialization discards qualifiers from pointer target type
+cpuid.c:3753: warning: initialization discards qualifiers from pointer target type
+cpuid.c:3754: warning: initialization discards qualifiers from pointer target type
+cpuid.c:3755: warning: initialization discards qualifiers from pointer target type
+cpuid.c:3756: warning: initialization discards qualifiers from pointer target type
+cpuid.c:3757: warning: initialization discards qualifiers from pointer target type
+gmake: *** [cpuid] Error 1
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+Luckily, the changes to get this program to work on Solaris were simple (Thanks Sherry!).  All that we needed to do 
+was remove the references to &lt;I&gt;/dev/cpu/*&lt;/I&gt; as that is a Linux-ism that does not exist on Solaris.  Here is the
+complete &lt;I&gt;diff&lt;/I&gt; for those wanting to try this at home:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+blackhole$ &lt;B&gt;diff linux-cpuid.c cpuid.c&lt;/B&gt;
+25a26
+&gt; #if 0
+26a28
+&gt; #endif
+3188a3191
+&gt; #if 0
+3194a3198
+&gt; #endif
+3450a3455
+&gt; #if 0
+3489a3495
+&gt; #endif
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+Clearly, if you wanted the program to work on either OS, you could just substitute the &lt;I&gt;#if 0&lt;/I&gt; strings for something like &lt;I&gt;#if !defined(SOLARIS)&lt;/I&gt; and then just define &lt;I&gt;SOLARIS&lt;/I&gt; in the &lt;I&gt;CFLAGS&lt;/I&gt; parameter when compiling on Solaris.  But I digress...  With this simple change implemented, you can now compile the &lt;I&gt;cpuid&lt;/I&gt; program on Solaris:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+blackhole$ &lt;B&gt;gmake&lt;/B&gt;
+cc -g -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return 
+-Wstrict-prototypes -Wmissing-prototypes -D_FILE_OFFSET_BITS=64 -DVERSION=20070801 -o cpuid cpuid.c
+cpuid.c: In function `main&apos;:
+cpuid.c:3757: warning: initialization discards qualifiers from pointer target type
+cpuid.c:3758: warning: initialization discards qualifiers from pointer target type
+cpuid.c:3759: warning: initialization discards qualifiers from pointer target type
+cpuid.c:3760: warning: initialization discards qualifiers from pointer target type
+cpuid.c:3761: warning: initialization discards qualifiers from pointer target type
+cpuid.c:3762: warning: initialization discards qualifiers from pointer target type
+cpuid.c:3763: warning: initialization discards qualifiers from pointer target type
+gzip &lt; cpuid.man &gt; cpuid.man.gz
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+These warnings can be safely ignored.  With the program now compiled, let&apos;s give it a try and see what it can tell us about the NX bit:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+blackhole$ &lt;B&gt;./cpuid | grep exec&lt;/B&gt;
+      execution disable                      = false
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+Interesting.  This system does not have the NX capability likely because I am running (Nevada in this case) in a
+Parallels VM which is 32-bit (reference Joe&apos;s note above).  Let&apos;s give this a better test subject by trying it on
+a Sun &lt;A HREF=&quot;http://www.sun.com/servers/entry/x2100/&quot;&gt;X2100&lt;/A&gt;.  This command is run from the global zone of
+a system running &lt;A HREF=&quot;http://www.sun.com/solaris&quot;&gt;Solaris 10 11/06&lt;/A&gt;:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+$ &lt;B&gt;./cpuid | grep exec&lt;/B&gt;
+      no-execute page protection            = true
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+Careful observation will also show the AMD and Intel naming differences that I had talked about 
+&lt;A HREF=&quot;http://blogs.sun.com/gbrunett/entry/solaris_non_executable_stack_overview&quot;&gt;previously&lt;/A&gt; with respect to &lt;I&gt;XD&lt;/I&gt; and &lt;I&gt;NX&lt;/I&gt;.
+&lt;P&gt;&lt;P&gt;
+
+Well, I think that I have talked about this subject to death.  I hope that you found it interesting and perhaps
+a little educational.  As always, I love to get your feedback!  Before signing off, once again I would like to
+thank Sherry Moore and Joe Bonasera for sharing their knowledge and experience with me (and thereby with you)!
+&lt;P&gt;&lt;P&gt;
+
+Take care,
+&lt;P&gt;
+Glenn
+&lt;P&gt;&lt;P&gt;
+
+&lt;small&gt; Technorati Tag:
+&lt;a href=&quot;http://technorati.com/tag/opensolaris&quot; rel=&quot;tag&quot;&gt;OpenSolaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/solaris&quot; rel=&quot;tag&quot;&gt;Solaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/security&quot; rel=&quot;tag&quot;&gt;security&lt;/a&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/interesting_file_discovery_tool_version1</id>
+        <title type="html">Interesting File Discovery Tool version 0.5</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/interesting_file_discovery_tool_version1"/>
+        <published>2007-07-30T10:14:19-07:00</published>
+        <updated>2007-08-05T11:08:49-07:00</updated> 
+        <category term="/Solaris 10 Security" label="Solaris 10 Security" />
+        <category term="opensolaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="security" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="software" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="solaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="tool-ifd" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;META NAME=&quot;KEYWORDS&quot; CONTENT=&quot;Solaris, Solaris 10, Solaris 11, Nevada, OpenSolaris, set-id, set-uid, set-gid, world writable, security, solaris security, opensolaris security, elfsign, digest, md5, sha-512, fingerprint&quot;&gt;
+&lt;P&gt;&lt;P&gt;
+
+&lt;A HREF=&quot;http://blogs.sun.com/gbrunett/entry/interesting_file_discovery_tool_version#comments&quot;&gt;As promised&lt;/A&gt;, I have uploaded &lt;A HREF=&quot;http://mediacast.sun.com/share/gbrunett/ifd-v0.5.sh&quot;&gt;version 0.5&lt;/A&gt; of the Interesting File Discovery Tool (or &lt;I&gt;ifd&lt;/I&gt; for short).  This update includes fixes and enhancements that were contributed by &lt;A HREF=&quot;http://blogs.sun.com/dragonfly&quot;&gt;Perley&lt;/A&gt;
+and Joe Moore.  Thank you both for your contributions!
+&lt;P&gt;&lt;P&gt;
+
+The biggest change in this version is the introduction of the &lt;I&gt;-D&lt;/I&gt; parameter which enables you to change the program used to calculate the file digests (or fingerprints):
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+# &lt;B&gt;./ifd-v0.5.sh -h&lt;/B&gt;
+
+   ./ifd-v0.5.sh - Interesting File Discovery Tool
+
+   ifd -[ugnw] [-ds] [-q] [-D cmd] { -c | -l | [Solaris Product Directory] }
+
+      -c     Collect information from /var/sadm/install/contents
+      -d     Calculate MD5 digest for each file (Solaris 10 only)
+      -D     Command used to calculate file fingerprint
+      -g     Print information on files with the set-gid bit set
+      -h     Display this message
+      -l     Collect information from /var/sadm/pkg
+      -n     Print information on WW directories without sticky bit set
+      -q     Quiet mode.  Do not print headers.
+      -s     Validate ELF file signature for each file (Solaris 10 only)
+      -u     Print information on files with the set-uid bit set
+      -w     Print information on world writable files and directories
+      -?     Display this message
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+This can be useful in cases where you are running the tool on earlier releases of Solaris that do not have the integrated &lt;I&gt;digest&lt;/I&gt; command or in cases where you want to use a different algorithm.  For example, with this change, you could tell &lt;I&gt;ifd&lt;/I&gt; to create SHA-512 fingerprints:
+&lt;P&gt;&lt;P&gt;
+
+&lt;CODE&gt;
+# &lt;B&gt;./ifd-v0.5.sh -c -D &quot;/usr/bin/digest -a sha512&quot; -d -u&lt;/B&gt;
+&lt;P&gt;&lt;P&gt;
+Set-UID Programs
+&lt;P&gt;&lt;P&gt;
+SUNWaccu        4755   root       adm        29478dd7ebde1555eaef0987789094cc778794ee73ddcfb0a67c44004f93652f599dd7276342f8113cc4e58f877e883b4687c4ca0f30f0585dd725ddaffeb0b7 /usr/lib/acct/accton&lt;BR&gt;
+SUNWbip         4555   root       bin        95c814f7ff9606e0dc8818b51dacf74e92e5b3af329d66dc6fc8343c20ae741c1cea758568a318713ce6aacb35d1605bd6ee0911cdd2457aa85ceed363d17326 /usr/sbin/ping&lt;BR&gt;
+SUNWbnuu        4511   root       uucp       540f94a7054233498f1925aceef3c69b76300141ef38acc920ae005287db5546a03daef37c19b98149e11a26c7b4da137788e45cf642a3449345f635d8dbf762 /usr/bin/ct&lt;BR&gt;
+SUNWbnuu        4511   uucp       uucp       1754a7f7aaea60f4a1d1ca1915af30bc0157333061c096088bd3b719d008167f603380fae5b417a237cc9fe8c4cdcf524b22c61a471d0a06df5188cabedb475c /usr/bin/uuglist&lt;BR&gt;
+[...]
+&lt;P&gt;
+&lt;/CODE&gt;
+&lt;P&gt;&lt;P&gt;
+
+Pretty neat.  Thanks again to Perley and Joe for their feedback and support!  To everyone - give this &lt;A HREF=&quot;http://mediacast.sun.com/share/gbrunett/ifd-v0.5.sh&quot;&gt;new version&lt;/A&gt; a shot and let me know what you think.
+&lt;P&gt;&lt;P&gt;
+
+Take care,
+&lt;P&gt;
+Glenn
+&lt;P&gt;&lt;P&gt;
+
+&lt;small&gt; Technorati Tag:
+&lt;a href=&quot;http://technorati.com/tag/opensolaris&quot; rel=&quot;tag&quot;&gt;OpenSolaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/solaris&quot; rel=&quot;tag&quot;&gt;Solaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/security&quot; rel=&quot;tag&quot;&gt;security&lt;/a&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;
+</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/solaris_non_executable_stack_continued</id>
+        <title type="html">Solaris Non-Executable Stack Continued</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/solaris_non_executable_stack_continued"/>
+        <published>2007-07-25T19:58:45-07:00</published>
+        <updated>2007-08-05T11:08:14-07:00</updated> 
+        <category term="/Solaris 10 Security" label="Solaris 10 Security" />
+        <category term="nevada" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="noexstk" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="opensolaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="security" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="software" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="solaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;META NAME=&quot;KEYWORDS&quot; CONTENT=&quot;Solaris, Solaris 10, Solaris 11, Nevada, OpenSolaris, security, solaris security, opensolaris security, nx, dx, non-exec user stack, buffer overflow, stack, execution&quot;&gt;
+&lt;P&gt;&lt;P&gt;
+
+&lt;A HREF=&quot;http://blogs.sun.com/gbrunett/entry/solaris_non_executable_stack_overview&quot;&gt;Previously&lt;/A&gt;, we covered some
+of the history and basics of Solaris non-executable stacks and how they can be enabled globally on both SPARC and x86/x64 systems.  In this article, we extend that foundation by talking about how developers can configure their own programs to have non-executable stacks, regardless of the value of the global system setting, &lt;I&gt;noexec_user_stack&lt;/I&gt;.
+&lt;P&gt;&lt;P&gt;
+
+This little bit of magic is accomplished through the use of a &lt;A HREF=&quot;http://docs.sun.com/app/docs/doc/817-1984/6mhm7pl2g?a=view&quot;&gt;linker map file&lt;/A&gt;.  In the case of non-executable stacks, the linker map file in question is &lt;I&gt;/usr/lib/ld/map.noexstk&lt;/I&gt;.  Simply specifying this map file during a compilation or link will cause the resulting program to have a non-executable stack.  Looking at the comments in this file, we see how this is accomplished:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+#
+#ident  &quot;@(#)mapfile_noexstk    1.3     01/07/13 SMI&quot;
+#
+# Copyright (c) 2001 by Sun Microsystems, Inc.
+# All rights reserved.
+#
+# Linker mapfile to create a non-executable stack definition within an
+# executable.
+# The linker does not use this file automatically, so one must use the -M 
+# option to cc or ld:
+#
+#       cc -M /usr/lib/ld/map.noexstk myprogram.c
+#
+stack = STACK ?RW;
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+If this sounds pretty straightforward and easy to use, that is because it is!  Let&apos;s go ahead and give it a try!  Before we begin, I would like to thank &lt;A HREF=&quot;http://blogs.sun.com/rotondo/&quot;&gt;Scott Rotondo&lt;/A&gt; for sharing with me the following sample program.  This program will attempt to execute code on the stack.  Our test system is configured with &lt;I&gt;noexec_user_stack=0&lt;/I&gt; and we will compile our test program both with and without using the map file so that they can be compared with one another.
+&lt;P&gt;&lt;P&gt;
+
+First, here is our test program:
+&lt;P&gt;&lt;P&gt;
+&lt;PRE&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+int x = 0;
+
+void
+incr(void)
+{
+        x++;
+}
+
+typedef void (*funcptr)(void);
+
+int
+main(int argc, char **argv)
+{
+        funcptr f;
+        char code[100];
+
+        /* Copy the incr() function to the stack. */
+        memcpy(code, (void *)incr, sizeof(code));
+        f = (funcptr)code;
+
+        /*
+         * Increment x twice, once by calling incr() and
+         * once by running the copy on the stack.
+         */
+        printf(&quot;x = %d\n&quot;, x);
+        incr();
+        printf(&quot;x = %d\n&quot;, x);
+        f();
+        printf(&quot;x = %d\n&quot;, x);
+        return (0);
+}
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+Now, let&apos;s compile the program (with and without the &lt;I&gt;map.noexstk&lt;/I&gt; map file):
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+$ &lt;B&gt;gcc -O -o incr incr.c&lt;/B&gt;
+$ &lt;B&gt;gcc -O -o incr-nx -Wl,-M,/usr/lib/ld/map.noexstk incr.c&lt;/B&gt;
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+&lt;I&gt;(Thank you to Luke for pointing out a cleaner way to pass the linker map file using gcc!)&lt;/I&gt;
+&lt;P&gt;&lt;P&gt;
+
+Note that if you were using the &lt;A HREF=&quot;http://developers.sun.com/sunstudio/compilers_index.html&quot;&gt;Sun C compiler&lt;/A&gt;, you could have used the following commands:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+$ &lt;B&gt;cc -O -o incr incr.c&lt;/B&gt;
+$ &lt;B&gt;cc -O -o incr-nx -M /usr/lib/ld/map.noexstk incr.c&lt;/B&gt;
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+So, how do we know that the program, &lt;I&gt;incr-nx&lt;/I&gt;, has a non-executable stack?  One of the easiest ways is to use the &lt;I&gt;elfdump(1)&lt;/I&gt; command telling it to look for the program header type, &lt;I&gt;PT_SUNWSTACK&lt;/I&gt;.  The absence of this program header means that the program is effectively in a default configuration where (depending on the platform) the stack segment could be readable, writable as well as executable.  If a &lt;I&gt;PT_SUNWSTACK&lt;/I&gt; program header is found then the default is not being used, and we need only to look at the &lt;I&gt;p_flags&lt;/I&gt; parameter to see what permissions are being assigned to the stack segment.
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+$ &lt;B&gt;elfdump -p -N PT_SUNWSTACK incr&lt;/B&gt;
+$ &lt;B&gt;elfdump -p -N PT_SUNWSTACK incr-nx&lt;/B&gt;
+
+Program Header[5]:
+    p_vaddr:      0           p_flags:    [ PF_W PF_R ]
+    p_paddr:      0           p_type:     [ PT_SUNWSTACK ]
+    p_filesz:     0           p_memsz:    0
+    p_offset:     0           p_align:    0
+
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+As you can see from the output of the two commands above, the &lt;I&gt;incr&lt;/I&gt; program&apos;s stack segment is configured in the default manner and will therefore have an executable stack (unless of course the global system parameter &lt;I&gt;noexec_user_stack&lt;/I&gt; is set to &lt;I&gt;1&lt;/I&gt;).  On the other hand, the &lt;I&gt;incr-nx&lt;/I&gt; program does have a &lt;I&gt;PT_SUNWSTACK&lt;/I&gt; program header.  Looking at the &lt;I&gt;p_flags&lt;/I&gt; parameter, we see that this program&apos;s stack segment will have only the read (&lt;I&gt;PF_R&lt;/I&gt;) and write (&lt;I&gt;PF_W&lt;/I&gt;) flags enabled.
+&lt;P&gt;&lt;P&gt;
+
+The next obvious question is whether these programs will behave differently.  Certainly, we would expect them to given that they are configured to execute code on the stack yet such an operation is only permitted in one of the two programs.  Let&apos;s take a closer look:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+$ &lt;B&gt;./incr&lt;/B&gt;
+x = 0
+x = 1
+x = 2
+$ &lt;B&gt;./incr-nx&lt;/B&gt;
+x = 0
+x = 1
+Segmentation Fault (core dumped)
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+If we had enabled logging of attempts to execute code on the stack using the &lt;I&gt;noexec_user_stack_log&lt;/I&gt; parameter, we would have also seen a &lt;I&gt;syslog&lt;/I&gt; message similar to:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+$ &lt;B&gt;tail -1 /var/adm/debug&lt;/B&gt;
+Jul 25 22:11:36 quasar genunix: [ID 533030 kern.notice] NOTICE: incr-nx[12553] attempt to execute code on stack by uid 101
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+Pretty cool, eh?  So with the simple addition of the linker map file, we can now deploy programs and services that will have non-executable stack segments (out of the box)!  In fact, a large portion of the &lt;A HREF=&quot;http://www.opensolaris.org/os/community/on/&quot;&gt;ON&lt;/A&gt; (operating system and networking) consolidation in the Solaris OS is already configured this way!  In fact, even the &lt;A HREF=&quot;http://www.mozilla.com/en-US/firefox/2.0.0.5/releasenotes/#contributedbuilds&quot;&gt;Sun-contributed Firefox&lt;/A&gt; (that is also included in Solaris 10 and &lt;A HREF=&quot;http://www.opensolaris.org/&quot;&gt;OpenSolaris&lt;/A&gt;) &lt;A HREF=&quot;http://www.opensolaris.org/jive/thread.jspa?messageID=19838&quot;&gt;uses this mechanism&lt;/A&gt; to enable non-executable stacks.  Yes, even &lt;A HREF=&quot;http://qa.openoffice.org/issues/show_bug.cgi?id=70488&quot;&gt;OpenOffice&lt;/A&gt;/&lt;A HREF=&quot;http://qa.openoffice.org/issues/show_bug.cgi?id=70488&quot;&gt;StarOffice&lt;/A&gt; and &lt;A HREF=&quot;https://bugs.freedesktop.org/show_bug.cgi?id=2200&quot;&gt;Xorg&lt;/A&gt; are in on the action&lt;/A&gt;!  So, what are you waiting for?  Give it a try today!
+&lt;P&gt;&lt;P&gt;
+
+I hope you enjoyed this brief overview into Solaris non-executable stacks.  As always, I would love to get your feedback and ideas.  You can read more on this topic &lt;A HREF=&quot;http://www.webservertalk.com/archive100-2004-3-141989.html&quot;&gt;here&lt;/A&gt; and &lt;A HREF=&quot;http://blogs.sun.com/jjj/date/20050614&quot;&gt;here&lt;/A&gt;.
+&lt;P&gt;&lt;P&gt;
+
+Take care,
+&lt;P&gt;
+Glenn
+&lt;P&gt;&lt;P&gt;
+
+&lt;small&gt; Technorati Tag:
+&lt;a href=&quot;http://technorati.com/tag/opensolaris&quot; rel=&quot;tag&quot;&gt;OpenSolaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/solaris&quot; rel=&quot;tag&quot;&gt;Solaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/security&quot; rel=&quot;tag&quot;&gt;security&lt;/a&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/solaris_non_executable_stack_overview</id>
+        <title type="html">Solaris Non-Executable Stack Overview</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/solaris_non_executable_stack_overview"/>
+        <published>2007-07-25T13:05:45-07:00</published>
+        <updated>2007-08-05T11:08:21-07:00</updated> 
+        <category term="/Solaris 10 Security" label="Solaris 10 Security" />
+        <category term="nevada" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="noexstk" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="opensolaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="security" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="software" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="solaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;META NAME=&quot;KEYWORDS&quot; CONTENT=&quot;Solaris, Solaris 10, Solaris 11, Nevada, OpenSolaris, security, solaris security, opensolaris security, nx, dx, non-exec user stack, buffer overflow, stack, execution&quot;&gt;
+&lt;P&gt;&lt;P&gt;
+
+The ability to configure a Solaris system to run with non-executable stacks is not overly new.  That functionality was originally introduced into the Solaris 2.6 operating system with the &lt;I&gt;noexec_user_stack&lt;/I&gt; kernel parameter.  Looking
+at the source code, this is how this parameter was documented (in &lt;I&gt;usr/src/uts/common/vm/seg_vn.c&lt;/I&gt;):
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+ 207 /* 
+ 208  * Patching this variable to non-zero allows the system to run with 
+ 209  * stacks marked as &quot;not executable&quot;.  It&apos;s a bit of a kludge, but is 
+ 210  * provided as a tweakable for platforms that export those ABIs 
+ 211  * (e.g. sparc V8) that have executable stacks enabled by default. 
+ 212  * There are also some restrictions for platforms that don&apos;t actually 
+ 213  * implement &apos;noexec&apos; protections. 
+ 214  * 
+ 215  * Once enabled, the system is (therefore) unable to provide a fully 
+ 216  * ABI-compliant execution environment, though practically speaking, 
+ 217  * most everything works.  The exceptions are generally some interpreters 
+ 218  * and debuggers that create executable code on the stack and jump 
+ 219  * into it (without explicitly mprotecting the address range to include 
+ 220  * PROT_EXEC). 
+ 221  * 
+ 222  * One important class of applications that are disabled are those 
+ 223  * that have been transformed into malicious agents using one of the 
+ 224  * numerous &quot;buffer overflow&quot; attacks.  See 4007890. 
+ 225  */ 
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+While non-executable stacks provide are a very useful technique for thwarting certain kinds of buffer overflow attacks,
+it should be noted that there exist &lt;A HREF=&quot;http://en.wikipedia.org/wiki/Return-to-libc_attack&quot;&gt;other attack methods&lt;/A&gt;
+that do not rely on executable stacks.  One such method was discussed back in 1999 on &lt;A HREF=&quot;http://seclists.org/bugtraq/1999/Mar/0004.html&quot;&gt;Bugtraq&lt;/A&gt;, but even in this case the author noted that there was inherent value in non-executable stacks (if only as an additional defense in depth layer):
+
+&lt;BLOCKQUOTE CITE=&quot;http://seclists.org/bugtraq/1999/Mar/0004.html&quot;&gt;
+Hopefully, these exploits demonstrate that it is important to make sure that programs that run at an elevated privilege are free of buffer overflow bugs.  The stack protection will certainly help protect you from the majority of intruders, but moderately competent intruders will probably be able to bypass it. 
+&lt;/BLOCKQUOTE&gt;
+&lt;P&gt;&lt;P&gt;
+
+Just as with &lt;A HREF=&quot;http://blogs.sun.com/gbrunett/entry/foundation_for_minimal_solaris_10&quot;&gt;minimization&lt;/A&gt;, &lt;A HREF=&quot;http://www.sun.com/security/jass&quot;&gt;hardening&lt;/A&gt;, and the &lt;A HREF=&quot;http://www.sun.com/blueprints/0505/819-2680.pdf&quot;&gt;deployment of services with reduced privilege&lt;/A&gt;, non-executable stacks are just another layer or tool to be used as part of a more comprehensive security architecture.  But anyway, back to our story...
+&lt;P&gt;&lt;P&gt;
+
+As with other kernel parameters, the non-executable stack state can be be adjusted (enabled or disabled) using the &lt;I&gt;/etc/system&lt;/I&gt; file.  For example, the following statement added to &lt;I&gt;/etc/system&lt;/I&gt; would enable this feature:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+set noexec_user_stack=1
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+As noted in the inline documentation above, experience has shown that &quot;most everything works&quot;.  In fact, the recommendation to enable this feature has been in &lt;A HREF=&quot;http://www.sun.com/blueprints/&quot;&gt;Sun BluePrints&lt;/A&gt; since 1999 and similarly in the &lt;A HREF=&quot;http://www.sun.com/security/jass/&quot;&gt;Solaris Security Toolkit&lt;/A&gt; since its inception.  Looking even further, you find this common recommendation across the &lt;A HREF=&quot;http://www.cisecurity.org/&quot;&gt;industry&lt;/A&gt;.
+&lt;P&gt;&lt;P&gt;
+
+As a companion to this parameter, the &lt;I&gt;noexec_user_stack_log&lt;/I&gt; parameter could be used to enable logging when this feature (if enabled) detected an attempt to run code from the stack.  By default, this parameter is enabled if the &lt;I&gt;noexec_user_stack&lt;/I&gt; parameter is enabled so no further action is required unless of course you want to prevent such logging.  That has not stopped authors of tools and articles from recommending to enable it anyway using the command:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+set noexec_user_stack_log=1
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+When this parameter is enabled and there is an attempt to execute code on the stack, a message such as the following will be generated and delivered via &lt;I&gt;syslog&lt;/I&gt; to &lt;I&gt;kern.notice&lt;/I&gt;:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+Jul 25 14:48:02 quasar genunix: [ID 533030 kern.notice] NOTICE: myprog[12289] attempt to execute code on stack by uid 101
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+In this way, a system administrator can detect such attempts and take appropriate action.
+&lt;P&gt;&lt;P&gt;
+
+Back in the days of Solaris 2.6, this parameter really only applied to the SPARC platform.  Years passed and this feature continued to be available in Solaris 7, Solaris 8 and so on.  As good fortune would have it, &lt;A HREF=&quot;http://www.intel.com/&quot;&gt;Intel&lt;/A&gt; and &lt;A HREF=&quot;http://www.amd.com&quot;&gt;AMD&lt;/A&gt; got on board with the idea and the &lt;A HREF=&quot;http://en.wikipedia.org/wiki/NX_bit&quot;&gt;NX Bit&lt;/A&gt; was born.  Technically speaking, Intel refers to its implementation as the &lt;A HREF=&quot;http://www.intel.com/business/bss/infrastructure/security/xdbit.htm&quot;&gt;XD Bit&lt;/A&gt; (for Execute Disable) while AMD has used the term &lt;A HREF=&quot;http://developer.amd.com/articlex.jsp?id=143&quot;&gt;NX&lt;/A&gt; (for No Execute), but for the purposes of Sun&apos;s implementation and this article, we will consistently use the term &quot;NX&quot; to refer to this functionality.
+&lt;P&gt;&lt;P&gt;
+
+To find out if your system supports the NX bit, you can check in with the &lt;I&gt;dmesg(1M)&lt;/I&gt; command:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+$ &lt;B&gt;dmesg | grep features&lt;/B&gt;
+Jun 28 11:00:05 sec1 unix: [ID 126719 kern.info] features: 1176fdf&amp;lt;cpuid,cmp,sse3,&lt;B&gt;nx&lt;/B&gt;,asysc,sse2,sse,pat,cx8,pae,mca,mmx,cmov,pge,mtrr,msr,tsc,lgpg&amp;gt;
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+Similarly, if you have &lt;I&gt;syslog&lt;/I&gt; configured to log &lt;I&gt;kernel.info&lt;/I&gt; messages, you can also get the information from your system log files:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+$ &lt;B&gt;grep &quot;features:&quot; /var/adm/debug&lt;/B&gt;
+Jul 19 16:43:06 quasar unix: [ID 126719 kern.info] features: 1076fff&amp;lt;cpuid,sse3,&lt;B&gt;nx&lt;/B&gt;,asysc,sse2,sse,pat,cx8,pae,mca,mmx,cmov,de,pge,mtrr,msr,tsc,lgpg&amp;gt;
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+The first example was taken from a &lt;A HREF=&quot;http://www.sun.com/servers/entry/x2100/&quot;&gt;SunFire X2100&lt;/A&gt; system whereas the second example was taken from an &lt;A HREF=&quot;http://www.sun.com/desktop/workstation/ultra20/&quot;&gt;Ultra 20&lt;/A&gt;.  The same commands should be able to be used on other x86/x64 systems in order to determine if this CPU feature is available.
+&lt;P&gt;&lt;P&gt;
+
+On the &lt;A HREF=&quot;http://www.opensparc.net/&quot;&gt;SPARC&lt;/A&gt; platform, the non-executable stack functionality is available but disabled by default (for SPARC V8) in order to support a fully ABI-compliant execution environment.  For 64-bit SPARC platforms, however, the SPARC V9 ABI specifies a non-executable stack by default.  Note that 32-bit applications running on a 64-bit kernel do not automatically get this protection by default and would rely on the &lt;I&gt;noexec_user_stack&lt;/I&gt; parameter being set to &lt;I&gt;1&lt;/I&gt; for example. 
+&lt;P&gt;&lt;P&gt;
+
+On NX-capable x86/x64 platforms, Solaris OS uses the NX bit by default whenever PROT_EXEC is not specified.  Stack segments, however, use PROT_EXEC by default, so the NX functionality must be explicitly enabled on these platforms to provide stack protection.  As noted above, this can be globally configured using the &lt;I&gt;noexec_user_stack&lt;/I&gt; parameter just as with SPARC-based platforms.
+&lt;P&gt;&lt;P&gt;
+
+From the &lt;A HREF=&quot;http://docs.sun.com/app/docs/doc/817-0552/6mgbi4fgg?l=en&amp;a=view&amp;q=PROT_EXEC&quot;&gt;product documentation&lt;/A&gt;, it should be noted that a system administrator can disable all use of the NX bit (non-SPARC platforms) by using the &lt;I&gt;eeprom(1M)&lt;/I&gt; command to set &lt;I&gt;enforce-prot-exec&lt;/I&gt; to &lt;I&gt;off&lt;/I&gt;. This variable is provided as a transition workaround for any system with legacy applications that are missing PROT_EXEC.
+&lt;P&gt;&lt;P&gt;
+
+In this article, we have taken a brief look at the history of non-executable stacks in Solaris dating back to the original integration of this functionality in Solaris 2.6 all the way to the present.  In the next article, we will talk a little bit about how this functionality can be enabled on a per-file basis in the Solaris 10 OS.
+&lt;P&gt;&lt;P&gt;
+
+Take care,
+&lt;P&gt;
+Glenn
+&lt;P&gt;&lt;P&gt;
+
+&lt;small&gt; Technorati Tag:
+&lt;a href=&quot;http://technorati.com/tag/opensolaris&quot; rel=&quot;tag&quot;&gt;OpenSolaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/solaris&quot; rel=&quot;tag&quot;&gt;Solaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/security&quot; rel=&quot;tag&quot;&gt;security&lt;/a&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;
+</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/fuzzing_around_with_nevada</id>
+        <title type="html">Fuzzing around with Nevada</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/fuzzing_around_with_nevada"/>
+        <published>2007-07-23T18:38:31-07:00</published>
+        <updated>2007-08-05T11:09:36-07:00</updated> 
+        <category term="/Solaris 10 Security" label="Solaris 10 Security" />
+        <category term="fuzz" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="opensolaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="security" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="software" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="solaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;META NAME=&quot;KEYWORDS&quot; CONTENT=&quot;Solaris, Solaris 10, Solaris 11, Nevada, OpenSolaris, security, solaris security, opensolaris security, fuzz testing, core dump&quot;&gt;
+&lt;P&gt;&lt;P&gt;
+
+I guess that it is time for another of my pet projects to come to light.  For the last seven months or so (on and off),
+I have been conducting some rudimentary &lt;A HREF=&quot;http://en.wikipedia.org/wiki/Fuzz_testing&quot;&gt;fuzz testing&lt;/A&gt; on &lt;A HREF=&quot;http://www.sun.com/solaris/&quot;&gt;Solaris&lt;/A&gt; &lt;A HREF=&quot;http://www.opensolaris.org/os/downloads/&quot;&gt;Nevada&lt;/A&gt;.  Initially it started off as my winter (break) project with build 42 and has continued through a few other builds with my most recent being build 68.
+&lt;P&gt;&lt;P&gt;
+
+For those unfamiliar with the concept, the goal of fuzz testing is to provide random input to programs and see how they behave.  The results thus far have been pretty interesting.  Many, in fact the vast majority, of programs in Nevada gracefully handled the input and either exited, provided a usage message or did something else equally benign.  That said, a good number of programs failed to gracefully cope with the random input.  In these cases, the typical response was a core dump although a few programs were triggered to enter an infinite loop - which was quite interesting.
+&lt;P&gt;&lt;P&gt;
+
+The tests were conducted using code derived from the work published at the &lt;A HREF=&quot;http://pages.cs.wisc.edu/~bart/fuzz/fuzz.html&quot;&gt;University of Wisconsin&lt;/A&gt;.  In actuality, I only performed one of
+a handful of tests that they support - stdin fuzz testing.  Basically programs are subjected to the equivalent of:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+$ program &lt; [file_containing_some_random_input]
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+I would love to do some of their additional tests as time permits.  At any rate, the results are in and to date, a
+problem has been found with nearly 80 programs.  Bug reports have been filed for each and every one and can be tracked
+using the keyword &lt;I&gt;fuzz&lt;/I&gt; at the &lt;A HREF=&quot;http://bugs.opensolaris.org/&quot;&gt;OpenSolaris Bug Database Search&lt;/A&gt;.  To
+see the programs impacted thus far, try this &lt;A HREF=&quot;http://bugs.opensolaris.org/search.do?process=1&amp;type=&amp;sortBy=relevance&amp;bugStatus=&amp;perPage=50&amp;bugId=&amp;minDisplay=on&amp;keyword=fuzz&amp;textSearch=&amp;category=&amp;subcategory=&amp;since=&quot;&gt;link&lt;/A&gt;.
+&lt;P&gt;&lt;P&gt;
+
+So far, a number of these have been reviewed and accepted and better still several have been already fixed and the
+changes integrated back into the code base.  Even cooler, some of the fixes have been accepted upstream in other 
+open-source projects such as X.org.  What a great example of the participation age where the results of a single
+test in Nevada have helped to improve the quality for every user of that code (regardless of the OS on which that
+code is run).
+&lt;P&gt;&lt;P&gt;
+
+Over time, I would love to see more sophisticated tests integrated into the testing process (e.g., command-line 
+argument aware fuzz input testing), but for now this will serve as a start to point us in the right direction.
+&lt;P&gt;&lt;P&gt;
+
+I would love to know if others have conducted similar tests and how they turned out.
+&lt;P&gt;&lt;P&gt;
+
+Take care,
+&lt;P&gt;
+Glenn
+&lt;P&gt;&lt;P&gt;
+
+&lt;small&gt; Technorati Tag:
+&lt;a href=&quot;http://technorati.com/tag/opensolaris&quot; rel=&quot;tag&quot;&gt;OpenSolaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/solaris&quot; rel=&quot;tag&quot;&gt;Solaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/fuzz&quot; rel=&quot;tag&quot;&gt;fuzz&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/security&quot; rel=&quot;tag&quot;&gt;security&lt;/a&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/interesting_file_discovery_tool_version</id>
+        <title type="html">Interesting File Discovery Tool version 0.4</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/interesting_file_discovery_tool_version"/>
+        <published>2007-07-23T13:51:32-07:00</published>
+        <updated>2007-08-05T11:08:57-07:00</updated> 
+        <category term="/Solaris 10 Security" label="Solaris 10 Security" />
+        <category term="opensolaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="security" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="software" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="solaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="tool-ifd" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;META NAME=&quot;KEYWORDS&quot; CONTENT=&quot;Solaris, Solaris 10, Solaris 11, Nevada, OpenSolaris, set-id, set-uid, set-gid, world writable, security, solaris security, opensolaris security, elfsign, digest, md5, fingerprint&quot;&gt;
+&lt;P&gt;&lt;P&gt;
+
+Way back when, I did a post that introduced the &lt;A HREF=&quot;http://blogs.sun.com/gbrunett/entry/solaris_interesting_file_discovery_tool&quot;&gt;Solaris Interesting File Discovery Tool&lt;/A&gt;.  Being a fan of &lt;A HREF=&quot;http://www.sun.com/security/jass/&quot;&gt;automation&lt;/A&gt;, I had written the tool mainly for myself, but I was pleasantly surprised to hear that people were happily using it.  This leads me to today&apos;s posting.
+&lt;P&gt;&lt;P&gt;
+
+A month or so ago, Fredrich Maney dropped me an e-mail letting me know of his experience running the tool and what tweaks he had made to improve it for his environment.  In particular, he wanted to run this tool on Solaris 9.  Recognizing that
+I had screwed up by not making the tool more broadly useable, I decided that an appropriate penance would be for me to 
+not only fix this bug but to also build in a few new enhancements.  Today, I am happy to announce the arrival of the &lt;A HREF=&quot;http://mediacast.sun.com/share/gbrunett/ifd-v0.4.sh&quot;&gt;Solaris Interesting File Discovery tool version 0.4&lt;/A&gt;.
+&lt;P&gt;&lt;P&gt;
+
+New to this version is:
+&lt;P&gt;&lt;P&gt;
+
+&lt;UL&gt;
+&lt;LI&gt;Support for Solaris 9 (and likely 8) in addition to Solaris 10;
+&lt;LI&gt;Support for Solaris ELF signature verification (Solaris 10 only);
+&lt;LI&gt;Support for file fingerprint (MD5) generation (Solaris 10 only);
+&lt;/UL&gt;
+&lt;P&gt;&lt;P&gt;
+
+Yes, I do realize the irony of allowing the tool to run on older versions of the operating system while at the same
+time adding new features for only Solaris 10 and newer.  Unfortunately, the older versions of the operating system
+simply do not support ELF signatures or the digest(1) command.  Hey, these are just a few of the many good reasons why
+you should consider adopting &lt;A HREF=&quot;http://www.sun.com/solaris&quot;&gt;Solaris 10&lt;/A&gt; today!
+&lt;P&gt;&lt;P&gt;
+
+Moving on...  Let&apos;s take it on a brief spin to see what things look like.  First, let&apos;s check out the options available:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+# ./ifd-v0.4.sh -h
+
+   ./ifd-v0.4.sh - Interesting File Discovery Tool
+
+   ifd -[ugnw] [-ds] [-q] { -c | -l | [Solaris Product Directory] }
+
+      -c     Collect information from /var/sadm/install/contents
+      -d     Calculate MD5 digest for each file (Solaris 10 only)
+      -g     Print information on files with the set-gid bit set
+      -h     Display this message
+      -l     Collect information from /var/sadm/pkg
+      -n     Print information on WW directories without sticky bit set
+      -q     Quite mode.  Do not print headers.
+      -s     Validate ELF file signature for each file (Solaris 10 only)
+      -u     Print information on files with the set-uid bit set
+      -w     Print information on world writable files and directories
+      -?     Display this message
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+So, let&apos;s fire it up with the works.  In this example, we will use the &lt;I&gt;/var/sadm/install/contents&lt;/I&gt; file as
+our source and look for files that are set-uid, set-gid, or world writable (including a special check for world
+writable directories that do not have their sticky bit set).  Keep in mind that you can also point the tool at
+the &lt;I&gt;/var/sadm/pkg&lt;/I&gt; directory as well as a DVD/CD distribution depending on your needs.  This allows you to
+use the tool for a different OS (if you can point it at a mounted DVD for example) or your local system (without
+a need for a separate OS distribution at all).
+&lt;P&gt;&lt;P&gt;
+
+For each matching file, we will record:
+&lt;P&gt;&lt;P&gt;
+
+&lt;UL&gt;
+&lt;LI&gt;package that installed the file
+&lt;LI&gt;file permissions
+&lt;LI&gt;file owner
+&lt;LI&gt;file group
+&lt;LI&gt;status of ELF signature verification
+&lt;LI&gt;MD5 fingerprint (suitable for using with the &lt;A HREF=&quot;http://www.opensolaris.org/os/community/security/projects/sfpdb&quot;&gt;Solaris Fingerprint Database&lt;/A&gt;)
+&lt;LI&gt;file name
+&lt;/UL&gt;
+&lt;P&gt;&lt;P&gt;
+
+So, without further ado...
+&lt;P&gt;&lt;P&gt;
+&lt;PRE&gt;
+# ./ifd-v0.4.sh -c -d -s -u -g -w -n
+
+Set-UID Programs
+
+SUNWaccu        4755   root       adm        PASS   0c003207377f5bd2a9b5be5394205384  /usr/lib/acct/accton
+SUNWbip         4555   root       bin        PASS   ff140f86524789942e3fc66867f5be40  /usr/sbin/ping
+SUNWbnuu        4511   root       uucp       PASS   6cf336d0ccf51c2b66a241fc615dc2da  /usr/bin/ct
+SUNWbnuu        4511   uucp       uucp       PASS   03c7fab44124264943e892ff0f9f318e  /usr/bin/uustat
+SUNWbnuu        4511   uucp       uucp       PASS   1491a5a26b6936d3eed53eab01890bcc  /usr/bin/uuglist
+SUNWbnuu        4511   uucp       uucp       PASS   453cdc99764045086d813708e268914c  /usr/lib/uucp/uusched
+SUNWbnuu        4511   uucp       uucp       PASS   4ad108e11de2ce16cb5a804ee9618589  /usr/lib/uucp/uuxqt
+SUNWbnuu        4511   uucp       uucp       PASS   4ca26f335387f825b786fe650001e2a1  /usr/lib/uucp/remote.unknown
+SUNWbnuu        4511   uucp       uucp       PASS   65cca9d2de0955d87dc52220da544c14  /usr/bin/uuname
+SUNWbnuu        4511   uucp       uucp       PASS   7059dea52454585b825d2fe731bd9ccf  /usr/bin/uucp
+SUNWbnuu        4511   uucp       uucp       PASS   784a41f571364cf7dd15d91798494528  /usr/lib/uucp/uucico
+SUNWbnuu        4511   uucp       uucp       PASS   bdb1aa92b2169d8774f1ad8aea589aa7  /usr/bin/uux
+SUNWbnuu        4511   uucp       uucp       PASS   d6bb0cfc77f20d31c64d3af07044b8f6  /usr/bin/cu
+SUNWcacaort     4511   root       sys        PASS   5bce4227db29f95813a6c7c13cc7d46d  /usr/lib/cacao/lib/tools/cacaocsc
+SUNWcdrw        4755   root       bin        PASS   7ab3bed64d212595784a85f65b062d51  /usr/bin/cdrw
+SUNWcsu         4511   uucp       bin        PASS   d9ac90c128f8f2750b3a49ae0c340ab4  /usr/bin/tip
+SUNWcsu         4555   root       bin        PASS   226f94dd9845c934a98fc7f2aaa19523  /usr/bin/fdformat
+SUNWcsu         4555   root       bin        PASS   24cf3f5258e5df4acccfed98a8822af3  /usr/lib/fs/ufs/ufsdump
+SUNWcsu         4555   root       bin        PASS   316e3db185c014eae1d7881293a72c41  /usr/lib/utmp_update
+SUNWcsu         4555   root       bin        PASS   3bfd7b1fc9811058b24bcbd42f826dc2  /usr/bin/amd64/uptime
+SUNWcsu         4555   root       bin        PASS   61c7000154baedd954a9e9dd461e390e  /usr/lib/fs/ufs/quota
+SUNWcsu         4555   root       bin        PASS   6269d65e9c176610ca42d498970eeff8  /usr/bin/login
+SUNWcsu         4555   root       bin        PASS   6493ff50d04d5cdb4264407f0f2e8c78  /usr/sbin/i86/whodo
+SUNWcsu         4555   root       bin        PASS   78fe5243a4dc6a5f4dca4e3e23c6a673  /usr/bin/i86/uptime
+SUNWcsu         4555   root       bin        PASS   7b5f21df1819f2b69237579b8a1a0fe6  /usr/sbin/allocate
+SUNWcsu         4555   root       bin        PASS   8c97df084b4e5f98e282857926fd86cb  /usr/bin/pfexec
+SUNWcsu         4555   root       bin        PASS   bf1cb47e81689184214c6a83f63cdfb1  /usr/bin/crontab
+SUNWcsu         4555   root       bin        PASS   c96b766b4ccbac6431b1e815bb65bdde  /usr/lib/fs/ufs/ufsrestore
+SUNWcsu         4555   root       bin        PASS   ca0d8f737092afaed8fb083668d80be1  /usr/sbin/traceroute
+SUNWcsu         4555   root       bin        PASS   f535cdc0d54439c14d8c92e915df83ea  /usr/sbin/amd64/whodo
+SUNWcsu         4555   root       sys        PASS   14bb586161ad6de0d6e8b891a797f385  /usr/bin/su
+SUNWcsu         4555   root       sys        PASS   e213aa06105763694156369709f7c0dd  /usr/bin/amd64/newtask
+SUNWcsu         4555   root       sys        PASS   f88d0e395c4e5a8403e2273af8d73ea6  /usr/bin/i86/newtask
+SUNWcsu         4755   root       sys        PASS   526d58c2ecc92e8678700a8514f697c5  /usr/bin/at
+SUNWcsu         4755   root       sys        PASS   8c028119f2a38570f3bac37b4a0f83db  /usr/bin/atq
+SUNWcsu         4755   root       sys        PASS   b3013b0aacd83a60208b015d47568040  /usr/sbin/sacadm
+SUNWcsu         4755   root       sys        PASS   c84a3ab1da0e4db2fdfb45ea20bdb51e  /usr/bin/newgrp
+SUNWcsu         4755   root       sys        PASS   eaaf142b658cafa113a8ec0c41e0ecdb  /usr/bin/atrm
+SUNWcsu         6555   root       sys        PASS   5c2f4716b3713a6b3258dc3ef9b3b5c7  /usr/bin/passwd
+SUNWdtbas       6555   root       sys        PASS   b7203985ff6f6d5d2d356597a4864d11  /usr/dt/bin/dtaction
+SUNWdtdmn       6555   root       daemon     PASS   fc82558b87e32747c81f398a9656e90d  /usr/dt/bin/sdtcm_convert
+SUNWdtdst       4555   root       bin        PASS   62343f01fb78de1f18cea2e3dc10bb0c  /usr/dt/bin/dtprintinfo
+SUNWdtdst       4555   root       bin        PASS   624a41d131fb86054da0f860c898e97e  /usr/dt/bin/dtfile
+SUNWdtdte       4555   root       bin        PASS   86794ad490355171a79d6941f0babde3  /usr/dt/bin/dtappgather
+SUNWdtwm        4555   root       bin        PASS   3dd7de38e474409e4e677bacc10130b9  /usr/dt/bin/dtsession
+SUNWgnome-sys-suspend 4711   root       bin        UNSIGN 290ca164439161635c0d23d525bcead8  /usr/lib/gnome-suspend
+SUNWmcos        4555   root       sys        PASS   381166949a022ebf659ef0cab6e275ff  /usr/lib/webconsole/adminverifier
+SUNWmcos        4555   root       sys        PASS   fe73cd9209baf01586c2bc44b003434e  /usr/lib/webconsole/pamverifier
+SUNWnisu        4555   root       sys        PASS   f6f934c50750f22791b1a4a23db437cd  /usr/bin/chkey
+SUNWpcu         4511   root       lp         PASS   6b71b3fb8bd8edeb77e90bcb40896842  /usr/bin/lpset
+SUNWpmowu       4555   root       bin        PASS   ecabbf94c13052cfe793985f388a3357  /usr/openwin/bin/sys-suspend
+SUNWpmu         4555   root       bin        PASS   5f13d302a6ae4d5e0d3d03e28fa8f845  /usr/sbin/pmconfig
+SUNWpppdu       4555   root       bin        PASS   f762762ffe2349a59156b2621d540db6  /usr/bin/pppd
+SUNWpprou       4555   root       bin        PASS   227be03e256c6dcc8c07c45275837195  /usr/sbin/smpatch
+SUNWpsm-lpd     4511   root       bin        PASS   69b0a7e7ef6952a3bf0b9094a718b85b  /usr/lib/print/lpd-port
+SUNWpsu         4511   root       bin        PASS   e80d4264a38f803dc6ca696d22c0e97e  /usr/lib/lp/bin/netpr
+SUNWrcmdc       4555   root       bin        PASS   49fab30241d57a8ab085804312238a94  /usr/bin/rcp
+SUNWrcmdc       4555   root       bin        PASS   54391ee93e29e392d094260b3d4b3d68  /usr/bin/rsh
+SUNWrcmdc       4555   root       bin        PASS   569ac7fbd0df6eea1430a601b7ecca39  /usr/bin/rlogin
+SUNWrcmdc       4555   root       bin        PASS   5f206a9c57570976301642b8a929d94d  /usr/bin/rdist
+SUNWrmvolmgr    4555   root       bin        PASS   e8f97baf47fe6400567e0518c259e157  /usr/bin/rmformat
+SUNWsndmu       4555   root       bin        PASS   6df3ae57fb3cc0f83bea9f806ebcb84f  /usr/bin/mailq
+SUNWsshcu       4555   root       bin        PASS   6a5efb5008794fa74074de7f06e1456a  /usr/lib/ssh/ssh-keysign
+SUNWwlanr       4755   root       bin        PASS   b907467dcbc24e79f191fc31f90fae6d  /sbin/wificonfig
+SUNWxcu4        4555   root       bin        PASS   97cc4f6659c3f8b85910d28c07c0fa9c  /usr/xpg4/bin/crontab
+SUNWxcu4        4755   root       sys        PASS   f4ae837685c632d8df16891caa718053  /usr/xpg4/bin/at
+SUNWxcu6        4555   root       bin        PASS   418a5488f784886fb545afc70530e59f  /usr/xpg6/bin/crontab
+SUNWxorg-server 4555   root       bin        PASS   5641dd1147ea1a088dba31235d898aa3  /usr/X11/bin/i386/Xorg
+SUNWxorg-server 4555   root       bin        PASS   83ece035a60d7f98ed2ab1b15dbd3c76  /usr/X11/bin/amd64/Xorg
+SUNWxsun-server 4755   root       bin        PASS   1938f2c3b4548ad0113ce52ef2d3d328  /usr/openwin/bin/Xsun
+SUNWxwplt       4755   root       bin        PASS   515b26b22fa5d787808a993512202600  /usr/openwin/bin/xlock
+SUNWxwsvr       4555   root       bin        PASS   f2187476d6491e7b439b997259a10062  /usr/X11/bin/xscreensaver
+
+
+Set-GID Programs
+
+SUNWcsu         2511   root       mail       PASS   0a732e9746d3033f82bd1a19c7521dfb  /usr/bin/mailx
+SUNWcsu         2511   root       mail       PASS   38aa1ab24793bcbd9dbff6b22447bf2a  /usr/bin/mail
+SUNWcsu         2555   root       bin        PASS   b36e0818f80a0c2e2f0710d23e184d5d  /usr/sbin/eeprom
+SUNWcsu         2555   root       sys        PASS   128eeaab017cbb492f0f0bbfcfdc8ff1  /usr/sbin/amd64/prtconf
+SUNWcsu         2555   root       sys        PASS   1e60d93817985dedb7720e1e5ab6892c  /usr/sbin/i86/prtconf
+SUNWcsu         2555   root       sys        PASS   3099609858ed2234ffaaa597ec5d3bba  /usr/sbin/amd64/sysdef
+SUNWcsu         2555   root       sys        PASS   51f912b98d75019889c8921f5b42e826  /usr/sbin/amd64/swap
+SUNWcsu         2555   root       sys        PASS   749a05fa3cbe0f27a220678a9defe895  /usr/sbin/i86/sysdef
+SUNWcsu         2555   root       sys        PASS   c3ec5940f697917257fca3a16ec1a07a  /usr/sbin/i86/swap
+SUNWcsu         2555   root       tty        PASS   091ee44402b7870a55e8f3d47adb7ce2  /usr/sbin/wall
+SUNWcsu         2555   root       tty        PASS   26116f7ed5064c4e29720b629d824bb9  /usr/bin/write
+SUNWcsu         2755   root       sys        PASS   7b44b3ead9ecda4c465a826c2ab56ed9  /usr/sbin/prtdiag
+SUNWcsu         6555   root       sys        PASS   5c2f4716b3713a6b3258dc3ef9b3b5c7  /usr/bin/passwd
+SUNWdtbas       6555   root       sys        PASS   b7203985ff6f6d5d2d356597a4864d11  /usr/dt/bin/dtaction
+SUNWdtdmn       6555   root       daemon     PASS   fc82558b87e32747c81f398a9656e90d  /usr/dt/bin/sdtcm_convert
+SUNWdtdst       2555   root       mail       PASS   36dd0001f2ed41be07b027d1c02d115d  /usr/dt/bin/dtmailpr
+SUNWdtdst       2555   root       mail       PASS   fdae40512f82352ba3e74f1b463f97b1  /usr/dt/bin/dtmail
+SUNWgnome-games 2555   root       bin        PASS   103f02a4a24446506c7f8ace5026cbe3  /usr/bin/gnobots2
+SUNWgnome-games 2555   root       bin        PASS   3db3e19d6299bfa875501179d99846ec  /usr/bin/mahjongg
+SUNWgnome-games 2555   root       bin        PASS   411180c45b893cac7c0dc673849c5097  /usr/bin/gnotravex
+SUNWgnome-games 2555   root       bin        PASS   60acedf6d46a25884726273d56b7bc0f  /usr/bin/glines
+SUNWgnome-games 2555   root       bin        PASS   6f80e05e7b954b46516ca69cd7fc1377  /usr/bin/gnibbles
+SUNWgnome-games 2555   root       bin        PASS   7db26899831c27556158d650fc8bbde8  /usr/bin/gtali
+SUNWgnome-games 2555   root       bin        PASS   a9694142b04f9cd030b87a2f5392d4af  /usr/bin/gnotski
+SUNWgnome-games 2555   root       bin        PASS   b31d94aadd219580d7fc0e8480c35279  /usr/bin/same-gnome
+SUNWgnome-games 2555   root       bin        PASS   ca97825cae9ab8fa3a6ee5aff97768e3  /usr/bin/gnomine
+SUNWsndmu       2555   root       smmsp      PASS   6350af850a401cb3c609d9e0067958ac  /usr/lib/sendmail
+SUNWxprint-server 2755   root       root       PASS   36d71e7b95bf992c9101a0c9f44779fd  /usr/openwin/bin/Xprt
+SUNWxwplt       2755   root       root       PASS   59a296e934338ef9fa2d33347d8ed750  /usr/openwin/bin/lbxproxy
+
+
+World Writable Files
+
+SUNWbnur        1777   uucp       uucp       NOTELF [Target_Is_Directory]             /var/spool/uucppublic
+SUNWcsr         0666   root       bin        NOTELF d41d8cd98f00b204e9800998ecf8427e  /var/adm/spellhist
+SUNWcsr         1777   root       bin        NOTELF [Target_Is_Directory]             /var/preserve
+SUNWcsr         1777   root       mail       NOTELF [Target_Is_Directory]             /var/mail
+SUNWcsr         1777   root       sys        NOTELF [Target_Is_Directory]             /var/tmp
+SUNWdtscm       0666   root       root       NOTELF eb6d8ae6f20283755b339c0dc273988b  /var/dt/dtpower/_current_scheme
+SUNWdtscm       1777   root       root       NOTELF [Target_Is_Directory]             /var/dt/dtpower/schemes
+SUNWiqr         1777   root       sys        NOTELF [Target_Is_Directory]             /var/imq/instances
+SUNWkrbr        1777   root       sys        NOTELF [Target_Is_Directory]             /var/krb5/rcache
+SUNWmconr       0777   root       sys        NOTELF [Target_Is_Directory]             /var/webconsole/tmp
+SUNWpkgcmdsr    1777   root       bin        NOTELF [Target_Is_Directory]             /var/spool/pkg
+SUNWscpr        1777   root       sys        NOTELF [Target_Is_Directory]             /tmp
+SUNWsmbar       1777   root       bin        NOTELF [Target_Is_Directory]             /var/spool/samba
+
+
+Non-Sticky World Writable Directories
+
+SUNWmconr       0777   root       sys        NOTELF [Target_Is_Directory]             /var/webconsole/tmp
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+So whether you are interesting in finding set-uid or set-gid programs, verifying their integrity (directly via elfsign(1) or using the Solaris Fingerprint Database) or perhaps something else entirely, the Solaris Interesting File Discovery
+tool could be another useful weapon in your security auditing/forensics arsenal.
+&lt;P&gt;&lt;P&gt;
+
+For those interested, this output is from a &lt;HREF=&quot;http://www.opensolaris.org/os/downloads/&quot;&gt;Nevada build 68&lt;/A&gt; system running in &lt;A HREF=&quot;www.parallels.com/en/products/desktop/&quot;&gt;Parallels Desktop for Mac OS X&lt;/A&gt; otherwise
+known as my desktop!
+&lt;P&gt;&lt;P&gt;
+
+At any rate, &lt;A HREF=&quot;http://mediacast.sun.com/share/gbrunett/ifd-v0.4.sh&quot;&gt;check out the tool&lt;/A&gt; and drop me a note with your feedback!  I would love to hear from you!
+&lt;P&gt;&lt;P&gt;
+
+Take care,
+&lt;P&gt;
+Glenn
+&lt;P&gt;&lt;P&gt;
+
+&lt;small&gt; Technorati Tag:
+&lt;a href=&quot;http://technorati.com/tag/opensolaris&quot; rel=&quot;tag&quot;&gt;OpenSolaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/solaris&quot; rel=&quot;tag&quot;&gt;Solaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/security&quot; rel=&quot;tag&quot;&gt;security&lt;/a&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/tagged_by_davew</id>
+        <title type="html">Tagged by DaveW</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/tagged_by_davew"/>
+        <published>2007-02-28T18:06:36-08:00</published>
+        <updated>2007-07-25T10:57:50-07:00</updated> 
+        <category term="/Personal" label="Personal" />
+        <category term="personal" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;p&gt;
+&lt;/p&gt;
+&lt;p&gt; A little while ago, I was tagged by &lt;a href=&quot;http://blogs.sun.com/davew/entry/tagged_by_fatbloke&quot;&gt;davew&lt;/a&gt; over at &lt;a href=&quot;http://blogs.sun.com/davew&quot;&gt;Dave&apos;s Bit Bucket&lt;/a&gt;. First, I would likke to apologize to Dave for taking so long to accept his challenge. I have no excuses and so will make none.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;/p&gt;
+&lt;p&gt; It is especially interesting for one with a security and privacy bent (read: healthy paranoia) to respond to something like this. I am supposed to talk about five things that you may not otherwise know about me from both a personal and professional angle, but as I consider this further - it becomes all the more challenging. Is there a reason you don&apos;t know some things about me? Of course, the reasons are many. What is the risk of disclosing some personal information? Could that information be combined with some other seemingly innocuous tidbit to glean something really interesting about me? Possibly.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;/p&gt;
+&lt;p&gt; So, after intentionally little &quot;internal&quot; debate, throwing caution to the wind (again something quite interesting in and of itself for those of us healthy paranoids), here is my list:
+&lt;/p&gt;
+&lt;p&gt;
+&lt;/p&gt;
+&lt;p&gt; 1. I have always been interested in languages.  Throughout school, I had the pleasure of studying French (8 years), Latin (2 years), Spanish (2 years) and Japanese (1 year).  That interest eagerly transitioned to computer languages as well where over the course of school I picked up 8088 Assembly, BASIC, Pascal, COBOL, ForTran, C, along with various scripting languages available at the time.  One of these days, I would love to take a swing at Italian.
+  &lt;br /&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;/p&gt;
+&lt;p&gt; 2. My first programming job was actually in high school where I developed software for the school in return for credits that would be applied toward my Honor Society requirements.  Most of those programs were statistical programs for the athletic department.  Later, in college, I would actually get my first paid gig where I developed incident management software for our campus security department.
+  &lt;br /&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;/p&gt;
+&lt;p&gt; 3. My first exposure to &lt;A HREF=&quot;http://www.sun.com/&quot;&gt;Sun&lt;/A&gt; was when I was given a Sun &lt;A HREF=&quot;http://en.wikipedia.org/wiki/Sun-2&quot;&gt;2/50&lt;/A&gt; which at the time was running &lt;A HREF=&quot;&quot;&gt;SunOS 3.5&lt;/A&gt;.  It was love at first sight.  I have worked with every single public release since that time in one way or another (as a software developer [external to Sun], an systems and network administrator, etc.).  That said, my experience has not been homogenous.  I have also worked in a similar fashion with various releases of AIX, HP-UX, IRIX, Mach, OSF/1, Ultrix, Mac OS X, as well as various Linux variants and to a lesser extent RSTS/E, RT11 and even (check this out) &lt;A HREF=&quot;http://www.levenez.com/unix/&quot;&gt;Dell Unix&lt;/A&gt;.  It is interesting to see things come full &lt;A HREF=&quot;http://www.dell.com/linux&quot;&gt;circle&lt;/A&gt;.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;/p&gt;
+&lt;p&gt; 4. One of my first experiences with information security was around my sophomore year in college.  By that
+time, I was working as an assistant system&apos;s administrator and helping with between classes and after hours issues
+since I lived on campus.  I recall hardening systems (although back then it was as much to save memory as 
+security), patching SunOS systems (and you may think that patchadd is a pain, man have I got stories), and doing
+things like system monitoring.  The thrill of this game went into high gear the time I was able to track and
+monitor an attack coming in from one of our Xylogics Annex terminal servers (dialin pool).  That was the day the &quot;security&quot;
+bug really took hold.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;/p&gt;
+&lt;p&gt; 5. Although I rarely have time for them anymore, I do have a number of hobbies and interests (it&apos;s true really).  Since I was about 13 I have played guitar (sometimes better than others).  I actually still have three and my most
+interesting one (from those heavy metal days) is a &lt;A HREF=&quot;http://www.vintagekramer.com/company42.htm&quot;&gt;Kramer Striker 500ST&lt;/A&gt;.  What is really crazy is that this was my first guitar.  I will always remember my instructor&apos;s face when
+I walked in for lessons what that guitar.  It still plays great although it could use some new frets.  The only
+upgrade I had ever made to it was to sub-out the lead stock pickup with a Seymour Duncan Distortion Humbucker.
+
+&lt;/p&gt;
+&lt;p&gt;
+&lt;/p&gt;
+&lt;p&gt; Whew! With this now behind me, I would like to turn my gaze to the next set of &lt;strike&gt;victims&lt;/strike&gt; &lt;strike&gt;targets&lt;/strike&gt; ... tag-ees.  &lt;A HREF=&quot;http://blogs.sun.com/gfaden/&quot;&gt;Glenn&lt;/A&gt;, &lt;A HREF=&quot;http://blogs.sun.com/wyllys/&quot;&gt;Wyllys&lt;/A&gt;, &lt;A HREF=&quot;http://blogs.sun.com/bubbva/&quot;&gt;Valerie&lt;/A&gt;, &lt;A HREF=&quot;http://blogs.sun.com/michel&quot;&gt;Wences&lt;/A&gt;,
+and last but certainly not least - &lt;A HREF=&quot;http://blogs.sun.com/pengyang/&quot;&gt;Alfred&lt;/A&gt; - &lt;B&gt;tag you&apos;re it!&lt;/B&gt;
+  &lt;br /&gt;
+&lt;/p&gt;
+
+EOM.
+&lt;P&gt;&lt;P&gt;
+
+Thanks Dave!  Assignment complete!
+&lt;P&gt;&lt;P&gt;
+</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/tracking_infected_telnet_worm_machines</id>
+        <title type="html">Tracking Infected Telnet Worm Machines</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/tracking_infected_telnet_worm_machines"/>
+        <published>2007-02-28T13:19:32-08:00</published>
+        <updated>2007-08-05T11:12:49-07:00</updated> 
+        <category term="/Solaris 10 Security" label="Solaris 10 Security" />
+        <category term="nevada" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="opensolaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="security" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="software" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="solaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="telnet" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;META NAME=&quot;KEYWORDS&quot; CONTENT=&quot;Solaris, Solaris 10, OpenSolaris, Nevada, telnet, security, vulnerability, worm&quot;&gt;
+&lt;P&gt;&lt;P&gt;
+Today, there has been a lot of discussion about the &lt;A
+HREF=&quot;http://blogs.sun.com/security/&quot;&gt;new telnet worm&lt;/A&gt; which exploits the
+recently announced &lt;A 
+HREF=&quot;http://sunsolve.sun.com/search/document.do?assetkey=1-26-102802-1&quot;&gt;
+telnet vulnerability&lt;/A&gt; in Solaris 10 and Nevada.
+&lt;P&gt;&lt;P&gt;
+
+Aside from the usual recommendation of &lt;B&gt;you should not be using telnet.
+You should be using SSH&lt;/B&gt;, I would like to cast a vote for the use of
+IP Filter.  IP Filter is quick and easy to configure and can help give
+you visibility into attacks such as this.  Beyond its initial use as an
+enforcement point (blocking access to services such as telnet), IP Filter
+is also a great tool to allow you to see what other systems are attempting
+to do to yours.
+&lt;P&gt;&lt;P&gt;
+
+An IP Filter entry for the telnet worm may look something like:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+Feb 27 15:26:38 blackhole ipmon[100]: [ID 702911 local0.warning] 15:26:38.269526 ip.tun0 @0:11 b 192.168.1.112,55039 -&gt; 192.168.19.6,23 PR tcp len 20 52 -S I
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+With this format, you could quickly whip up a script to tell you who is 
+knocking on your system&apos;s telnet door (even if telnet happens to be disabled -
+which is the case on my system).  See:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+blackhole$ getent hosts `grep  ipmon  /var/adm/debug | grep &quot; b &quot; |\
+   grep &quot;,23 PR&quot; | awk &apos;{ print $13 }&apos; | awk -F, &apos;{ print $1 }&apos; | sort -u`
+10.1.42.252     europa
+10.1.88.164     io
+10.1.90.171     castor
+10.3.29.39      pollux
+192.168.174.48  orion
+192.168.43.112  mercury
+&lt;/PRE&gt;
+
+With just a little scripting, you can easily find out systems (particularly
+in an enterprise) that need some &lt;A HREF=&quot;http://blogs.sun.com/security/resource/inoculate.local&quot;&gt;special love and attention&lt;/A&gt;.
+&lt;P&gt;&lt;P&gt;
+
+&lt;small&gt; Technorati Tag:
+&lt;a href=&quot;http://technorati.com/tag/opensolaris&quot; rel=&quot;tag&quot;&gt;OpenSolaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/solaris&quot; rel=&quot;tag&quot;&gt;Solaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/security&quot; rel=&quot;tag&quot;&gt;security&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/telnet&quot; rel=&quot;tag&quot;&gt;telnet&lt;/a&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;
+</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/trusted_extensions_in_parallels_on</id>
+        <title type="html">Trusted Extensions in Parallels on Mac OS X</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/trusted_extensions_in_parallels_on"/>
+        <published>2007-01-09T14:08:13-08:00</published>
+        <updated>2007-08-05T11:50:17-07:00</updated> 
+        <category term="/Solaris 10 Security" label="Solaris 10 Security" />
+        <category term="laptop" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="macosx" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="opensolaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="parallels" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="security" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="solaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="trusted-extensions" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;P&gt;&lt;P&gt;
+What I did over my winter vacation...  Check out the &lt;A HREF=&quot;http://www.flickr.com/photos/gbrunett/sets/72157594470144145/&quot;&gt;pics&lt;/A&gt; (Flickr Photo Set)!  Gotta love it when things just work!  Thanks to &lt;A HREF=&quot;http://blogs.sun.com/gfaden/&quot;&gt;Glenn Faden&lt;/A&gt; and Daniel Zhu for their postings and ideas that helped show me the way.
+&lt;P&gt;&lt;P&gt;
+
+Take care,
+&lt;P&gt;&lt;P&gt;
+Glenn
+
+&lt;small&gt; Technorati Tag:
+&lt;a href=&quot;http://technorati.com/tag/opensolaris&quot; rel=&quot;tag&quot;&gt;OpenSolaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/solaris&quot; rel=&quot;tag&quot;&gt;Solaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/trustedextensions&quot; rel=&quot;tag&quot;&gt;trustedextensions&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/macosx&quot; rel=&quot;tag&quot;&gt;macosx&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/parallels&quot; rel=&quot;tag&quot;&gt;parallels&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/security&quot; rel=&quot;tag&quot;&gt;security&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/laptop&quot; rel=&quot;tag&quot;&gt;laptop&lt;/a&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/crime_fighting_in_the_participation</id>
+        <title type="html">Crime Fighting in the Participation Age</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/crime_fighting_in_the_participation"/>
+        <published>2006-12-22T07:45:55-08:00</published>
+        <updated>2007-08-05T11:50:54-07:00</updated> 
+        <category term="/General" label="General" />
+        <category term="security" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="web2.0" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;P&gt;&lt;P&gt;
+This just in... YouTube helps police find murder suspect
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+TORONTO (Reuters) - A video posted on the ultra-popular Web site YouTube has helped Canadian
+police find a man they believe responsible for a murder.
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+While a lot of the talk about Web 2.0 and the Participation Age has been around social
+networking, sharing and collaboration, &lt;A HREF=&quot;http://news.yahoo.com/s/nm/20061221/tc_nm/crime_youtube_dc_2&quot;&gt;here&lt;/A&gt;
+is a concrete example of how these new forms of technology and services can be applied to help make the world
+a safer place.  Kudos to the Hamilton City Police Department for taking the concept of neighborhood watch into the
+Web 2.0 world.
+&lt;P&gt;&lt;P&gt;
+
+
+</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/opensolaris%2Fsolaris_security_presentations_page</id>
+        <title type="html">OpenSolaris/Solaris Security Presentations Page</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/opensolaris%2Fsolaris_security_presentations_page"/>
+        <published>2006-11-04T12:23:45-08:00</published>
+        <updated>2007-08-05T11:13:23-07:00</updated> 
+        <category term="/Solaris 10 Security" label="Solaris 10 Security" />
+        <category term="opensolaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="presentations" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="security" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="software" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="solaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;META NAME=&quot;KEYWORDS&quot; CONTENT=&quot;Solaris, Solaris 10, platform, security, platform security, file integrity, basic, auditing, reporting, tool, BART, cryptographic framework, containers, zones, smf, service management facility, RBAC, role, based, access, control, user rights management, process rights management, privileges, minimization, reduced networking, ip filter, cryptographic framework, kerberos, security enhancements, enhancements, password history,
+account lockout,sbd,secure by default,trusted solaris, trusted extensions,tx&quot;&gt;
+&lt;P&gt;&lt;P&gt;
+
+I just wanted to take a quick moment to announce the creation of a new 
+&lt;A HREF=&quot;http://www.opensolaris.org/os/community/security/preso/&quot;&gt;Presentations&lt;/A&gt; page in the 
+&lt;A HREF=&quot;http://www.opensolaris.org/&quot;&gt;OpenSolaris&lt;/A&gt; 
+&lt;A HREF=&quot;http://www.opensolaris.org/os/community/security&quot;&gt;Security Community&lt;/A&gt;.  This page has grouped together a bunch of the known &lt;A HREF=&quot;http://www.sun.com/solaris&quot;&gt;Solaris 10&lt;/A&gt; and OpenSolaris presentations all into one easy to find place.  
+&lt;P&gt;&lt;P&gt;
+
+To help kick this off, I have also uploaded a few new presentations including:
+&lt;P&gt;&lt;P&gt;
+
+&lt;UL&gt;
+&lt;LI&gt;&lt;A HREF=&quot;http://www.opensolaris.org/os/community/security/files/nsa-rebl-solaris.pdf&quot;&gt;Practical Solaris 10 Security&lt;/A&gt;.  This presentation was originally given at the NSA Red Team/Blue Team Symposium and focuses on security controls from the viewpoint of someone attacking a Solaris 10 system.  The goal of this presentation is to highlight the various protections that exist as well as highlight how they can be used together (in the spirit of defense in depth) to better protect systems, services and data from attackers.
+&lt;LI&gt;&lt;A HREF=&quot;http://www.opensolaris.org/os/community/security/files/cec2006-dtrace-sec.pdf&quot;&gt;Enhancing Security Awareness and Control with DTrace&lt;/A&gt;.  This presentation was given at the Sun Conference Engineering Conference and looks at how &lt;A HREF=&quot;http://www.opensolaris.org/os/community/dtrace/&quot;&gt;DTrace&lt;/A&gt; can potentially be used to provide greater (and more focused) insight into security-related events happening on a system.  This presentation was given with a hands-on demonstration.  The code for that demonstration will be made available shortly.
+&lt;LI&gt;&lt;A HREF=&quot;http://www.opensolaris.org/os/community/security/files/s10-security-dive-20061024.pdf&quot;&gt;Solaris 10 Security Technical Deep Dive&lt;/A&gt;.  This is an updated version of a presentation that I have shared &lt;A HREF=&quot;http://blogs.sun.com/gbrunett/entry/solaris_10_security_technical_presentation&quot;&gt;earlier&lt;/A&gt;.  It has been tweaked and updated to account for functionality in Solaris 10 11/06 (Update 3).
+&lt;/UL&gt;
+&lt;P&gt;&lt;P&gt;
+
+If you have any feedback on these or any of the other presentations or if you are aware of Solaris 10 or OpenSolaris presentations that exist and can be referenced on the &lt;A HREF=&quot;http://www.opensolaris.org/os/community/security/preso/&quot;&gt;OpenSolaris Security Presentations&lt;/A&gt; page, please
+&lt;A HREF=&quot;http://www.opensolaris.org/jive/forum.jspa?forumID=37&quot;&gt;drop us a note&lt;/A&gt;.
+&lt;P&gt;&lt;P&gt;
+
+Take care!
+&lt;P&gt;
+Glenn
+&lt;P&gt;&lt;P&gt;
+
+&lt;small&gt; Technorati Tag:
+&lt;a href=&quot;http://technorati.com/tag/opensolaris&quot; rel=&quot;tag&quot;&gt;OpenSolaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/solaris&quot; rel=&quot;tag&quot;&gt;Solaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/security&quot; rel=&quot;tag&quot;&gt;security&lt;/a&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;
+</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/new_presentations%3A_sun_systemic_security</id>
+        <title type="html">New Presentations: Sun Systemic Security</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/new_presentations%3A_sun_systemic_security"/>
+        <published>2006-11-04T12:03:50-08:00</published>
+        <updated>2007-07-25T11:02:49-07:00</updated> 
+        <category term="/General Security" label="General Security" />
+        <category term="presentations" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="security" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="sun-systemic-security" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;META NAME=&quot;KEYWORDS&quot; CONTENT=&quot;Sun Systemic Security, Systemic, Security, Systemically Secure Architectures, Systemically, Secure, Architectures, Building Blocks, Patterns, Micro Architectures, Solaris, Solaris 10, platform, security, network security, virtualization, policy, systemic, systemically secure, Sun Ray, Identity, Identity Manager, Access Manager, portal, Secure Global Desktop, SDN, service delivery network, Nauticus, Secure Application Switch, enclave, execution container, container, secure network access platform, dynamic infrastructure&quot;&gt;
+&lt;P&gt;&lt;P&gt;
+
+Way back in &lt;A HREF=&quot;http://blogs.sun.com/gbrunett/entry/sun_systemic_security&quot;&gt;February&lt;/A&gt;, I made a posting about &lt;A HREF=&quot;http://www.sun.com/blueprints/0206/819-5605.pdf&quot;&gt;Sun Systemic Security&lt;/A&gt;.  Since it has been a while since that
+posting, and since I had developed some fresh material for our &lt;A HREF=&quot;http://blogs.sun.com/gbrunett/entry/blogging_from_cec_day_1&quot;&gt;Customer Engineering Conference&lt;/A&gt;, I wanted to do a follow up so that I could share this new material with you.
+&lt;P&gt;&lt;P&gt;
+
+I have posted two new presentations on the topic of Sun Systemic Security.  The &lt;A HREF=&quot;http://mediacast.sun.com/share/gbrunett/SystemicSecurity.pdf&quot;&gt;first&lt;/A&gt; is a general overview that is intended for use in executive settings or to provide a very high level introduction to the material.  The &lt;A HREF=&quot;http://mediacast.sun.com/share/gbrunett/SystemicSecurityPatterns-v1.1.pdf&quot;&gt;second&lt;/A&gt; presentation is a deeper dive into architectural security patterns.  This second talk was the basis for my presentation at CEC and provides a more in-depth treatment of various security patterns and how they can be instantiated with Sun products and solutions.
+&lt;P&gt;&lt;P&gt;
+
+What I like about the &lt;A HREF=&quot;http://mediacast.sun.com/share/gbrunett/SystemicSecurityPatterns-v1.1.pdf&quot;&gt;second&lt;/A&gt; presentation is that it demonstrates, in I believe a very compelling way, the security value proposition for Sun by
+illustrating how Sun can help support customer security and assurance goals at every level of the stack and how
+using a pattern-based approach, a reinforcing architecture can be constructed (or an existing one adapted) to better
+embody a variety of security principles such as self-preservation, compartmentalization, least privilege, defense in
+depth and others.
+&lt;P&gt;&lt;P&gt;
+
+The Sun Systemic Security program is always growing and evolving and so we are always looking for feedback from our customers and partners.  Be sure to let us know what you think!
+&lt;P&gt;&lt;P&gt;
+
+Take care,
+&lt;P&gt;
+Glenn
+&lt;P&gt;&lt;P&gt;
+
+&lt;small&gt; Technorati Tag:
+&lt;a href=&quot;http://technorati.com/tag/sunmicrosystems&quot; rel=&quot;tag&quot;&gt;Sun Microsystems&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/security&quot; rel=&quot;tag&quot;&gt;security&lt;/a&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/blogging_from_cec_day_1</id>
+        <title type="html">Blogging from CEC: Day 1</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/blogging_from_cec_day_1"/>
+        <published>2006-10-02T09:31:29-07:00</published>
+        <updated>2007-07-25T11:02:22-07:00</updated> 
+        <category term="/Security Events" label="Security Events" />
+        <category term="conferences" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;META NAME=&quot;KEYWORDS&quot; CONTENT=&quot;Sun, Sun Microsystems, Customer Engineering Conference, CEC, Solaris, Solaris Security, Security, OpenSolaris, DTrace, Sun Systemic Security, Patterns, Security Patterns, CEC2006, conference&quot;&gt;
+&lt;P&gt;&lt;P&gt;
+
+Today is the start of Sun&apos;s Customer Engineering Conference (CEC).  It is a huge geekfest with thousands of technies descending upon the Moscone Center in San Francisco for several days of executive briefings, technical training and discussions, community building, and of course a lot of fun too.  I am currently sitting during our morning keynote where Jim Baty and &lt;A HREF=&quot;http://blogs.sun.com/djberg&quot;&gt;Dan Berg&lt;/A&gt; kicked off the event and &lt;A HREF=&quot;http://www.sun.com/aboutsun/media/ceo/mgt_grantham.html&quot;&gt;Don Grantham&lt;/A&gt; is ralling the team discussing recent successes and outlining the opportunities that lay before us. Honestly, for a sales guy - he is doing pretty well in front of this highly technical and often cynical audience.
+&lt;P&gt;&lt;P&gt;
+
+This year, I will be giving two talks (each given at two times).  First, I will be joining &lt;A HREF=&quot;http://blogs.sun.com/jonh&quot;&gt;Jon Haslam&lt;/A&gt; to talk about how &lt;A HREF=&quot;http://www.opensolaris.org/os/community/dtrace/&quot;&gt;DTrace&lt;/A&gt; can be used for security monitoring, forensics and (in some limited cases) control. This was a very fun talk to work on and I am very much looking forward to giving it tomorrow.  DTrace is such a cool technology and I think we are only at the tip of the iceberg in uncovering ways to use it.  This session will include a bunch of practical demonstrations based on both newly developed and freely available code.  It is my goal to post the presentations and code snippets once the conference is over.
+&lt;P&gt;&lt;P&gt;
+
+My second talk is focused squarely on architectural patterns for security.  This talk will leverage the &lt;A HREF=&quot;http://www.sun.com/security/&quot;&gt;Sun Systemic Security&lt;/A&gt; work already &lt;A HREF=&quot;http://www.sun.com/blueprints/0206/819-5605.pdf&quot;&gt;published&lt;/A&gt; as its foundaiton, but it will go deeper into how some of the architectural patterns can be instantiated and realized using Sun and partner products.  Again, I think that this should be a lot of fun showing how the higher level abstract components can be made real to solve actual problems facing our customers today.
+&lt;P&gt;&lt;P&gt;
+
+In addition to my sessions, there will be quite a few security talks happening on each day of the conference on topics ranging from Solaris, Trusted Extensions, Secure SOA, Privacy and Compliance, and even Kernel Forensics.  Lots of great speakers and sessions so be sure to stop by and hassle them.  *grin*
+&lt;P&gt;&lt;P&gt;
+
+Now, like all speakers, I hope that people will enjoy my sessions and will leave with new ideas, information and a better understanding of the topics being covered.  Certainly, the sessions at CEC offer people great opportunities to learn new topics or gain a deeper appreciation for ones they already know.  That said, I honestly believe that most people, myself included, get even more out of the community interaction happening before, during and after the conference - the hallway discussions, the brainstorming over breakfast, the deep dives over drinks, etc.
+&lt;P&gt;&lt;P&gt;
+
+So, if you would like to chat with me about anything - career paths at sun, technical leadership and development, information security, or any other topic - please feel free to stop me in the hall, call my on my cell, message me on SMS or AIM.  Gotta love a conference where we are encouraged to remain fully connected!  If you do not know my contact information - check it out in CEpedia.
+&lt;P&gt;&lt;P&gt;
+
+Take care,
+&lt;P&gt;
+Glenn
+&lt;P&gt;&lt;P&gt;
+
+&lt;small&gt; Technorati Tag:
+&lt;a href=&quot;http://technorati.com/tag/opensolaris&quot; rel=&quot;tag&quot;&gt;OpenSolaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/solaris&quot; rel=&quot;tag&quot;&gt;Solaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/cec2006&quot; rel=&quot;tag&quot;&gt;cec2006&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/security&quot; rel=&quot;tag&quot;&gt;security&lt;/a&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;
+</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/treo_700p_on_nevada</id>
+        <title type="html">Treo 700p on Nevada</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/treo_700p_on_nevada"/>
+        <published>2006-09-26T09:10:43-07:00</published>
+        <updated>2007-08-05T11:14:11-07:00</updated> 
+        <category term="/General Security" label="General Security" />
+        <category term="laptop" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="nevada" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="opensolaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="software" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="solaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="treo" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;META NAME=&quot;KEYWORDS&quot; CONTENT=&quot;Solaris, Solaris 10, Solaris 11, Nevada, OpenSolaris, laptop, Toshiba, Toshiba M2, x86, Palm, Treo 700p&quot;&gt;
+&lt;P&gt;&lt;P&gt;
+
+Will wonders never cease?  Today, I decided to plug my &lt;A HREF=&quot;http://www.palm.com/Treo700p&quot;&gt;Treo 700p&lt;/A&gt; smart phone
+into my newly upgraded &lt;A HREF=&quot;http://blogs.sun.com/gbrunett/entry/laptop_upgrade_to_nevada_b47&quot;&gt;Solaris laptop&lt;/A&gt;.
+Honestly, I was not sure what would happen as this was the first time that I had tried to connect up a Palm device.
+&lt;P&gt;&lt;P&gt;
+
+My goal for doing this was simple.  I wanted to synchronize my calendar to my phone so that I would have a list of my appointments while I was on the road.  I had wanted to use something more direct like &lt;A HREF=&quot;http://www.synthesis.ch/&quot;&gt;SyncML&lt;/A&gt;, but that option was not available to me.  Oh, well...  I have been using &lt;A HREF=&quot;http://www.gnome.org/projects/evolution/&quot;&gt;Evolution&lt;/A&gt; lately to manage my appointments.  What is interesting about my configuration is that my calendar is hosted on Sun&apos;s EdgeCal service which allows me to easily access and share my calendar from the Internet or within Sun.  EdgeCal is basically a &lt;A HREF=&quot;http://sun.com/software/products/calendar_srvr/home_calendar.xml&quot;&gt;Sun Java System Calendar Server&lt;/A&gt; environment and I use the &lt;A HREF=&quot;http://www.go-evolution.org/index.php/Evolution_JESCS&quot;&gt;JESCS Evolution Connector&lt;/A&gt; to access EdgeCal.  By the way, this all worked out of the box too!
+&lt;P&gt;&lt;P&gt;
+
+So, back to today&apos;s experiment...  Since Evolution already has an ability to synchronize with devices such as Palm Pilots, I decided to give that a try.  The process was completely painless.  I simply connected up the 700p via a USB port (actually on a USB hub since I am also using a USB keyboard and mouse), provided some basic settings information to Evolution (Pilot Synchronization Dialog) and hit the HotSync button.  Evolution was able to not only find my device but also push the calendar information from EdgeCal to my phone in a matter of seconds.  Way cool.
+&lt;P&gt;&lt;P&gt;
+
+What is really nice is that I can also use the &lt;I&gt;pilot-xfer&lt;/I&gt; command to also back up your device (to a &lt;A HREF=&quot;http://www.opensolaris.org/os/community/zfs/&quot;&gt;ZFS&lt;/A&gt; partition in my case).  You really have to love it 
+when things just work.  
+&lt;P&gt;&lt;P&gt;
+
+Take care,
+&lt;P&gt;&lt;P&gt;
+
+Glenn
+&lt;P&gt;&lt;P&gt;
+
+&lt;small&gt; Technorati Tag:
+&lt;a href=&quot;http://technorati.com/tag/opensolaris&quot; rel=&quot;tag&quot;&gt;OpenSolaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/solaris&quot; rel=&quot;tag&quot;&gt;Solaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/laptop&quot; rel=&quot;tag&quot;&gt;laptop&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/treo700p&quot; rel=&quot;tag&quot;&gt;treo700p&lt;/a&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/2nd_annual_nist_security_automation</id>
+        <title type="html">2nd Annual NIST Security Automation Workshop</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/2nd_annual_nist_security_automation"/>
+        <published>2006-09-22T14:11:13-07:00</published>
+        <updated>2007-07-25T11:01:54-07:00</updated> 
+        <category term="/Security Events" label="Security Events" />
+        <category term="conferences" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="security" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="solaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;META NAME=&quot;KEYWORDS&quot; CONTENT=&quot;Sun, Security, Solaris, Trusted Solaris, Trusted Extensions, secure by default, sbd, center for internet security, cis, national security agency, nsa, national institute of standards and technology, NIST, opensolaris&quot;&gt;
+&lt;P&gt;&lt;P&gt;
+
+This week, I had the pleasure of speaking at the &lt;A HREF=&quot;http://checklists.nist.gov/workshop.html&quot;&gt;2nd Annual NIST Security Automation Workshop&lt;/A&gt; held at the NIST campus in Gaitherburg, MD.  Overall the conference was wonderful with both great sessions and of course a lot of great discussions in the halls.  Day one of the conference was primarily about vision, strategy and direction with great talks from speakers such as:
+&lt;P&gt;&lt;P&gt;
+
+&lt;UL&gt;
+&lt;LI&gt;Tony Sager, Chief, Vulnerability Analysis and Operations, NSA
+&lt;LI&gt;Ron Ross, FISMA Implementation Project Lead, NIST
+&lt;LI&gt;Richard Hale, Chief Information Assurance Officer, DISA
+&lt;LI&gt;Dennis Heretick, Chief Information Security Officer, DOJ
+&lt;LI&gt;Eustace King, Deputy Director, OSD/NII-IAD
+&lt;LI&gt;Annabelle Lee, Director, NCSD/DHS
+&lt;/UL&gt;
+&lt;P&gt;&lt;P&gt;
+
+Day two was focused more on technical matters especially those related to the following efforts:
+&lt;P&gt;&lt;P&gt;
+
+&lt;UL&gt;
+&lt;LI&gt;&lt;A HREF=&quot;http://cce.mitre.org/&quot;&gt;Common Configuration Enumeration&lt;/A&gt; (CCE)
+&lt;LI&gt;&lt;A HREF=&quot;http://cve.mitre.org/&quot;&gt;Common Vulnerabilities and Exposures&lt;/A&gt; (CVE)
+&lt;LI&gt;&lt;A HREF=&quot;http://oval.mitre.org/&quot;&gt;Open Vulnerability and Assessment Language&lt;/A&gt; (OVAL)
+&lt;LI&gt;&lt;A HREF=&quot;http://checklists.nist.gov/xccdf.html&quot;&gt;eXtensible Configuration Checklist Description Format&lt;/A&gt; (XCCDF)
+&lt;/UL&gt;
+&lt;P&gt;&lt;P&gt;
+
+as well as their interaction and alignment toward the goal of automating security configuration application and assessment.  There were also some very interesting vendor presentations from companies who were developing security assessment and configuraiton tools that leverage these formats.  Really cool stuff.  I am personally very interested in hearing from Sun customers who are tracking these projects and interested in seeing security guidance, alerts, etc. published in the XCCDF and OVAL formats.
+&lt;P&gt;&lt;P&gt;
+
+All (or at least most) of the presentations can be found &lt;A HREF=&quot;http://checklists.nist.gov/presentations.html&quot;&gt;here&lt;/A&gt; and I also have a copy of my presentation &lt;A HREF=&quot;http://mediacast.sun.com/share/gbrunett/nist-secauto-solsec-v1.4.pdf&quot;&gt;here&lt;/A&gt;.  My talk was primarily a look at Solaris (and Trusted Solaris) security...  where we have been, what we are doing today, and where we are going.  Along the way, I also discussed some of the ways in which we have collaborated with academia, industry and government to better understand our customers security requirements, improve the security capabilities of our products, and help make cyberspace a little safer for everyone.  Much of that collaboration and teamwork still continues to this day as we work with organizations like CIS, NSA, DISA, NIST, and Mitre (for example) to continue to improve the security capabilities of our products and services, and I, for one, can&apos;t wait to see what&apos;s next!
+&lt;P&gt;&lt;P&gt;
+
+&lt;small&gt; Technorati Tag:
+&lt;a href=&quot;http://technorati.com/tag/opensolaris&quot; rel=&quot;tag&quot;&gt;OpenSolaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/solaris&quot; rel=&quot;tag&quot;&gt;Solaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/security&quot; rel=&quot;tag&quot;&gt;security&lt;/a&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/september_11th_5_years_on</id>
+        <title type="html">September 11th - 5 Years On</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/september_11th_5_years_on"/>
+        <published>2006-09-11T19:41:22-07:00</published>
+        <updated>2007-07-25T11:01:27-07:00</updated> 
+        <category term="/Personal" label="Personal" />
+        <category term="personal" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;P&gt;&lt;P&gt;
+
+I had been thinking about writing this post most of the day.  Honestly, I was very hesitant since a small message could easily turn into a long and widing essay from all of the emotion that would pour out.  After reading &lt;A HREF=&quot;http://blogs.sun.com/rdsesq/&quot;&gt;Rob&lt;/A&gt;&apos;s post however, I decided to share with you at least a little of what has been bouncing around my mind.
+&lt;P&gt;&lt;P&gt;
+
+Like, Rob, I too was supposed to be at our World Trade Center office on that fateful day.  I remember that we had just received a new shipment of lab equipment and I was going into the office to get everything hooked up so that we could start demonstrating a variety of Solaris and Sun ONE product security configurations and features.  It all started as a normal day when all of a sudden my nose started bleeding just as I was exiting the shower.  It took quite a while to stop and needless to say delayed my departure.  Just as I was leaving, the phone rang...
+&lt;P&gt;&lt;P&gt;
+
+My mother had called me in tears.  After asking what was wrong she told me to turn on the television and that was where I got my first glace on what had happened.  Like so many others, I stood in dumbfounded, staring at the television in complete and utter disbelief.  As I stood watching, the second plane struck the tower where the Sun office was located, WTC2 (our office had been on the 25th and 26th floors).  Realizing that something was terribly wrong, I called my wife who was pregnant with our first child and who had taken some friends to see Philadelphia historic sites for the day.  Knowing that she was safe and on her way home helped to ease my mind, but that relief did not last long.
+&lt;P&gt;&lt;P&gt;
+
+My trip to NY that day was not just for the lab, however.  I had scheduled a meeting with some of my team that day to do their performance reviews.  Needless to say, I could not reach anyone in the area for the greater part of the day.  I honestly believed that I was responsible for the death of a good friend and colleague by scheduling our meeting for that morning.  I was relieved to hear later that night that he was in Jersey City and not at the WTC when the planes struck.  This was not true for many of my other friends who were in or around the WTC during that time.  I remember working with some of our local teams to collect alternate e-mail addresses and telephone numbers for everyone in the area so that we could re-establish contact with everyone and verify that they were safe.  Over the course of several days, thankfully, we were able to verify that all of our local employees were safe and accounted for - thanks in large part to the heroic efforts of Avel Villanueva who, keeping a level head, spearheaded the evacuation of our offices.  Of the thousands who died, Sun did loose one if its own.  &lt;A HREF=&quot;http://www.sun.com/2001-0919/special/memorial.html&quot;&gt;Phil Rosenzweig&lt;/A&gt;, was on American Flight 11.  Requiescat in pace, Phil.
+&lt;P&gt;&lt;P&gt;
+
+I often still think the unthinkable about that day and what might have happened if I had not been delayed.  The damage shown 24/7 in the news and on the Internet was mindboggling.  Looking at the damage and remaining landmarks, my mind would wander to times when I had been in one area or another around that complex.  Like Rob, there was many a time that I would often work at the WTC office and even work late into the night on one project or another (camping out at one of the local Marriott hotels).  There were so many great memories of times spent with customers, partners, friends and even family at or around the WTC complex, and on days like today, that all comes rushing back.
+&lt;P&gt;&lt;P&gt;
+
+Today, while the family was out for a drive, we passed a local park where a memorial service was being held.  Looking out at all of the firetrucks, police cars, and military vehicles, my son asked what was going on.  In typical 4 year old fashion, question begat question.  My attempts at answering his questions nearly brought tears back to my eyes.
+&lt;P&gt;&lt;P&gt;
+
+I will never forget September 11, 2001 and what it means, to me and to us all.
+&lt;P&gt;&lt;P&gt;</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/new_sun_certified_security_administrator</id>
+        <title type="html">NEW: Sun Certified Security Administrator Exam</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/new_sun_certified_security_administrator"/>
+        <published>2006-09-08T11:19:28-07:00</published>
+        <updated>2007-07-25T11:01:16-07:00</updated> 
+        <category term="/Solaris 10 Security" label="Solaris 10 Security" />
+        <category term="security" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="software" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="solaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;META NAME=&quot;KEYWORDS&quot; CONTENT=&quot;Solaris 10,Solaris,Security,Administrator,Certification,SCSA,Sun Certified Security Administrator&quot;&gt;
+&lt;P&gt;&lt;P&gt;
+
+In a &lt;A HREF=&quot;http://blogs.sun.com/gbrunett/entry/free_sun_beta_certification_exam&quot;&gt;previous posting&lt;/A&gt;, I talked about the following certification exam (then in development): &lt;A HREF=&quot;http://www.sun.com/training/certification/solaris/security_objectives.html&quot;&gt;Sun Certified Security Administrator for the Solaris 10 Operating System&lt;/A&gt;.  I would like to thank everyone who volunteered to participate in the beta program!  Your support is greatly appreciated and helps to improve the quality of the exam (and certification) for everyone!
+&lt;P&gt;&lt;P&gt;
+
+I am now happy to announce that the exam is ready to go live and will opened on &lt;B&gt;September 25th&lt;/B&gt;!  If you are a Solaris Systems, Network and/or Security Administrator, you definitely want to consider testing for this certification.
+&lt;P&gt;&lt;P&gt;
+
+For more details on this exam including a description of the exam, its prerequisites, as well as recommended training and other resources, check out the &lt;A HREF=&quot;http://www.sun.com/training/certification/solaris/security_objectives.html&quot;&gt;certification exam page&lt;/A&gt;.
+&lt;P&gt;&lt;P&gt;
+
+Take care,
+&lt;P&gt;&lt;P&gt;
+
+Glenn
+&lt;P&gt;&lt;P&gt;
+
+
+&lt;small&gt; Technorati Tag:
+&lt;a href=&quot;http://technorati.com/tag/opensolaris&quot; rel=&quot;tag&quot;&gt;OpenSolaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/solaris&quot; rel=&quot;tag&quot;&gt;Solaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/security&quot; rel=&quot;tag&quot;&gt;security&lt;/a&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/laptop_upgrade_to_nevada_b473</id>
+        <title type="html">Laptop Upgrade to Nevada - b47 - Security Settings</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/laptop_upgrade_to_nevada_b473"/>
+        <published>2006-09-05T13:30:01-07:00</published>
+        <updated>2007-07-25T11:01:00-07:00</updated> 
+        <category term="/Solaris 10 Security" label="Solaris 10 Security" />
+        <category term="laptop" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="nevada" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="opensolaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="security" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="software" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="solaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;META NAME=&quot;KEYWORDS&quot; CONTENT=&quot;Solaris, Solaris 10, Solaris 11, Nevada, OpenSolaris, laptop, Toshiba, Toshiba M2, security, Solaris 10 security, OpenSolaris security, x86, solaris security toolkit, solaris security, jass, center 
+for internet security, CIS, CIS Benchmark&quot;&gt;
+&lt;P&gt;&lt;P&gt;
+
+Today, I would like to go over a few of the changes that I made to my laptop in order to improve upon its overall security configuration.  It should be noted that the list of changes made is relatively small (from the default) and is based upon how I plan to actually use the system.  As a result, you may need more or different changes than those listed here based upon your specific needs.  With that said, let&apos;s get into the details.
+&lt;P&gt;&lt;P&gt;
+
+Nevada by default enforces the settings specified by the &lt;A HREF=&quot;http://www.opensolaris.org/os/community/security/projects/sbd&quot;&gt;Secure by Default&lt;/A&gt; project.  As a result, there were no network services listening on my laptop for external connections (with the exception of Secure Shell).  This is a great start and significantly simplifies getting a desktop or laptop secured and ready for the network.  Since I generally do not permit inbound access to my laptop, I also disabled Secure Shell:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+blackhole$ &lt;B&gt;pfexec svcadm disable ssh&lt;/B&gt;
+blackhole$ &lt;B&gt;svcs ssh&lt;/B&gt;
+STATE          STIME    FMRI
+disabled       21:30:12 svc:/network/ssh:default
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+At this point, there are literally no local services listening that an external person could access.  As there is a need, I will temporarily enable services such as SSH or perhaps VNC (&lt;A HREF=&quot;http://www.karlrunge.com/x11vnc/&quot;&gt;x11vnc&lt;/A&gt;), but the default is to leave them in a disabled state until they are required.
+&lt;P&gt;&lt;P&gt;
+
+Next, I configured &lt;A HREF=&quot;http://coombs.anu.edu.au/~avalon/&quot;&gt;IP Filter&lt;/A&gt; - the firewall software built into Solaris.  I have been a huge fan of IP Filter for years and was absolutely thrilled to see it integrated into &lt;A HREF=&quot;http://www.sun.com/solaris&quot;&gt;Solaris 10&lt;/A&gt;.  The configuration that I use is based upon a version for laptops that was developed by &lt;A HREF=&quot;blogs.sun.com/darren/&quot;&gt;Darren Moffat&lt;/A&gt;.  To be completely honest, I have a few different firewall policies that are automatically installed based on the network profile that I have selected.  This allows me, for example, to have one firewall policy when I am connected via Ethernet on my home network and a different one when I am travelling.
+&lt;P&gt;&lt;P&gt;
+
+Before installing the firewall policy, I needed to configure the file &lt;I&gt;/etc/ipf/pfil.ap&lt;/I&gt;.  Since I am working from a &lt;A HREF=&quot;http://www.csd.toshiba.com/cgi-bin/tais/su/su_sc_modelLanding.jsp?moid=555698&amp;ct=MH&quot;&gt;Toshiba Tecra M2&lt;/A&gt;, I had to uncomment the entry for the &lt;I&gt;e1000g&lt;/I&gt; driver and add an entry for the &lt;I&gt;ath&lt;/I&gt; driver as follows:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+# &lt;B&gt;egrep &quot;e1000g|ath&quot; /etc/ipf/pfil.ap&lt;/B&gt;
+e1000g  -1      0       pfil
+ath     -1      0       pfil
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+Next, I installed Darren&apos;s firewall configuration, &lt;I&gt;/etc/ipf/ipf.conf&lt;/I&gt;.  I will not provide my
+specific settings - leaving the firewall configuration as an exercise for the reader.
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+#
+# ipf.conf
+#
+# IP Filter rules to be loaded during startup
+#
+# See ipf(4) manpage for more information on
+# IP Filter rules syntax.
+
+pass out quick all keep state keep frags
+
+# Drop all NETBIOS traffic but don&apos;t log it.
+
+block in quick from any to any port = 137 #netbios-ns
+block in quick from any to any port = 138 #netbios-dgm
+block in quick from any to any port = 139 #netbios-ssn
+
+# Allow incoming IKE/IPsec
+
+pass in quick proto udp from any to any port = ike
+pass in quick proto udp from any to any port = 4500
+pass in proto esp from any to any
+
+# Allow ping
+
+# pass in quick proto icmp from any to any icmp-type echo
+
+# Allow routing info
+
+# pass in quick proto udp from any to port = route
+# pass in quick proto icmp from any to any icmp-type 9 # routeradvert
+# pass in quick proto igmp from any to any
+
+# Block and log everything else that comes in
+
+block in log all
+block in from any to 255.255.255.255
+block in from any to 127.0.0.1/32
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+For the first time IP Filter configuration, there are a &lt;A HREF=&quot;http://docs.sun.com/app/docs/doc/816-4554/6maoq024i?a=view&quot;&gt;few other steps&lt;/A&gt; that I will not
+cover here now.  Check out the documentation for the specifics.
+&lt;P&gt;&lt;P&gt;
+
+With this complete, I turned my attention inward for a few additional configuration changes.  You can read more about them in the &lt;A HREF=&quot;http://www.cisecurity.org/bench_solaris.html&quot;&gt;Solaris 10 Benchmark&lt;/A&gt; published by the &lt;A HREF=&quot;http://www.cisecurity.org/&quot;&gt;Center for Internet Security&lt;/A&gt;.
+&lt;P&gt;&lt;P&gt;
+
+First, I modified the &lt;I&gt;/etc/security/policy.conf&lt;/I&gt; file to set my default &lt;I&gt;crypt(3C)&lt;/I&gt; algorithm to Sun MD5:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+# The Solaris default is the traditional UNIX algorithm.  This is not
+# listed in crypt.conf(4) since it is internal to libc.  The reserved
+# name __unix__ is used to refer to it.
+#
+CRYPT_DEFAULT=md5
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+This is useful for a variety of reasons most notibly because it would freak out any script kiddy running stock
+versions of &lt;A HREF=&quot;&quot;&gt;Crack&lt;/A&gt; and &lt;A HREF=&quot;&quot;&gt;john&lt;/A&gt; in an attack to guess passwords.  In their stock
+configurations (just download, compile and run), neither of these tools can successfully deal with the Sun MD5
+password format.  See the &lt;I&gt;crypt_sunmd5(5)&lt;/I&gt; manual page:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+     This module is designed to make it difficult to crack  pass-
+     words  that  use brute force attacks based on high speed MD5
+     implementations that use code inlining, unrolled loops,  and
+     table lookup.
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+Moving on, I enabled the following &lt;I&gt;coreadm&lt;/I&gt; configuration:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+# &lt;B&gt;coreadm&lt;/B&gt;
+     global core file pattern: /var/core/core_%n_%f_%u_%g_%t_%p
+     global core file content: default
+       init core file pattern: core
+       init core file content: default
+            global core dumps: enabled
+       per-process core dumps: disabled
+      global setid core dumps: enabled
+ per-process setid core dumps: disabled
+     global core dump logging: enabled
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+This is nice in that the system will notify me (via syslog) of core dumps:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+Sep  5 15:01:16 blackhole genunix: [ID 603404 kern.notice] NOTICE: core_log: sleep[5691] core dumped: /var/core/core_blackhole_sleep_101_101_1157482876_5691
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+and will store the core files in a protected directory, &lt;I&gt;/var/core&lt;/I&gt;:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+$ &lt;B&gt;ls -ld /var/core&lt;/B&gt;
+drwx------   2 root     root         512 Sep  3 21:13 /var/core
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+Moving along, I also set the following parameters:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+# &lt;B&gt;grep &quot;noexec_user_stack&quot; /etc/system&lt;/B&gt;
+set noexec_user_stack = 1
+set noexec_user_stack_log = 1
+
+# &lt;B&gt;grep nfs_portmon /etc/system&lt;/B&gt;
+set nfssrv:nfs_portmon = 1
+
+# &lt;B&gt;grep TCP_STRONG_ISS= /etc/default/inetinit&lt;/B&gt;
+TCP_STRONG_ISS=2
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+These are typical changes and are discussed in older &lt;A HREF=&quot;http://www.sun.com/blueprints&quot;&gt;Sun BluePrints&lt;/A&gt; as well as the CIS Benchmark.  Next, I also created the &lt;I&gt;loginlog&lt;/I&gt; file:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+# &lt;B&gt;ls -l /var/adm/loginlog&lt;/B&gt;
+-rw-------   1 root     sys            0 Sep  3 21:16 /var/adm/loginlog
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+and enabled debug logging in &lt;I&gt;syslog&lt;/I&gt;:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+# &lt;B&gt;grep &apos;*.debug&apos; /etc/syslog.conf&lt;/B&gt;
+*.debug                                         /var/adm/debug
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+Be sure to create the &lt;I&gt;/var/adm/debug&lt;/I&gt; file before restarting &lt;I&gt;syslog&lt;/I&gt;.  In addition, I also disabled &lt;I&gt;login&lt;/I&gt; access on the laptop&apos;s serial ports:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+# pmadm -d -p zsmon -s ttya
+# pmadm -d -p zsmon -s ttyb
+&lt;/PRE&gt;
+
+After installing a few basic warning banners in the typical places (see the CIS guide), I also changed &lt;I&gt;root&lt;/I&gt;&apos;s home directory, converted &lt;I&gt;root&lt;/I&gt; to be a &lt;I&gt;Solaris role&lt;/I&gt;, and assigned the rights to assume &lt;I&gt;root&lt;/I&gt; to only my local account:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+$ &lt;B&gt;getent passwd root&lt;/B&gt;
+root:x:0:0:Super-User:/root:/sbin/sh
+
+$ &lt;B&gt;grep &quot;^root:&quot; /etc/user_attr&lt;/B&gt;
+root::::&lt;B&gt;type=role&lt;/B&gt;;[...]
+
+$ &lt;B&gt;roles&lt;/B&gt;
+root
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+Lastly, using the normal methods, I also enabled and configured Solaris auditing and BART so that I can keep
+tabs on what is going on.  Of course, this is also in addition to BIOS and GRUB security changes that I will
+not cover in this post.
+&lt;P&gt;&lt;P&gt;
+
+Is this all you need to do?  Well, unfortunately - it depends.  There are certainly lots of other things that
+I &lt;I&gt;could&lt;/I&gt; do.
+&lt;P&gt;&lt;P&gt;
+For example, I could disable &lt;I&gt;rhosts&lt;/I&gt; authentication for the &lt;I&gt;rsh&lt;/I&gt; and &lt;I&gt;rlogin&lt;/I&gt; services.  Recall however that each of those services is (1) disabled by default and (2) subject to the firewall policy in place.  So, to successfully exploit this path, an attacker would need to change both of these settings - which require administrative privileges - enough to add &lt;I&gt;rhosts&lt;/I&gt; entries back into &lt;I&gt;/etc/pam.conf&lt;/I&gt;.  So for me, it was about maximizing security while minimizing change.  In this specific case, changes to those states or configuration files would be detected by BART and Solaris Auditing.  Similarly, there is not much point (except as a reminder) for me to enable
+password aging, history or complexity rules when I am  the only user on the system (and the system does not accept
+remote incoming connections - except in very limited cases).  
+&lt;P&gt;&lt;P&gt;
+
+You get the point...  For another perspective, check out how &lt;A HREF=&quot;http://blogs.sun.com/jclingan?entry=securing_my_x2100&quot;&gt;John Clingan&lt;/A&gt; approached this problem.
+&lt;P&gt;&lt;P&gt;
+
+My longer term hope is that we can further reduce the changes required out of the box by making many of the most common settings default Solaris values.  That way, everyone could benefit from a stronger out of the box installation posture.  SBD was a great step forward down this path.  Let&apos;s look at a few examples of RFEs that are outstanding right now:
+&lt;P&gt;&lt;P&gt;
+
+&lt;UL&gt;
+&lt;LI&gt;&lt;A HREF=&quot;http://bugs.opensolaris.org/bugdatabase/view_bug.do?bug_id=4625629&quot;&gt;4625629 perhaps TCP_STRONG_ISS should default to `2&apos;&lt;/A&gt;
+&lt;LI&gt;&lt;A HREF=&quot;http://bugs.opensolaris.org/bugdatabase/view_bug.do?bug_id=4859242&quot;&gt;4859242 /etc/skel files should not add &quot;.&quot; to PATH&lt;/A&gt;
+&lt;LI&gt;&lt;A HREF=&quot;http://bugs.opensolaris.org/bugdatabase/view_bug.do?bug_id=4917108&quot;&gt;4917108 /var/adm/loginlog, /var/adm/sulog should exist by default&lt;/A&gt;
+&lt;LI&gt;&lt;A HREF=&quot;http://bugs.opensolaris.org/bugdatabase/view_bug.do?bug_id=4960338&quot;&gt;4960338 want to change root&apos;s home directory&lt;/A&gt;
+&lt;LI&gt;&lt;A HREF=&quot;http://bugs.opensolaris.org/bugdatabase/view_bug.do?bug_id=5015982&quot;&gt;5015982 *coreadm* should log core generation events by default&lt;/A&gt;
+&lt;LI&gt;&lt;A HREF=&quot;http://bugs.opensolaris.org/bugdatabase/view_bug.do?bug_id=5050001&quot;&gt;5050001 Enable IPFilter, by default, in S10 default profile&lt;/A&gt;
+&lt;/UL&gt;
+&lt;P&gt;&lt;P&gt;
+
+Would you like to see these implemented?  If so, &lt;A HREF=&quot;http://www.opensolaris.org/bug/report.jspa&quot;&gt;let us know&lt;/A&gt;!  If you have a valid Solaris support contract, you can also contact support to have you added as a customer call record for one or more of these RFEs.  Just as important - are there other security changes that you would like to see made by default in future versions of Solaris!  If so, be sure to tell us!  &lt;A HREF=&quot;http://www.opensolaris.org/bug/report.jspa&quot;&gt;File bugs or RFEs&lt;/A&gt;!  &lt;A HREF=&quot;http://www.opensolaris.org/jive/forum.jspa?forumID=37&quot;&gt;Talk with us!&lt;/A&gt; and (if you are so included) &lt;A HREF=&quot;http://www.opensolaris.org/os/communities/participation/#code&quot;&gt;participate and help us make the changes!&lt;/A&gt;
+&lt;P&gt;&lt;P&gt;
+
+Before I sign off, you may be wondering why not just use the &lt;A HREF=&quot;http://www.sun.com/security/jass/&quot;&gt;Solaris Security Toolkit&lt;/A&gt; and be done with it?  Certainly, I could have used the (currently unreleased) version that supports SBD and implemented these changes.  In fact, most companies may want to go that route since SBD alone (as demonstrated above) covers just part of the problem space.  The reason however is simple.  I wanted to demonstrate what it would take for you to quickly and easily secure a new &lt;A HREF=&quot;http://www.opensolaris.org/&quot;&gt;OpenSolaris&lt;/A&gt; or Nevada laptop from an out of the box state.  All too often the tools and guides make people think that it is harder than it really is.  Certainly, the Toolkit is essential for building repeatable, auditable configurations, but in the case of my one off - the time difference to implement is negligible.
+&lt;P&gt;&lt;P&gt;
+
+Take care,
+&lt;P&gt;&lt;P&gt;
+
+Glenn
+&lt;P&gt;&lt;P&gt;
+
+&lt;small&gt; Technorati Tag:
+&lt;a href=&quot;http://technorati.com/tag/opensolaris&quot; rel=&quot;tag&quot;&gt;OpenSolaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/solaris&quot; rel=&quot;tag&quot;&gt;Solaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/laptop&quot; rel=&quot;tag&quot;&gt;laptop&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/security&quot; rel=&quot;tag&quot;&gt;security&lt;/a&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/google_hacking_social_engineering_redux</id>
+        <title type="html">Google Hacking: Social Engineering Redux</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/google_hacking_social_engineering_redux"/>
+        <published>2006-09-04T20:51:58-07:00</published>
+        <updated>2007-08-05T11:15:08-07:00</updated> 
+        <category term="/General Security" label="General Security" />
+        <category term="google" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="hacking" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="privacy" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="security" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="social-engineering" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;META NAME=&quot;keywords&quot; CONTENT=&quot;information security, security, privacy, myspace, google, flickr, delicious, youtube,
+identity theft, social engineering, google hacking&quot;&gt;
+&lt;P&gt;&lt;P&gt;
+
+While looking through some recent postings, I came across &lt;A HREF=&quot;http://dumblittleman.blogspot.com/2006/09/how-to-get-robbed-killed-or-stalked-by.html&quot;&gt;this&lt;/A&gt; posting by &lt;A HREF=&quot;http://dumblittleman.blogspot.com/&quot;&gt;Dumb Little Man&lt;/A&gt;.  His brief depiction is yet another in a long string of reminders for us all to be more careful about safeguarding our personal information.  All too often, people take their (or their company&apos;s) privacy for granted and do not concern themselves with who will see the information that they post - that is, until something bad happens.  Worse yet is that people often do not understand how the various types of information made available can be used together to create a multiplicative effect - except perhaps in the more publicized &lt;A HREF=&quot;http://www.consumer.gov/idtheft/&quot;&gt;identity theft&lt;/A&gt; arena.
+&lt;P&gt;&lt;P&gt;
+
+Each and every day, it is getting easier to find out greater amounts of information on people, places, companies and services.  Let&apos;s consider extending the thought experiment discussed in the article above.  What if an attacker were to use &lt;A HREF=&quot;http://earth.google.com/&quot;&gt;Google Earth&lt;/A&gt; to obtain satellite imagery of his target&apos;s house?  This tool could be used to pinpoint the position of his target relative to other buildings, roads, or other environmental elements (e.g., wooded areas, etc.)  The military has long recognized the value of such imaging for planning attacks and now this information is available (certainly at a lower resolution) to anyone, anywhere.  &lt;I&gt;Note: I do not want to pick on Google Earth since there are certainly many other ways to get some or all of this information (e.g., purchase paper maps and/or satellite images, personally scout out a location, etc.).&lt;/I&gt;
+&lt;P&gt;&lt;P&gt;
+
+Going further, with your target&apos;s name, e-mail address or other personal details, you could use current search engines to discover &lt;A HREF=&quot;http://www.flickr.com/&quot;&gt;pictures&lt;/A&gt;, &lt;A HREF=&quot;http://www.youtube.com/&quot;&gt;movies&lt;/A&gt;, &lt;A HREF=&quot;http://www.myspace.com/&quot;&gt;personal profiles&lt;/A&gt;, &lt;A HREF=&quot;http://www.linkedin.com/&quot;&gt;business profiles&lt;/A&gt;, &lt;A HREF=&quot;http://del.icio.us/&quot;&gt;interests&lt;/A&gt;, and even &lt;A HREF=&quot;http://groups.google.com/&quot;&gt;previous postings or affiliations&lt;/A&gt; of your target.  There is a virtually unlimited number of potential sources depending on the nature of your target and goals.  Of course, none of this is new information.  Take a quick search for yourself to see what I mean.  My point here is that vast amounts of personal information can be gathered today for little to no cost or effort.
+&lt;P&gt;&lt;P&gt;
+
+Let me give you an example.  I know of a family that was looking for pre-schools for their kids.  After some research and careful discussion, they narrowed down their selection to a handful of schools.  Enter Google.  A quick search on one of the schools led the couple to a &lt;A HREF=&quot;http://www.myspace.com/&quot;&gt;MySpace&lt;/A&gt; page apparently belonging to one of the school&apos;s young teachers.  Reading through the teacher&apos;s public MySpace profile, the couple was horrified to find discussions and endorsements of vampirism, bloodletting and related topics.  Remember, this was initially about finding a pre-school for their young children.  Needless to say, that single search result caused the entire school to be taken out of consideration.  Now, was the person really a teacher at that school?  Who knows...  but that is not the point.  The personal postings of an individual had cost a school a student.  One can easily imagine how personal information could be used by school or professional recuiters when &lt;A HREF=&quot;http://europe.vault.com/nr/newsmain.jsp?nr_page=3&amp;ch_id=242&amp;article_id=27813279&amp;cat_id=3198&quot;&gt;examining candidates&lt;/A&gt;.
+&lt;P&gt;&lt;P&gt;
+
+What is interesting to observe is the damage that can be done to individuals or corporations through the malicious posting of false information.  Let&apos;s say that the person in the above case was not really a teacher but had some kind of grudge against that specific school.  Who knows how much business could be lost (even without the school&apos;s knowledge) as a result of prospective parents (such as the couple above) coming across that MySpace page.  Similarly, think about the damage to one&apos;s personal and professional reputation could ensue as a direct result of malicious (or perhaps accidental) postings.  In the old days, rumors could often be contained to a single company or perhaps a small town.  Moving out of the town could potentially wipe your slate clean.  Today however, such information, correct or not, could literally be in the hands of anyone on the planet.  There is no way to avoid it.
+&lt;P&gt;&lt;P&gt;
+
+Beyond individuals, these same techniques can be leveraged to uncover potential corporate targets.  For this posting, I just did a quick search of &lt;I&gt;comp.unix.solaris&lt;/I&gt; looking for &lt;I&gt;.rhosts&lt;/I&gt; and covered this same posting:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+Even though I realize that use of /etc/hosts.equiv and .rhosts are not
+very secure, I&apos;ve thought I could possibly use them in setting up a
+number of Solaris workstations in a lab/setup environment before
+rolling them out to the desktops
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+This posting included both an e-mail address of an employee (presumably) as well as a company name.  Comments like these made on mailing lists (from internal e-mail addresses) can often be used to determine key points about a target.  From this small message, we can assume that the company uses Solaris and that they are using &lt;I&gt;rsh&lt;/I&gt; with &lt;I&gt;rhosts&lt;/I&gt; authentication.  Not overly useful, but it is a start.  Spending a little more time, it is not hard to find people asking security questions, talking about audit failures, or divulging information (seemingly harmless) that can provide clues about their security configuration, recent problems, or even how frequently they patch their systems, etc.
+&lt;P&gt;&lt;P&gt;
+
+With the free and for-fee sources of information available today, the possibilities are truly staggering.  That said, 
+it is certainly not like this is anything &lt;A HREF=&quot;http://www.theregister.co.uk/2001/11/28/the_google_attack_engine/&quot;&gt;new&lt;/A&gt;.  The Internet is riddled with &lt;A HREF=&quot;http://googlesystem.blogspot.com/2006/01/get-sensitive-information-using-google.html&quot;&gt;postings&lt;/A&gt; and &lt;A HREF=&quot;http://www.informit.com/articles/article.asp?p=170880&amp;rl=1&quot;&gt;pages&lt;/A&gt; detailing how to leverage these information sources as means toward various ends.  Before Google there was the &lt;A HREF=&quot;http://en.wikipedia.org/wiki/Usenet&quot;&gt;USENET&lt;/A&gt; and before that there were &lt;A HREF=&quot;http://en.wikipedia.org/wiki/Bulletin_board_system&quot;&gt;bulletin board systems&lt;/A&gt;, etc.  The big difference today is that the Internet and its services are ubiquitous and greater numbers of people are sharing more personal information than ever (and this information is being captured by greater numbers of searchable repositories) - making access to such information downright trivial.  Hell, for those needing a little help, there is even a &lt;A HREF=&quot;http://www.amazon.com/exec/obidos/tg/detail/-/1931836361?v=glance&quot;&gt;book&lt;/A&gt; on &lt;A HREF=&quot;http://en.wikipedia.org/wiki/Google_Hacks&quot;&gt;Google Hacking&lt;/A&gt;.
+&lt;P&gt;&lt;P&gt;
+
+So what is the lesson here?  Simply put, you need to be careful.  Don&apos;t take your privacy for granted.  The damage once inflicted can be hard if not impossible to undo.
+&lt;P&gt;&lt;P&gt;
+
+As a security professional, I want to be able to &lt;A HREF=&quot;http://www.sun.com/blueprints/&quot;&gt;share information with people&lt;/A&gt;, &lt;A HREF=&quot;http://www.opensolaris.org/os/community/security/&quot;&gt;post content and help answer questions&lt;/A&gt;, and generally help people better protect themselves.  To establish a more personal connection with readers, I have shared a picture on my &lt;A HREF=&quot;http://blogs.sun.com/gbrunett/&quot;&gt;blog&lt;/A&gt; and have even published a &lt;A HREF=&quot;http://www.linkedin.com/in/gbrunett&quot;&gt;LinkedIn&lt;/A&gt; profile.  I have even occassionally posted on some &lt;A HREF=&quot;http://blogs.sun.com/gbrunett/category/Personal&quot;&gt;personal&lt;/A&gt; topics.  So, where do I draw the line?
+&lt;P&gt;&lt;P&gt;
+
+Honestly - for me it comes down to a risk management decision.  There are some topics that I am comfortable sharing and others that I am not.  Weighting the risks and benefits, I try to strike a balance in my postings.  Above all, I do my best to safeguard my (and my company&apos;s) private information.  Further, I try to balance my inherent paranoia with some pragmatism so that we can engage in this virtual discussions from time to time.  I for one enjoy them and hope you do too.
+&lt;P&gt;&lt;P&gt;
+
+Take care,
+&lt;P&gt;&lt;P&gt;
+
+Glenn
+&lt;P&gt;&lt;P&gt;
+
+&lt;small&gt; Technorati Tag:
+&lt;a href=&quot;http://technorati.com/tag/security&quot; rel=&quot;tag&quot;&gt;security&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/privacy&quot; rel=&quot;tag&quot;&gt;privacy&lt;/a&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/laptop_upgrade_to_nevada_b472</id>
+        <title type="html">Laptop Upgrade to Nevada b47 - A Few More Things</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/laptop_upgrade_to_nevada_b472"/>
+        <published>2006-09-02T12:05:28-07:00</published>
+        <updated>2007-07-25T10:59:13-07:00</updated> 
+        <category term="/Solaris 10 Security" label="Solaris 10 Security" />
+        <category term="laptop" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="nevada" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="opensolaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="software" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="solaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <summary type="html"> </summary>
+        <content type="html">&lt;META NAME=&quot;KEYWORDS&quot; CONTENT=&quot;Solaris, Solaris 10, Solaris 11, Nevada, OpenSolaris, laptop, Toshiba, Toshiba M2, x86&quot;&gt;
+&lt;P&gt;&lt;P&gt;
+
+After working on my upgraded laptop for a little while, I still have no problems to report.  Everything has been running smoothly.  I realized that I had left a few packages off of my original list.  Not to worry however, since it was &lt;A HREF=&quot;http://www.blastwave.org/&quot;&gt;Blastwave&lt;/A&gt; to the rescue (for 2 of 3 at least).  The packages that I added were:
+
+&lt;UL&gt;
+&lt;LI&gt;&lt;A HREF=&quot;http://samba.anu.edu.au/rsync/&quot;&gt;rsync&lt;/A&gt; [via Blastwave]
+&lt;LI&gt;&lt;A HREF=&quot;http://www.realvnc.com/&quot;&gt;vncviewer&lt;/A&gt; [via Blastwave]
+&lt;LI&gt;&lt;A HREF=&quot;http://www.karlrunge.com/x11vnc/&quot;&gt;x11vnc&lt;/A&gt;
+&lt;/UL&gt;
+&lt;P&gt;&lt;P&gt;
+
+With these packages, I was able to backup/synchronize my files and data (which I did) as well as configure things so that I could get to my laptop&apos;s desktop from anywhere in the house (which my wife just loves *grin*).  After this, I also went and created the manual page index files:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+# for d in /usr/man /usr/openwin/man /usr/dt/man /usr/sfw/man /opt/csw/man /usr/local/man; do
+&gt; cd ${d} ; /usr/lib/makewhatis .
+&gt; done
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+In the course of running a variety of programs, I have encountered several warning messages here and there.  I will be checking on these to see if they can be cleared up as they tend to add clutter to some of the terminal windows where I am launching the applications.  Everything still works as expected, so it is my impression that the warnings are harmless.
+&lt;P&gt;&lt;P&gt;
+
+In my next posting, I will go into a little more detail regarding the security configuration of my laptop.
+&lt;P&gt;&lt;P&gt;
+
+Take care,
+&lt;P&gt;&lt;P&gt;
+
+Glenn
+&lt;P&gt;&lt;P&gt;
+
+&lt;small&gt; Technorati Tag:
+&lt;a href=&quot;http://technorati.com/tag/opensolaris&quot; rel=&quot;tag&quot;&gt;OpenSolaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/solaris&quot; rel=&quot;tag&quot;&gt;Solaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/laptop&quot; rel=&quot;tag&quot;&gt;laptop&lt;/a&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/laptop_upgrade_to_nevada_b471</id>
+        <title type="html">Laptop Upgrade to Nevada b47 - The Next Day</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/laptop_upgrade_to_nevada_b471"/>
+        <published>2006-09-01T09:00:22-07:00</published>
+        <updated>2007-07-25T10:59:05-07:00</updated> 
+        <category term="/Solaris 10 Security" label="Solaris 10 Security" />
+        <category term="laptop" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="nevada" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="opensolaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="software" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="solaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;META NAME=&quot;KEYWORDS&quot; CONTENT=&quot;Solaris, Solaris 10, Solaris 11, Nevada, OpenSolaris, laptop, Toshiba, Toshiba M2, x86&quot;&gt;
+&lt;P&gt;&lt;P&gt;
+
+Several hours into day 1 of the upgraded laptop and no significant issues to report.  The complete installation went smoothly and all of my productivity tools appear to have retained their settings and are working as expected including:
+
+&lt;UL&gt;
+&lt;LI&gt;&lt;A HREF=&quot;http://www.mozilla.com/firefox/&quot;&gt;Firefox&lt;/A&gt; (Browser)
+&lt;LI&gt;&lt;A HREF=&quot;http://www.mozilla.com/thunderbird/&quot;&gt;Thunderbird&lt;/A&gt; (E-mail)
+&lt;LI&gt;&lt;A HREF=&quot;http://www.gnome.org/projects/evolution/&quot;&gt;Evolution&lt;/A&gt; (Calendar)
+&lt;LI&gt;&lt;A HREF=&quot;http://gaim.sourceforge.net/&quot;&gt;gaim&lt;/A&gt; (Instant Messaging) with &lt;A HREF=&quot;http://www.cypherpunks.ca/otr/&quot;&gt;OTR&lt;/A&gt;
+&lt;LI&gt;&lt;A HREF=&quot;http://www.sun.com/software/star/staroffice/index.jsp&quot;&gt;StarOffice 8&lt;/A&gt; (Office Suite)
+&lt;/UL&gt;
+&lt;P&gt;&lt;P&gt;
+
+This is in addition to the other tools I mentioned in my previous post, including:  &lt;A HREF=&quot;http://www.opensolaris.org/os/community/laptop/frkit/&quot;&gt;frkit&lt;/A&gt;,  &lt;A HREF=&quot;http://www.nvidia.com/object/solaris_display_archive.html&quot;&gt;Nvidia drivers&lt;/A&gt;, punchin, &lt;A HREF=&quot;http://www.blastwave.org/&quot;&gt;pkg_get&lt;/A&gt;, and &lt;A HREF=&quot;http://www.opensolaris.org/os/community/laptop/inetmenu/&quot;&gt;inetmenu&lt;/A&gt;.  The Nvidia drivers are correctly pushing my screen image (by default) to both the laptop LCD and my external flatscreen.  What more count I ask for?
+&lt;P&gt;&lt;P&gt;
+
+During the course of my new installation, I set aside enough space to install &lt;A HREF=&quot;http://www.opensolaris.org/os/community/security/projects/tx&quot;&gt;Trusted Extensions&lt;/A&gt;, so that will be my next big step, but before I do that, I am going to put the laptop through its paces for a few days to make ensure everything continues to work as expected.
+&lt;P&gt;&lt;P&gt;
+
+You really have to love it when things just work!
+&lt;P&gt;&lt;P&gt;
+
+Take care,
+&lt;P&gt;&lt;P&gt;
+
+Glenn
+&lt;P&gt;&lt;P&gt;
+
+&lt;small&gt; Technorati Tag:
+&lt;a href=&quot;http://technorati.com/tag/opensolaris&quot; rel=&quot;tag&quot;&gt;OpenSolaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/solaris&quot; rel=&quot;tag&quot;&gt;Solaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/laptop&quot; rel=&quot;tag&quot;&gt;laptop&lt;/a&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/laptop_upgrade_to_nevada_b47</id>
+        <title type="html">Laptop Upgrade to Nevada b47</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/laptop_upgrade_to_nevada_b47"/>
+        <published>2006-08-31T20:37:14-07:00</published>
+        <updated>2007-07-25T10:59:24-07:00</updated> 
+        <category term="/Solaris 10 Security" label="Solaris 10 Security" />
+        <category term="laptop" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="nevada" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="opensolaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="software" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="solaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;META NAME=&quot;KEYWORDS&quot; CONTENT=&quot;Solaris, Solaris 10, Solaris 11, Nevada, OpenSolaris, laptop, Toshiba, Toshiba M2, x86&quot;&gt;
+&lt;P&gt;&lt;P&gt;
+
+Well, it has taken me quite a while but I finally have bitten the bullet and started upgrading my laptop to a newer version of &lt;A HREF=&quot;http://www.opensolaris.org/os/community/onnv&quot;&gt;Nevada&lt;/A&gt;.  Given that my laptop &lt;em&gt;is&lt;/em&gt; my office, I am always a little hesitant to change things when everything is working smoothly.  An honestly, that has been the case for quite some time as is evidenced by the fact that I am still running (dare I say it) build 18! 
+&lt;P&gt;&lt;P&gt;
+
+While I have a number of other systems at home at build 42, I wanted to be able to showcase some of the latest and greatest technology found in the newer builds including (but certainly not limited to): &lt;A HREF=&quot;http://www.opensolaris.org/os/community/security/projects/sbd&quot;&gt;SBD&lt;/A&gt;, &lt;A HREF=&quot;http://www.opensolaris.org/os/community/zfs/&quot;&gt;ZFS&lt;/A&gt;, and &lt;A HREF=&quot;http://www.opensolaris.org/os/community/security/projects/tx&quot;&gt;Trusted Extensions&lt;/A&gt;.  In fact, I have a number of conference sessions coming up (I will write about those later) where it will be great to highlight this great technology.
+&lt;P&gt;&lt;P&gt;
+
+I will not go into the gory details, but for those interested, I did follow the usual procedures, namely (1) backup existing content, (2) download and burn the DVD ISO, (3) boot the DVD ISO and do the initial configuration, (4) click install and sit back.
+
+Well, that is exactly where I am right now...  Sitting back - about 68% through the installation.  I have also downloaded the latest essentials for my M2 including: &lt;A HREF=&quot;http://www.opensolaris.org/os/community/laptop/frkit/&quot;&gt;frkit&lt;/A&gt;,
+&lt;A HREF=&quot;http://www.nvidia.com/object/solaris_display_archive.html&quot;&gt;Nvidia drivers&lt;/A&gt;, punchin, &lt;A HREF=&quot;http://www.blastwave.org/&quot;&gt;pkg_get&lt;/A&gt;, and &lt;A HREF=&quot;http://www.opensolaris.org/os/community/laptop/inetmenu/&quot;&gt;inetmenu&lt;/A&gt;.  With this and a &quot;quick&quot; download of StarOffice 8, I will be back in business in no time.  Well, at 78% complete, I have enough time to go brew some tea,
+so I will bid you all good night.
+&lt;P&gt;&lt;P&gt;
+
+Take care,
+&lt;P&gt;&lt;P&gt;
+
+Glenn
+&lt;P&gt;&lt;P&gt;
+
+&lt;small&gt; Technorati Tag:
+&lt;a href=&quot;http://technorati.com/tag/opensolaris&quot; rel=&quot;tag&quot;&gt;OpenSolaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/solaris&quot; rel=&quot;tag&quot;&gt;Solaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/laptop&quot; rel=&quot;tag&quot;&gt;laptop&lt;/a&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/solaris_package_companion_on_opensolaris</id>
+        <title type="html">Solaris Package Companion on OpenSolaris.org</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/solaris_package_companion_on_opensolaris"/>
+        <published>2006-08-31T13:14:16-07:00</published>
+        <updated>2007-08-05T11:37:11-07:00</updated> 
+        <category term="/Solaris 10 Security" label="Solaris 10 Security" />
+        <category term="minimization" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="opensolaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="security" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="software" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="solaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="tool-spc" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;META NAME=&quot;keywords&quot; CONTENT=&quot;svr4,packaging,package,pkg,installation,security,solaris,solaris 10,solaris security,opensolaris,solaris package companion,spc&quot;&gt;
+&lt;P&gt;&lt;P&gt;
+
+This note is to announce the new Solaris Package Companion &lt;A HREF=&quot;http://www.opensolaris.org/&quot;&gt;OpenSolaris&lt;/A&gt; project
+page (child of the &lt;A HREF=&quot;http://www.opensolaris.org/os/project/svr4_packaging/&quot;&gt;SVR4 packaging project page&lt;/A&gt;) at:
+&lt;P&gt;&lt;P&gt;
+&lt;A HREF=&quot;http://www.opensolaris.org/os/project/svr4_packaging/package_companion/&quot;&gt;http://www.opensolaris.org/os/project/svr4_packaging/package_companion/&lt;/A&gt;
+&lt;P&gt;&lt;P&gt;
+Check it out to get all of the latest and greatest information, usage instructions, code and examples.
+&lt;P&gt;&lt;P&gt;
+Love to hear what you think!
+&lt;P&gt;&lt;P&gt;
+g
+
+&lt;P&gt;&lt;P&gt;
+&lt;small&gt; Technorati Tag:
+&lt;a href=&quot;http://technorati.com/tag/opensolaris&quot; rel=&quot;tag&quot;&gt;OpenSolaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/solaris&quot; rel=&quot;tag&quot;&gt;Solaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/security&quot; rel=&quot;tag&quot;&gt;security&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/minimization&quot; rel=&quot;tag&quot;&gt;minimization&lt;/a&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/new_solaris_secure_by_default</id>
+        <title type="html">New Solaris Secure by Default Presentation</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/new_solaris_secure_by_default"/>
+        <published>2006-08-23T07:46:04-07:00</published>
+        <updated>2007-07-25T11:03:16-07:00</updated> 
+        <category term="/Solaris 10 Security" label="Solaris 10 Security" />
+        <category term="opensolaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="presentations" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="secure-by-default" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="security" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="software" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="solaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;META NAME=&quot;keywords&quot; CONTENT=&quot;security,solaris,solaris 10,solaris security,nevada,smf,secure by default,sbd,netservices&quot;&gt;
+&lt;BR&gt;&lt;BR&gt;
+
+&lt;A HREF=&quot;blogs.sun.com/rotondo/&quot;&gt;Scott Rotondo&lt;/A&gt; just posted a new &lt;A HREF=&quot;www.opensolaris.org/os/community/security/projects/sbd&quot;&gt;Solaris Secure by Default&lt;/A&gt; &lt;A HREF=&quot;http://www.opensolaris.org/os/community/security/projects/sbd/sbd_toi.pdf&quot;&gt;presentation&lt;/A&gt; that is being used to raise awareness of SBD including what it is, why it is important and how it is implemented and used.  &lt;A HREF=&quot;http://www.opensolaris.org/os/community/security/projects/sbd/sbd_toi.pdf&quot;&gt;Check it out!&lt;/A&gt;
+&lt;P&gt;&lt;P&gt;
+For more information check out these other SBD references:
+&lt;P&gt;&lt;P&gt;
+&lt;small&gt; References:
+&lt;a href=&quot;http://blogs.sun.com/gbrunett?entry=solaris_secure_by_default_part&quot;&gt;Part 1 of 3&lt;/A&gt;
+&lt;a href=&quot;http://blogs.sun.com/gbrunett?entry=solaris_secure_by_default_part1&quot;&gt;Part 2 of 3&lt;/A&gt;
+&lt;a href=&quot;http://blogs.sun.com/gbrunett?entry=solaris_secure_by_default_part2&quot;&gt;Part 3 of 3&lt;/A&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;
+
+&lt;small&gt; Technorati Tag:
+&lt;a href=&quot;http://technorati.com/tag/opensolaris&quot; rel=&quot;tag&quot;&gt;OpenSolaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/solaris&quot; rel=&quot;tag&quot;&gt;Solaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/security&quot; rel=&quot;tag&quot;&gt;security&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/smf&quot; rel=&quot;tag&quot;&gt;SMF&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/sbd&quot; rel=&quot;tag&quot;&gt;SBD&lt;/a&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/solaris_10_security_technical_presentation</id>
+        <title type="html">Solaris 10 Security - Technical Presentation</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/solaris_10_security_technical_presentation"/>
+        <published>2006-08-17T11:27:52-07:00</published>
+        <updated>2007-07-25T11:02:57-07:00</updated> 
+        <category term="/Solaris 10 Security" label="Solaris 10 Security" />
+        <category term="opensolaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="presentations" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="security" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="software" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="solaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;META NAME=&quot;KEYWORDS&quot; CONTENT=&quot;Solaris, Solaris 10, platform, security, platform security, file integrity, basic, auditing, reporting, tool, BART, cryptographic framework, containers, zones, smf, service management facility, RBAC, role, based, access, control, user rights management, process rights management, privileges, minimization, reduced networking, ip filter, cryptographic framework, kerberos, security enhancements, enhancements, password history,
+account lockout,sbd,secure by default,trusted solaris, trusted extensions,tx&quot;&gt;
+&lt;P&gt;&lt;P&gt;
+
+&lt;A HREF=&quot;http://blogs.sun.com/gbrunett?entry=updated_solaris_10_security_toi&quot;&gt;A while back&lt;/A&gt;, I posted a version of my &lt;A HREF=&quot;http://mediacast.sun.com/details.jsp?id=1105&quot;&gt;Solaris 10 technical deep-dive presentation&lt;/A&gt;.  Well, I have finally had a chance to update it based on all of the latest goodies in
+&lt;A HREF=&quot;http://www.sun.com/software/solaris/&quot;&gt;Solaris 10&lt;/A&gt; Update 1 and 2 as well as &lt;A HREF=&quot;http://www.opensolaris.org/os/community/onnv&quot;&gt;Nevada&lt;/A&gt;.  I have also added a bunch of new examples and screenshots.
+&lt;P&gt;&lt;P&gt;
+
+For those who may have missed it, the goal of this presentation is to provide a technical &quot;deep dive&quot; overview for those interested in learning more about the security capabilities and features of Solaris 10.  This presentation serves as a bridge between the higher level marketing presentations and technical presentations that are specific to individual technologies.
+&lt;P&gt;&lt;P&gt;
+
+I would like to thank Mark Thacker, &lt;A HREF=&quot;http://blogs.sun.com/darren&quot;&gt;Darren Moffat&lt;/A&gt;, &lt;A HREF=&quot;http://blogs.sun.com/casper&quot;&gt;Casper Dik&lt;/A&gt;, and Shawn Emery for their contributions to this presentation!
+
+So if this topic interests you, please download the &lt;A HREF=&quot;http://mediacast.sun.com/share/gbrunett/s10-security-dive-20060809.pdf&quot;&gt;latest version&lt;/A&gt; and send me your feedback!  I will use the comments received to help guide future updates of the presentation.  Also, be sure to let your sales team know if you would like to have someone from Sun come and talk with you about Solaris 10 security or any
+of the content in this presentation.  Thanks in advance!
+&lt;P&gt;&lt;P&gt;
+
+Take care!
+&lt;P&gt;&lt;P&gt;
+
+Glenn
+&lt;P&gt;&lt;P&gt;
+
+&lt;small&gt; Technorati Tag:
+&lt;a href=&quot;http://technorati.com/tag/opensolaris&quot; rel=&quot;tag&quot;&gt;OpenSolaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/solaris&quot; rel=&quot;tag&quot;&gt;Solaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/security&quot; rel=&quot;tag&quot;&gt;security&lt;/a&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/solaris_secure_by_default_part2</id>
+        <title type="html">Solaris Secure by Default - Part 3</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/solaris_secure_by_default_part2"/>
+        <published>2006-07-19T11:18:28-07:00</published>
+        <updated>2007-07-23T18:49:45-07:00</updated> 
+        <category term="/Solaris 10 Security" label="Solaris 10 Security" />
+        <category term="opensolaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="secure-by-default" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="security" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="solaris" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;META NAME=&quot;keywords&quot; CONTENT=&quot;security,solaris,solaris 10,solaris security,nevada,smf,secure by default,sbd,netservices&quot;&gt;
+&lt;BR&gt;&lt;BR&gt;
+
+Before I begin, I would like to point everyone to a &lt;A HREF=&quot;http://blogs.sun.com/roller/page/rotondo?entry=secure_by_default&quot;&gt;posting&lt;/A&gt; by &lt;A HREF=&quot;http://blogs.sun.com/rotondo/&quot;&gt;Scott Rotondo&lt;/A&gt;, one of the architects behind the &lt;A HREF=&quot;http://www.opensolaris.org/os/community/security/projects/sbd/&quot;&gt;Secure by Default&lt;/A&gt; project.  Check it out and let him know what you think of this new Solaris enhancement!
+&lt;P&gt;&lt;P&gt;
+
+Today, SBD is an all or nothing proposition - it is either enabled or disabled using the new &lt;I&gt;netservices(1M)&lt;/I&gt; command.  For many organizations, this is not enough.  Very often, they must configure their systems such that some services are &quot;off&quot; or in a &quot;local only&quot; mode while others must be enabled or &quot;open&quot; to support a business or technical requirement.  It is important therefore to be able to understand exactly what SBD is doing so that you can better tune the security configuration of your systems based on your specific needs and requirements.  As we have noted &lt;A HREF=&quot;http://blogs.sun.com/gbrunett?entry=solaris_secure_by_default_part1&quot;&gt;previously&lt;/A&gt;, a SBD configuration is created by (1) disabling services &lt;I&gt;or&lt;/I&gt; (2) adjusting service properties to put the service into a &quot;local only&quot; mode.
+&lt;P&gt;&lt;P&gt;
+
+The enabling and disabling of services is a trivial matter.  Simply using the &lt;I&gt;svcadm&lt;/I&gt; command with the &lt;I&gt;enable&lt;/I&gt; or &lt;I&gt;disable&lt;/I&gt; action to adjust the services that interest you.  Since this is a very easy
+matter, this will not be the focus of this posting.  For the third and final (for now) installment of &lt;A HREF=&quot;http://blogs.sun.com/gbrunett?entry=solaris_secure_by_default_part&quot;&gt;&lt;B&gt;Getting to Know - Solaris Secure by Default&lt;/B&gt;)&lt;/A&gt; (SBD), I would like to focus specifically on those services that are not disabled by default but instead  are configured to accept only local connections (originating with the system itself).
+&lt;P&gt;&lt;P&gt;
+
+Taking a look at the Secure by Default &lt;A HREF=&quot;http://www.opensolaris.org/os/community/security/projects/sbd/sbd_design/&quot;&gt;design document&lt;/A&gt;, you see that the list of services impacted are (expressed as FMRIs):
+&lt;P&gt;&lt;P&gt;
+
+&lt;UL&gt;
+&lt;LI&gt;svc:/network/rpc/bind
+&lt;LI&gt;svc:/system/system-log
+&lt;LI&gt;svc:/network/smtp:sendmail
+&lt;LI&gt;svc:/system/webconsole:console
+&lt;LI&gt;svc:/application/management/wbem
+&lt;LI&gt;svc:/application/x11/x11-server
+&lt;LI&gt;svc:/application/graphical-login/cde-login
+&lt;LI&gt;svc:/network/rpc/cde-ttdbserver:tcp
+&lt;LI&gt;svc:/network/rpc/cde-calendar-manager
+&lt;LI&gt;svc:/application/print/rfc1179:default
+&lt;/UL
+
+For each of these services, an &lt;A HREF=&quot;www.opensolaris.org/os/community/smf/&quot;&gt;SMF&lt;/A&gt; property is used to set the Secure by Default behavior or to return the service to its traditional operating mode.  In the table below, the property values set when operating in a SBD mode are presented in &lt;B&gt;bold&lt;/B&gt;.
+&lt;P&gt;&lt;P&gt;
+
+&lt;TABLE border=&quot;1&quot; cellpadding=&quot;5&quot; cellspacing=&quot;2&quot;&gt;
+&lt;CAPTION&gt;&lt;EM&gt;Solaris SBD SMF Properties and Values&lt;/EM&gt;&lt;/CAPTION&gt;
+&lt;TR&gt;&lt;TH&gt;Service&lt;TH&gt;FMRI&lt;TH&gt;Property&lt;TH&gt;Values
+&lt;TR&gt;&lt;TD&gt;rpcbind&lt;TD&gt;svc:/network/rpc/bind&lt;TD&gt;config/local_only&lt;TD&gt;&lt;B&gt;true&lt;/B&gt;, false
+&lt;TR&gt;&lt;TD&gt;syslog&lt;TD&gt;svc:/system/system-log&lt;TD&gt;config/log_from_remote&lt;TD&gt;true, &lt;B&gt;false&lt;/B&gt;
+&lt;TR&gt;&lt;TD&gt;sendmail&lt;TD&gt;svc:/network/smtp:sendmail&lt;TD&gt;config/local_only&lt;TD&gt;&lt;B&gt;true&lt;/B&gt;, false
+&lt;TR&gt;&lt;TD&gt;smcwebserver&lt;TD&gt;svc:/system/webconsole:console&lt;TD&gt;options/tcp_listen&lt;TD&gt;true, &lt;B&gt;false&lt;/B&gt;
+&lt;TR&gt;&lt;TD&gt;wbem&lt;TD&gt;svc:/application/management/wbem&lt;TD&gt;options/tcp_listen&lt;TD&gt;true, &lt;B&gt;false&lt;/B&gt;
+&lt;TR&gt;&lt;TD&gt;X11&lt;TD&gt;svc:/application/x11/x11-server&lt;TD&gt;options/tcp_listen&lt;TD&gt;true, &lt;B&gt;false&lt;/B&gt;
+&lt;TR&gt;&lt;TD&gt;CDE&lt;TD&gt;svc:/application/graphical-login/cde-login&lt;TD&gt;dtlogin/args&lt;TD&gt;&lt;B&gt;[null], -udpPort 0&lt;/B&gt;
+&lt;TR&gt;&lt;TD&gt;ToolTalk&lt;TD&gt;svc:/network/rpc/cde-ttdbserver:tcp&lt;TD&gt;proto&lt;TD&gt;tcp, &lt;B&gt;ticotsord&lt;/B&gt;
+&lt;TR&gt;&lt;TD&gt;Calendar&lt;TD&gt;svc:/network/rpc/cde-calendar-manager&lt;TD&gt;proto&lt;TD&gt;tcp, &lt;B&gt;ticlts&lt;/B&gt;
+&lt;TR&gt;&lt;TD&gt;BSD Printing&lt;TD&gt;svc:/application/print/rfc1179:default&lt;TD&gt;bind_addr&lt;TD&gt;[null], &lt;B&gt;localhost&lt;/B&gt;
+&lt;/TABLE&gt;
+&lt;P&gt;&lt;P&gt;
+
+Pretty easy, right?  So, let&apos;s say you were running in a SBD mode (after having run &lt;I&gt;netservices limited&lt;/I&gt;) and you find that you want to be able to receive syslog messages from another host.  All you would need to do is:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+# &lt;B&gt;svccfg -s system-log setprop config/log_from_remote = true&lt;/B&gt;
+# &lt;B&gt;svcadm refresh system-log&lt;/B&gt;
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+If you wanted this change to take effect immediately, you should also run:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+# &lt;B&gt;svcadm restart system-log&lt;/B&gt;
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+Another cool thing about this is that communication is prevented between non-global zones and the global zone since the service is either bound to &lt;I&gt;localhost&lt;/I&gt; or simply will not accept external connections:
+&lt;P&gt;&lt;P&gt;
+
+&lt;PRE&gt;
+# &lt;B&gt;ifconfig hme0&lt;/B&gt;
+hme0: flags=1000843&lt;UP,BROADCAST,RUNNING,MULTICAST,IPv4&gt; mtu 1500 index 2
+        inet 192.168.1.250 netmask ffffff00 broadcast 192.168.1.255
+        ether 0:0:0:0:0:0
+
+# &lt;B&gt;rpcinfo -p 192.168.1.250&lt;/B&gt;
+   program vers proto   port  service
+    100000    4   tcp    111  rpcbind
+    100000    3   tcp    111  rpcbind
+    100000    2   tcp    111  rpcbind
+    100000    4   udp    111  rpcbind
+    100000    3   udp    111  rpcbind
+    100000    2   udp    111  rpcbind
+
+# &lt;B&gt;zlogin time ifconfig hme0:2&lt;/B&gt;
+hme0:2: flags=1000843&lt;UP,BROADCAST,RUNNING,MULTICAST,IPv4&gt; mtu 1500 index 2
+        inet 192.168.1.240 netmask ffffff00 broadcast 192.168.1.255
+
+# &lt;B&gt;zlogin time rpcinfo -p 192.168.1.250&lt;/B&gt;
+rpcinfo: can&apos;t contact portmapper: RPC: Authentication error; why = Failed (unspecified error)
+&lt;/PRE&gt;
+&lt;P&gt;&lt;P&gt;
+
+Pretty neat!  Well, that&apos;s all for this installment.  Please let me know what you think or if 
+you have any questions!  We love to get feedback and your input is very important to us!
+&lt;P&gt;&lt;P&gt;
+
+Take care,
+&lt;P&gt;
+Glenn
+&lt;P&gt;&lt;P&gt;
+
+&lt;small&gt; References:
+&lt;a href=&quot;http://blogs.sun.com/gbrunett?entry=solaris_secure_by_default_part&quot;&gt;Part 1 of 3&lt;/A&gt;
+&lt;a href=&quot;http://blogs.sun.com/gbrunett?entry=solaris_secure_by_default_part1&quot;&gt;Part 2 of 3&lt;/A&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;
+
+&lt;small&gt; Technorati Tag:
+&lt;a href=&quot;http://technorati.com/tag/opensolaris&quot; rel=&quot;tag&quot;&gt;OpenSolaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/solaris&quot; rel=&quot;tag&quot;&gt;Solaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/security&quot; rel=&quot;tag&quot;&gt;security&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/smf&quot; rel=&quot;tag&quot;&gt;SMF&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/sbd&quot; rel=&quot;tag&quot;&gt;SBD&lt;/a&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;</content>
+    </entry>
+    <entry>
+        <id>http://blogs.sun.com/gbrunett/entry/update_my_little_sun_ray</id>
+        <title type="html">Update: My LIttle Sun Ray Guy</title>
+        <author><name>gbrunett</name></author>
+        <link rel="alternate" type="text/html" href="http://blogs.sun.com/gbrunett/entry/update_my_little_sun_ray"/>
+        <published>2006-07-14T10:43:46-07:00</published>
+        <updated>2007-08-05T11:18:42-07:00</updated> 
+        <category term="/Personal" label="Personal" />
+        <category term="personal" scheme="http://rollerweblogger.org/ns/tags/" />
+        <category term="sunray" scheme="http://rollerweblogger.org/ns/tags/" />
+        <content type="html">&lt;META NAME=&quot;keywords&quot; CONTENT=&quot;opensolaris,solaris,nevada,sunray,sun ray&quot;&gt;
+&lt;BR&gt;&lt;BR&gt;
+
+It has been nearly a year and a half since I blogged about &lt;A HREF=&quot;http://blogs.sun.com/gbrunett?entry=world_s_youngest_sun_ray&quot;&gt;My Little Sun Ray Guy&lt;/A&gt;.  Well, I am very happy to report that things have been going quite well.  Over the last month or so, I upgraded his environment moving him from &lt;A HREF=&quot;http://www.sun.com/solaris&quot;&gt;Solaris 10&lt;/A&gt; on an &lt;A HREF=&quot;http://sunsolve.sun.com/handbook_pub/Systems/U10/U10.html&quot;&gt;Ultra 10&lt;/A&gt; to a new &lt;A HREF=&quot;http://www.sun.com/desktop/workstation/ultra20/&quot;&gt;Ultra 20&lt;/A&gt; running &lt;A HREF=&quot;http://www.opensolaris.org/os/community/onnv&quot;&gt;Nevada&lt;/A&gt; build 42 (with integrated &lt;A HREF=&quot;http://blogs.sun.com/gbrunett?entry=solaris_secure_by_default_part1&quot;&gt;Solaris Secure by Default&lt;/A&gt;, &lt;A HREF=&quot;http://www.mozilla.com/firefox/&quot;&gt;Firefox&lt;/A&gt;, &lt;A HREF=&quot;http://www.real.com/&quot;&gt;Real Player&lt;/A&gt;, etc.)
+&lt;P&gt;&lt;P&gt;
+
+So far, no problems to report.  It is performing significantly faster (obviously - the Ultra 20 helps quite a bit there!), but functionally, everything that worked on Solaris 10/SPARC works just fine under Nevada/AMD64.  Here are a few pictures that I took recently:
+&lt;P&gt;&lt;P&gt;
+&lt;IMG SRC=&quot;http://blogs.sun.com/roller/resources/gbrunett/sunray3.jpg&quot;&gt;
+&lt;IMG SRC=&quot;http://blogs.sun.com/roller/resources/gbrunett/sunray4.jpg&quot;&gt;
+&lt;P&gt;&lt;P&gt;
+
+My next goal is to get him using &lt;A HREF=&quot;http://www.opensolaris.org/os/community/security/projects/tx/&quot;&gt;Trusted Extensions&lt;/A&gt; as soon as I have some time to get it configured.
+&lt;P&gt;&lt;P&gt;
+
+That&apos;s all for now!
+&lt;P&gt;&lt;P&gt;
+Take care,
+&lt;P&gt;
+Glenn
+&lt;P&gt;&lt;P&gt;
+
+&lt;small&gt; Technorati Tag:
+&lt;a href=&quot;http://technorati.com/tag/opensolaris&quot; rel=&quot;tag&quot;&gt;OpenSolaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/solaris&quot; rel=&quot;tag&quot;&gt;Solaris&lt;/a&gt;
+&lt;a href=&quot;http://technorati.com/tag/sun+ray&quot; rel=&quot;tag&quot;&gt;Sun Ray&lt;/a&gt;
+&lt;/small&gt;
+&lt;P&gt;&lt;P&gt;</content>
+    </entry>
+</feed>
+

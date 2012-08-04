@@ -1,0 +1,2372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" media="screen" href="/~d/styles/rss2full.xsl"?><?xml-stylesheet type="text/css" media="screen" href="http://feeds.feedburner.com/~d/styles/itemcontent.css"?><rss xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" xmlns:slash="http://purl.org/rss/1.0/modules/slash/" xmlns:feedburner="http://rssnamespace.org/feedburner/ext/1.0" version="2.0">
+
+<channel>
+	<title>Nettuts+</title>
+	
+	<link>http://net.tutsplus.com</link>
+	<description>Web Development &amp; Design Tutorials</description>
+	<lastBuildDate>Wed, 18 Nov 2009 19:21:07 +0000</lastBuildDate>
+	<generator>http://wordpress.org/?v=2.8.4</generator>
+	<language>en</language>
+	<sy:updatePeriod>hourly</sy:updatePeriod>
+	<sy:updateFrequency>1</sy:updateFrequency>
+			<image><link>http://nettuts.com</link><url>http://envato.s3.amazonaws.com/rss_images/nettuts.jpg</url><title>NETTUTS</title></image><atom10:link xmlns:atom10="http://www.w3.org/2005/Atom" rel="self" href="http://feeds.feedburner.com/nettuts" type="application/rss+xml" /><feedburner:emailServiceId>nettuts</feedburner:emailServiceId><feedburner:feedburnerHostname>http://feedburner.google.com</feedburner:feedburnerHostname><atom10:link xmlns:atom10="http://www.w3.org/2005/Atom" rel="hub" href="http://pubsubhubbub.appspot.com" /><item>
+		<title>Build an RSS 2.0 Feed with CodeIgniter</title>
+		<link>http://feedproxy.google.com/~r/nettuts/~3/TLOrO9psFlE/</link>
+		<comments>http://net.tutsplus.com/tutorials/php/building-an-rss-2-0-feed-with-codeigniter/#comments</comments>
+		<pubDate>Wed, 18 Nov 2009 19:19:04 +0000</pubDate>
+		<dc:creator>Drazen Mokic</dc:creator>
+				<category><![CDATA[PHP]]></category>
+		<category><![CDATA[code igniter]]></category>
+		<category><![CDATA[codeigniter]]></category>
+		<category><![CDATA[framework]]></category>
+
+		<guid isPermaLink="false">http://net.tutsplus.com/?p=7811</guid>
+		<description><![CDATA[<img src="http://nettuts.s3.amazonaws.com/496_ci/ci.jpg" alt="Build an RSS 2.0 Feed with CodeIgniter" width="200" height="200"/>]]></description>
+			<content:encoded><![CDATA[<p>
+	In this tutorial, we will build a RSS 2.0 Feed with the PHP framework <a href="http://www.codeigniter.com">CodeIgniter</a>. After this tutorial, you will be able to build a feed for any custom website in no time at all.
+</p>
+<p><span id="more-7811"></span></p>
+<h3>Tutorial Details</h3>
+<ul>
+<li><b>Program</b>: CodeIgniter PHP Framework</li>
+<li><b>Version</b>: 1.7.1</li>
+<li><b>Difficulty:</b> Easy</li>
+<li><b>Estimated Completion Time:</b> 30 minutes</li>
+</ul>
+<h3>Step 1: What we Need</h3>
+<div class="tutorial_image">
+   <img src="http://nettuts.s3.amazonaws.com/496_ci/img7.jpg" alt="Finished Product" />
+</div>
+<p>
+	First, we&#8217;ll take a look at the tools needed to get started. Besides an installation of <a href="http://codeigniter.com/">CodeIgniter</a>, we need a running MySQL database with some content from which we can build our feed.
+</p>
+<p>
+	For this purpose, here are some dummy entries you can import. Create a database called <b>tut_feeds</b>. Then,  copy the following code, and import it into your MySQL database.
+</p>
+<pre name="code" class="sql">
+    CREATE TABLE IF NOT EXISTS `posts` (
+      `id` int(11) NOT NULL AUTO_INCREMENT,
+      `title` varchar(120) NOT NULL,
+      `text` text NOT NULL,
+      `date` date NOT NULL,
+      PRIMARY KEY (`id`)
+    ) ENGINE=MyISAM;
+
+    INSERT INTO `posts` (`id`, `title`, `text`, `date`) VALUES
+    (1, 'Some great article', 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using ''Content here, content here'', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for ''lorem ipsum'' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).', '2009-08-10'),
+    (2, 'Another great article', 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using ''Content here, content here'', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for ''lorem ipsum'' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).', '2009-08-10'),
+    (3, 'News from myfeed', 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using ''Content here, content here'', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for ''lorem ipsum'' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).', '2009-08-10');
+</pre>
+<p>This is how it should appear in phpmyadmin. After you have pasted the code in, press the <b>Ok</b> button on the right side.</p>
+<div class="tutorial_image"><img src="http://nettuts.s3.amazonaws.com/496_ci/img1.jpg" border="0" /></div>
+<p>If everything works correctly, you should see have something like this:</p>
+<div class="tutorial_image"><img src="http://nettuts.s3.amazonaws.com/496_ci/img2.jpg" border="0" /></div>
+<p><!-- Step 2 --></p>
+<h3>Step 2: Setting up CodeIgniter</h3>
+<p>Before we start writing code, we need to configure CodeIgniter.</p>
+<p>Browse to your CI folder, and then into <b>system/application/config</b>. We will need to edit the following files:</p>
+<ul>
+<li>autoload.php</li>
+<li>config.php</li>
+<li>database.php</li>
+<li>routes.php</li>
+</ul>
+<p><strong>Edit the autoload.php like so:</strong></p>
+<pre name="code" class="php">
+	$autoload['libraries'] = array('database');
+</pre>
+<div class="tutorial_image"><img src="http://nettuts.s3.amazonaws.com/496_ci/img3.jpg" border="0" /></div>
+<p>This will tell CI to load the database automatically; so we don&#8217;t need to load it every time.</p>
+<p><strong>Edit the config.php like so:</strong></p>
+<pre name="code" class="php">
+	$config['base_url'] = "http://localhost/YOUR DIRECTORY";
+</pre>
+<div class="tutorial_image"><img src="http://nettuts.s3.amazonaws.com/496_ci/img4.jpg" border="0" /></div>
+<p>You need to replace <b>tutorials/ci_feeds</b> with your directory and CI folder.</p>
+<p><strong>Edit the database.php like so:</strong></p>
+<pre name="code" class="php">
+	$db['default']['hostname'] = "localhost"; // your host
+    $db['default']['username'] = "root";
+    $db['default']['password'] = "";
+    $db['default']['database'] = "tut_feeds";
+</pre>
+<div class="tutorial_image"><img src="http://nettuts.s3.amazonaws.com/496_ci/img5.jpg" border="0" /></div>
+<p>
+	With these settings, we tell CI which database to use. Here you also have to replace <i>hostname</i>, <i>username</i> and<br />
+	<i>password</i> with your personal database info.
+</p>
+<p><strong>Edit the routes.php like this:</strong></p>
+<pre name="code" class="php">
+	$route['default_controller'] = "Feed";
+</pre>
+<div class="tutorial_image"><img src="http://nettuts.s3.amazonaws.com/496_ci/img6.jpg" border="0" /></div>
+<p>
+	The default controller is the <i>&#8220;index&#8221;</i> controller for your application. Every time you open<br />
+    <i>localhost/YOUR DIRECTORY</i>, this default controller will be loaded first. We&#8217;ll create the <i>feed</i> in the next step.
+</p>
+<p><!-- Step 3 --></p>
+<h3>Step 3: Creating the Feed Controller</h3>
+<p>
+	In this controller, all the magic happens. Browse to <b>system/application/controllers</b> and create a new file<br />
+	called <b>feed.php</b>. Next, create the <i>Feed</i> controller and have it extend the parent CI Controller.
+</p>
+<pre name="code" class="php">
+	class Feed extends Controller {
+
+      function Feed()
+      {
+		parent::Controller();
+      }
+}
+</pre>
+<p>
+	If you are already confused please have a look at Jeffrey&#8217;s<br />
+    <a href="http://net.tutsplus.com/videos/screencasts/easy-development-with-codeigniter/">Easy Development with CodeIgniter</a> tutorial.<br />
+    After you&#8217;ve learned the basics, return to continue this tutorial! <img src='http://net.tutsplus.com/wp-includes/images/smilies/icon_smile.gif' alt=':)' class='wp-smiley' />
+</p>
+<p>
+	Before the next step, we&#8217;ll make use of CI&#8217;s great helpers. Load the <i>xml</i> and <i>text</i> helper.
+</p>
+<pre name="code" class="php">
+class Feed extends Controller {
+
+      function Feed()
+      {
+        parent::Controller();
+
+        $this->load->helper('xml');
+		$this->load->helper('text');
+      }
+}
+</pre>
+<p><!-- Step 4 --></p>
+<h3>Step 4: Creating the Model</h3>
+<p>
+	Next, will create a model to receive data from the database. If you don&#8217;t know what models are, have a look at the CI<br />
+	<a href="http://codeigniter.com/user_guide/general/models.html">userguide</a>. Browse to <b>system/application/models</b><br />
+    and create a file called <b>posts_model.php</b>.
+</p>
+<pre name="code" class="php">
+class Posts_model extends Model {
+
+	// get all postings
+	function getPosts($limit = NULL)
+	{
+		return $this->db->get('posts', $limit);
+	}
+}
+</pre>
+<p>
+	We are using <a href="http://codeigniter.com/user_guide/database/active_record.html">active records</a> to receive data<br />
+    from the database. The first parameter declares the table we want to use and with the second we can set a limit &#8211; so we<br />
+    can tell CI how many records we want to retrieve.
+</p>
+<p>
+	Perhaps you&#8217;ve noticed that <i>$limit</i> is set to NULL by default. This makes it possible to set a limit, but <b>you don&#8217;t have to</b>.<br />
+    If you don&#8217;t set a second parameter, this function will simply return all records.
+</p>
+<p><!-- Step 5 --></p>
+<h3>Step 5: Back to the Feed Controller</h3>
+<p>
+	Now that we&#8217;ve created our model, we can continue with our <i>feed controller</i>. We&#8217;ll load the <i>posts_model</i> that we just created.
+</p>
+<pre name="code" class="php">
+class Feed extends Controller {
+
+      function Feed()
+      {
+        parent::Controller();
+
+        $this->load->helper('xml');
+		$this->load->helper('text');
+        $this->load->model('posts_model', 'posts');
+      }
+}
+</pre>
+<p>
+	With the second parameter, we assign our model to a different object name &#8211; so we have less to type <img src='http://net.tutsplus.com/wp-includes/images/smilies/icon_razz.gif' alt=':P' class='wp-smiley' /> . Now we create the <i>index</i><br />
+    method which is the method called by default. Let&#8217;s set up some information for the feed view later too.
+</p>
+<pre name="code" class="php">
+	function index()
+	{
+		$data['feed_name'] = 'MyWebsite.com'; // your website
+		$data['encoding'] = 'utf-8'; // the encoding
+        $data['feed_url'] = 'http://www.MyWebsite.com/feed'; // the url to your feed
+        $data['page_description'] = 'What my site is about comes here'; // some description
+        $data['page_language'] = 'en-en'; // the language
+        $data['creator_email'] = 'mail@me.com'; // your email
+        $data['posts'] = $this->posts->getPosts(10);
+        header("Content-Type: application/rss+xml"); // important!
+	}
+</pre>
+<p>
+	While the majority of the information above is easy to understand, we will have a look at two of them.<br />
+    <i>header(&#8221;Content-Type: application/rss+xml&#8221;);</i> is a very important part. This tells the browser to parse it as<br />
+     an RSS Feed. Otherwise the browser will try to parse it as plain text or html.
+</p>
+<p>
+	With <i>$data['posts'] = $this->posts->getPosts(10);</i> we are using our model and are storing all records in the <i>$posts</i> array.<br />
+    I set the limit to 10; so it will return, at most, 10 records. You can set this value higher or lower if you want. If we leave it<br />
+    blank, like <i>$data['posts'] = $this->posts->getPosts();</i>, it would return all records.
+</p>
+<p>
+	Finally, we need to load the <i>view</i> which we will create in the next step.
+</p>
+<pre name="code" class="php">
+	function index()
+	{
+		$data['feed_name'] = 'MyWebsite.com';
+		$data['encoding'] = 'utf-8'; // the encoding
+        $data['feed_url'] = 'http://www.MyWebsite.com/feed';
+        $data['page_description'] = 'What my site is about comes here';
+        $data['page_language'] = 'en-en';
+        $data['creator_email'] = 'mail@me.com';
+        $data['posts'] = $this->posts->getPosts(10);
+        header("Content-Type: application/rss+xml"); 
+
+        $this->load->view('rss', $data);
+	}
+</pre>
+<p>
+	Our <i>$data</i> array is passed as the second parameter to the view file, so we can access it in the view.<br />
+    Your feed controller should now look like this:
+</p>
+<pre name="code" class="php">
+class Feed extends Controller {
+
+	function Feed()
+	{
+		parent::Controller();
+
+		$this->load->helper('xml');
+		$this->load->helper('text');
+        $this->load->model('posts_model', 'posts');
+	}
+
+	function index()
+	{
+		$data['feed_name'] = 'MyWebsite.com';
+		$data['encoding'] = 'utf-8';
+        $data['feed_url'] = 'http://www.MyWebsite.com/feed';
+        $data['page_description'] = 'What my site is about comes here';
+        $data['page_language'] = 'en-en';
+        $data['creator_email'] = 'mail@me.com';
+        $data['posts'] = $this->posts->getPosts(10);
+        header("Content-Type: application/rss+xml");
+
+		$this->load->view('rss', $data);
+	}
+
+}
+</pre>
+<p><!-- Step 6 --></p>
+<h3>Step 6: Creating the View</h3>
+<p>
+	Finally we have to create the view file &#8211; our output. Browse to <b>system/application/views</b> and crate a file called<br />
+    <b>rss.php</b>.
+</p>
+<p>
+	First we set the <i>xml version</i> and the <i>encoding</i> within the head.
+</p>
+<pre name="code" class="php">
+	&lt;?php  echo '&lt;?xml version="1.0" encoding="' . $encoding . '"?>' . "\n"; ?>
+</pre>
+<p>
+	Followed by some rss meta information.
+</p>
+<pre name="code" class="php">
+    <rss version="2.0"
+        xmlns:dc="http://purl.org/dc/elements/1.1/"
+        xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+        xmlns:admin="http://webns.net/mvcb/"
+        xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        xmlns:content="http://purl.org/rss/1.0/modules/content/">
+
+        <channel>
+</pre>
+<p>
+	Now we will access the array <i>$data</i> from the previous step. We can access this data via the array keys, like so:
+</p>
+<pre name="code" class="php">
+<link><?php echo $feed_url; ?></link>
+    <description><?php echo $page_description; ?></description>
+    <dc:language><?php echo $page_language; ?></dc:language>
+    <dc:creator><?php echo $creator_email; ?></dc:creator>
+
+    <dc:rights>Copyright <?php echo gmdate("Y", time()); ?></dc:rights>
+    <admin:generatorAgent rdf:resource="http://www.codeigniter.com/" />
+</pre>
+<p>
+	Now we need to loop, with <i>foreach</i>, to get all records.
+</p>
+<pre name="code" class="php">
+    <?php foreach($posts->result() as $post): ?>
+
+       <item>
+<link><?php echo site_url('YOUR URL' . $post->id) ?></link>
+          <guid><?php echo site_url('YOUR URL' . $post->id) ?></guid>
+
+          	<description><![CDATA[ <?php echo character_limiter($post->text, 200); ?> ]]&gt;</description>
+<pubDate><?php echo $post->date; ?></pubDate>
+        </item>
+
+    <?php endforeach; ?>
+
+    	</channel>
+	<</rss>
+</pre>
+<p>
+	For <i>link</i> and <i>guide</i>, you have to set a link to your controller where the posts are fetched. For example: <i>my/posts/$post->id</i>.
+</p>
+<p>
+	I hope you noticed CDATA. This is used for text-output (content). Remember how we learned in the head that this is <i>xml</i>;<br />
+    so it has to be xml valid. If we don&#8217;t set CDATA we&#8217;ll potentially end up with invalid markup.</p>
+<p><!-- Step 7 --></p>
+<h3>Step 7: Overview</h3>
+<p>
+	Now your files should look like this:
+</p>
+<p><b>system/application/controllers/feed.php</b></p>
+<pre name="code" class="php">
+class Feed extends Controller {
+
+	function Feed()
+	{
+		parent::Controller();
+
+		$this->load->helper('xml');
+		$this->load->helper('text');
+        $this->load->model('posts_model', 'posts');
+	}
+
+	function index()
+	{
+		$data['feed_name'] = 'MyWebsite.com';
+		$data['encoding'] = 'utf-8';
+        $data['feed_url'] = 'http://www.MyWebsite.com/feed';
+        $data['page_description'] = 'What my site is about comes here';
+        $data['page_language'] = 'en-en';
+        $data['creator_email'] = 'mail@me.com';
+        $data['posts'] = $this->posts->getPosts(10);
+        header("Content-Type: application/rss+xml");
+
+		$this->load->view('rss', $data);
+	}
+
+}
+</pre>
+<p><b>system/application/models/posts_model.php</b></p>
+<pre name="code" class="php">
+class Posts_model extends Model {
+
+	// get all postings
+	function getPosts($limit = NULL)
+	{
+		return $this->db->get('posts', $limit);
+	}
+}
+</pre>
+<p><b>system/application/views/rss.php</b></p>
+<pre name="code" class="php">
+	<?php  echo '<?xml version="1.0" encoding="' . $encoding . '"?>' . "\n"; ?>
+    <rss version="2.0"
+        xmlns:dc="http://purl.org/dc/elements/1.1/"
+        xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+        xmlns:admin="http://webns.net/mvcb/"
+        xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        xmlns:content="http://purl.org/rss/1.0/modules/content/">
+
+        <channel>
+<link><?php echo $feed_url; ?></link>
+        <description><?php echo $page_description; ?></description>
+        <dc:language><?php echo $page_language; ?></dc:language>
+        <dc:creator><?php echo $creator_email; ?></dc:creator>
+
+        <dc:rights>Copyright <?php echo gmdate("Y", time()); ?></dc:rights>
+        <admin:generatorAgent rdf:resource="http://www.codeigniter.com/" />
+
+        <?php foreach($posts->result() as $post): ?>
+
+            <item>
+<link><?php echo site_url('blog/posting/' . $post->id) ?></link>
+              <guid><?php echo site_url('blog/posting/' . $post->id) ?></guid>
+
+                <description><![CDATA[ <?php echo character_limiter($post->text, 200); ?> ]]&gt;</description>
+<pubDate><?php echo $post->date; ?></pubDate>
+            </item>
+
+        <?php endforeach; ?>
+
+        </channel>
+    </rss>
+</pre>
+<p>And our feed looks like this, just with other content <img src='http://net.tutsplus.com/wp-includes/images/smilies/icon_smile.gif' alt=':)' class='wp-smiley' /> </p>
+<div class="tutorial_image"><img src="http://nettuts.s3.amazonaws.com/496_ci/img7.jpg" border="0" /></div>
+<p><!-- Step 7 --></p>
+<h3>Conclusion</h3>
+<p>
+	I hope you&#8217;ve learned how easy it is to build an RSS 2.0 Feed with the power of CodeIgniter. For more tutorials and screencasts on CodeIgniter, check out Jeffrey`s <a href="http://net.tutsplus.com/videos/screencasts/codeigniter-from-scratch-day-7-pagination/">CodeIgniter from Scratch</a> series.
+</p>
+<ul class="webroundup">
+<li>Follow us on <a href="http://www.twitter.com/nettuts">Twitter</a>, or subscribe to the <a href="http://feeds.feedburner.com/nettuts" title="Nettuts+ RSS Feed">Nettuts+ RSS Feed</a> for the best web development tutorials on the web.</li>
+</ul>
+<p>
+<script type="text/javascript"><!--digg_url = "post permalink (not digg url)"; // -->
+</script><br />
+<script src="http://digg.com/tools/diggthis.js" type="text/javascript"></script></p>
+
+<p><a href="http://feedads.g.doubleclick.net/~a/w_Y-OlFBnQNKL15koDQiOvqH3ao/0/da"><img src="http://feedads.g.doubleclick.net/~a/w_Y-OlFBnQNKL15koDQiOvqH3ao/0/di" border="0" ismap="true"></img></a><br/>
+<a href="http://feedads.g.doubleclick.net/~a/w_Y-OlFBnQNKL15koDQiOvqH3ao/1/da"><img src="http://feedads.g.doubleclick.net/~a/w_Y-OlFBnQNKL15koDQiOvqH3ao/1/di" border="0" ismap="true"></img></a></p><div class="feedflare">
+<a href="http://feeds.feedburner.com/~ff/nettuts?a=TLOrO9psFlE:fw-qvnfOtIw:yIl2AUoC8zA"><img src="http://feeds.feedburner.com/~ff/nettuts?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=TLOrO9psFlE:fw-qvnfOtIw:F7zBnMyn0Lo"><img src="http://feeds.feedburner.com/~ff/nettuts?i=TLOrO9psFlE:fw-qvnfOtIw:F7zBnMyn0Lo" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=TLOrO9psFlE:fw-qvnfOtIw:V_sGLiPBpWU"><img src="http://feeds.feedburner.com/~ff/nettuts?i=TLOrO9psFlE:fw-qvnfOtIw:V_sGLiPBpWU" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=TLOrO9psFlE:fw-qvnfOtIw:gIN9vFwOqvQ"><img src="http://feeds.feedburner.com/~ff/nettuts?i=TLOrO9psFlE:fw-qvnfOtIw:gIN9vFwOqvQ" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=TLOrO9psFlE:fw-qvnfOtIw:TzevzKxY174"><img src="http://feeds.feedburner.com/~ff/nettuts?d=TzevzKxY174" border="0"></img></a>
+</div><img src="http://feeds.feedburner.com/~r/nettuts/~4/TLOrO9psFlE" height="1" width="1"/>]]></content:encoded>
+			<wfw:commentRss>http://net.tutsplus.com/tutorials/php/building-an-rss-2-0-feed-with-codeigniter/feed/</wfw:commentRss>
+		<slash:comments>5</slash:comments>
+		<feedburner:origLink>http://net.tutsplus.com/tutorials/php/building-an-rss-2-0-feed-with-codeigniter/</feedburner:origLink></item>
+		<item>
+		<title>20 Email Design Best Practices and Resources for Beginners</title>
+		<link>http://feedproxy.google.com/~r/nettuts/~3/fB4gi_Izk-o/</link>
+		<comments>http://net.tutsplus.com/tutorials/html-css-techniques/20-email-design-best-practices-and-resources-for-beginners/#comments</comments>
+		<pubDate>Tue, 17 Nov 2009 19:39:24 +0000</pubDate>
+		<dc:creator>Matthew Kirk</dc:creator>
+				<category><![CDATA[HTML & CSS]]></category>
+
+		<guid isPermaLink="false">http://net.tutsplus.com/?p=7309</guid>
+		<description><![CDATA[<img src="http://nettuts.s3.amazonaws.com/469_email/200x200.jpg" alt="20 Email Design Best Practices for Beginners" />]]></description>
+			<content:encoded><![CDATA[<p>Even for experience designers, building email newsletters isn&#8217;t easy. You receive a lovely looking design, and you crack on with the development. Unfortunately, it just doesn&#8217;t work as it should in every email clients. Styles don&#8217;t display, images aren&#8217;t visible, etc.</p>
+<p>This is where these twenty best practices come in handy.</p>
+<p><span id="more-7309"></span></p>
+<h3>1: Keep the Design Simple</h3>
+<p>Emails are not like complex website designs; they should be nicely designed, but somewhat basic. Try basing your designs on a main header image followed by the main content.</p>
+<p>The cleaner the design, the easier it will be to code, and the less chance of any abnormalities happening between various browsers and email clients.</p>
+<div class="tutorial_image"><img src="http://nettuts.s3.amazonaws.com/469_email/images/1.jpg" border="0" /></div>
+<h3>2: Use Tables</h3>
+<p>Email clients live in the past, so all emails must be built using tables for layout. Some CSS styling can be used, but we will discuss this later.</p>
+<h4>Not Accepted</h4>
+<pre name="code" class="html">
+	&lt;div id="header"&gt;
+		&lt;h4&gt;Header 1&lt;/h4&gt;
+	&lt;/div&gt;
+	&lt;div id="content"&gt;
+		Lorem ipsum dolor sit amet.
+	&lt;/div&gt;f
+	&lt;div id="footer"&gt;
+		Sign off and footer
+	&lt;/div&gt;
+</pre>
+<h4>Accepted</h4>
+<pre name="code" class="html">
+	&lt;table&gt;
+		&lt;tr&gt;
+			&lt;td&gt;Header 1&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;Lorem ipsum dolor sit amet.&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;Sign off and footer&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/table&gt;
+</pre>
+<h3>3: Have Web Browsers at the Ready</h3>
+<p>Make sure you have as many web browsers as possible available to you. Who knows who will view your email, and what he or she will be using to view it! </p>
+<p>At the very least, use these:</p>
+<ul>
+<li>Internet Explorer 6</li>
+<li>Internet Explorer 7</li>
+<li>Internet Explorer 8</li>
+<li>Mozilla Firefox 3</li>
+<li>Apple Safari 3</li>
+<li>Google Chrome</li>
+</ul>
+<h3>4: Sign Up for all the Major Email Clients</h3>
+<p>Sign up for as many email accounts as you can think of. Below is a list of email clients to get you started:</p>
+<ul>
+<li>Google Mail (<a href="http://mail.google.com" title="http://mail.google.com" target="_blank">http://mail.google.com)</a></li>
+<li>Hotmail/Live Mail (<a href="http://www.hotmail.com" title="http://www.hotmail.com" target="_blank">http://www.hotmail.com)</a></li>
+<li>Yahoo Mail (<a href="http://mail.yahoo.com" title="http://mail.yahoo.com" target="_blank">http://mail.yahoo.com)</a></li>
+<li>AOL Mail (<a href="http://webmail.aol.com" title="http://webmail.aol.com" target="_blank">http://webmail.aol.com)</a></li>
+</ul>
+<p><strong>Please note that they&#8217;re are other, more convenient services that can be used instead; however, many of these charge monthly fees. For more information, review <a href="http://www.litmusapp.com">Litmusapp</a>.<br />
+</strong></p>
+<h3>5: Use Inline Styles</h3>
+<p>If this were the website world, every developer on the planet would say, &quot;do not use inline styles, create a class for it&quot;. Unfortunately, in an email, this is not possible, as the email clients will strip them out, and we don&#39;t want that. So if anything needs to be styled, use inline styles.</p>
+<p>Elements like font type and size can be used within the &lt;table> tag, but individual styles should be placed on &lt;td>&#39;s.</p>
+<h3>6: Give all Images Alt Tags</h3>
+<p>This is a very important step to take, but is often forgotten by many. Styling the &lt;td> for which images are in, with font types, size and color, will allow for your email to degrade gracefully when images are off by default.</p>
+<h4>No Alt Tags</h4>
+<div class="tutorial_image"><img src="http://nettuts.s3.amazonaws.com/469_email/images/6_unstyled.jpg" border="0" /></div>
+<h4>Alt Tags</h4>
+<div class="tutorial_image"><img src="http://nettuts.s3.amazonaws.com/469_email/images/6_styled.jpg" border="0" /></div>
+<h3>7: Do not Set Widths or Heights to Images</h3>
+<p>Again, this is a further step to take in order for a lovely gracefully degraded email. If images are off by default, there dimensions will be present, leaving a lot of unnecessary white space throughout.</p>
+<h3>8: Wrap the Email in a 100% Width Table</h3>
+<p>Email clients only take the code within the body tags, not the body tags themselves. In order to use a background color, you must create a 100% width table to &quot;fake&quot; the background effect.</p>
+<pre name="code" class="html">
+	&lt;table width="100%"&gt;
+		&lt;tr&gt;
+			&lt;td&gt;
+				&lt;table width="600" align="center"&gt;
+					&lt;tr&gt;
+						&lt;td&gt;Lorem ipsum dolor sit amet.&lt;/td&gt;
+					&lt;/tr&gt;
+				&lt;/table&gt;
+			&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/table&gt;
+</pre>
+<h3>9: No Wider than 600px</h3>
+<p>Many people don&#39;t actually open their email; they instead view them in the preview panel. On average the smallest preview panel is around 600px, so always design your emails accordingly, unless you don&#39;t want your full email viewable in the preview panel, of course.</p>
+<h3>10: Link Styling</h3>
+<p>Don&#8217;t forget to style the &lt;a> tag. This will overwrite the email client&#39;s standard link tags.</p>
+<pre name="code" class="html">
+	&lt;a href="#" style="color:#000000; text-decoration:none;"&gt;Link&lt;/a&gt;
+</pre>
+<h3>11: Try not to Nest Tables</h3>
+<p>Apart from the 100% width wrap table, you should try your best not to nest additional tables. This is easily avoidable; use the stacking system instead.</p>
+<p>This allows for a much easier, controllable email.</p>
+<h4>Avoid</h4>
+<pre name="code" class="html">
+	&lt;table&gt;
+		&lt;tr&gt;
+			&lt;td&gt;
+				&lt;table&gt;
+					&lt;tr&gt;
+						&lt;td&gt;Lorem ipsum dolor sit amet.&lt;/td&gt;
+					&lt;/tr&gt;
+				&lt;/table&gt;
+			&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;
+				&lt;table&gt;
+					&lt;tr&gt;
+						&lt;td&gt;Lorem ipsum dolor sit amet.&lt;/td&gt;
+					&lt;/tr&gt;
+				&lt;/table&gt;
+			&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/table&gt;
+</pre>
+<h4>Use</h4>
+<pre name="code" class="html">
+	&lt;table&gt;
+		&lt;tr&gt;
+			&lt;td&gt;Lorem ipsum dolor sit amet.&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/table&gt;
+	&lt;table&gt;
+		&lt;tr&gt;
+			&lt;td>Lorem ipsum dolor sit amet.&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/table&gt;
+</pre>
+<h3>12: Avoid Background Images</h3>
+<p>Stick to block colors rather than images for the backgrounds for your text; only use funky gradients, images, etc. when no text is involved.</p>
+<h3>13: Borders don&#39;t Work</h3>
+<p>Within emails, we don&#39;t have much room for browser or email clients specific fixes, so when we have borders that can either sit outside or inside the &lt;td> or be included or excluded from the &lt;td> width, there&#39;s not much we can do. </p>
+<p>The fix? Drop two extra &lt;td>&#39;s to either side of the main &lt;td>, and set the background color in each one. This will again &quot;fake&quot; the look of a border and work in all browsers and email clients.</p>
+<h4>Won&#8217;t Work</h4>
+<pre name="code" class="html">
+	&lt;td width="600" style="border-right:1px solid #000000; border-left:1px solid #000000;"&gt;Lorem ipsum&lt;/td&gt;
+</pre>
+<h4>Will Work</h4>
+<pre name="code" class="html">
+	&lt;td width="1"&gt;&lt;/td&gt;
+	&lt;td width="598"&gt;Lorem ipsum dolor sit amet.&lt;/td&gt;
+	&lt;td width="1"&gt;&lt;/td&gt;
+</pre>
+<h3>14: Hotmail Bug Fixes</h3>
+<p>Over the past couple of years, Microsoft has vastly improved the Hotmail/Live service. But&#8230; one huge bug you will come across is the strange padding added to all images. Why do they do this? Who knows? All I know is, there is a wonderfully easy fix.</p>
+<pre name="code" class="html">
+	&lt;img src="image.jpg" style="display:block;"&gt;
+</pre>
+<p>On every image tag, simply add display:block, as shown above.</p>
+<h3>15: Encode All Characters</h3>
+<p>Although we don&#8217;t technically have to encode characters, it&#8217;s best we do.</p>
+<p>When viewing emails in various email clients, we cannot guarantee the charset every website is using, so encoding characters allows us to be certain that all characters are being displayed as they should.</p>
+<h4>May Work</h4>
+<pre name="code" class="html">
+	"Some sample code - with special characters"
+</pre>
+<h4>Will Definitely Work</h4>
+<pre name="code" class="html">
+	&amp;quot;Some sample code &amp;#45; with special characters&amp;quot;
+</pre>
+<h3>16: JavaScript = Junk Email</h3>
+<p>You cannot, unfortunately, include any type of JavaScript. So no fancy pop-ups or auto-scrolling emails please! If you do decide to include it anyway, your email may be sent to the junk folder. Email clients will see you as a threat. And this is obviously not good. So please stick to plain old HTML.</p>
+<h3>17: Give the User a Way Out</h3>
+<p>When sending general newsletters to various clients/customers, although you have a lovely designed and developed email, that user may not want your email (hard to take, I know). Always allow them a way out, by adding an unsubscribe link to the bottom of the email, like so:</p>
+<blockquote><p>If you would like to unsubscribe from this newsletter, simply click here</p>
+</blockquote>
+<h3>18: Users Want Options</h3>
+<p>Some users may be utilizing a very basic email client &#8211; maybe they&#8217;re checking there webmail at work or on their phones. Images and complex designs may not be best for these types of clients,. Consider, at the top of the email newsletter, having a link which points to the email on a web server somewhere, so the user can view the email in all its glory.</p>
+<blockquote><p>Cannot view this email? View it here</p>
+</blockquote>
+<h3>19: Use a spacer.gif</h3>
+<p>Some browsers (Internet Explorer), don&#39;t get on with empty &lt;td>&#39;s. Even if the &lt;td> is set to 10px in width. IE will ignore this and set it to 0.</p>
+<p>The fix is to add a transparent GIF, and set this to 10px wide. This then provides you with something to put within the &lt;td>, thus fixing IE&#39;s issues with having empty &lt;td>&#39;s.</p>
+<h4>Won&#8217;t Work</h4>
+<pre name="code" class="html">
+	&lt;td width="300"&gt;Lorem ipsum dolor sit amet&lt;/td&gt;
+    &lt;td width="10"&gt;&lt;/td&gt;
+    &lt;td width="300"&gt;Lorem ipsum dolor sit amet&lt;/td&gt;
+</pre>
+<h4>Will Work</h4>
+<pre name="code" class="html">
+	&lt;td width="300"&gt;Lorem ipsum dolor sit amet&lt;/td&gt;
+    &lt;td width="10"&gt;&lt;img src="images/spacer.gif" width="10" height="1" /&gt;&lt;/td&gt;
+    &lt;td width="300"&gt;Lorem ipsum dolor sit amet&lt;/td&gt;
+</pre>
+<h3>20: Send Tests</h3>
+<p>This is the most important aspect of email design; sending test emails allows you to view them in all browsers and email clients, looking for any bugs and odd variations.</p>
+<p>I have setup a way to allow me to send test, by all means, <a href="http://www.matthewkirk.co.uk/test/email/" title="http://www.matthewkirk.co.uk/test/email/" target="_blank">use mine!</a></p>
+<p>
+Username: test<br />
+Password: nettuts
+</p>
+<p>
+For more comprehensive testing, use a service like <a href="http://campaignmonitor.com">CampaignMonitor</a> or <a href="http://www.litmusapp.com">LitmusApp</a>.
+</p>
+<h3>Other Helpful Resources</h3>
+<h4>General Email Marketing info: </h4>
+<ul>
+<li><a href="http://www.shayhowe.com/resource/smart-email-marketing/">http://www.shayhowe.com/resource/smart-email-marketing/</a></li>
+<li><a href="http://www.webdesignerdepot.com/2009/11/a-guide-to-creating-email-newsletters/">http://www.webdesignerdepot.com/2009/11/a-guide-to-creating-email-newsletters/</a></li>
+<li><a href="http://www.smartbiz.com/article/articleview/2073/1/53/">http://www.smartbiz.com/article/articleview/2073/1/53/</a></li>
+<li><a href="http://www.smartbiz.com/article/view/2076/1/53">http://www.smartbiz.com/article/view/2076/1/53</a></li>
+<li><a href="http://www.kamikazemusic.com/quick-tips/basics-html-email-newsletters/">http://www.kamikazemusic.com/quick-tips/basics-html-email-newsletters/</a></li>
+<li><a href="http://www.mailchimp.com/articles/email_marketing_subject_line_comparison/">http://www.mailchimp.com/articles/email_marketing_subject_line_comparison/</a></li>
+<li><a href="http://lyrishq.lyris.com/index.php/Email-Marketing/Email-Subject-Lines-15-Rules-to-Write-Them-Right.html">http://lyrishq.lyris.com/index.php/Email-Marketing/Email-Subject-Lines-15-Rules-to-Write-Them-Right.html</a></li>
+<li><a href="http://net.tutsplus.com/misc/6-easy-ways-to-improve-your-html-emails/">http://net.tutsplus.com/misc/6-easy-ways-to-improve-your-html-emails/</a></li>
+<li><a href="http://www.copyblogger.com/persuasive-writing/">http://www.copyblogger.com/persuasive-writing/</a> </li>
+</ul>
+<h4>Email Inspiration: </h4>
+<ul>
+<li><a href="http://www.campaignmonitor.com/gallery/">Campaign Monitor Gallery</a> </li>
+<li><a href="http://www.beautiful-email-newsletters.com/">Beautiful Email Newsletters</a></li>
+<li><a href="http://htmlemailgallery.com/">HTML Email Gallery</a></li>
+</ul>
+<h4>Services </h4>
+<ul>
+<li><a href="http://mailchimp.com">Mail Chimp</a></li>
+<li><a href="http://campaignmonitor.com">Campaign Monitor</a></li>
+<li><a href="http://www.myemma.com/">Emma Email Marketing</a></li>
+<li><a href="http://aweber.com">AWeber</a></li>
+<li><a href="http://www.interspire.com/sendstudio/">Interspace SendStudio</a></li>
+<li><a href="http://www.feelbreeze.com/">Feel Breeze</a></li>
+</ul>
+<h4>Email Design Tools </h4>
+<ul>
+<li><a href="http://litmusapp.com">LitmusApp</a></li>
+<li><a href="http://www.previewmyemail.com">Preview My Email</a></li>
+</ul>
+<h4>Premium Email Templates </h4>
+<ul>
+<li><a href="http://themeforest.net/category/email-templates">ThemeForest Email Templates</a></li>
+</ul>
+<ul class="webroundup">
+<li>Follow us on <a href="http://www.twitter.com/nettuts">Twitter</a>, or subscribe to the <a href="http://feeds.feedburner.com/nettuts" title="Nettuts+ RSS Feed">Nettuts+ RSS Feed</a> for the best web development tutorials on the web.</li>
+</ul>
+<p>
+<script type="text/javascript"><!--digg_url = "post permalink (not digg url)"; // -->
+</script><br />
+<script src="http://digg.com/tools/diggthis.js" type="text/javascript"></script></p>
+
+<p><a href="http://feedads.g.doubleclick.net/~a/L8piAM6VQHxjz5EnsFVbZFGj6lw/0/da"><img src="http://feedads.g.doubleclick.net/~a/L8piAM6VQHxjz5EnsFVbZFGj6lw/0/di" border="0" ismap="true"></img></a><br/>
+<a href="http://feedads.g.doubleclick.net/~a/L8piAM6VQHxjz5EnsFVbZFGj6lw/1/da"><img src="http://feedads.g.doubleclick.net/~a/L8piAM6VQHxjz5EnsFVbZFGj6lw/1/di" border="0" ismap="true"></img></a></p><div class="feedflare">
+<a href="http://feeds.feedburner.com/~ff/nettuts?a=fB4gi_Izk-o:bDVi-T9u3VU:yIl2AUoC8zA"><img src="http://feeds.feedburner.com/~ff/nettuts?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=fB4gi_Izk-o:bDVi-T9u3VU:F7zBnMyn0Lo"><img src="http://feeds.feedburner.com/~ff/nettuts?i=fB4gi_Izk-o:bDVi-T9u3VU:F7zBnMyn0Lo" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=fB4gi_Izk-o:bDVi-T9u3VU:V_sGLiPBpWU"><img src="http://feeds.feedburner.com/~ff/nettuts?i=fB4gi_Izk-o:bDVi-T9u3VU:V_sGLiPBpWU" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=fB4gi_Izk-o:bDVi-T9u3VU:gIN9vFwOqvQ"><img src="http://feeds.feedburner.com/~ff/nettuts?i=fB4gi_Izk-o:bDVi-T9u3VU:gIN9vFwOqvQ" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=fB4gi_Izk-o:bDVi-T9u3VU:TzevzKxY174"><img src="http://feeds.feedburner.com/~ff/nettuts?d=TzevzKxY174" border="0"></img></a>
+</div><img src="http://feeds.feedburner.com/~r/nettuts/~4/fB4gi_Izk-o" height="1" width="1"/>]]></content:encoded>
+			<wfw:commentRss>http://net.tutsplus.com/tutorials/html-css-techniques/20-email-design-best-practices-and-resources-for-beginners/feed/</wfw:commentRss>
+		<slash:comments>65</slash:comments>
+		<feedburner:origLink>http://net.tutsplus.com/tutorials/html-css-techniques/20-email-design-best-practices-and-resources-for-beginners/</feedburner:origLink></item>
+		<item>
+		<title>No More Ripping your Hair Out: New Email Templates Category</title>
+		<link>http://feedproxy.google.com/~r/nettuts/~3/QbYGGIW0bLE/</link>
+		<comments>http://net.tutsplus.com/articles/news/no-more-ripping-your-hair-out-new-email-templates-category/#comments</comments>
+		<pubDate>Tue, 17 Nov 2009 19:39:16 +0000</pubDate>
+		<dc:creator>Jeffrey Way</dc:creator>
+				<category><![CDATA[News]]></category>
+		<category><![CDATA[basix]]></category>
+		<category><![CDATA[email]]></category>
+		<category><![CDATA[email design]]></category>
+
+		<guid isPermaLink="false">http://net.tutsplus.com/?p=7785</guid>
+		<description><![CDATA[<img src="http://nettuts.s3.amazonaws.com/495_email/200x200.jpg" alt="Don't Bother Ripping your Hair Out: New Email Templates Category" />]]></description>
+			<content:encoded><![CDATA[<p>
+I&#8217;m pleased to announce the launch of our newest category on <a href="http://themeforest.net">ThemeForest</a>: <a href="http://themeforest.net/category/email-templates">email templates</a>! If you happen to be in need of an email client friendly newsletter for your business, we&#8217;ve got you covered. For $8 &#8211; $10 dollars, you can avoid the hassles of inline styles, email compatibility, and tables! Why rip your hair out when a ten dollar bill can solve the problem?
+</p>
+<p><span id="more-7785"></span></p>
+<h2>The Initial Offering</h2>
+<p>
+We&#8217;ve <a href="http://themeforest.net/category/email-templates">launched</a> with only a handful of beautiful choices; however, if you don&#8217;t find the one you need today, remember that we&#8217;ll be adding to this <a href="http://themeforest.net/category/email-templates">list</a> on a daily basis (hint hint, authors).
+</p>
+<h3><a href="http://themeforest.net/item/airmail-customizable-email-template/70841">Airmail</a></h3>
+<div class="tutorial_image">
+<a href="http://themeforest.net/item/airmail-customizable-email-template/70841"><img src="http://s3.envato.com/files/210338/screenshots/1-airmail-email-preview.__large_preview.jpg" alt="Airmail" class="postimage" style="width: 616px;" /></a>
+</div>
+<blockquote>
+<p><em>&#8220;Airmail is a professionally built and designed custom HTML email template! Perfect for just about anyone – usable for everything from newsletters to eFlyers to whitepapers.&#8221;</em></p>
+</blockquote>
+<h3><a href="http://themeforest.net/item/atlantica-mail-template/70843">Atlantica</a></h3>
+<div class="tutorial_image">
+<a href="http://themeforest.net/item/atlantica-mail-template/70843"><img src="http://themeforest.net/files/buckets/343/210343/screenshots/1-atlantica-email-preview.__large_preview.jpg?1258423849" alt="Atlantica" class="postimage" style="width: 616px;" /></a>
+</div>
+<blockquote>
+<p><em>&#8220;Atlantica Mail is a professionally built and designed custom HTML email template; perfect for just about anyone – usable for everything from newsletters to eFlyers to whitepapers.&#8221;</em></p>
+</blockquote>
+<h3><a href="http://themeforest.net/item/cleanmail-email-template-package-5-colors/70735">CleanMail</a></h3>
+<div class="tutorial_image">
+<a href="http://themeforest.net/item/cleanmail-email-template-package-5-colors/70735"><img src="http://s3.envato.com/files/210006/1_CleanMail_Blue.__large_preview.jpg" alt="CleanMail" class="postimage" style="width: 616px;" /></a>
+</div>
+<blockquote>
+<p><em>&#8220;CleanMail is a simple yet sexy email template package with 5 different color schemes!&#8221;</em></p>
+</blockquote>
+<h3><a href="http://themeforest.net/item/theclub-dark-two-column-email-template/70800">TheClub</a></h3>
+<div class="tutorial_image">
+<a href="http://themeforest.net/item/theclub-dark-two-column-email-template/70800"><img src="http://s3.envato.com/files/210200/Preview%20Image/theclub.__large_preview.jpg" alt="TheClub" class="postimage" style="width: 616px;" /></a>
+</div>
+<blockquote>
+<p><em>&#8220;theClub is a darker color two column template geared towards the nightlife! With this template, you get the original CSS as well as the ready-to-mail inline CSS .&#8221;</em></p>
+</blockquote>
+<h3><a href="http://themeforest.net/item/quantum-email-newsletter/70698">Quantum Email Newsletter</a></h3>
+<div class="tutorial_image">
+<a href="http://themeforest.net/item/quantum-email-newsletter/70698"><img src="http://s3.envato.com/files/209920/screenshots/01_email_green.__large_preview.jpg" alt="Quantum Email Newsletter" class="postimage" style="width: 616px;" /></a>
+</div>
+<blockquote>
+<p><em>&#8220;A modern &#038; clean HTML email template; comes in three colors: green, blue &#038; pink.&#8221;</em></p>
+</blockquote>
+<h2>So if you Have a Moment&#8230;</h2>
+<p>
+<a href="http://themeforest.net/category/email-templates">Pay a visit to our newest category on ThemeForest</a>, and considering picking up a new template. On the other hand, if you&#8217;re an author on ThemeForest &#8211; time to create some tables! There&#8217;s money to be made!
+</p>
+<ul class="webroundup">
+<li>Follow us on <a href="http://www.twitter.com/nettuts">Twitter</a>, or subscribe to the <a href="http://feeds.feedburner.com/nettuts" title="Nettuts+ RSS Feed">Nettuts+ RSS Feed</a> for the best web development tutorials on the web.</li>
+</ul>
+<p>
+<script type="text/javascript"><!--digg_url = "post permalink (not digg url)"; // -->
+</script><br />
+<script src="http://digg.com/tools/diggthis.js" type="text/javascript"></script></p>
+
+<p><a href="http://feedads.g.doubleclick.net/~a/W37NQmJsBhOjboz8iYhF4lI-ZNQ/0/da"><img src="http://feedads.g.doubleclick.net/~a/W37NQmJsBhOjboz8iYhF4lI-ZNQ/0/di" border="0" ismap="true"></img></a><br/>
+<a href="http://feedads.g.doubleclick.net/~a/W37NQmJsBhOjboz8iYhF4lI-ZNQ/1/da"><img src="http://feedads.g.doubleclick.net/~a/W37NQmJsBhOjboz8iYhF4lI-ZNQ/1/di" border="0" ismap="true"></img></a></p><div class="feedflare">
+<a href="http://feeds.feedburner.com/~ff/nettuts?a=QbYGGIW0bLE:IkzuHc13D2I:yIl2AUoC8zA"><img src="http://feeds.feedburner.com/~ff/nettuts?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=QbYGGIW0bLE:IkzuHc13D2I:F7zBnMyn0Lo"><img src="http://feeds.feedburner.com/~ff/nettuts?i=QbYGGIW0bLE:IkzuHc13D2I:F7zBnMyn0Lo" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=QbYGGIW0bLE:IkzuHc13D2I:V_sGLiPBpWU"><img src="http://feeds.feedburner.com/~ff/nettuts?i=QbYGGIW0bLE:IkzuHc13D2I:V_sGLiPBpWU" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=QbYGGIW0bLE:IkzuHc13D2I:gIN9vFwOqvQ"><img src="http://feeds.feedburner.com/~ff/nettuts?i=QbYGGIW0bLE:IkzuHc13D2I:gIN9vFwOqvQ" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=QbYGGIW0bLE:IkzuHc13D2I:TzevzKxY174"><img src="http://feeds.feedburner.com/~ff/nettuts?d=TzevzKxY174" border="0"></img></a>
+</div><img src="http://feeds.feedburner.com/~r/nettuts/~4/QbYGGIW0bLE" height="1" width="1"/>]]></content:encoded>
+			<wfw:commentRss>http://net.tutsplus.com/articles/news/no-more-ripping-your-hair-out-new-email-templates-category/feed/</wfw:commentRss>
+		<slash:comments>14</slash:comments>
+		<feedburner:origLink>http://net.tutsplus.com/articles/news/no-more-ripping-your-hair-out-new-email-templates-category/</feedburner:origLink></item>
+		<item>
+		<title>9 Most Common IE Bugs and How to Fix Them</title>
+		<link>http://feedproxy.google.com/~r/nettuts/~3/PMlYmC9rBhU/</link>
+		<comments>http://net.tutsplus.com/tutorials/html-css-techniques/9-most-common-ie-bugs-and-how-to-fix-them/#comments</comments>
+		<pubDate>Mon, 16 Nov 2009 10:30:14 +0000</pubDate>
+		<dc:creator>Siddharth</dc:creator>
+				<category><![CDATA[HTML & CSS]]></category>
+		<category><![CDATA[bug]]></category>
+		<category><![CDATA[bugs]]></category>
+		<category><![CDATA[CSS]]></category>
+		<category><![CDATA[ie]]></category>
+		<category><![CDATA[ie bugs]]></category>
+		<category><![CDATA[ie6]]></category>
+
+		<guid isPermaLink="false">http://net.tutsplus.com/?p=7764</guid>
+		<description><![CDATA[<img src="http://nettuts.s3.amazonaws.com/494_ie/images/200x200.jpg" alt="9 Most Common IE Bugs and How to Fix Them" />]]></description>
+			<content:encoded><![CDATA[<p>
+Internet Explorer &#8211; the bane of most web developers&#8217; existence. Up to 60% of your development can be wasted just trying to squash out IE specific bugs which isn&#8217;t really a productive use of your time. In this tutorial, you are going to learn about the most common IE bugs and rendering disparities and how to easily squash them or deal with them. Interested? Let&#8217;s get started.
+</p>
+<p><span id="more-7764"></span></p>
+<h3>1. Centering a Layout</h3>
+<p>Centering an element is probably something every web developer has to do while creating a layout. The easiest and most versatile way to center an element is to just add <em>margin: auto;</em> to the relevant element. The above method will take care of centering the element irrespective of the resolution and/or browser width. IE 6 in quirks mode however decides to handle this in the most unfortunate way possible: by not handling it at all.</p>
+<p>Consider the Following Code:</p>
+<pre name="code" class="css">
+#container{
+	border: solid 1px #000;
+	background: #777;
+	width: 400px;
+	height: 160px;
+	margin: 30px 0 0 30px;
+}
+
+#element{
+	background: #95CFEF;
+	border: solid 1px #36F;
+	width: 300px;
+	height: 100px;
+	margin: 30px auto;
+
+}
+</pre>
+<p>The output you&#8217;d expect:</p>
+<div class="tutorial_image"><img src="http://nettuts.s3.amazonaws.com/494_ie/images/1-1.png" alt="Tutorial Image" border="0" /></div>
+<p>But what IE actually gives you:</p>
+<div class="tutorial_image"><img src="http://nettuts.s3.amazonaws.com/494_ie/images/1-2.png" alt="Tutorial Image" border="0" /></div>
+<p>This is mainly due to IE6 in quirks mode and below not recognizing the <em>auto</em> value we set to the <em>margin</em> property. Fortunately, this is easily fixed.</p>
+<h4>The Fix</h4>
+<p>The easiest and most reliable way to center content for IE6 and below is to apply <em>text-align: center</em> to the parent element and then apply <em>text-align: left</em> to the element to be centered to make sure the text within it is aligned properly. </p>
+<pre name="code" class="css">
+#container{
+	border: solid 1px #000;
+	background: #777;
+	width: 400px;
+	height: 160px;
+	margin: 30px 0 0 30px;
+	text-align: center;
+}
+
+#element{
+	background: #95CFEF;
+	border: solid 1px #36F;
+	width: 300px;
+	height: 100px;
+	margin: 30px 0;
+    	text-align: left;
+
+}
+</pre>
+<h3>2. Staircase Effect</h3>
+<p>Almost every web developer uses lists to create his navigation. Usually, you create the container element, create some links inside and then float the anchors in the direction he wants and calls it a day. Usually. IE though decides to make it a lot more complicated. Peruse through the following code:</p>
+<pre name="code" class="html">
+    &lt;ul&gt;
+        &lt;li&gt;&lt;a href="#"&gt;&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#"&gt;&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#"&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+</pre>
+<pre name="code" class="css">
+ul {
+    list-style: none;
+}
+
+ul li a {
+   	display: block;
+   	width: 130px;
+	height: 30px;
+   	text-align: center;
+   	color: #fff;
+   	float: left;
+	background: #95CFEF;
+	border: solid 1px #36F;
+	margin: 30px 5px;
+}
+</pre>
+<p>A standard compliant browser renders it like so:</p>
+<div class="tutorial_image"><img src="http://nettuts.s3.amazonaws.com/494_ie/images/2-1.png" alt="Tutorial Image" border="0" /></div>
+<p>And the IE screen shot:</p>
+<div class="tutorial_image"><img src="http://nettuts.s3.amazonaws.com/494_ie/images/2-2.png" alt="Tutorial Image" border="0" /></div>
+<p>Not a particularly pleasing navigation if you ask me. Fortunately, there are 2 fixes you can try.</p>
+<h4>Fix #1</h4>
+<p>The easiest way to combat this is to float the li elements themselves instead of the anchor elements. Just add this and you should be done.</p>
+<pre name="code" class="css">
+ul li {
+	float: left;
+}
+</pre>
+<h4>Fix #2</h4>
+<p>The second way is to apply <em>display: inline</em> to the enclosing li element. In addition to fixing this bug, it also fixes the double margin bug mentioned below. Purists may not like placing block elements inside inline elements though.</p>
+<pre name="code" class="css">
+ul li {
+	display: inline
+}
+</pre>
+<h3>3. Double Margin on Floated Elements</h3>
+<p>This bug is probably among the first ones a web developer starting out will run into and is specific to Internet Explorer 6 and below. Triggering it is as simple as floating an element and then applying a margin in the direction it has been floated. And voila! The margin will be doubled in the rendered output. Not really something you&#8217;d look forward to while creating a pixel perfect layout. </p>
+<p>Consider this code:</p>
+<pre name="code" class="css">
+#element{
+	background: #95CFEF;
+	width: 300px;
+	height: 100px;
+	float: left;
+	margin: 30px 0 0 30px;
+	border: solid 1px #36F;
+}
+</pre>
+<p>On standards compliant browsers, this is how it looks:</p>
+<div class="tutorial_image"><img src="http://nettuts.s3.amazonaws.com/494_ie/images/3-1.png" alt="Tutorial Image" border="0" /></div>
+<p>But here is how IE 6 decides to render it:</p>
+<div class="tutorial_image"><img src="http://nettuts.s3.amazonaws.com/494_ie/images/3-2.png" alt="Tutorial Image" border="0" /></div>
+<h4>The Fix</h4>
+<p>The fix for this specific bug is to apply <em>display: inline</em> to the floated element and everything works as it is supposed to. Our previous code now changes to:</p>
+<pre name="code" class="css">
+#element{
+	background: #95CFEF;
+	width: 300px;
+	height: 100px;
+	float: left;
+	margin: 30px 0 0 30px;
+	border: solid 1px #36F;
+   	display: inline;
+}
+</pre>
+<h3>4. Inability to Have Elements with Small Heights</h3>
+<p>As part of creating a layout, you may need to create elements with very small heights as custom borders for elements. Usually, you&#8217;ll just have to add <em>height: XXpx</em> to the style&#8217;s declarations and you should be done. Or so you thought. Check the page in IE and you&#8217;ll probably do a double take.</p>
+<p>As an example, look at the following code:</p>
+<pre name="code" class="html">
+#element{
+	background: #95CFEF;
+	border: solid 1px #36F;
+	width: 300px;
+	height: 2px;
+	margin: 30px 0;
+}
+</pre>
+<p>And the output is just as expected: A 2 px element with a 1 px border.</p>
+<div class="tutorial_image"><img src="http://nettuts.s3.amazonaws.com/494_ie/images/4-1.png" alt="Tutorial Image" border="0" /></div>
+<p>And in IE:</p>
+<div class="tutorial_image"><img src="http://nettuts.s3.amazonaws.com/494_ie/images/4-2.png" alt="Tutorial Image" border="0" /></div>
+<h4>Fix #1</h4>
+<p>The cause of this bug is pretty simple: IE simply refuses to size an element smaller than the set font size. Simply setting the font size to 0 lets you have an element as small and short as you like.</p>
+<pre name="code" class="html">
+#element{
+	background: #95CFEF;
+	border: solid 1px #36F;
+	width: 300px;
+	height: 2px;
+	margin: 30px 0;
+    	font-size: 0;
+}
+</pre>
+<h4>Fix #2</h4>
+<p>The next best way to deal with this bug is to apply <em>overflow: hidden</em> to the element so it collapses to the intended height.</p>
+<pre name="code" class="html">
+#element{
+	background: #95CFEF;
+	border: solid 1px #36F;
+	width: 300px;
+	height: 2px;
+	margin: 30px 0;
+    	overflow: hidden
+}
+</pre>
+<h3>5. Auto Overflow and Relatively Positioned Items</h3>
+<p>This bug rears its ugly head when in a layout you set the parent container&#8217;s <em>overflow</em> property to <em>auto</em> and place a relatively positioned item inside it. The relatively positioned item violates its parent element&#8217;s boundaries and overflows outside. Let me demonstrate. Look the following code:</p>
+<pre name="code" class="html">
+&lt;div id="element"&gt;&lt;div id="anotherelement"&gt;&lt;/div&gt;&lt;/div&gt;
+</pre>
+<pre name="code" class="css">
+#element{
+	background: #95CFEF;
+	border: solid 1px #36F;
+	width: 300px;
+	height: 150px;
+	margin: 30px 0;
+	overflow: auto;
+}
+
+#anotherelement{
+	background: #555;
+	width: 150px;
+	height: 175px;
+	position: relative;
+	margin: 30px;
+}
+</pre>
+<p>And the expected output:</p>
+<div class="tutorial_image"><img src="http://nettuts.s3.amazonaws.com/494_ie/images/5-1.png" alt="Tutorial Image" border="0" /></div>
+<p>And IE&#8217;s output:</p>
+<div class="tutorial_image"><img src="http://nettuts.s3.amazonaws.com/494_ie/images/5-2.png" alt="Tutorial Image" border="0" /></div>
+<h4>The Fix</h4>
+<p>The easiest way to fix this annoying bug is to just position the parent element relatively too. </p>
+<pre name="code" class="css">
+#element{
+	background: #95CFEF;
+	border: solid 1px #36F;
+	width: 300px;
+	height: 150px;
+	margin: 30px 0;
+	overflow: auto;
+    	position: relative;
+}
+</pre>
+<h3>6. Fixing the Broken Box Model</h3>
+<p>Internet Explorer&#8217;s misinterpretation of the box model is perhaps its unforgivable mistake. IE 6 in semi-standards compliant mode sidesteps this but this issue can still be triggered by quirks mode.  </p>
+<p>Two div elements. One with the fix applied and one without. The difference in the width and height is the sum of the paddings applied on each side.</p>
+<div class="tutorial_image"><img src="http://nettuts.s3.amazonaws.com/494_ie/images/6.png" alt="Tutorial Image" border="0" /></div>
+<h4>The Fix</h4>
+<p>I am sure the quandary with the box model needs neither explanation nor demonstration so I&#8217;ll just give you the fix. </p>
+<p>The trick is to set the width normally for all standards compliant browsers, target IE5/6 alone and then feed it the corrected width. This is how you&#8217;d usually go on about:</p>
+<pre name="code" class="css">
+#element{
+	width: 400px;
+    	height: 150px;
+	padding: 50px;
+}
+</pre>
+<p>This now changes to:</p>
+<pre name="code" class="html">
+#element {
+    width: 400px;
+    height: 150px;
+   \height: 250px;
+   \width: 500px
+}
+</pre>
+<p>Essentially, you add the padding to the original width and feed it to IE 6. The fix targets IE 6 in quirks mode alone so you need not worry about IE 6 in normal mode messing things up.</p>
+<h3>7. Setting a Minimum Width and Height</h3>
+<p>Setting an minimum height to an element is absolutely imperative when trying to convert a beautiful design into a pixel perfect design. Unfortunately, IE completely ignores the <em>min-height</em> property instead taking the height declared as the minimum height.</p>
+<h4>Fix #1</h4>
+<p>The fix is a hack created by <a href="http://www.dustindiaz.com/min-height-fast-hack/">Dustin Diaz</a>. It utilizes the <em>!important</em> declaration to make it work. The snippet looks like so:</p>
+<pre name="code" class="css">
+#element {
+  min-height:150px;
+  height:auto !important;
+  height:150px;
+}
+</pre>
+<h4>Fix #2</h4>
+<p>The second way is to take advantage of the fact that IE can&#8217;t parse child selectors.</p>
+<pre name="code" class="css">
+#element {
+    min-height: 150px;
+    height: 150px;
+}
+
+html>body #element {
+	height: auto;
+}
+</pre>
+<h3>8. Floated Layout Misbehaving</h3>
+<p>One of the important concepts of building table-less layouts using CSS is floating elements. In most cases, IE6 handles this with aplomb but in certain cases it fumbles. When faced with unbreakable content or elements whose width exceeds its parent&#8217;s width, it causes havoc with the layouts. Let me show you. </p>
+<p>Consider this piece of code:</p>
+<pre name="code" class="html">
+&lt;div id="container"&gt;
+	&lt;div id="element"&gt;http://net.tutsplus.com/&lt;/div&gt;
+	&lt;div id="anotherelement"&gt;&lt;/div&gt;
+&lt;/div&gt;
+</pre>
+<pre name="code" class="css">
+#element, #anotherelement{
+	background: #95CFEF;
+	border: solid 1px #36F;
+	width: 100px;
+	height: 150px;
+	margin: 30px;
+	padding: 10px;
+	float: left;
+}
+
+#container{
+	background: #C2DFEF;
+	border: solid 1px #36F;
+	width: 365px;
+	margin: 30px;
+	padding: 5px;
+	overflow: auto;
+}
+</pre>
+<p>The expected output as viewed on a standards compliant browser:</p>
+<div class="tutorial_image"><img src="http://nettuts.s3.amazonaws.com/494_ie/images/8-1.png" alt="Tutorial Image" border="0" /></div>
+<p>In IE:</p>
+<div class="tutorial_image"><img src="http://nettuts.s3.amazonaws.com/494_ie/images/8-2.png" alt="Tutorial Image" border="0" /></div>
+<p>As you can see, the first div expands itself to fit the content which ultimately breaks the layout. </p>
+<h4>The Fix</h4>
+<p>There is no elegant fix for this bug. The only way to save the layout is to apply <em>overflow: hidden</em> to the element but at the cost of clipping the unbreakable content. The layout will be saved but the extra content won&#8217;t. </p>
+<pre name="code" class="css">
+#element{
+	background: #C2DFEF;
+	border: solid 1px #36F;
+	width: 365px;
+	margin: 30px;
+	padding: 5px;
+	overflow: hidden;
+}
+</pre>
+<h3>9. Space Between List Items</h3>
+<p>IE 6 adds vertical spacing even none is specified in specific cases. Let&#8217;s look at the code first.</p>
+<pre name="code" class="html">
+&lt;ul&gt;
+ &lt;li&gt;&lt;a href="#"&gt;Link 1&lt;/a&gt;&lt;/li&gt;
+ &lt;li&gt;&lt;a href="#"&gt;Link 2&lt;/a&gt;&lt;/li&gt;
+ &lt;li&gt;&lt;a href="#"&gt;Link 3&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+<pre name="code" class="css">
+ul {
+	margin:0;
+	padding:0;
+	list-style:none;
+}
+
+li a {
+	background: #95CFEF;
+	display: block;
+}
+</pre>
+<p>What it should look like:</p>
+<div class="tutorial_image"><img src="http://nettuts.s3.amazonaws.com/494_ie/images/9-1.png" alt="Tutorial Image" border="0" /></div>
+<p>What IE gives us:</p>
+<div class="tutorial_image"><img src="http://nettuts.s3.amazonaws.com/494_ie/images/9-2.png" alt="Tutorial Image" border="0" /></div>
+<p>Fortunately, there are a plethora of fixes you could try.</p>
+<h4>Fix #1</h4>
+<p>The easiest way out is to just define a width for the anchor tags and voila! everything renders as it should. Declaring a width triggers the element&#8217;s IE specific <em>hasLayout</em> property. You could instead define a height if you want to.</p>
+<pre name="code" class="css">
+li a {
+	background: #95CFEF;
+	display: block;
+    	width: 200px;
+}
+</pre>
+<h4>Fix #2</h4>
+<p>The next method is to just float the anchor left and then clearing it.</p>
+<pre name="code" class="css">
+li a {
+	background: #95CFEF;
+	float: left;
+    	clear: left;
+}
+</pre>
+<h4>Fix #3</h4>
+<p>The third method is to add <em>display: inline</em> to the enclosing <em>li</em> element. This also fixes the double margin bug as noted above.</p>
+<pre name="code" class="css">
+li {
+	display: inline;
+}
+</pre>
+<h3>Conclusion</h3>
+<p>And there you have it: the nine most common IE rendering bugs, and how to squash them. Hopefully this has saved you some blood, sweat and tears while debugging your next creation. I&#8217;ll be watching the comments section frequently; so chime in here if you are having difficulties implementing the fixes noted here.</p>
+<p>Questions? Nice things to say? Criticisms? Hit the comments section and leave me a comment. Happy coding!</p>
+<ul class="webroundup">
+<li>Follow us on <a href="http://www.twitter.com/nettuts">Twitter</a>, or subscribe to the <a href="http://feeds.feedburner.com/nettuts" title="Nettuts+ RSS Feed">Nettuts+ RSS Feed</a> for the best web development tutorials on the web.</li>
+</ul>
+<p>
+<script type="text/javascript"><!--digg_url = "post permalink (not digg url)"; // -->
+</script><br />
+<script src="http://digg.com/tools/diggthis.js" type="text/javascript"></script></p>
+
+<p><a href="http://feedads.g.doubleclick.net/~a/paR-ma7_J-nFfA26jn8cE6OUC9I/0/da"><img src="http://feedads.g.doubleclick.net/~a/paR-ma7_J-nFfA26jn8cE6OUC9I/0/di" border="0" ismap="true"></img></a><br/>
+<a href="http://feedads.g.doubleclick.net/~a/paR-ma7_J-nFfA26jn8cE6OUC9I/1/da"><img src="http://feedads.g.doubleclick.net/~a/paR-ma7_J-nFfA26jn8cE6OUC9I/1/di" border="0" ismap="true"></img></a></p><div class="feedflare">
+<a href="http://feeds.feedburner.com/~ff/nettuts?a=PMlYmC9rBhU:VRH3Fn3pMIM:yIl2AUoC8zA"><img src="http://feeds.feedburner.com/~ff/nettuts?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=PMlYmC9rBhU:VRH3Fn3pMIM:F7zBnMyn0Lo"><img src="http://feeds.feedburner.com/~ff/nettuts?i=PMlYmC9rBhU:VRH3Fn3pMIM:F7zBnMyn0Lo" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=PMlYmC9rBhU:VRH3Fn3pMIM:V_sGLiPBpWU"><img src="http://feeds.feedburner.com/~ff/nettuts?i=PMlYmC9rBhU:VRH3Fn3pMIM:V_sGLiPBpWU" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=PMlYmC9rBhU:VRH3Fn3pMIM:gIN9vFwOqvQ"><img src="http://feeds.feedburner.com/~ff/nettuts?i=PMlYmC9rBhU:VRH3Fn3pMIM:gIN9vFwOqvQ" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=PMlYmC9rBhU:VRH3Fn3pMIM:TzevzKxY174"><img src="http://feeds.feedburner.com/~ff/nettuts?d=TzevzKxY174" border="0"></img></a>
+</div><img src="http://feeds.feedburner.com/~r/nettuts/~4/PMlYmC9rBhU" height="1" width="1"/>]]></content:encoded>
+			<wfw:commentRss>http://net.tutsplus.com/tutorials/html-css-techniques/9-most-common-ie-bugs-and-how-to-fix-them/feed/</wfw:commentRss>
+		<slash:comments>194</slash:comments>
+		<feedburner:origLink>http://net.tutsplus.com/tutorials/html-css-techniques/9-most-common-ie-bugs-and-how-to-fix-them/</feedburner:origLink></item>
+		<item>
+		<title>Review of jQuery Enlightenment – and Free Copies!</title>
+		<link>http://feedproxy.google.com/~r/nettuts/~3/p4ZD9_XnMyw/</link>
+		<comments>http://net.tutsplus.com/articles/reviews/review-of-jquery-enlightenment-and-free-copies/#comments</comments>
+		<pubDate>Sat, 14 Nov 2009 00:14:56 +0000</pubDate>
+		<dc:creator>Jeffrey Way</dc:creator>
+				<category><![CDATA[Reviews]]></category>
+		<category><![CDATA[book]]></category>
+		<category><![CDATA[book review]]></category>
+		<category><![CDATA[JavaScript]]></category>
+		<category><![CDATA[jQuery]]></category>
+		<category><![CDATA[jquery enlightenment]]></category>
+
+		<guid isPermaLink="false">http://net.tutsplus.com/?p=7620</guid>
+		<description><![CDATA[<img src="http://nettuts.s3.amazonaws.com/488_enlighten/200x200.png" alt="Review of jQuery Enlightenment" />]]></description>
+			<content:encoded><![CDATA[<p>
+<a href="http://jqueryenlightenment.com/">jQuery Enlightenment</a>, by Cody Lindley, is a breath of fresh air when it comes to e-books. It&#8217;s written by a jQuery team member, each code snippet includes a link to <a href="http://jsbin.com/">JSBin</a> for live previewing, and &#8211; most importantly &#8211; there&#8217;s no fluff. Ultimately, this means that you&#8217;ll learn faster, and more thoroughly.
+</p>
+<p><span id="more-7620"></span></p>
+<div class="tutorial_image">
+   <img src="http://nettuts.s3.amazonaws.com/488_enlighten/bookcover.png" alt="jQuery Enlightenment" />
+</div>
+<h3>Update: Winners Announced</h3>
+<p>Congratulations to the following users who were randomly selected as the winners of <a href="http://jqueryenlightenment.com/">jQuery Enlightenment</a>! You&#8217;ve all been contacted via Twitter and email with instructions.</p>
+<ul>
+<li><a href="http://www.massbase.com/enatom">enatom</a> </li>
+<li><a href="http://www.jacobwhenderson.com/">Jacob</a></li>
+<li><a href="http://twitter.com/ddavidn">D.</a></li>
+<li><a href="http://twitter.com/michaelespinosa">Michael Espinosa</a></li>
+<li><a href="http://twitter.com/thatryan">Ryan</a></li>
+</ul>
+<h3>Not a Winner? </h3>
+<p>In that case, Cody has given me a special $5 off discount code, which is valid for the first 300 purchases and expires on November 18th. To use it, visit the <a href="http://www.jqueryenlightenment.com">jQuery Enlightenment site</a>, click on the &#8220;Have a discount code&#8221; link, and use the following code: <em>nettuts5bucksoff</em>.
+</p>
+<h3>At a Glance</h3>
+<p>
+To prove how much I enjoyed reading this book: I received my review copy on a Wednesday, and finished it the next day. As I&#8217;m sure many of you are aware, tech books and front to back reads very rarely go well together. This is a testament to the &#8220;no fluff&#8221; aspect I referenced earlier. Over the course of a dozen chapters, Cody will teach you everything you need to know.
+</p>
+<ul>
+<li> Chapter 1 &#8211; Core jQuery
+</li>
+<li> Chapter 2 &#8211; Selecting
+</li>
+<li> Chapter 3 &#8211; Traversing
+</li>
+<li> Chapter 4 &#8211; Manipulation
+</li>
+<li> Chapter 5 &#8211; HTML Forms
+</li>
+<li> Chapter 6 &#8211; Events
+</li>
+<li> Chapter 7 &#8211; jQuery and the web browser
+</li>
+<li> Chapter 8 &#8211; Plugins
+</li>
+<li> Chapter 9 &#8211; Performance best practices
+</li>
+<li> Chapter 10 &#8211; Effects
+</li>
+<li> Chapter 11- AJAX
+</li>
+<li> Chaper 12 &#8211; Miscellaneous concepts </li>
+</ul>
+<h3>Who this Book is for?</h3>
+<p>
+While most books on jQuery are primarily focused on introducing the library to new users, jQuery Enlightenment instead assumes you&#8217;re at an intermediate level hoping to <strong>learn the more advanced tips and techniques</strong>. As such, I especially enjoyed the read more than I would have if it was just another crash course style book. Assuming that you&#8217;re a regular Nettuts+ reader, it&#8217;s more than probable that you have at least a basic understand of jQuery. If so, it&#8217;s time to take your skills to the next level; <a href="http://jqueryenlightenment.com/">jQuery Enlightenment</a> will take you there.
+</p>
+<p><strong>Though perhaps the most convincing reason to check out Cody&#8217;s new book is because he&#8217;s an official member of the jQuery team. </strong></p>
+<h3>JSBin Snippets</h3>
+<div class="tutorial_image">
+<a href="http://jqueryenlightenment.com/"><br />
+   <img src="http://nettuts.s3.amazonaws.com/488_enlighten/insidebook.png" alt="Sample" style="width: 600px;" /><br />
+</a>
+</div>
+<p>
+Throughout the book, Cody supplies every single code snippet with a respective live preview from <a href="http://jsbin.com/">JSBin</a>. This may not sound like much; however, it&#8217;s incredibly helpful when you can simply click on a link, and immediately be transported to a page which allows you to &#8220;toy&#8221; with the code. I can&#8217;t tell you how vital this is &#8211; and, frankly, it&#8217;s shocking that more web development e-books haven&#8217;t taken advantage of this yet.
+</p>
+<h3>About the Author</h3>
+<p><strong>Cody Lindley</strong> is a Christian, husband, son, father, brother, outdoor enthusiast, and <a href="http://codylindley.com/" id="azjf" title="client-side engineer">client-side engineer</a>. Since 1997 he has been passionate about HTML, CSS, <a href="http://javascriptant.com/" id="v2yj" title="JavaScript">JavaScript</a>, Flash, Interaction Design, Interface Design, and HCI. He is most well known in the jQuery community for the creation of <a href="http://jquery.com/demo/thickbox/" id="mk9p" title="Thickbox">Thickbox</a>, a modal/dialog solution. In 2008 he officially joined the jQuery team as an evangelist. His current focus has been on client-side optimization techniques as well as speaking and <a href="http://oreilly.com/catalog/9780596159771/" id="apmx" title="writing about jQuery">writing about jQuery</a>. As of late he is employeed by <a href="http://www.ning.com">Ning.com</a></p>
+<h3>Free Copies!</h3>
+<p>
+Cody has been generous enough to offer a handful of copies to our readers! To enter, simply leave a comment, and check back on Monday (Tuesday for some of you) to see if you&#8217;re a winner! Otherwise, if you&#8217;d like to purchase the ebook and immediately read it, you can <a href="http://jqueryenlightenment.com/">buy it here.</a>
+</p>
+<ul class="webroundup">
+<li>Follow us on <a href="http://www.twitter.com/nettuts">Twitter</a>, or subscribe to the <a href="http://feeds.feedburner.com/nettuts" title="Nettuts+ RSS Feed">Nettuts+ RSS Feed</a> for the best web development tutorials on the web.</li>
+</ul>
+<p>
+<script type="text/javascript"><!--digg_url = "post permalink (not digg url)"; // -->
+</script><br />
+<script src="http://digg.com/tools/diggthis.js" type="text/javascript"></script></p>
+
+<p><a href="http://feedads.g.doubleclick.net/~a/Zly78sXentmGmex-jdpSs_cFjqo/0/da"><img src="http://feedads.g.doubleclick.net/~a/Zly78sXentmGmex-jdpSs_cFjqo/0/di" border="0" ismap="true"></img></a><br/>
+<a href="http://feedads.g.doubleclick.net/~a/Zly78sXentmGmex-jdpSs_cFjqo/1/da"><img src="http://feedads.g.doubleclick.net/~a/Zly78sXentmGmex-jdpSs_cFjqo/1/di" border="0" ismap="true"></img></a></p><div class="feedflare">
+<a href="http://feeds.feedburner.com/~ff/nettuts?a=p4ZD9_XnMyw:8BvrLktep14:yIl2AUoC8zA"><img src="http://feeds.feedburner.com/~ff/nettuts?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=p4ZD9_XnMyw:8BvrLktep14:F7zBnMyn0Lo"><img src="http://feeds.feedburner.com/~ff/nettuts?i=p4ZD9_XnMyw:8BvrLktep14:F7zBnMyn0Lo" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=p4ZD9_XnMyw:8BvrLktep14:V_sGLiPBpWU"><img src="http://feeds.feedburner.com/~ff/nettuts?i=p4ZD9_XnMyw:8BvrLktep14:V_sGLiPBpWU" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=p4ZD9_XnMyw:8BvrLktep14:gIN9vFwOqvQ"><img src="http://feeds.feedburner.com/~ff/nettuts?i=p4ZD9_XnMyw:8BvrLktep14:gIN9vFwOqvQ" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=p4ZD9_XnMyw:8BvrLktep14:TzevzKxY174"><img src="http://feeds.feedburner.com/~ff/nettuts?d=TzevzKxY174" border="0"></img></a>
+</div><img src="http://feeds.feedburner.com/~r/nettuts/~4/p4ZD9_XnMyw" height="1" width="1"/>]]></content:encoded>
+			<wfw:commentRss>http://net.tutsplus.com/articles/reviews/review-of-jquery-enlightenment-and-free-copies/feed/</wfw:commentRss>
+		<slash:comments>1035</slash:comments>
+		<feedburner:origLink>http://net.tutsplus.com/articles/reviews/review-of-jquery-enlightenment-and-free-copies/</feedburner:origLink></item>
+		<item>
+		<title>Easy Website Updates with PageLime</title>
+		<link>http://feedproxy.google.com/~r/nettuts/~3/zIaNI5xyE7k/</link>
+		<comments>http://net.tutsplus.com/videos/screencasts/easy-editing-for-your-clients-with-pagelime/#comments</comments>
+		<pubDate>Fri, 13 Nov 2009 02:10:53 +0000</pubDate>
+		<dc:creator>Jeffrey Way</dc:creator>
+				<category><![CDATA[Screencasts]]></category>
+		<category><![CDATA[CMS]]></category>
+		<category><![CDATA[pagelime]]></category>
+		<category><![CDATA[screencast]]></category>
+		<category><![CDATA[template]]></category>
+		<category><![CDATA[themeforest]]></category>
+
+		<guid isPermaLink="false">http://net.tutsplus.com/?p=7691</guid>
+		<description><![CDATA[<img src="http://nettuts.s3.amazonaws.com/492_pagelime/200x200.jpg" alt="Easy Editing for your Clients with PageLime" />]]></description>
+			<content:encoded><![CDATA[<p>
+<a href="http://www.pagelime.com">PageLime</a> makes the process of editing static websites laughably easy. There are times when a full CMS like WordPress is far too complicated when only simple edits are required &#8211; not to mention the fact that a static template must first be modified accordingly to work with WordPress. Wouldn&#8217;t it be easier if your current static website could instantly be integrated with a service, without requiring hours of conversion time? This is where PageLime comes in.
+</p>
+<p>In today&#8217;s <strong>video tutorial</strong>, we&#8217;ll go through the process of purchasing a site template on <a href="http://themeforest.net">ThemeForest</a>, and then integrating that specific template with PageLime, resulting in a website which is super easy to update&#8230;even for your mom.</p>
+<p><span id="more-7691"></span></p>
+<div class="tutorial_image">
+<a href="http://www.pagelime.com"><br />
+   <img src="http://nettuts.s3.amazonaws.com/492_pagelime/pagelime-site.jpg" alt="PageLime" /><br />
+</a>
+</div>
+<blockquote>
+<p>
+<a href="http://www.pagelime.com">PageLime</a> is a remote Content Management System that allows you to update the content, images, and documents on your web site without installing any software.
+</p>
+</blockquote>
+<h3>The Screencast</h3>
+<div class="tutorial_image">
+<embed src="http://blip.tv/play/gcMVga7XAwA%2Em4v" type="application/x-shockwave-flash" width="600" height="450" allowscriptaccess="always" allowfullscreen="true"></embed>
+</div>
+<h3>Other Viewing Options</h3>
+<ul>
+<li><a href="http://blip.tv/file/2842042?filename=NETTUTS-EasyEditingForYourClientsWithPageLime191.mp4"> Hi-Quality MP4</a></li>
+<li><a href="http://itunes.apple.com/WebObjects/MZStore.woa/wa/viewPodcast?i=60856588&#038;id=291173544">iTunes Version / Download</a></li>
+</ul>
+<h3>What&#8217;s in Store for PageLime? </h3>
+<p><em>In the CEO&#8217;s own words&#8230;</em></p>
+<ul>
+<li> <strong>Repeating Regions</strong> &#8211; You/Your clients will be able to have regions that you define as repeatable. This will let you dynamically create new buttons in navigation, blog like article additions, etc. This is in testing now, and will roll out across all sites in the next week!
+    </li>
+<li> <strong>Multipage Dynamic Content</strong> &#8211; You will be able to define areas that show up on other places in the website. So when you update them, they update in other places.
+    </li>
+<li> <strong>Blog</strong> &#8211; Drop in simple PageLime managed blog.
+    </li>
+<li> <strong>Client Invoicing</strong> &#8211; We&#8217;re building an invoicing feature from withing PageLime that will let you manage your PageLime clients with auto recurring invoices that link to your PageLime account. This basically allows you to setup a subscription model for you clients, and pass the cost of PageLime directly to them. OR charge them more, and make money off of PageLime! This will be a feature in the Business Account Level.
+</li>
+<li> <strong>iPhone App</strong> &#8211; Manage websites from an iPhone application. This is already designed, just need to go about building it soon. I can send you screenshots if you would like.
+    </li>
+<li> <strong>eCommerce</strong> &#8211; Either a partnership with another team, or build one ourselves that can be dropped in, like the blog.
+</li>
+<ul class="webroundup">
+<li>Follow us on <a href="http://www.twitter.com/nettuts">Twitter</a>, or subscribe to the <a href="http://feeds.feedburner.com/nettuts" title="Nettuts+ RSS Feed">Nettuts+ RSS Feed</a> for the best web development tutorials on the web.</li>
+</ul>
+<p>
+<script type="text/javascript"><!--digg_url = "post permalink (not digg url)"; // -->
+</script><br />
+<script src="http://digg.com/tools/diggthis.js" type="text/javascript"></script></p>
+
+<p><a href="http://feedads.g.doubleclick.net/~a/onYUVQLx2kBYc_dfafSkh-QhzJk/0/da"><img src="http://feedads.g.doubleclick.net/~a/onYUVQLx2kBYc_dfafSkh-QhzJk/0/di" border="0" ismap="true"></img></a><br/>
+<a href="http://feedads.g.doubleclick.net/~a/onYUVQLx2kBYc_dfafSkh-QhzJk/1/da"><img src="http://feedads.g.doubleclick.net/~a/onYUVQLx2kBYc_dfafSkh-QhzJk/1/di" border="0" ismap="true"></img></a></p><div class="feedflare">
+<a href="http://feeds.feedburner.com/~ff/nettuts?a=zIaNI5xyE7k:QbGw-ymnBQw:yIl2AUoC8zA"><img src="http://feeds.feedburner.com/~ff/nettuts?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=zIaNI5xyE7k:QbGw-ymnBQw:F7zBnMyn0Lo"><img src="http://feeds.feedburner.com/~ff/nettuts?i=zIaNI5xyE7k:QbGw-ymnBQw:F7zBnMyn0Lo" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=zIaNI5xyE7k:QbGw-ymnBQw:V_sGLiPBpWU"><img src="http://feeds.feedburner.com/~ff/nettuts?i=zIaNI5xyE7k:QbGw-ymnBQw:V_sGLiPBpWU" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=zIaNI5xyE7k:QbGw-ymnBQw:gIN9vFwOqvQ"><img src="http://feeds.feedburner.com/~ff/nettuts?i=zIaNI5xyE7k:QbGw-ymnBQw:gIN9vFwOqvQ" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=zIaNI5xyE7k:QbGw-ymnBQw:TzevzKxY174"><img src="http://feeds.feedburner.com/~ff/nettuts?d=TzevzKxY174" border="0"></img></a>
+</div><img src="http://feeds.feedburner.com/~r/nettuts/~4/zIaNI5xyE7k" height="1" width="1"/>]]></content:encoded>
+			<wfw:commentRss>http://net.tutsplus.com/videos/screencasts/easy-editing-for-your-clients-with-pagelime/feed/</wfw:commentRss>
+		<slash:comments>75</slash:comments>
+		<feedburner:origLink>http://net.tutsplus.com/videos/screencasts/easy-editing-for-your-clients-with-pagelime/</feedburner:origLink></item>
+		<item>
+		<title>How to Create a Photo Gallery using the Flickr API</title>
+		<link>http://feedproxy.google.com/~r/nettuts/~3/5UQDOCHtAJo/</link>
+		<comments>http://net.tutsplus.com/tutorials/php/how-to-create-a-photo-gallery-using-the-flickr-api/#comments</comments>
+		<pubDate>Thu, 12 Nov 2009 18:22:34 +0000</pubDate>
+		<dc:creator>Paul Burgess</dc:creator>
+				<category><![CDATA[PHP]]></category>
+		<category><![CDATA[flickr]]></category>
+		<category><![CDATA[gallery]]></category>
+		<category><![CDATA[photo gallery]]></category>
+
+		<guid isPermaLink="false">http://net.tutsplus.com/?p=7708</guid>
+		<description><![CDATA[<img src="http://nettuts.s3.amazonaws.com/491_flickr/200x200.jpg" alt="How to Create a Photo Gallery using the Flickr API " />]]></description>
+			<content:encoded><![CDATA[<p>Flickr is, without doubt, the biggest and best photography website on the internet. There are lots of widgets, badges and plugins which allow you to display your latest Flickr photos on your website, but we&#8217;ll take it a step further by tapping straight into Flickr and integrating your photostream into your website, giving you a photo gallery that is a breeze to update.
+</p>
+<p><span id="more-7708"></span></p>
+<div class="tutorial_image">
+<a href="http://nettuts.s3.amazonaws.com/491_flickr/Flickr_API-sample files.zip"><img src="http://nettuts.com/wp-content/themes/nettuts/site_images/button_src_nm.jpg"></a><br />
+<a href="http://nettuts-fd.iampaulburgess.co.uk/"><img src="http://nettuts.com/wp-content/themes/nettuts/site_images/button_demo_nm.jpg"></a>
+</div>
+<p>We&#8217;ll be creating <a title="this photo gallery" href="http://nettuts-fd.iampaulburgess.co.uk">this photo gallery</a> using the Flickr API and <a title="phpFlickr" href="http://phpflickr.com/">phpFlickr</a> . If the letters &#8216;A,P &amp; I&#8217; are enough to strike fear into your  heart, don&#8217;t worry, we will take it slow and give full code examples  that you can copy.</p>
+<div class="tutorial_image">
+   <img src="http://nettuts.s3.amazonaws.com/491_flickr/finalproject.jpg" alt="Final Project" />
+</div>
+<p>Flickr have also recently launched <a href="http://www.flickr.com/services/">The App Garden</a>, which is a showcase of tools, toys and sites which use the Flickr API to offer something useful or fun. Once you get to grips with using the API, you can let your imagination conjure up a new way to use it and submit your app. </p>
+<p>
+  For this tutorial I am presuming that you already have a Flickr account, and access to a server that runs PHP and PEAR.</p>
+<h3>The Outline</h3>
+<ul>
+<li> Get a Flickr API key </li>
+<li> Download the phpFlickr files </li>
+<li> Build a gallery page to display our thumbnails (with pagination)</li>
+<li> Make a photo page to show our photos (with previous and next navigation)</li>
+</ul>
+<h3>Step 1 &#8211; Get a Flickr API key</h3>
+<p>
+Your API key is your own unique series of numbers and letters which grant you access to Flickr&#8217;s services. Go here:  http://www.flickr.com/services/apps/create/apply/
+</p>
+<p>
+Here you must decide if you are going to use Flickr for commercial or non-commercial purposes. Flickr provide good explanations as to which  you should choose, chances are you&#8217;ll need a non-commercial API key,  which is what I am choosing for this demo.</p>
+<p>
+Follow the steps and fill in all your details.</p>
+<p> You should then be presented with your unique key which will appear as a series of random numbers and letters like so:</p>
+<div class="tutorial_image"><img src="http://nettuts.s3.amazonaws.com/491_flickr/api-key.png" alt="API key example" width="546" height="222"></div>
+<p>You&#8217;ll also see a number called &#8216;Secret;&#8217; ignore that for now. For this exercise  we only need the key; make a note of it as we&#8217;ll need it soon.</p>
+<p>If you use the API to build a cool tool or site later on, you might want to submit and feature whatever you build in the Flickr App Garden. You can click on &#8216;Edit app details&#8217; to fill in the info.</p>
+<blockquote><p>Pay particular attention to the tips and advice  given in the <a href="http://www.flickr.com/services/api/tos/">API Terms of Use</a> and the <a href="http://www.flickr.com/guidelines.gne">Community Guidelines</a>, if you abuse it, you&#8217;ll lose it.</p>
+</blockquote>
+<p>
+  Now on to the exciting stuff&#8230; </p>
+<h3>Step 2 &#8211; Download phpFlickr&nbsp; </h3>
+<p>
+  <a title="phpFlickr" href="http://phpflickr.com/" id="kguo">phpFlickr</a> is a project by <a href="http://www.dancoulter.com/">Dan Coulter</a>. It is a class written in PHP which acts as a wrapper for Flickr&#8217;s API. The files process the data provided by Flickr and return arrays in PHP, which we use to display our photos</p>
+<p>
+We need to download the files that we will later include in our webpage, and will do all the complicated work for us. Visit <a title="phpflickr.com" href="http://phpflickr.com/" id="y5sq">phpflickr.com</a> or skip straight to <a title="The download page at Google Code" href="http://code.google.com/p/phpflickr/downloads/list">the download page at Google Code.</a> In this demo, we&#8217;ll be using the zip file:   	phpFlickr-2.3.1 (zip)
+</p>
+<div class="tutorial_image">
+<img src="http://nettuts.s3.amazonaws.com/491_flickr/download-link.png" alt="Download link" width="444" height="265" />
+</div>
+<p>
+  Download and unzip it. For this tutorial, we only need the PEAR folder and the phpFlickr.php file. Upload the files to your web directory</p>
+<h3>Step 3 &#8211; Basic Setup and Simple Configuration &nbsp; </h3>
+<p>
+  Now  we have all we need to connect with Flickr and retrieve our photos. We&#8217;ll make two pages: one to show our thumbnails and one to show the photo. All of the code will be available as complete pages at the end of the tutorial. </p>
+<p>
+  These code examples are all working on the basis that your files are on the root of your server &#8211; or all in the same folder. Before anything else, we need to create a cache folder in order for phpFlickr  to work properly. Create a folder called &#8216;cache&#8217; in your web directory  and give it writable permissions (CHMOD 777). </p>
+<p>
+  Now we&#8217;ll build a page that displays our thumbnails and has some simple paging. In the example gallery, this is index.php &#8211; and <a title="looks like this" href="http://nettuts-fd.iampaulburgess.co.uk/" id="mhb6">looks like this</a>.</p>
+<p>
+Before we go any further, we need to set two main variables in the config.php file.</p>
+<p>Open config.php. You&#8217;ll see it&#8217;s just asking for two things: your API key and your Flickr username. </p>
+<p>First, enter your API key &#8211; the long random set of numbers and letters you were given earlier on by Flickr. Keep your info inside the quote marks. </p>
+<pre name="code" class="php">// insert your API key
+$key=&quot;ENTER YOUR FLICKR API KEY HERE&quot;;</pre>
+<p>Now for your Flickr username; this is  not your Yahoo sign-in username or your Flickr screename &#8211; but the  username you use for Flickr itself. To double check, sign in to Flickr and look at the top of the page where it says &#8216;Signed in as&#8230;&#8217; &#8211; that is your username. So let&#8217;s declare our username as a variable:</p>
+<pre name="code" class="php">// enter your Flickr username
+$username=&quot;YOUR FLICKR USERNAME HERE&quot;;</pre>
+<p>Save the changes to config.php and upload &#8211; you shouldn&#8217;t need that file again. </p>
+<h3>Step 4 &#8211; Building the Thumbnails Page</h3>
+<div class="tutorial_image">
+   <img src="http://nettuts.s3.amazonaws.com/491_flickr/finalproject.jpg" alt="Final Project" />
+</div>
+<p>On to the page itself. Here&#8217;s a breakdown of what we are doing at the top of the page, which cues up everything ready for the action: </p>
+<p>
+  We are going to include some Previous and Next links with a small  bit of code further down the page. The thumbnails we are going to show  depend on what page we are on, so we run a simple if  statement which will grab our page number. If there&#8217;s a &#8216;fpage&#8217; query in  the url, use that. If not, we are on page one.</p>
+<pre name="code" class="php">&lt;?php
+  // get page number from the url - if there isn't one - we're on page 1
+  $page = isset($_GET['page']) ? $_GET['page'] : 1;
+  </pre>
+<p>  Next we include the core phpFlickr file that has everything we need in it communicate with Flickr.</p>
+<pre name="code" class="php">// inclue the core file
+  require_once('phpFlickr.php');
+  </pre>
+<p>
+  Now we fire up a new class from the phpFlickr file using our API key that we got earlier.</p>
+<pre name="code" class="php">
+// Fire up the main phpFlickr class
+$f = new phpFlickr($key);
+  </pre>
+<p>
+phpFlickr uses caching to speed the  process up. There are options of using a database technique but for  this tutorial we will use the simpler cache folder option. We need  a folder called &#8216;cache&#8217; that is writable, meaning that the system has  access to it and can alter its contents. To do this set the folders&#8217;  permissions to 777 via your FTP program. Then we add this line to enable it: </p>
+<pre name="code" class="php">$f-&gt;enableCache("fs", "cache");
+  </pre>
+<p>
+  We call the people_findByUsername method which returns an array:</p>
+<pre name="code" class="php">$result = $f-&gt;people_findByUsername($username);
+  </pre>
+<p>
+  From that array, we also need your unique user id (your Flickr id that look  like this: 11221312@N00, declared here as $nsid) which we get like so:</p>
+<pre name="code" class="php">// grab our unique user id from the $result array
+  $nsid = $result["id"];
+  </pre>
+<p>
+Next, we call the people_getPublicPhotos method, which again returns an array that we will call $photos. In  this line, we are also passing through our id which we got in the line  above ($nsid). NULL refers to the &#8216;extras&#8217; option which we&#8217;re not  concerned with right now. We are also stating the number of thumbnails  we want to display (21), and are passing through the page to  start on ($page) which relates back to the $page variable from the top of  the page:</p>
+<pre name="code" class="php"> $photos = $f-&gt;people_getPublicPhotos($nsid, NULL, NULL, 21, $page);
+  </pre>
+<p>
+  The last bit we need to set the page up is a little bit of info we need for the paging to work. We  access the $photos array we created above, and pull out the the total  number of pages, plus the total amount of photos in our photostream:</p>
+<pre name="code" class="php">$pages = $photos[photos][pages]; // returns total number of pages
+  $total = $photos[photos][total]; // returns how many photos there are in total
+  ?&gt;
+  </pre>
+<p>
+  Notice we&#8217;re closing the php section off here with the ?&gt; Now we have all we need to get the first 21 thumbnails from our Flickr photostream and display them. We&#8217;ll carry on with the page now, adding some html, using PHP to show the images, and include some simple paging links. So let&#8217;s start by writing some basic html. </p>
+<pre name="code" class="php"> &lt;!DOCTYPE html  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /&gt;
+&lt;title&gt;Nettuts Flickr Gallery Demo&lt;/title&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+
+&lt;h1&gt;My photo gallery&lt;/h1&gt;
+&lt;div id="thumbs"&gt;
+  </pre>
+<p>
+  Nothing out of the ordinary here; just setting up the html and starting an area for the thumbnails. The next step is to fill our div called &#8216;thumbs&#8217; with our thumbnails like so:</p>
+<div class="tutorial_image"><img src="http://nettuts.s3.amazonaws.com/491_flickr/thumbnails-example.jpg" alt="Thumbnails example" width="601" height="224"></div>
+<p>
+Note we&#8217;re opening php again with &lt;?php:</p>
+<p>
+We&#8217;ll  use a foreach loop to run through the $photos array and to get to the  photo element ($photo), which holds the info we need for the thumbnails.<br />
+See the comments in the code for an explanation of what&#8217;s going on: </p>
+<pre name="code" class="php">
+&lt;?php
+// loop through each photo
+&nbsp;foreach ($photos['photos']['photo'] as $photo) {
+&nbsp;&nbsp;
+// print out a link to the photo page, attaching the id of the photo
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; echo "&lt;a href=\"photo.php?id=$photo[id]\" title=\"View $photo[title]\"&gt;";
+&nbsp;&nbsp;&nbsp;
+// This next line uses buildPhotoURL to construct the location of our image, and we want the 'Square' size
+// It also gives the image an alt attribute of the photo's title
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; echo "&lt;img src=\"" . $f-&gt;buildPhotoURL($photo, "Square") .  "\" width=\"75\" height=\"75\" alt=\"$photo[title]\" /&gt;";
+
+// close link&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; echo "&lt;/a&gt;";
+
+// end loop
+}
+?&gt;
+
+&lt;/div&gt;&lt;!-- close thumbs div --&gt;
+</pre>
+<p>
+</strong>We&#8217;re almost done with the main page.  Chances are, you have more than 21 photos in your Photostream; so we&#8217;ll need to add some paging with some Previous and Next links so we can  move to the next 21 thumbnails. The links look like this:</p>
+<div class="tutorial_image"><img src="http://nettuts.s3.amazonaws.com/491_flickr/pagination-example.png" alt="Pagination example" width="252" height="117"></div>
+<p>
+&nbsp;This  code relies on the line we had at the top calling the $page  variable. When our code calls in the photos from Flickr, it also uses  the $page variable to know where to start &#8211; look back at the line where  we called &#8216;people_getPublicPhotos&#8217; and you&#8217;ll see that we passed in the $page  variable there as well. That value is the backbone of this little paging  arrangement. We&#8217;ll open a paragraph with the id of &#8216;nav&#8217;, open up the PHP tags, and define our &#8216;back&#8217; and &#8216;next&#8217; variables:</p>
+<pre name="code" class="php">&lt;p id="nav"&gt;
+&lt;?php
+// Some simple paging code to add Prev/Next to scroll through the thumbnails
+$back = $page - 1;
+$next = $page + 1;
+</pre>
+<p>
+Next we handle the actual &#8216;Previous&#8217;  and &#8216;Next&#8217; links by checking that we&#8217;re not on the first or last page,  the close off php and close the &#8216;p&#8217; tag. </p>
+<pre name="code" class="php">// if it's not the first page
+if($page &gt; 1) {
+echo "&lt;a href='?page=$back'&gt;&amp;laquo; &lt;strong&gt;Prev&lt;/strong&gt;&lt;/a&gt;";
+}
+// if not last page
+if($page != $pages) {
+echo "&lt;a href='?page=$next'&gt;&lt;strong&gt;Next&lt;/strong&gt; &amp;raquo;&lt;/a&gt;";}
+?&gt;
+&lt;/p&gt;
+</pre>
+<p>
+Now we refer back to some values we had at the beginning to display a little more about where we are in the gallery:</p>
+<pre name="code" class="php">
+&lt;?php
+// a quick bit of info about where we are in the gallery
+echo"&lt;p&gt;Page $page of $pages&lt;/p&gt;";
+echo"&lt;p&gt;$total photos in the gallery&lt;/p&gt;";
+?&gt;
+</pre>
+<p>
+And to abide by Flickr&#8217;s terms and finish the page off, we&#8217;ll add:</p>
+<pre name="code" class="php">
+&lt;p&gt;This product uses the Flickr API but is not endorsed or certified by Flickr.&lt;/p&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>
+That&#8217;s everything we need to produce a page that displays the latest 21 photos as thumbnails with a simple Prev / Next navigation.  Just like <a href="http://nettuts-fd.iampaulburgess.co.uk" title="the homepage on the demo">the homepage on the demo</a>. Next up: the page that displays our photo. </p>
+<h3>Step 5 &#8211; Build a Page to Display Single Photos</h3>
+<div class="tutorial_image">
+   <img src="http://nettuts.s3.amazonaws.com/491_flickr/singlePage.jpg" alt="Single Page" />
+</div>
+<p>
+Now that we have our thumbnails, we need a page to show the full image  when one is clicked on. Here is the code for photo.php, which the  thumbnails link. We start this page similarly to the index page, but instead  of the page number, we want the id of the photo which has been passed  in the url from our thumbnail page:
+</p>
+<pre name="code" class="php">&lt;?php
+
+// Get id of photo
+$id = isset($_GET['id']) ? $_GET['id'] : NULL;
+
+//include the core file
+require_once('phpFlickr.php');
+
+// Fire up the main phpFlickr class
+$f = new phpFlickr($key);
+
+// cache folder again, permissions set to 777
+$f-&gt;enableCache("fs", "cache");
+</pre>
+<p>
+Now we need to gather some info from  Flickr about the photo such as the photo&#8217;s id number, its dimensions,  where it sits in relation to other photos (context) and the url of the  image. </p>
+<pre name="code" class="php">// access the getInfo method, passing in the photo's id
+$photo = $f-&gt;photos_getInfo("$id", $secret = NULL);
+
+// pass the photo's id to the getSizes method to get the dimensions of our image
+$photosize = $f-&gt;photos_getSizes("$id", $secret = NULL);
+
+// we want the dimensions of the medium size which we get from the $photosize array in the previous line
+$size = $photosize[3];
+
+// again passing the photo's id through we get the context, which tells us which photos are before and after the current id
+$context = $f-&gt;photos_getContext("$id");
+
+//  the buildPhotoURL method does pretty much what you'd expect - build the  photo URL, we pass in $photo and the size we require to return the  image URL e.g.  http://farm4.static.flickr.com/3108/3175330082_0bf4b22e47.jpg
+$photoUrl = $f-&gt;buildPhotoURL($photo, "Medium");
+
+// This tells us who the owner of the photo is.
+// This is an important part to include as we want our gallery to show  only our photos and not pull in other users' photos - more of an  explanation about this in the notes at the end
+$owner = $photo["owner"]["username"];
+
+// We only want the photo if it belongs to us - so if our username  is the same as the owner of the photo... we'll write out the page and  show it
+// more info on this at the end of the tutorial
+if($username == $owner){
+?&gt;
+</pre>
+<p>
+Now we are primed for the rest of the page with the juicy bits. </p>
+<pre name="code" class="php">
+&lt;!DOCTYPE html  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /&gt;
+&lt;!-- Let's get in there straight away and get the photo's title --&gt;
+&lt;title&gt;
+&lt;?php
+// We access the $photo array and grab the title of the photo to use as the document title
+echo $photo[title]
+&nbsp;?&gt;
+&lt;/title&gt;
+&lt;link href="styles.css" rel="stylesheet" type="text/css"&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+
+&lt;h1&gt;Photo gallery&lt;/h1&gt;
+
+&lt;div id="photo"&gt;
+&lt;?php
+// The photo's title once again
+echo"&lt;h2&gt;$photo[title]&lt;/h2&gt;";
+
+// The photo itself, you'll recognise $photoUrl from above where we  built the photo's url, we are also accessing the $size array that we  prepared earlier to get the width and height
+// and the title once again
+// We'll also make it link to the version on Flickr for good measure
+echo"&lt;a href=\"http://flickr.com/photos/$username/$photo[id]/\" title=\"View $photo[title] on Flickr \"&gt;";
+echo"&lt;img src=\"$photoUrl\" width=\"$size[width]\" height=\"$size[height]\" alt=\"$photo[title]\" /&gt;";
+echo"&lt;/a&gt;";
+
+// The photo's description
+echo"&lt;p&gt;$photo[description]&lt;/p&gt;";
+?&gt;
+&lt;/div&gt;&lt;!-- end photo --&gt;
+</pre>
+<p>
+Now we have our photo&#8230; and we are almost done. This last bit may look a bit tricky but don&#8217;t be put off by it. It has to do with the photo&#8217;s context, as in, which photo comes next in  the stream and which one was previous to it. Just like you see on  people&#8217;s Flickr galleries. The reason there seems a lot of code is because for this to work best,  we have to check to see if there is a photo before or after the current  photo. If there isn&#8217;t, we don&#8217;t want a link, instead we insert normal  text and a dummy image (noimg.png).
+</p>
+<pre name="code" class="php">
+&lt;div id="context"&gt;
+&lt;?php
+// if there is a previous photo...
+if($context['prevphoto']['id']){echo"&lt;a  href=\"?id=".$context['prevphoto']['id']."\" title=\"Prev:  ".$context['prevphoto']['title']."\"&gt;&lt;img  src=\"".$context['prevphoto']['thumb']."\" width=\"75\" height=\"75\"  /&gt;&lt;/a&gt;";
+
+} else {
+// if not - show the blank filler image
+echo"&lt;img src=\"noimg.png\" width=\"75\" height=\"75\" alt=\"No photo\" /&gt;";
+};
+
+// if there is a next photo...
+if($context['nextphoto']['id']){echo "&lt;a  href=\"?id=".$context['nextphoto']['id']."\" title=\"Next:  ".$context['nextphoto']['title']."\"&gt;&lt;img  src=\"".$context['nextphoto']['thumb']."\" width=\"75\" height=\"75\"  /&gt;&lt;/a&gt;";
+} else {
+// if not - show the blank filler image
+echo"&lt;img src=\"noimg.png\" width=\"75\" height=\"75\" alt=\"No photo\" /&gt;";
+};
+
+echo"&lt;/div&gt;";
+
+echo"&lt;p&gt;";
+// if there is a previous link, write a link - if not, just the text
+if($context['prevphoto']['id']){echo"&lt;a  href=\"?id=".$context['prevphoto']['id']."\" title=\"Prev:  ".$context['prevphoto']['title']."\"&gt;&amp;laquo; Prev&lt;/a&gt;";}  else {echo"&amp;laquo; Prev";};
+echo" | ";
+// if there is a next link, write a link - if not, just the text
+if($context['nextphoto']['id']){echo"&lt;a  href=\"?id=".$context['nextphoto']['id']."\" title=\"Next:  ".$context['nextphoto']['title']."\"&gt;Next  &amp;raquo;&lt;/a&gt;";}else {echo"Next &amp;raquo;";};
+echo"&lt;/p&gt;";
+?&gt;
+
+&lt;/div&gt;&lt;!-- end context --&gt;
+</pre>
+<p>
+And to finish the page off, we&#8217;ll include a link back to the main gallery, a bit of text for Flickr and close off the html.</p>
+<pre name="code" class="php">&lt;p&gt;&amp;laquo; &lt;a href="/"&gt;Main gallery&lt;/a&gt;&lt;/p&gt;
+
+&lt;!-- To abide by Flickr's terms - you must include this text --&gt;
+&lt;p&gt;This product uses the Flickr API but is not endorsed or certified by Flickr.&lt;/p&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>Hold up! One more thing&#8230; we finish the if  statement from just before the html began&#8230; again, see the notes at  the end about why we do this.</p>
+<pre name="code" class="php">
+&lt;?php
+} // end if for owner
+?&gt;
+</pre>
+<p>
+And there you have it. A photo gallery for your website, powered by your Flickr account. <a title="Take a look at the demo page" href="http://nettuts-fd.iampaulburgess.co.uk" id="yn2.">Take a look at the demo page</a> to review how it looks with a bit of extra markup and styling added. This  is a very basic implementation of the Flickr API; it just scratches the  surface of what you can do, but it does provides a nice photo gallery  for your site/blog which you can easily update and maintain via Flickr. </p>
+<h3>NOTES &amp; EXTRAS</h3>
+<ul>
+<li>
+<p>In this tutorial we are retrieving a user&#8217;s public photos. Within photo.php, we  reference $owner in this tutorial. At this point we are ensuring that  the photo displayed belongs to the owner of the photograph. If we leave  this out, your photo page can pull in any user&#8217;s public photo, and that  is obviously not what we want. This goes back to the advice Flickr provides in <a href="http://www.flickr.com/guidelines.gne">their guidelines</a>.
+</p>
+<p><em><br />
+    You should use the  API to access your own images only or those which you have  permission to use. If you display someone else&#8217;s pictures, you should mention the name of image owner and name of the image. Flickr also say &quot;&#8230;pages on other web sites that display content hosted on flickr.com must  provide a link from each photo or video back to its page on Flickr.&#8221;</em></p>
+</li>
+<li>
+<p>There  are other ways to display your photos using the search method in the  API, but it is a bit more complicated and requires you to provide  authentication &#8211; in other words, use the API to log in and let Flickr  know it really is you &#8211; more info on that can be found <a href="http://phpflickr.com/docs/flickr-authentication/">here.</a>
+</p>
+</li>
+<li> This demo is a very simple example of what you can do with the Flickr  API. You can take it much further and in fact do pretty much everything  Flickr does: get photo sets, show tags and comments, display private  photos, even upload images. Take a look at the API documentation here:  http://www.flickr.com/services/api/ You can cross check the methods  against the phpFlickr.php file.</li>
+<li>
+    Just  as we called in our photos using $photos =  $f-&gt;people_getPublicPhotos($nsid, NULL, 21, $page); you can do the  same with a set. For example, $photos =  $f-&gt;photosets_getPhotos(&#8221;$set&#8221;, $extras, $privacyfilter, 21, $page);  is a way to get 21 photos per page from a set, where $set = the set id  (something like 72157594488289220), then using foreach  ($photos['photo'] as $photo) {&#8230; to get the images etc.
+  </li>
+<li>
+<p>If  you need to see which part of the array you need, you can use print_r()  to list out the array and see how to find to the value you need.  Surround it with &lt;pre&gt; tags to make the output legible.</p>
+</li>
+<li>The  file paths in this demo all work on the assumption that everything is  in the same folder (or all on the root) &#8211; feel free to move stuff about  but be sure to change the paths
+</li>
+<li>Huge thanks to <a href="http://www.dancoulter.com/">Dan Coulter</a> for wrting the excellent <a href="http://phpflickr.com/">phpFlickr</a>. Be sure to take a look around the phpFlickr documentation:  <a href="http://phpflickr.com/docs/">http://phpflickr.com/docs/</a> for more tips and advice on taking things  further
+</li>
+</ul>
+<p><strong>Have fun, and show us what you come up with!</strong></p>
+<ul class="webroundup">
+<li>Follow us on <a href="http://www.twitter.com/nettuts">Twitter</a>, or subscribe to the <a href="http://feeds.feedburner.com/nettuts" title="Nettuts+ RSS Feed">Nettuts+ RSS Feed</a> for the best web development tutorials on the web.</li>
+</ul>
+<p>
+<script type="text/javascript"><!--digg_url = "post permalink (not digg url)"; // -->
+</script><br />
+<script src="http://digg.com/tools/diggthis.js" type="text/javascript"></script></p>
+
+<p><a href="http://feedads.g.doubleclick.net/~a/1w7Ux7RToDxKaQniepgoA8hGmUo/0/da"><img src="http://feedads.g.doubleclick.net/~a/1w7Ux7RToDxKaQniepgoA8hGmUo/0/di" border="0" ismap="true"></img></a><br/>
+<a href="http://feedads.g.doubleclick.net/~a/1w7Ux7RToDxKaQniepgoA8hGmUo/1/da"><img src="http://feedads.g.doubleclick.net/~a/1w7Ux7RToDxKaQniepgoA8hGmUo/1/di" border="0" ismap="true"></img></a></p><div class="feedflare">
+<a href="http://feeds.feedburner.com/~ff/nettuts?a=5UQDOCHtAJo:5Aq_zztlEE0:yIl2AUoC8zA"><img src="http://feeds.feedburner.com/~ff/nettuts?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=5UQDOCHtAJo:5Aq_zztlEE0:F7zBnMyn0Lo"><img src="http://feeds.feedburner.com/~ff/nettuts?i=5UQDOCHtAJo:5Aq_zztlEE0:F7zBnMyn0Lo" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=5UQDOCHtAJo:5Aq_zztlEE0:V_sGLiPBpWU"><img src="http://feeds.feedburner.com/~ff/nettuts?i=5UQDOCHtAJo:5Aq_zztlEE0:V_sGLiPBpWU" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=5UQDOCHtAJo:5Aq_zztlEE0:gIN9vFwOqvQ"><img src="http://feeds.feedburner.com/~ff/nettuts?i=5UQDOCHtAJo:5Aq_zztlEE0:gIN9vFwOqvQ" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=5UQDOCHtAJo:5Aq_zztlEE0:TzevzKxY174"><img src="http://feeds.feedburner.com/~ff/nettuts?d=TzevzKxY174" border="0"></img></a>
+</div><img src="http://feeds.feedburner.com/~r/nettuts/~4/5UQDOCHtAJo" height="1" width="1"/>]]></content:encoded>
+			<wfw:commentRss>http://net.tutsplus.com/tutorials/php/how-to-create-a-photo-gallery-using-the-flickr-api/feed/</wfw:commentRss>
+		<slash:comments>29</slash:comments>
+		<feedburner:origLink>http://net.tutsplus.com/tutorials/php/how-to-create-a-photo-gallery-using-the-flickr-api/</feedburner:origLink></item>
+		<item>
+		<title>Build a Beautiful Carousel with JavaScript from Scratch: New Plus Tutorial</title>
+		<link>http://feedproxy.google.com/~r/nettuts/~3/Onjg8-4Pj4c/</link>
+		<comments>http://net.tutsplus.com/tutorials/plus-tutorials-2/build-a-beautiful-carousel-with-javascript-from-scratch-new-plus-tutorial/#comments</comments>
+		<pubDate>Wed, 11 Nov 2009 20:20:26 +0000</pubDate>
+		<dc:creator>Pablo</dc:creator>
+				<category><![CDATA[Plus]]></category>
+
+		<guid isPermaLink="false">http://net.tutsplus.com/?p=7686</guid>
+		<description><![CDATA[<img src="http://nettutsplus.s3.amazonaws.com/39_carousel/200x200.jpg" alt="Build a Beautiful Carousel with JavaScript from Scratch: New Plus Tutorial" />]]></description>
+			<content:encoded><![CDATA[<p>
+In today&#8217;s PLUS video tutorial, Pablo is going to show you how to create a Flash-like carousel&#8230;without using Flash! By implementing some clever JavaScript techniques, you&#8217;ll learn how to create this beautiful effect. As you&#8217;ll find, it&#8217;s not quite as complicated as you might imagine. It simply requires a solid grasp of Geometry. <a href="http://net.tutsplus.com/about/join-plus/">Join today!</a>
+</p>
+<p><span id="more-7686"></span></p>
+<div class="tutorial_image">
+<a href="http://net.tutsplus.com/about/join-plus/"><br />
+   <img src="http://nettutsplus.s3.amazonaws.com/39_carousel/im2.jpg" alt="Example" /><br />
+</a>
+</div>
+<div class="tutorial_image">
+<a href="http://net.tutsplus.com/about/join-plus/"><br />
+   <img src="http://nettutsplus.s3.amazonaws.com/39_carousel/im3.jpg" alt="Example" /><br />
+</a>
+</div>
+<div class="tutorial_image">
+<a href="http://net.tutsplus.com/about/join-plus/"><br />
+   <img src="http://nettutsplus.s3.amazonaws.com/39_carousel/im6.jpg" alt="Example" /><br />
+</a>
+</div>
+<h3>Join Tuts Plus</h3>
+<div class="tutorial_image"><img src="http://miscfiles.s3.amazonaws.com/banners/nettuts_468x60.jpg" border=0 alt="NETTUTS+ Screencasts and Bonus Tutorials" width=468 height=60></div>
+<p>
+For those unfamiliar, the family of TUTS sites runs a premium membership service called <a href="http://www.tutsplus.com">&#8220;TUTSPLUS&#8221;</a>. For $9 per month, you gain access to exclusive premium tutorials, screencasts, and freebies from <a href="http://net.tutsplus.com">Nettuts+</a>, <a href="psd.tutsplus.com">Psdtuts+</a>, <a href="ae.tutsplus.com">Aetuts+</a>, <a href="audio.tutsplus.com">Audiotuts+</a>, and <a href="vector.tutsplus.com">Vectortuts+!</a> For the price of a pizza, you&#8217;ll learn from some of the best minds in the business. <a href="http://net.tutsplus.com/about/join-plus/">Join today!</a> </p>
+<ul class="webroundup">
+<li>Subscribe to the <a href="http://feeds.feedburner.com/nettuts" title="Nettuts+ RSS Feed">Nettuts+ RSS Feed</a> for more daily web development tuts and articles.</li>
+</ul>
+<p>
+<script type="text/javascript"><!--digg_url = "post permalink (not digg url)"; // -->
+</script><br />
+<script src="http://digg.com/tools/diggthis.js" type="text/javascript"></script></p>
+
+<p><a href="http://feedads.g.doubleclick.net/~a/GIZtO4H8TCS_uqnU6QCllnDS9oo/0/da"><img src="http://feedads.g.doubleclick.net/~a/GIZtO4H8TCS_uqnU6QCllnDS9oo/0/di" border="0" ismap="true"></img></a><br/>
+<a href="http://feedads.g.doubleclick.net/~a/GIZtO4H8TCS_uqnU6QCllnDS9oo/1/da"><img src="http://feedads.g.doubleclick.net/~a/GIZtO4H8TCS_uqnU6QCllnDS9oo/1/di" border="0" ismap="true"></img></a></p><div class="feedflare">
+<a href="http://feeds.feedburner.com/~ff/nettuts?a=Onjg8-4Pj4c:28TO_C7LuMM:yIl2AUoC8zA"><img src="http://feeds.feedburner.com/~ff/nettuts?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=Onjg8-4Pj4c:28TO_C7LuMM:F7zBnMyn0Lo"><img src="http://feeds.feedburner.com/~ff/nettuts?i=Onjg8-4Pj4c:28TO_C7LuMM:F7zBnMyn0Lo" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=Onjg8-4Pj4c:28TO_C7LuMM:V_sGLiPBpWU"><img src="http://feeds.feedburner.com/~ff/nettuts?i=Onjg8-4Pj4c:28TO_C7LuMM:V_sGLiPBpWU" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=Onjg8-4Pj4c:28TO_C7LuMM:gIN9vFwOqvQ"><img src="http://feeds.feedburner.com/~ff/nettuts?i=Onjg8-4Pj4c:28TO_C7LuMM:gIN9vFwOqvQ" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=Onjg8-4Pj4c:28TO_C7LuMM:TzevzKxY174"><img src="http://feeds.feedburner.com/~ff/nettuts?d=TzevzKxY174" border="0"></img></a>
+</div><img src="http://feeds.feedburner.com/~r/nettuts/~4/Onjg8-4Pj4c" height="1" width="1"/>]]></content:encoded>
+			<wfw:commentRss>http://net.tutsplus.com/tutorials/plus-tutorials-2/build-a-beautiful-carousel-with-javascript-from-scratch-new-plus-tutorial/feed/</wfw:commentRss>
+		<slash:comments>23</slash:comments>
+		<feedburner:origLink>http://net.tutsplus.com/tutorials/plus-tutorials-2/build-a-beautiful-carousel-with-javascript-from-scratch-new-plus-tutorial/</feedburner:origLink></item>
+		<item>
+		<title>The Basics of Object-Oriented JavaScript</title>
+		<link>http://feedproxy.google.com/~r/nettuts/~3/3BteVwljtmU/</link>
+		<comments>http://net.tutsplus.com/tutorials/javascript-ajax/the-basics-of-object-oriented-javascript/#comments</comments>
+		<pubDate>Wed, 11 Nov 2009 14:10:24 +0000</pubDate>
+		<dc:creator>Leigh Kaszick</dc:creator>
+				<category><![CDATA[JavaScript & AJAX]]></category>
+		<category><![CDATA[JavaScript]]></category>
+		<category><![CDATA[json]]></category>
+		<category><![CDATA[objects]]></category>
+
+		<guid isPermaLink="false">http://net.tutsplus.com/?p=7670</guid>
+		<description><![CDATA[<img src="http://nettuts.s3.amazonaws.com/490_json/200x200.jpg" alt="The Basics of Object-Oriented JavaScript" />]]></description>
+			<content:encoded><![CDATA[<p>Over recent years, JavaScript has increasingly gained popularity, partly due to libraries that are developed to make JavaScript apps/effects easier to create for those who may not have fully grasped the core language yet. </p>
+<p>While in the past it was a common argument that JavaScript was a basic language and was very &#8217;slap dash&#8217; with no real foundation; this is no longer the case, especially with the introduction of high scale web applications and &#8216;adaptations&#8217; such as JSON (JavaScript Object Notation). </p>
+<p><span id="more-7670"></span></p>
+<p>JavaScript can have all that an Object-Orientated language has to offer, albeit with some extra effort outside of the scope of this article. </p>
+<h3>Let&#8217;s Create an Object</h3>
+<pre name="code" class="javascript">
+    function myObject(){
+
+    };
+</pre>
+<p>Congratulations, you just created an object. There are two ways to<br />
+create a JavaScript object: they are &#8216;Constructor functions&#8217; and<br />
+&#8216;Literal notation&#8217;. The one above is a Constructor function,<br />
+I&#8217;ll explain what the difference is shortly, but before I do, here<br />
+is what an Object definition looks like using literal notation.</p>
+<pre name="code" class="javascript">
+    var myObject = {
+
+    };
+</pre>
+<p>Literal is a preferred option for name spacing so that your JavaScript<br />
+code doesn&#8217;t interfere (or vice versa) with other scripts running on the<br />
+page and also if you are using this object as a single object and not requiring<br />
+more than one instance of the object, whereas Constructor function type<br />
+notation is preferred if you need to do some initial work before the object<br />
+is created or require multiple instances  of the object where each instance<br />
+can be changed during the lifetime of the script. Let&#8217;s continue to build<br />
+on both our objects simultaneously so we can observe what the differences are.</p>
+<h3>Defining Methods and Properties</h3>
+<h4>Constructor version:</h4>
+<pre name="code" class="javascript">
+    function myObject(){
+        this.iAm = 'an object';
+        this.whatAmI = function(){
+            alert('I am ' + this.iAm);
+        };
+    };
+</pre>
+<h4>Literal version:</h4>
+<pre name="code" class="javascript">
+    var myObject = {
+        iAm : 'an object',
+        whatAmI : function(){
+            alert('I am ' + this.iAm);
+        }
+    }
+</pre>
+<p>For each of the objects we have created a property &#8216;iAm&#8217; which contains a<br />
+string value that is used in our objects method &#8216;whatAmI&#8217; which alerts a message. </p>
+<blockquote>
+<p>
+Properties are variables created inside an object and methods are functions created inside an object.
+</p>
+</blockquote>
+<p>Now is probably as good a time as any to explain how to use properties and<br />
+methods (although you would already have done so if you are familiar with a library).</p>
+<p>To use a property first you type what object it belongs to &#8211; so in this case it&#8217;s myObject &#8211;<br />
+and then to reference its internal properties, you put a full stop and then the name of the<br />
+property so it will eventually look like myObject.iAm (this will return &#8216;an object&#8217;).</p>
+<p>For methods, it is the same except to execute the method, as with any function, you must<br />
+put parenthesis after it; otherwise you will just be returning a reference to the function<br />
+and not what the function actually returns. So it will look like myObject.whatAmI()<br />
+(this will alert &#8216;I am an object&#8217;).</p>
+<h4>Now for the differences:</h4>
+<ul>
+<li>The constructor object has its properties and methods defined with the<br />
+    keyword &#8216;this&#8217; in front of it, whereas the literal version does not.</li>
+<li>In the constructor object the properties/methods have their &#8216;values&#8217;<br />
+    defined after an equal sign &#8216;=&#8217; whereas in the literal version, they are<br />
+    defined after a colon &#8216;:&#8217;.</li>
+<li>The constructor function can have (optional) semi-colons &#8216;;&#8217; at the<br />
+    end of each property/method declaration whereas in the literal version<br />
+    if you have more than one property or method, they MUST be separated with<br />
+    a comma &#8216;,&#8217;, and they CANNOT have semi-colons after them, otherwise JavaScript will return an error.</li>
+</ul>
+<p>There is also a difference between the way these two types of object declarations are used.</p>
+<p>To use a literally notated object, you simply use it by referencing its variable name,<br />
+so wherever it is required you call it by typing;</p>
+<pre name="code" class="javascript">
+    myObject.whatAmI();
+</pre>
+<p>With constructor functions you need to instantiate (create a new instance of)<br />
+the object first; you do this by typing;</p>
+<pre name="code" class="javascript">
+    var myNewObject = new myObject();
+    myNewObject.whatAmI();
+</pre>
+<h3>Using a Constructor Function.</h3>
+<p>Let&#8217;s use our previous constructor function and build upon it so it performs some basic<br />
+(but dynamic) operations when we instantiate it.</p>
+<pre name="code" class="javascript">
+    function myObject(){
+        this.iAm = 'an object';
+        this.whatAmI = function(){
+            alert('I am ' + this.iAm);
+        };
+    };
+</pre>
+<p>Just like any JavaScript function, we can use arguments with our constructor function;</p>
+<pre name="code" class="javascript">
+function myObject(what){
+	this.iAm = what;
+	this.whatAmI = function(language){
+		alert('I am ' + this.iAm + ' of the ' + language + ' language');
+	};
+};
+</pre>
+<p>Now let&#8217;s instantiate our object and call its whatAmI method, filling in the required<br />
+fields as we do so.</p>
+<pre name="code" class="javascript">
+    var myNewObject = new myObject('an object');
+    myNewObject.whatAmI('JavaScript');
+</pre>
+<p>This will alert &#8216;I am an object of the JavaScript language.&#8217;</p>
+<h3>To Instantiate or not to Instantiate</h3>
+<p>I mentioned earlier about the differences between Object Constructors and Object Literals and that<br />
+when a change is made to an Object Literal it affects that object across the entire script, whereas when<br />
+a Constructor function is instantiated and then a change is made to that instance, it won&#8217;t affect any<br />
+other instances of that object. Let&#8217;s try an example;</p>
+<p>First we will create an Object literal;</p>
+<pre name="code" class="javascript">
+	var myObjectLiteral = {
+    	myProperty : 'this is a property'
+    }
+
+    //alert current myProperty
+    alert(myObjectLiteral.myProperty); //this will alert 'this is a property'
+
+    //change myProperty
+    myObjectLiteral.myProperty = 'this is a new property';
+
+    //alert current myProperty
+    alert(myObjectLiteral.myProperty); //this will alert 'this is a new property', as expected
+</pre>
+<p>Even if you create a new variable and point it towards the object, it will have the same effect.</p>
+<pre name="code" class="javascript">
+	var myObjectLiteral = {
+    	myProperty : 'this is a property'
+    }
+
+    //alert current myProperty
+    alert(myObjectLiteral.myProperty); //this will alert 'this is a property'
+
+    //define new variable with object as value
+    var sameObject = myObjectLiteral;
+
+    //change myProperty
+    myObjectLiteral.myProperty = 'this is a new property';
+
+    //alert current myProperty
+    alert(sameObject.myProperty); //this will still alert 'this is a new property'
+</pre>
+<p>Now let&#8217;s try a similar exercise with a Constructor function.</p>
+<pre name="code" class="javascript">
+	//this is one other way of creating a Constructor function
+	var myObjectConstructor = function(){
+    	this.myProperty = 'this is a property'
+    }
+
+    //instantiate our Constructor
+    var constructorOne = new myObjectConstructor();
+
+    //instantiate a second instance of our Constructor
+    var constructorTwo = new myObjectConstructor();
+
+    //alert current myProperty of constructorOne instance
+    alert(constructorOne.myProperty); //this will alert 'this is a property'
+
+     //alert current myProperty of constructorTwo instance
+    alert(constructorTwo.myProperty); //this will alert 'this is a property'
+</pre>
+<p>So as expected, both return the correct value, but let&#8217;s change the myProperty for one of the instances.</p>
+<pre name="code" class="javascript">
+	//this is one other way of creating a Constructor function
+	var myObjectConstructor = function(){
+    	this.myProperty = 'this is a property'
+    }
+
+    //instantiate our Constructor
+    var constructorOne = new myObjectConstructor();
+
+    //change myProperty of the first instance
+    constructorOne.myProperty = 'this is a new property';
+
+    //instantiate a second instance of our Constructor
+    var constructorTwo = new myObjectConstructor();
+
+    //alert current myProperty of constructorOne instance
+    alert(constructorOne.myProperty); //this will alert 'this is a new property'
+
+     //alert current myProperty of constructorTwo instance
+    alert(constructorTwo.myProperty); //this will still alert 'this is a property'
+</pre>
+<p>As you can see from this example, even though we changed the property of constructorOne<br />
+it didn&#8217;t affect myObjectConstructor and therefore didn&#8217;t affect constructorTwo. Even if<br />
+constructorTwo was instantiated before we changed the myProperty property of constructorOne,<br />
+it would still not affect the myProperty property of constructorTwo as it is a completely different<br />
+instance of the object within JavaScript&#8217;s memory.</p>
+<p>So which one should you use? Well it depends on the situation, if you only need one object of its kind for<br />
+your script (as you will see in our example at the end of this article), then use an object literal, but if you need several instances of an object, where each instance<br />
+is independent of the other and can have different properties or methods depending on the way it&#8217;s constructed, then use a constructor function.</p>
+<h3>This and That</h3>
+<p>While explaining constructor functions, there were a lot of &#8216;this&#8217; keywords being thrown around<br />
+and I figure what better time to talk about scope!</p>
+<p>Now you might be asking &#8216;what is this scope you speak of&#8217;?&#8217; Scope in JavaScript is function/object based, so that means if you&#8217;re outside<br />
+of a function, you can&#8217;t use a variable that is defined inside a function (unless you use a closure).</p>
+<p>There is however a scope chain, which means that a function inside another function can access a<br />
+variable defined in its parent function. Let&#8217;s take a look at some example code.</p>
+<pre name="code" class="javascript">
+&lt;script type="text/javascript"&gt;
+
+var var1 = 'this is global and is available to everyone';
+
+function function1(){
+
+	var var2 = 'this is only available inside function1 and function2';	
+
+	function function2(){
+
+		var var3 = 'this is only available inside function2';
+
+	}		
+
+}
+
+&lt;/script&gt;
+</pre>
+<p>As you can see in this example, <strong>var1</strong> is defined in the global object<br />
+and is available to all functions and object, <strong>var2</strong> is defined inside function1<br />
+and is available to function1 and function2, but if you try to reference it from the global object<br />
+it will give you the error &#8216;var2 is undefined&#8217;, <strong>var3</strong> is only accessible to function2.</p>
+<p>So what does &#8216;this&#8217; reference? Well in a browser, &#8216;this&#8217; references the window object, so technically<br />
+the window is our global object. If we&#8217;re inside an object, &#8216;this&#8217; will refer to the object itself however<br />
+if you&#8217;re inside a function, this will still refer to the window object and likewise if you&#8217;re inside a method<br />
+that is within an object, &#8216;this&#8217; will refer to the object.</p>
+<p>Due to our scope chain, if we&#8217;re inside a sub-object (an object inside an object), &#8216;this&#8217; will refer to<br />
+the sub-object and not the parent object.</p>
+<p>As a side note, it&#8217;s also worth adding that when using functions like setInterval, setTimeout and eval,<br />
+when you execute a function or method via one of these, &#8216;this&#8217; refers to the window object as these are methods of window, so<br />
+setInterval() and window.setInterval() are the same.</p>
+<p>Ok now that we have that out of the way, let&#8217;s do a real world example and create a<br />
+form validation object!</p>
+<h3>Real world Usage: A Form Validation Object</h3>
+<p>First I must introduce you to the addEvent function which we will create and is a<br />
+combination of ECMAScript&#8217;s (Firefox, Safari, etc.. ) addEventListener() function and<br />
+Microsoft ActiveX Script&#8217;s attachEvent() function.</p>
+<pre name="code" class="javascript">
+    function addEvent(to, type, fn){
+        if(document.addEventListener){
+            to.addEventListener(type, fn, false);
+        } else if(document.attachEvent){
+            to.attachEvent('on'+type, fn);
+        } else {
+            to['on'+type] = fn;
+        }
+    };
+</pre>
+<p>This creates a new function with three arguments, <strong>to</strong> being the DOM object we are attaching<br />
+the event to, <strong>type</strong> being the type of event and <strong>fn</strong> being the function run when<br />
+the event is triggered. It first checks whether addEventListener is supported, if so it will use that, if not it will check<br />
+for attachEvent and if all else fails you are probably using IE5 or something equally obsolete so<br />
+we will add the event directly onto its event property (note: the third option will overwrite any<br />
+existing function that may have been attached to the event property while the first two will add<br />
+it as an additional function to its event property).</p>
+<p>Now let&#8217;s set up our document so it is similar to what you might see when you develop jQuery stuff.</p>
+<p>In jQuery you would have;</p>
+<pre name="code" class="javascript">
+    $(document).ready(function(){
+        //all our code that runs after the page is ready goes here
+    });
+</pre>
+<p>Using our addEvent function we have;</p>
+<pre name="code" class="javascript">
+    addEvent(window, 'load', function(){
+		//all our code that runs after the page is ready goes here
+	});
+</pre>
+<p>Now for our Form object.</p>
+<pre name="code" class="javascript">
+var Form = {
+
+	validClass : 'valid',
+
+	fname : {
+		minLength : 1,
+		maxLength : 15,
+		fieldName : 'First Name'
+	},
+
+	lname : {
+		minLength : 1,
+		maxLength : 25,
+		fieldName : 'Last Name'
+	},
+
+	validateLength : function(formEl, type){
+		if(formEl.value.length > type.maxLength || formEl.value.length < type.minLength ){
+			formEl.className = formEl.className.replace(' '+Form.validClass, '');
+			return false;
+		} else {
+			if(formEl.className.indexOf(' '+Form.validClass) == -1)
+			formEl.className += ' '+Form.validClass;
+			return true;
+		}
+	},
+
+	validateEmail : function(formEl){
+		var regEx = /^([0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$/;
+		var emailTest = regEx.test(formEl.value);
+		if (emailTest) {
+			if(formEl.className.indexOf(' '+Form.validClass) == -1)
+			formEl.className += ' '+Form.validClass;
+			return true;
+		} else {
+			formEl.className = formEl.className.replace(' '+Form.validClass, '');
+			return false;
+		}
+	},		
+
+	getSubmit : function(formID){
+		var inputs = document.getElementById(formID).getElementsByTagName('input');
+		for(var i = 0; i < inputs.length; i++){
+			if(inputs[i].type == 'submit'){
+				return inputs[i];
+			}
+		}
+		return false;
+	}			
+
+};
+</pre>
+<p>So this is quite basic but can easily be expanded upon.</p>
+<p>To break this down first we create a new property which is just the string name of our 'valid' css class<br />
+that when applied to the form field, adds valid effects such as a green border. We also define our two sub-objects, <strong>fname</strong> and <strong>lname</strong>,<br />
+so we can define their own properties that can be used by methods elsewhere, these properties are <strong>minLength</strong><br />
+ which is the minimum amount of characters these fields can have, <strong>maxLength</strong> which is the max characters<br />
+ the field can have and <strong>fieldName</strong> which doesn't actually get used, but could be grabbed for<br />
+ things like identifying the field with a user friendly string in an error message (eg. 'First Name field is required.').</p>
+<p>Next we create a validateLength method that accepts two arguments: <strong>formEl</strong> the DOM element to validate<br />
+and the <strong>type</strong> which refers to one of the sub-object to use (i.e. fname or lname).<br />
+This function checks whether the length of the field is between the minLength and maxLength range, if it's not<br />
+then we remove our valid class (if it exists) from the element and return false, otherwise if it is then we add the valid class and return true.</p>
+<p>Then we have a validateEmail method which accepts a DOM element as an arguement, we then test this DOM elements value against an<br />
+email type regular expression; again if it passes we add our class and return true and vice versa.</p>
+<p>Finally we have a getSubmit method. This method is given the id of the form and then loops through all input elements inside the specified form<br />
+to find which one has a type of submit (type="submit"). The reason for this method is to return the submit button so we can<br />
+disable it until the form is ready to submit.</p>
+<p>Let's put this validator object to work on a real form. First we need our HTML.</p>
+<pre name="code" class="javascript">
+    &lt;body&gt;
+
+    &lt;form id="ourForm"&gt;
+        &lt;label&gt;First Name&lt;/label&gt;&lt;input type="text" /&gt;&lt;br /&gt;
+        &lt;label&gt;Last Name&lt;/label&gt;&lt;input type="text" /&gt;&lt;br /&gt;
+        &lt;label&gt;Email&lt;/label&gt;&lt;input type="text" /&gt;&lt;br /&gt;
+        &lt;input type="submit" value="submit" /&gt;
+    &lt;/form&gt;
+
+    &lt;/body&gt;
+</pre>
+<p>Now let's access these input objects using JavaScript and validate them when the form submits.</p>
+<pre name="code" class="javascript">
+addEvent(window, 'load', function(){
+
+	var ourForm = document.getElementById('ourForm');
+	var submit_button = Form.getSubmit('ourForm');
+	submit_button.disabled = 'disabled';
+
+	function checkForm(){
+		var inputs = ourForm.getElementsByTagName('input');
+		if(Form.validateLength(inputs[0], Form.fname)){
+			if(Form.validateLength(inputs[1], Form.lname)){
+				if(Form.validateEmail(inputs[2])){ 					 
+
+						submit_button.disabled = false;
+						return true;
+
+				}
+			}
+		}
+
+		submit_button.disabled = 'disabled';
+		return false;
+
+	};
+
+	checkForm();
+	addEvent(ourForm, 'keyup', checkForm);
+	addEvent(ourForm, 'submit', checkForm);
+
+});
+</pre>
+<p>Let's break down this code.</p>
+<p>We wrap our code in the addEvent function so when the window is loaded this script runs.<br />
+Firstly we grab our form using its ID and put it in a variable named <strong>ourForm</strong>, then we grab<br />
+our submit button (using our Form objects getSubmit method) and put it in a variable named <strong>submit_button</strong>,<br />
+and then set the submit buttons disabled attribute to 'disabled'.</p>
+<p>Next we define a checkForm function. This stores all the inputs inside the form field as an array and we attach it to a<br />
+variable named.. you guessed it.. <strong>inputs</strong>!<br />
+Then it defines some nested if statements which test each of the fields inside the inputs array against our Form methods.<br />
+This is the reason we returned true or false in our methods, so if it returns true, we pass that if statement and continue onto the next,<br />
+but if it returns false, we exit the if statements.</p>
+<p>Following our function definition, we execute the checkForm function when the page initially loads and also attach the function to a keyup event<br />
+and a submit event.</p>
+<p>You might be asking, why attach to submit if we disabled the submit button. Well if you are focused on an input field and hit the enter key, it will<br />
+attempt to submit the form and we need to test for this, hence the reason our checkForm function returns true (submits the form) or false (doesn't submit form).</p>
+<h3>Conclusion</h3>
+<p>So we learned how to define the different object types within JavaScript and create properties and methods within them. We also learned a nifty addEvent function and got to use our object in a basic real world example.</p>
+<p>This concludes the basics of JavaScript Object Orientation. Hopefully, this may start you on your way to building your own JavaScript library! If you liked this article and are interested in other JavaScript related topics, post them in the comments as I'd be happy to continue writing them. Thanks for reading.</p>
+<ul class="webroundup">
+<li>Follow us on <a href="http://www.twitter.com/nettuts">Twitter</a>, or subscribe to the <a href="http://feeds.feedburner.com/nettuts" title="Nettuts+ RSS Feed">Nettuts+ RSS Feed</a> for the best web development tutorials on the web.</li>
+</ul>
+<p>
+<script type="text/javascript"><!--digg_url = "post permalink (not digg url)"; // -->
+</script><br />
+<script src="http://digg.com/tools/diggthis.js" type="text/javascript"></script></p>
+
+<p><a href="http://feedads.g.doubleclick.net/~a/phPpAVTNykPlLzqFvCyVCNQUlkY/0/da"><img src="http://feedads.g.doubleclick.net/~a/phPpAVTNykPlLzqFvCyVCNQUlkY/0/di" border="0" ismap="true"></img></a><br/>
+<a href="http://feedads.g.doubleclick.net/~a/phPpAVTNykPlLzqFvCyVCNQUlkY/1/da"><img src="http://feedads.g.doubleclick.net/~a/phPpAVTNykPlLzqFvCyVCNQUlkY/1/di" border="0" ismap="true"></img></a></p><div class="feedflare">
+<a href="http://feeds.feedburner.com/~ff/nettuts?a=3BteVwljtmU:3tOHAKH3Wk8:yIl2AUoC8zA"><img src="http://feeds.feedburner.com/~ff/nettuts?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=3BteVwljtmU:3tOHAKH3Wk8:F7zBnMyn0Lo"><img src="http://feeds.feedburner.com/~ff/nettuts?i=3BteVwljtmU:3tOHAKH3Wk8:F7zBnMyn0Lo" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=3BteVwljtmU:3tOHAKH3Wk8:V_sGLiPBpWU"><img src="http://feeds.feedburner.com/~ff/nettuts?i=3BteVwljtmU:3tOHAKH3Wk8:V_sGLiPBpWU" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=3BteVwljtmU:3tOHAKH3Wk8:gIN9vFwOqvQ"><img src="http://feeds.feedburner.com/~ff/nettuts?i=3BteVwljtmU:3tOHAKH3Wk8:gIN9vFwOqvQ" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=3BteVwljtmU:3tOHAKH3Wk8:TzevzKxY174"><img src="http://feeds.feedburner.com/~ff/nettuts?d=TzevzKxY174" border="0"></img></a>
+</div><img src="http://feeds.feedburner.com/~r/nettuts/~4/3BteVwljtmU" height="1" width="1"/>]]></content:encoded>
+			<wfw:commentRss>http://net.tutsplus.com/tutorials/javascript-ajax/the-basics-of-object-oriented-javascript/feed/</wfw:commentRss>
+		<slash:comments>41</slash:comments>
+		<feedburner:origLink>http://net.tutsplus.com/tutorials/javascript-ajax/the-basics-of-object-oriented-javascript/</feedburner:origLink></item>
+		<item>
+		<title>7AMP – Creating a Development Environment</title>
+		<link>http://feedproxy.google.com/~r/nettuts/~3/e-vqrjYqKW0/</link>
+		<comments>http://net.tutsplus.com/tutorials/php/7amp-creating-a-development-environment/#comments</comments>
+		<pubDate>Tue, 10 Nov 2009 16:51:09 +0000</pubDate>
+		<dc:creator>Dan Wellman</dc:creator>
+				<category><![CDATA[PHP]]></category>
+		<category><![CDATA[7amp]]></category>
+		<category><![CDATA[apache]]></category>
+		<category><![CDATA[windows]]></category>
+
+		<guid isPermaLink="false">http://net.tutsplus.com/?p=7660</guid>
+		<description><![CDATA[<img src="http://nettuts.s3.amazonaws.com/489_7amp/7amp.png" alt="Windows 7, Apache, Mysql and PHP" />]]></description>
+			<content:encoded><![CDATA[<p>Running a local development web server is one of the best ways of learning AJAX; reading up on it is one thing, but being able to pass the raw data back and forth between a browser and  a server is really the <strong>only</strong> way to truly understand what is happening at a fundamental level. To create the dynamic and interactive apps and sites that we&#8217;ve come to know and love, you <strong>need</strong> a development server.</p>
+<p>On Windows systems we really have only a few decent options available; we can use Microsoft&#8217;s Internet Information Services (IIS), which is usually bundled with Ultimate or Business versions of Windows, or we can use Apache, the extremely popular open-source alternative. Remember when Microsoft enjoyed a 90% market share of the browser market? Apache is the MS of the web server world and at some points in its illustrious history has enjoyed almost total domination in its respective field.</p>
+<p><span id="more-7660"></span></p>
+<p>IIS is generally quite easy to configure as it uses a graphical interface and is fairly intuitive, however IIS is geared towards development with the .net framework; .net is a proprietary language and generally you need something like Visual Studio to succeed in building web applications with it. Visual Studio does not come cheap (although free express versions are available and if you&#8217;re really hardcore you could use notepad to write the code) and many people prefer the open-source alternative PHP.</p>
+<p>Similarly, MSSql is a perfectly adequate database solution made by Microsoft, but like its other offerings, is also a proprietary technology. Mysql is free, open-source, and very, very popular. It&#8217;s easy to use, robust and scalable and that&#8217;s why many developers prefer it. To create development environment we really want to spend as little as possible so really our choices here are clear &#8211; Apache as the platform, PHP as the server-side language, and Mysql as the storage technology. But getting all these technologies talking to each other is not quite as straight-forward as running a few installers.</p>
+<h2>Getting Started</h2>
+<p>First of all, we need to download the installers for Apache and Mysql and the files required to run PHP. The installers can be found at the following locations:</p>
+<ul>
+<li>http://httpd.apache.org/download.cgi</li>
+<li>http://dev.mysql.com/downloads/mysql/5.1.html#downloads</li>
+</ul>
+<p>On the above pages choose the appropriate MSI packages for your platform (e.g. x64 or x32) and requirements (you may as well choose the full SSL version of Apache). With PHP however, we don&#8217;t want the installer, we want the zip file that contains all of the PHP files as there is more in this package than you get with the standard installer. It can be found at the following URL:</p>
+<ul>
+<li>http://uk2.php.net/get/php-5.2.11-Win32.zip/from/a/mirror</li>
+</ul>
+<p>There are two different zip files for Windows on the PHP site, make sure you <strong>do not</strong> get the one with NTS (non thread-safe) in the name as this will not work with Apache (which is thread-safe). Before running the installers or unpacking the zip file we just need to do a couple of minor system tasks; we should stop any instant messenger applications temporarily as they can interfere with the Apache installation, and we should disable Windows User Account Control (UAC) as it interferes with the Mysql configuration utility. To disable UAC visit the User Accounts application in the Control Panel:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp1.png" alt="User Accounts"></div>
+<p>In the applet set the slider to the bottom setting:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp2.png" alt="UAC"></div>
+<p>Click the OK button and confirm the very last UAC notification you should ever receive (w00t!), then restart your machine as directed.</p>
+<h3>Installing Apache</h3>
+<p>The first thing we need to install is the Apache web server which serves web pages to browsers following HTTP requests, and forms the foundation of our development environment. Run the installer, click the <strong>next</strong> button to get started and accept the license terms.  Click <strong>next</strong> again and you should then see the following screen:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp3.png" alt="Apache Installer 1"></div>
+<p>Complete the dialog as shown above and click <strong>next</strong> again; on the following screen choose the <strong>Typical</strong> option:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp4.png" alt="Apache Installer 2"></div>
+<p>We can now just keep clicking <strong>next</strong> until the installation occurs. Once finished you should see the Apache icon in the notification area; it should have a green play symbol to indicate that it is running:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp5.png" alt="Apache Icon"></div>
+<p>As a consequence of Apache running successfully, we should be able to open a browser, type <strong>http://localhost</strong> in the address bar and see the following message:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp6.png" alt="It works!"></div>
+<h2>Configuring Apache</h2>
+<p>The web page we&#8217;re seeing is being served from Apache&#8217;s default content-serving directory which is probably located somewhere like this:</p>
+<pre name="code" class="php">C:/Program Files (x86)/Apache Software Foundation/Apache2.2/htdocs</pre>
+<p>That&#8217;s fine, but it will be a bit of a chore having to dig that deep when we want to add or remove files. We can easily configure Apache to server content from a folder that is closer to hand; create a new directory on your <strong>C</strong> drive and call it <strong>apachesite.</strong></p>
+<p>In the Start menu group for Apache there is an option to <strong>Edit the Apache httpd.conf Configuration File</strong>, choose this and a text file will be opened. This is Apache&#8217;s main configuration file; unlike IIS, Apache does not have a GUI for configuration, instead we must edit this text file to make changes to the server. Scroll down to the <strong>Main Server Configuratio</strong>n section, which begins on line 144. On line 177 there should be the <strong>DocumentRoot</strong>  directive, which will be pointing at the directory mentioned above. Change this line so that it points to the directory we created on the <strong>C</strong> drive:</p>
+<pre name="code" class="php">DocumentRoot "C:/apachesite"</pre>
+<p>Just below this directive are several <strong>Directory</strong> directives; you&#8217;ll need to set the second one so that it points to the same path as the <strong>DocumentRoot</strong>:</p>
+<pre name="code" class="php">&lt;Directory "C:/apachesite"></pre>
+<p>Save the file and restart Apache which you can do by left-clicking the icon in the notification area and choosing <strong>Apache2.2 &#8594; Restart</strong>. To veryify that it works create a new HTML file called <strong>index.html</strong> in the new directory and request <strong>localhost</strong> from the browser again:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp7.png" alt="It still works!"></div>
+<h2>Installing PHP</h2>
+<p>Next we can install PHP so that Apache can run PHP files when necessary; create another new directory on the <strong>C</strong> drive and call it <strong>php</strong>, then open the PHP zip that we downloaded and drag the entire contents into the <strong>php</strong> folder. That&#8217;s all we need to do as far as &#8216;installation&#8217; is concerned; all we need to do now is configure Apache to use it.</p>
+<h2>Configuring Apache to use PHP</h2>
+<p>Edit the <strong>httpd.conf</strong> file again; after all of the <strong>AddModule</strong> directives near start of the file add the following new code:</p>
+<pre name="code" class="php">####### PHP Config ###########
+LoadModule php5_module "C:/php/php5apache2_2.dll"
+AddType application/x-httpd-php .php
+PHPIniDir "C:/php"
+##############################</pre>
+<p>Save the file, but don&#8217;t worry about restarting Apache yet as we need to make a couple more changes and restart the computer anyway.</p>
+<h2>Configuring PHP</h2>
+<p>Like Apache, PHP relies on file-based configuration; in the <strong>C:\php</strong> folder rename the file called <strong>php.ini-recommended</strong> to <strong>php.ini</strong>. Now we need to add a <strong>Class Variable</strong> to Windows so that it knows where the PHP files reside. You&#8217;ll need to go back to the <strong>Control Panel</strong> and open the <strong>System</strong> applet. On the <strong>Advanced</strong> tab, near the bottom of the dialog is a button called <strong>Environment Variables</strong> &#8211; click this button and a new dialog will open:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp8.png" alt="Environment Variables"></div>
+<p>The new dialog is divided into 2 sections; in the bottom section select the line that has <strong>Path</strong> as the <strong>Variable</strong> name (you&#8217;ll need to scroll down a bit) and then click the <strong>Edit</strong> button below the second section to open the editor:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp9.png" alt="Edit"></div>
+<p>Go to the end of the <strong>Variable value</strong> line and add the following text to the exsting value:</p>
+<pre name="code" class="php">;C:\php\;</pre>
+<p>This will map to the <strong>php</strong> folder we created on the <strong>C</strong> drive and which we unpacked the PHP files from the zip file into. It is <strong>very</strong> important that you <em>don&#8217;t remove any of the existing text</em> in the <strong>value</strong> (or other programs on your machine, or your entire machine, may stop working) and that you enter the new text exactly as it appears above. Once this is done click <strong>OK</strong> on the three dialog boxes and restart your computer.</p>
+<p>Once your computer has restarted, the Apache icon should still have the green play symbol on it and PHP should be configured successfully. To test it create a page in your text editor and add the following code to it:</p>
+<pre name="code" class="php">&lt;?php phpinfo() ?></pre>
+<p>Save the new file as <strong>phpinfo.php</strong> in the <strong>C:\apachesit</strong>e folder and then request the page by typing the following address in the browser&#8217;s address bar:</p>
+<pre name="code" class="php">http://localhost/phpinfo.php</pre>
+<p>Your browser should display the PHP information page:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp10.png" alt="PHP Info"></div>
+<p>Success! Now we just need to install Mysql and everything is ready.</p>
+<h2>Installing Mysql</h2>
+<p>Run the Mysql installer that we downloaded and keep clicking <strong>Next</strong> until you get to the configuration wizard:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp11.png" alt="Mysql Installer 1"></div>
+<p>Uncheck the <strong>Register</strong> box and then click the <strong>Finish</strong> button.  Click <strong>next</strong> again and then on the following screen choose the default <strong>Detailed Configuration</strong> option:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp12.png" alt="Mysql Installer 2"></div>
+<p>On the next screen choose the <strong>Developer Machine</strong> option:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp13.png" alt="Mysql Installer 3"></div>
+<p>After clicking <strong>Next</strong> on the above screen choose the default option again on the following screen:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp14.png" alt="Mysql Installer 4"></div>
+<p>Go with the defaults that are selected on the next screen too:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp15.png" alt="Mysql Installer 5"></div>
+<p>And again, just go with the default option on the next page:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp16.png" alt="Mysql Installer 6"></div>
+<p>The next screen has both options checked, just keep them checked and move along:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp17.png" alt="Mysql Installer 7"></div>
+<p>Don&#8217;t worry about checking the <strong>Firewall Exception</strong> box, whether this is required will vary depending on your system and firewall so you can do this in a minute manually if need be. Provided you just want the standard Latin character set you can again just choose the default and click <strong>next</strong>:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp18.png" alt="Mysql Installer 8"></div>
+<p>On the next screen keep the defaults, but also check the box to add the executions path to the <strong>Windows Path variable</strong> (we did this manually when configuring PHP):</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp19.png" alt="Mysql Installer 9"></div>
+<p>Enter a new password for the <strong>Root</strong> account and then click <strong>Next</strong> again:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp20.png" alt="Mysql Installer 9"></div>
+<p>On the final screen click the <strong>Execute</strong> button and the configuration changes will be applied:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp21.png" alt="Mysql Installer 10"></div>
+<p>Once the wizard has completed you should see confirmation:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp22.png" alt="Mysql Installer 11"></div>
+<p>At this point you should restart your computer again. You aren&#8217;t prompted to but Windows is fickle and the installation may not run correctly if you don&#8217;t do it. So ensure you do.</p>
+<h2>Testing Mysql</h2>
+<p>Ok, so you&#8217;re back after doing the reboot right? Good. Let&#8217;s just check Mysql is running correctly. In the start menu there should be a <strong>Mysql Command Line Client</strong> application, choose this and enter the password you set when running the Mysql configuration wizard. You should see the following screen:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp23.png" alt="Mysql CLI"></div>
+<p>Enter the following command at the prompt:</p>
+<pre name="code" class="php">show databases;</pre>
+<p>The databases in use should be shown; a <strong>test</strong> database is installed by default:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp24.png" alt="Databases"></div>
+<p>Type the command</p>
+<pre name="code" class="php">use test;</pre>
+<p>The <strong>test</strong> database will be selected:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp25.png" alt="Select Database"></div>
+<p>Let&#8217;s create a basic table; type the following command:</p>
+<pre name="code" class="php">create table users(name varchar(20), age int);</pre>
+<p>This will create a new table called <strong>users</strong> and add two columns to it, one to hold name data consisting of up to 20 variable characters (alphanumeric) and the second to hold age data as an integer. Hit enter and you should get the <strong>Query OK</strong> message to confirm the table was created:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp26.png" alt="Create Table"></div>
+<p>To populate the table with some dummy data use the following command:</p>
+<pre name="code" class="php">insert into users values('Dan', 31);</pre>
+<p>You should get the success message again after you hit enter:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp27.png" alt="Populate Table"></div>
+<p>As a final test we can check that the data has been inserted into the table corectly using the <strong>select</strong> command:</p>
+<pre name="code" class="php">select * from users;</pre>
+<p>Which should show the table and the data we inserted:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp28.png" alt="Table"></div>
+<h2>Configuring PHP to talk to Mysql</h2>
+<p>All we need to do now is configure PHP to talk to Mysql; earlier on we renamed a file to <strong>php.ini</strong> in the <strong>C:\php folder</strong>, open this file now in a text editor. First of all, scroll down to the <strong>Paths and Directories</strong> section and find the <strong>extension_dir</strong> directive on line 536; change it so that it appears as follows:</p>
+<pre name="code" class="php">extension_dir = "./ext"</pre>
+<p>Then scroll down to the <strong>Dynamic Extensions</strong> section which begins on line 628. In the <strong>Windows extensions</strong> section remove the semi-colon from in front of the following lines:</p>
+<ul>
+<li>extension=php_mysql.dll</li>
+<li>extension=php_mysqli.dll</li>
+</ul>
+<p>That&#8217;s all we need to do; save the file and once again restart your machine. After restarting you can check for Mysql support in the <strong>phpinfo.php</strong> page again:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp29.png" alt="PHP Mysql success"></div>
+<p>This is pretty much a guarantee of success, but really we should create one more PHP file so that we can test that we can read the data from our database; in a text editor create the following file:</p>
+<pre name="code" class="php">&lt;?php
+
+  $user = 'root';
+  $password = your_password_here;
+  $database = 'test';
+  $server = 'localhost';
+
+  $connect = mysql_connect($server, $user, $password);
+  $select = mysql_select_db($database, $connect);
+
+  $query = mysql_query('select * from users');
+  $data = mysql_fetch_assoc($query);
+
+  echo 'Hi ' .$data['name']. ' you are ' .$data['age'];
+
+  mysql_close($connect);
+
+?></pre>
+<p>Save this as <strong>phpmysql.php</strong> in the <strong>C:\apachesite</strong> and request it using your browser; you should see the following message:</p>
+<div class="tutorial_image"><img style="max-width: 600px;" src="http://nettuts.s3.amazonaws.com/489_7amp/7amp30.png" alt="Complete"></div>
+<p>If this doesn&#8217;t work, try putting your firewall into training mode and seeing if you get a notification asking whether to allow the application when you run the page.</p>
+<h2>Summary</h2>
+<p>We have now truly succeeded and have the perfect development environment for creating dynamic AJAX-powered pages. Sure, there may be various programs that we can run which will do some or all of the configuration for us, but which may or may not work on the latest version of Windows, but where is the fun in that?! Getting Apache, Mysql and PHP configured manually is an achievement and it gives us the opportunity to learn more about the platforms we&#8217;re using when creating modern web applications.</p>
+<ul class="webroundup">
+<li>Follow us on <a href="http://www.twitter.com/nettuts">Twitter</a>, or subscribe to the <a href="http://feeds.feedburner.com/nettuts" title="Nettuts+ RSS Feed">Nettuts+ RSS Feed</a> for the best web development tutorials on the web.</li>
+</ul>
+<p>
+<script type="text/javascript"><!--digg_url = "post permalink (not digg url)"; // -->
+</script><br />
+<script src="http://digg.com/tools/diggthis.js" type="text/javascript"></script></p>
+
+<p><a href="http://feedads.g.doubleclick.net/~a/-amc5yHjWZ2jZe7KVPCZOgUNHGg/0/da"><img src="http://feedads.g.doubleclick.net/~a/-amc5yHjWZ2jZe7KVPCZOgUNHGg/0/di" border="0" ismap="true"></img></a><br/>
+<a href="http://feedads.g.doubleclick.net/~a/-amc5yHjWZ2jZe7KVPCZOgUNHGg/1/da"><img src="http://feedads.g.doubleclick.net/~a/-amc5yHjWZ2jZe7KVPCZOgUNHGg/1/di" border="0" ismap="true"></img></a></p><div class="feedflare">
+<a href="http://feeds.feedburner.com/~ff/nettuts?a=e-vqrjYqKW0:WoWOyRvQDIM:yIl2AUoC8zA"><img src="http://feeds.feedburner.com/~ff/nettuts?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=e-vqrjYqKW0:WoWOyRvQDIM:F7zBnMyn0Lo"><img src="http://feeds.feedburner.com/~ff/nettuts?i=e-vqrjYqKW0:WoWOyRvQDIM:F7zBnMyn0Lo" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=e-vqrjYqKW0:WoWOyRvQDIM:V_sGLiPBpWU"><img src="http://feeds.feedburner.com/~ff/nettuts?i=e-vqrjYqKW0:WoWOyRvQDIM:V_sGLiPBpWU" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=e-vqrjYqKW0:WoWOyRvQDIM:gIN9vFwOqvQ"><img src="http://feeds.feedburner.com/~ff/nettuts?i=e-vqrjYqKW0:WoWOyRvQDIM:gIN9vFwOqvQ" border="0"></img></a> <a href="http://feeds.feedburner.com/~ff/nettuts?a=e-vqrjYqKW0:WoWOyRvQDIM:TzevzKxY174"><img src="http://feeds.feedburner.com/~ff/nettuts?d=TzevzKxY174" border="0"></img></a>
+</div><img src="http://feeds.feedburner.com/~r/nettuts/~4/e-vqrjYqKW0" height="1" width="1"/>]]></content:encoded>
+			<wfw:commentRss>http://net.tutsplus.com/tutorials/php/7amp-creating-a-development-environment/feed/</wfw:commentRss>
+		<slash:comments>89</slash:comments>
+		<feedburner:origLink>http://net.tutsplus.com/tutorials/php/7amp-creating-a-development-environment/</feedburner:origLink></item>
+	</channel>
+</rss><!--
+This site's performance optimized by W3 Total Cache:
+
+W3 Total Cache improves the user experience of your blog by caching
+frequent operations, reducing the weight of various files and providing
+transparent content delivery network integration.
+
+Learn more about our WordPress Plugins: http://www.w3-edge.com/wordpress-plugins/
+
+Page Caching using memcached
+Database Caching 17/27 queries in 0.015 seconds using memcached
+Content Delivery Network via 
+
+Served from: psdtutsplus.com @ 2009-11-18 13:27:25 -->

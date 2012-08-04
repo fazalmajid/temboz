@@ -2,8 +2,10 @@
 # a writer thread collide. This module wraps a SQLite object with a Python
 # mutex to prevent this from happening inside Temboz
 
-import sys, thread, threading, signal, math, time
+import sys, thread, threading, signal, math, time, traceback
 import param, util
+
+debug_cursors = True
 
 try:
   from sqlite3 import dbapi2 as sqlite
@@ -62,9 +64,14 @@ class SNR:
 # support classes for SQLite3, essentially to catch the OperationalError
 # exceptions thrown when two writers collide
 
+c_opened = dict()
+c_closed = dict()
+
 class PseudoCursor3(object):
   def __init__(self, db):
     self.c = db.cursor()
+    if debug_cursors:
+      c_opened[self.c] = traceback.format_stack()
   def __str__(self):
     return '<SQLite3 Cursor wrapper>'
   def __repr__(self):
@@ -73,8 +80,20 @@ class PseudoCursor3(object):
     return iter(self.c)
   def __getattr__(self, name):
     return getattr(self.c, name, None)
+  def close(self):
+    self.c.close()
+    if debug_cursors:
+      c_closed[self.c] = traceback.format_stack()
   def execute(self, *args, **kwargs):
     global db
+    if debug_cursors and self.c in c_closed:
+      print >> param.log, 'INVALID CURSOR USE FOR %r' % self.c
+      print >> param.log, 'Cursor alloc call was in:\n'
+      print >> param.log, '-' * 78
+      print >> param.log, ''.join(c_opened[self.c])
+      print >> param.log, 'Cursor close call was in:\n'
+      print >> param.log, '-' * 78
+      print >> param.log, ''.join(c_closed[self.c])
     # SQLite3 can deadlock when multiple writers collide, so we use a lock to
     # prevent this from happening
     if args[0].split()[0].lower() in ['insert', 'update', 'delete', 'create'] \
@@ -219,7 +238,7 @@ def rebuild_v_feed_stats(db, c):
   if sql:
     c.execute('drop view v_feeds_snr')
   c.execute("""create view v_feeds_snr as
-select feed_uid, feed_title, feed_html, feed_xml,
+select feed_uid, feed_title, feed_html, feed_xml, feed_pubxml,
 julianday('now') - last_modified as last_modified,
 ifnull(interesting, 0) as interesting,
 ifnull(unread, 0) as unread,
@@ -391,6 +410,7 @@ if not c.fetchone()[0]:
   c.execute("""create table fm_feeds (
 	feed_uid	integer primary key,
 	feed_xml	varchar(255) unique not null,
+	feed_pubxml	varchar(255),
 	feed_etag	varchar(255),
 	feed_modified	varchar(255),
 	feed_html	varchar(255) not null,
@@ -471,8 +491,22 @@ if not c.fetchone()[0]:
   db.commit()  
   print >> param.log, 'done.'
 
+c.execute("""select count(*) from sqlite_master
+where name='fm_feeds' and sql like '%feed_pubxml%'""")
+if not c.fetchone()[0]:
+  print >> param.log, 'WARNING: upgrading table fm_feeds to add feed_pubxml...',
+  c.execute("""alter table fm_feeds add column feed_pubxml varchar(255)""")
+  db.commit()  
+  print >> param.log, 'done.'
+
+c.execute("select count(*) from sqlite_master where name='fm_settings'")
+if not c.fetchone()[0]:
+  print >> param.log, 'WARNING: creating table fm_settings...',
+  c.execute("""create table fm_settings (
+	name		varchar(255) primary key,
+	value		text not null
+  )""")
 # we have to recreate this view each time as param.decay may have changed
 mv_on_demand(db, c)
-c.execute("""drop view v_feeds_snr""")
 rebuild_v_feed_stats(db, c)
 db.commit()  

@@ -1,6 +1,7 @@
 create table fm_feeds (
 	feed_uid	integer primary key,
 	feed_xml	varchar(255) unique not null,
+	feed_pubxml	varchar(255),
 	feed_etag	varchar(255),
 	feed_modified	varchar(255),
 	feed_html	varchar(255) not null,
@@ -72,6 +73,11 @@ create table fm_tags (
 	primary key(tag_item_uid, tag_name, tag_by)
 );
 create index fm_tags_name_i on fm_tags (tag_name);
+
+create table fm_settings (
+	name		varchar(255) primary key,
+	value		text not null
+);
 
 create view top20 as
   select

@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<title type="text">Russell Beattie</title>
+	<subtitle type="text" />
+	<updated>2010-03-10T20:52:30-08:00</updated>
+	<id>http://www.russellbeattie.com/blog/atom</id>
+	<author>
+		<name>Russell Beattie</name>
+		<email>russ@russellbeattie.com</email>
+	</author>
+    
+
+	<logo>http://www.russellbeattie.com/blog/images/me4small.jpg</logo>
+	<atom10:link xmlns:atom10="http://www.w3.org/2005/Atom" rel="self" type="application/atom+xml" href="http://feeds.russellbeattie.com/RussellBeattieWeblog" /><feedburner:info xmlns:feedburner="http://rssnamespace.org/feedburner/ext/1.0" uri="russellbeattieweblog" /><atom10:link xmlns:atom10="http://www.w3.org/2005/Atom" rel="hub" href="http://pubsubhubbub.appspot.com/" /><entry>
+		<title type="html"><![CDATA[Drinking from the Firehose]]></title>
+		<link href="http://www.russellbeattie.com/blog/drinking-from-the-firehose" />
+		<author>
+			<name>Russell Beattie</name>
+			<email>russ@russellbeattie.com</email>
+		</author>
+		<id>http://www.russellbeattie.com/blog/drinking-from-the-firehose</id>
+		<updated>2010-03-10T20:52:30-08:00</updated>
+		<published>2010-03-10T20:52:30-08:00</published>
+		<content type="html"><![CDATA[<p><img src="http://www.russellbeattie.com/blog/media/twittergraph.png" alt="[image]" /></p>
+<p>This post is about my attempts to figure out how to best view Twitter and Facebook updates. I still haven't figured it out, and though I've been meaning to write this post for a while, I was hoping to have developed some sort of solution or system to expound upon, but I don't.</p>
+<p>Let me, instead, expound on what I've noticed so far.</p>
+<p>First, let me describe how I use Twitter, and to a lesser extent, Facebook. With Twitter, I follow, at this moment, 245 accounts. None of these accounts have been added for any reason except for me thinking that what that person has tweeted in the past is interesting, and that I want to hear what they say. In other words, I haven't followed someone just because they followed me. Depending on your point of view, 245 people may seem like a lot or a little, but when you combine industry people, official accounts, friends, co-workers and contacts, it adds up rather quickly. (And I'll tell you the truth, I'm not a very social person. I'm sure the real "networkers" out there are following a lot more than this.)</p>
+<p>So because I use my own custom news reader, my Twitter timeline feed has been stored in a MySQL database which I've been using to tweak my Tweet-reading experience. And now, I can look at it from a historical perspective as well: Since last November (the last time I purged the DB for whatever reason), I've gotten over 98,000 updates. In more specific terms, every 15 minutes, 24 hours a day, for the past 130 days, I've been storing every tweet I would normally get online.</p>
+<p>98,000 tweets / 130 days = 743 tweets a day on average.</p>
+<p>That's a lot of updates in 5 months, (and that's not counting the Facebook updates, which I also read). In fact, if you look at the chart I made above, the average doesn't really show the real story - the number of tweets can vary between 600 on a slow day to well over 1,000 on a busy day. Except for the Christmas holidays, when everyone took a break it seems. Some tweeters are more verbose like Michael Gartenberg (who's tweeted 3850 times in that period, or around 30 times a day average), and others are much less so, but regardless, the total number of tweets stays north of the 600 mark daily.</p>
+<p>Let me say, it's basically *impossible* to keep up with 600+ updates a day. I've tried.</p>
+<p>I'm talking about reading each and every tweet from each of my contacts. Not filtering in any way, but simply re-organizing and re-formatting the tweets to see if there's some magic way of keeping up. The best I've been able to do so far is to organize the Tweets on their own page, sorted by contact. <a href="http://www.russellbeattie.com/blog/media/mytweetreader.html">Here's a snapshot of what that looks like</a>. By organizing tweets and Facebook updates by person, they become almost blog-like in their nature. It definitely helps for skimming, so if someone I know that hasn't posted for a while shows up, I'll see their pic and can stop and read more closely. I can also see when someone is just being overly verbose, and skim all their tweets all at once.</p>
+<p>I've also tried:</p>
+<ul>
+<li>To organize the tweets based on hourly and half-hourly increments.</li>
+<li>Adding Javascript so I don't see an individual's tweets unless I click to expand that section.</li>
+<li>Highlighting the updates that have links, calling them out for better scanning</li>
+<li>Formatting tweets like one big paragraph per person (getting rid of the date)</li>
+</ul>
+<p>In addition to ways of seeing *everything*, I've also tried filtering:</p>
+<ul>
+<li>Based on "favorites", ranked from 1 to 5, with the top ranked users sections expanded, and the rest collapsed.</li>
+<li>Filtering to show only those tweets with links</li>
+<li>Filtering based on keywords I find interesting (mobile, etc.)</li>
+</ul>
+<p>None of these options really works, for various reasons. Either you miss context, or you miss the flow of a conversation, or you end up just focusing a fewer amount of users and should just unfollow the rest anyways.</p>
+<p>So, if it's impossible to *really* keep up with a moderate amount of users, the question in my mind is, how the hell is Twitter and Facebook continuing to do so well, and increase in popularity? Well, I've come up with a couple of terms that I think explains how these services actually work. The first is what I'm calling "Phased Attention" - a time period in which a user views a stream of updates filled with "Transient Information" - data that by it's very nature is expected to come and go.</p>
+<p>To be more specific, "Phased Attention" is pretty much how anyone who uses a Twitter client deals with the constant flow of updates - they turn it on, participate, and then turn it off. Anything posted outside that time period is of little concern. Unlike my attempts to archive and read every tweet from every user, every day, it seems the only real way to consume the constant flow of data from contacts, data sources, etc. is during the time when that information is freshest, not later.</p>
+<p>"Transient Information" is information that you don't necessarily need to worry about. If it was, it would (and should be) sent by different means than a status update stream. This is an important concept that I think we're starting to see is fundamental to Twitter and Facebook. First, because trying to force-fit important information into the stream is just a *bad* idea, and secondly, because we're learning how much transient information is actually out there. What my friend ate for lunch, what someone's opinion of a TV show is, or even stock prices and sports scores are all bits of info that are valuable only for a certain amount of time, to a certain audience.</p>
+<p>It may seem obvious, but I think these concepts are a fundamental change from how we've viewed communication and information consumption up until now. Email is expected to be durable for the most part, and messages build up in your inbox until you actively do something about them. This is similar to the way news feeds have been read up until now, as well. Emails and news items don't get deleted after a certain amount of time, do they? (Though many of us wish they would). However, that is essentially what happens to tweets when they disappear "below the fold" - they might as well be gone forever.</p>
+<p>On the flip side of this, chat - including group chats and IM - expect that all participants actively and synchronously take part - you wouldn't bother typing if there was no one around to respond to you. (Though IRC might be the exception here). These systems expect the *participants* to be durable, if someone drops from a IM during the middle of a conversation, it usually means the end of the conversation.</p>
+<p>Basically, these two ideas means that Twitter and Facebook are fundamentally different in that users don't expect either the participants nor the messages themselves to be durable.</p>
+<p>Let's imagine how <a href="http://mediamemo.allthingsd.com/20100310/twitters-wallflowers-get-a-little-less-timid-but-its-still-a-service-for-watchers-not-talkers/">an average person signs up to Twitter and starts using it</a> for the first time. The 245 people I follow average about 5 posts a day - so assuming this new user has typical friends, the first few days or so of using Twitter is very similar to other services she may have used before. She posts an update, her friends see it, and they respond, etc. After she adds her 10th friend, however, she's now getting nearly 50 updates a day, and she's noticing that her friends don't always respond to her tweets like they did at the beginning. But enough do so that she keeps on updating her status - it's fun and cathartic, thinking that there's all these people out there that are interested in what she's doing. Soon however, she's following or friended a few dozen people - including some services like CNN, or her favorite singer or actor - and a few dozen more are following her back. The number of updates have skyrocketed to nearly 200 a day or more. Every once in a while she'll "catch up" to what a friend wrote over the weekend or something, but in general, more and more messages fly by without her seeing them. But that's ok because when she's online, she responds or retweets the ones she thinks are interesting, and also sees responses from one or two people that's following her. This keeps her interest going like a Pavlovian randomized reward and the process continues.</p>
+<p>The key takeaway from all this analysis is simply a better understanding of the true nature of these new data streams:</p>
+<ul>
+<li>You can't consume all the data in a typical update stream. There's basically no way of organizing, sorting or prioritizing it that would let you see it *all*. The best you can do is filter, which by its very definition means you're missing something.</li>
+<li>Any stream which contains mostly Transient Information - like status updates - can't replace any medium that contains vital information. The chances that the updates will be missed - *even by those subscribed to them* - is just too high.</li>
+<li>Phased Attention is the 21st century's answer to Information Overload. As the data volume increases, more of it will simply be skimmed, missed or outright ignored outside a set time-frame or context. What's different is that unlike in years past, this is becoming an accepted, and expected way of dealing with communication and information, and it's bound to bleed back into other technologies such as email.</li>
+</ul>
+<p>I have a suspicion that the novelty of the transient information stream is going to wear off. I'm not sure when, but it feels to me like a pyramid scheme at the moment, driven by the power of numbers of people who are involved. For every one person who becomes disillusioned with Twitter due to the lack of interaction or return on time invested, there are two people who replace them. But there comes a point when that growth has to end because there really is a finite number of people out there. For example, I've got roughly 1200 people following me on Twitter. If I update enough, eventually a few of them will actually see my tweets and respond. If they don't, it's pretty much like a write-only medium, which isn't very compelling. After a while, as less and less people bother responding and are not replaced by others, the desire to update your status will simply disappear. Retweets, liking and favorites, etc. help this a bit, as it lowers the bar in terms of effort to give feedback, but even this eventually is going to fade in value.</p>
+<p>So where does it all go from here? I don't know. I'm still struggling to understand the growth of social networks, and every day I'm starting to wonder if the emperor has any clothes on or not. Something doesn't seem right, I just can't figure out exactly what it is. The idea that people are able and willing to use a Twitter client all day, with multiple accounts and windows, subscribing to hundreds of people's updates, posting 30 or more times a day, and are still able get anything done in their life seems far fetched to me. Are all those people really content with missing 90% of the information streaming through? I guess maybe they are, because that's the only way you'd be able to manage it. This just doesn't seem right at all.</p>
+<p>Or maybe it's just me. I'm just not sure...</p>
+<p>-Russ</p>
+]]></content>
+	</entry>
+	<entry>
+		<title type="html"><![CDATA[What we really wanted was a MacPad not an iPad]]></title>
+		<link href="http://www.russellbeattie.com/blog/what-we-really-wanted-was-a-macpad-not-an-ipad" />
+		<author>
+			<name>Russell Beattie</name>
+			<email>russ@russellbeattie.com</email>
+		</author>
+		<id>http://www.russellbeattie.com/blog/what-we-really-wanted-was-a-macpad-not-an-ipad</id>
+		<updated>2010-01-28T00:29:44-08:00</updated>
+		<published>2010-01-28T00:29:44-08:00</published>
+		<content type="html"><![CDATA[<p><img src="http://www.russellbeattie.com/blog/media/ipad.png" alt="[image]" /></p>
+<p>Like every other techy out there, I also have an opinion about the newly launched iPad. I'm not going to wade in the minutia of various hardware or software decisions like the wonky micro SIM and the lack of SDCards or USB ports, nor the lack of background tasks or Flash support, or the pricing etc. Instead, I want to focus on the bigger picture, and came up with a couple thoughts I wanted to share.</p>
+<p>First, if you've read this blog before, you already know that I'm in love with the idea of tablets as the next generation of computing devices, so I was looking forward to Apple's announcement as much or more than anyone. In fact, I've been expecting a tablet from Apple for, oh, about 7 years now. No, really. I wrote this post back in 2003 - <a href="http://www.russellbeattie.com/notebook/1003179.html">Urgh! Steve, we all want a Mac Tablet!</a> - when Steve gave an interview categorically denying any interest in tablets (or mobile phones), and have been patiently waiting since then. Well, it took the better part of a decade, but here it is.</p>
+<p>But is it really what we wanted?</p>
+<p>I think there's a lot of disappointment out there that the iPad is not in fact a Mac Tablet (i.e. a "MacPad"), but is instead essentially a larger iPhone. What I mean is that rather than shrink the open, Intel-based MacBook platform down to a smaller, touch-screen focused device - Apple chose instead to enlarge the dedicated, closed platform of the iPhone. It's an interesting - and probably obvious - choice for Apple and Jobs, but one that's causing some consternation for the rest of us who were really looking forward to a much different machine.</p>
+<p>I think all of us really wanted to see a MacPad, not an iPad.</p>
+<p>Not a peripheral gadget, but a primary computing device that can be used by touch if desired. Something that can function on a desktop with a keyboard and mouse, and then be picked up and tossed into a bag, or to be used while sitting down on a couch or in bed with only the touch screen for the interface.</p>
+<p>That's not to say the iPad is somehow fundamentally broken because it's not a general purpose computer. Far from it - I'd still use it if I had one in my house right now. I've been using smaller dedicated web tablets for quite a few years now starting with the Nokia Maemo devices such as the N810 and more recently the Archos 5 Android web tablet. They're great to have when you want to get away from your computer, but still consume what is an ever-increasing amount of digital content. I wouldn't use those devices as my primary computers by any stretch - even on short trips, I'd rather take along a netbook - but to browse the web, listen to music, have access to IM or read eBooks? They're a fantastic gadget for this stuff. The Apple iPad will be a larger, and in some ways, nicer version of these devices, so for many people it'll be perfect.</p>
+<p>But again, I'm not sure this sort of limited functionality is what most of us really want in a next generation computing device - which is what tablets really are meant to be. Not only in terms of use cases - where does a 10" computer fit in, really, where does it normally live and charge, etc. - but also just based on cost. Most people don't have $500 to spend on a computer and another $500 to spend on a purposefully-limited adjunct tablet device. They're going to want to get the one device that does it all - from work, to communication, to eBooks, to entertainment.</p>
+<p>There's something else though, besides my gut feeling of what consumers want, where my opinion is as useless as anyone else's - it's that Apple's competitors in this burgeoning category aren't as behind as they were when Apple launched the iPhone.</p>
+<p>It's really, really hard to jump exponentially forward in technology - a 10x improvement only happens once every generation or so. Apple's already done it twice - once with the Mac GUI in the 1980s and again with the iPhone in the 2000s. To do it again so soon is asking quite a lot from any company - technology just doesn't work that way. When the iPhone was announced, Jobs said that they were at least 3 years ahead of their competitors. That turned out to be incredibly accurate - it's 2010 and we're just now seeing devices that compete in terms of usability and functionality of the iPhone launched back in 2007. It was a huge leap forward in technology in a variety of ways, and as a result has created a massive ecosystem around it, and a huge following as well.</p>
+<p>The iPad, however, is only an incremental improvement on the iPhone's huge leap forward. It is not, by any stretch, 3 years ahead of its competitors. And in many ways - the ability to install standard software, for example - it's already behind.</p>
+<p>The fact is that *every* single feature that was announced today in terms of the iPad's core functionality can already be done on the web tablets sitting in my house. Right now. Yes, my Archos 5 has only half the screen size (though 3/4s the resolution), but that will be changing quickly I'm sure. And it's open. And it runs Flash. And this is just from the "gadget" guys. How easy will it be for traditional laptop and "netbook" makers to slap a touch screen on their devices, get rid of their keyboards and create general purpose "netpads" that have all the functionality of the iPad and more? Quite easy. We've already seen a variety of PC-tablets announced at CES, including HP's very lustworthy "slate" computer.</p>
+<p>In other words, Apple is wading into a market that's got a lot of players in it already. They did this before with the iPod and cleaned house, so hey it may not really mean much. But I think in this category there's a big difference. In many ways, it brings them back into direct competition with Microsoft again, who's been working on Tablet versions of their OS for years, but now also add in Nokia and Google as well. These are not inconsequential competitors.</p>
+<p>Anyways, in summary, I think if Apple had come out with a MacPad today, they would have provided that one device we've all been waiting for, kept well ahead of the market, and been a real force to reckon with. But by incrementally improving on the iPhone platform, I think they may have consigned themselves to a niche market instead.</p>
+<p>Seriously - the first time you go to Starbucks and see a guy sitting with his legs crossed, sipping his latte and browsing his iPad, what are you going to think? "Poseur". The iPhone had that same effect at first, until everyone realized how amazing and useful it really was - not only that but it replaced something you already had, your old cruddy mobile phone. The iPad though? Is an add-on, an extra, a not-really-needed. And thus just screams to the world, "I have more money than brains, look how cool I think I am!" That's going to be a real perception problem I think.</p>
+<p>All that said, you know I'm going to buy one, right? Right. :-)</p>
+<p>-Russ</p>
+]]></content>
+	</entry>
+	<entry>
+		<title type="html"><![CDATA[Touching and Tablets]]></title>
+		<link href="http://www.russellbeattie.com/blog/touching-and-tablets" />
+		<author>
+			<name>Russell Beattie</name>
+			<email>russ@russellbeattie.com</email>
+		</author>
+		<id>http://www.russellbeattie.com/blog/touching-and-tablets</id>
+		<updated>2010-01-06T14:59:09-08:00</updated>
+		<published>2010-01-06T14:59:09-08:00</published>
+		<content type="html"><![CDATA[<p><img src="http://www.russellbeattie.com/blog/media/crunchpad.jpg" alt="[image]" /></p>
+<p>I've written about this a bit before when describing the benefits of the iPhone, but I think what many people are missing in their analysis of the coming tablet computers - summarized as 'who needs one?' - is they're forgetting the benefits of combining the user interface with the human interaction device. In other words, touch changes everything.</p>
+<p>Apple wasn't the first to do touch by any stretch - Nintendo launched the DS years before with it's secondary touch screen as an integral part of the device - but I think many of us didn't realize how revolutionary touch interfaces are until after the Cambrian level explosion of apps that came when Apple opened up their platform. Getting rid of the mouse and keys, and letting users interact *directly* with what they're looking at on a computer screen opens a whole new level of design, flexibility and ease of use that we haven't seen before in computers.</p>
+<p>In other words, no more mental associations need to be made between hardware and software on the part of the user. You don't move this thing over here (keyboard, mouse, joystick, buttons, etc.), to affect a change on the screen over there. You directly touch the thing you are working with. This is a very big deal.</p>
+<p>I have to admit, I first thought Nintendo's touch screen was a gimmick. And honestly at the time (2004), I was sick of using a stylus on various devices and thought it was just the wrong direction to go. But then after you first play a game like Nintendogs where you 'throw' a Frisbee by flinging it across the screen, and 'pet' your dog by rubbing its head, you quickly realize that there's a real visceral sensation you get from that way of interacting with a game that is completely removed if you have to use something like a joystick or mouse to do the same thing. Trust me, I've played the game on a PC using an emulator where your mouse can take the place of the stylus, but it just isn't the same at all.</p>
+<p>I honestly don't know if Apple realized the importance of touch at first - I think they were looking for the simplest/cleanest UI solution and decided on a touch screen as it was the most flexible in terms of creating and iterating an interface. Besides the basic multi-touch gestures, there really wasn't much in the original launched apps beyond the WIMP style interaction we're used to on a PC.</p>
+<p>No, it was the thousands of app designers out there that have really embraced the touch paradigm that pushed the limits on what could be done, blowing all of our minds. The first app that did this for me was <a href="http://www.intua.net/">BeatMaker</a>. It had dials, switches, multiple screens, tap-pad areas for creating your own rhythms, and more. The results are studio-quality tracks from 'a phone'. WOW! That's when I realized what was happening. It wasn't that the iPhone was some special magical device that had special technical abilities that allowed this. That sort of app could have been made before - but by forcing developers to *only* use touch, rather than mapped buttons, etc., there resulted in an burst of innovation.</p>
+<p>Now here's the paradox of touch - there are certain killer apps that it just isn't good for. Email and Tetris to name just two. One one level this makes sense - these apps were invented long before touch interactivity was even considered, and thus optimized for their hardware counterparts. People much prefer using a Blackberry to do their mobile email and I can't imagine typing this post out without an actual physical keyboard. And I'm pretty good at Tetris, but there's no way that I could ever get the same scores I can on a Nintendo DS while playing the iPhone version - no matter how much I practiced. Some activities just need physical buttons.</p>
+<p>That said, it's quite apparent that just about *every other* app out there can benefit greatly from the pliability of touch interfaces. Especially for those not quite familiar with the device, or for apps that require very specialized interfaces such as most games. Newbies benefit from being able to engage directly with whatever on-screen widget it is they're trying to manipulate - without having to also deal with learning about some piece of hardware. Games benefit from being able to be as creative as they like, and mapping controls to anywhere around the screen.</p>
+<p>So this brings me to Tablets, which are obviously going to be the new hotness this year. I've been big on web tablets since I first got my Nokia 770 years and years ago. Having a convenient little touch screen device which lets you do your basic web activities without having to be at a desk is awesome. On your couch, bed or toilet at home, and in the back seat, train or plane while traveling, or under the table at a boring meeting is just some of the places where their form factor and functionality fits perfectly.</p>
+<p>Here's the thing though, I don't think tablets are going to be the Next Big Thing until they finally take true advantage of their touch capability. Right now, most tablets that have been launched use the same sort of WIMP interfaces and paradigms we see on a desktop. This just really doesn't do it. This is why, to me, I'm more excited about Android-powered tablets or whatever it is Apple comes up with, than I am about Windows/Mac or Ubuntu powered tablet based PCs. The paradigm has to change - your finger is not a mouse, and no keyboard means that data entry is a pain as well. I don't want to use any sort of stylus either - I stopped using a pen regularly for work back in the early 90s, and I don't want to start again. (This means that Windows tablets really need to be rethought).</p>
+<p>One last thought I'll put out there is that the transition to touch interfaces for every-day apps provides a similar paradigm shift that the web provided a decade ago. Many of us developers were stuck in the 90s using a widget toolbox in Delphi, Visual Basic, etc. that consisted of menus, drop downs and the occasional creative .OCX object that did something interesting. Then came the web, and now ANY image could have a link and later on fire off Javascript actions and incorporate AJAX. User interfaces lost their staleness and every site you visit has a unique way of navigating their content and interacting with the site. What was lost in consistency, was gained by a good design's ability to engage users in various ways. Some didn't do it well, of course - think of badly designed pages or, worse, 100% Flash sites. Gah! But many did succeed, and the result has been whole new way of getting and presenting information and applications.</p>
+<p>What's interesting is that I have a feeling the two revolutions are going to bump up against each other before too long, because many websites are just a pain to use with your finger - you end up having to zoom in to click some tiny icon, which then launches some Ajaxy pop-up which you don't see because you're zoomed in, etc. This will only get worse with bigger/higher resolution screens. It should be interesting to see if there's a push for "touch-friendly" websites, similar to the way there was once a push for mobile-friendly sites, or whether browsers/OS developers will find a more general solution.</p>
+<p>Anyways, no matter what, I'm looking forward to the tablet revolution! :-)</p>
+<p>-Russ</p>
+<p>P.S. Personally, I wish everyone would just call tablets "Netpads", since I own the netpad.me domain, and then it'd be worth something... but I guess the "tablet" nomenclature is sticking, so I'll use that. :-)</p>
+]]></content>
+	</entry>
+	<entry>
+		<title type="html"><![CDATA[The man in the arena]]></title>
+		<link href="http://www.russellbeattie.com/blog/the-man-in-the-arena" />
+		<author>
+			<name>Russell Beattie</name>
+			<email>russ@russellbeattie.com</email>
+		</author>
+		<id>http://www.russellbeattie.com/blog/the-man-in-the-arena</id>
+		<updated>2009-12-28T17:39:03-08:00</updated>
+		<published>2009-12-28T17:39:03-08:00</published>
+		<content type="html"><![CDATA[<p><em>It is not the critic who counts; not the man who points out how the strong man stumbles, or where the doer of deeds could have done them better. The credit belongs to the man who is actually in the arena, whose face is marred by dust and sweat and blood; who strives valiantly; who errs, who comes short again and again, because there is no effort without error and shortcoming; but who does actually strive to do the deeds; who knows great enthusiasms, the great devotions; who spends himself in a worthy cause; who at the best knows in the end the triumph of high achievement, and who at the worst, if he fails, at least fails while daring greatly, so that his place shall never be with those cold and timid souls who neither know victory nor defeat.</em></p>
+<p>-<a href="http://en.wikipedia.org/wiki/The_man_in_the_arena">Teddy Roosevelt, April 23, 1910</a>.</p>
+<p>-Russ</p>
+]]></content>
+	</entry>
+	<entry>
+		<title type="html"><![CDATA[Pinging Feedburner using PHP and curl without XML-RPC]]></title>
+		<link href="http://www.russellbeattie.com/blog/pinging-feedburner-using-php-and-curl-without-xml-rpc" />
+		<author>
+			<name>Russell Beattie</name>
+			<email>russ@russellbeattie.com</email>
+		</author>
+		<id>http://www.russellbeattie.com/blog/pinging-feedburner-using-php-and-curl-without-xml-rpc</id>
+		<updated>2009-12-27T18:15:22-08:00</updated>
+		<published>2009-12-27T18:15:22-08:00</published>
+		<content type="html"><![CDATA[<p>So I wanted to ping Feedburner's server to immediately read my feed and update my Twitter account, but unlike the more modern PubsubHubbub spec, the current weblog ping servers out there all use XML-RPC, which is sort of outmoded in terms of web standards. I honestly thought they would have added a simple GET service in by now, but apparently not.</p>
+<p>Anyways, I only wanted to make the ping a small addition to my current blogging software and didn't feel like adding a whole XML-RPC library (like you can <a href="http://phpxmlrpc.sourceforge.net/">find here</a>), nor did I want to depend on PHP's included-sometimes-if-you-compile-it <a href="http://www.php.net/manual/en/book.xmlrpc.php">xmlrpc functions</a>. But looking out on the web turned out zero examples of just pinging a server with just curl (or none that I could find at any rate).</p>
+<p>So after getting the ping working using a library, I dumped out the request to see what was happening, and then duplicated it in plain text using curl. Works like a charm (at least on ping.feedburner.com), and has no dependencies.</p>
+<p>Here's the code in case it's useful to you:</p>
+<pre>
+<code>
+
+$weblog_name = 'Russell Beattie Weblog';
+$weblog_url = 'http://feeds.feedburner.com/RussellBeattieWeblog';
+$ping_url = 'http://ping.feedburner.com';
+
+$request = &lt;&lt;&lt;EOT
+&lt;?xml version="1.0" encoding="iso-8859-1"?&gt;
+&lt;methodCall&gt;
+&lt;methodName&gt;weblogUpdates.ping&lt;/methodName&gt;
+&lt;params&gt;
+ &lt;param&gt;
+  &lt;value&gt;
+   &lt;string&gt;$weblog_name&lt;/string&gt;
+  &lt;/value&gt;
+ &lt;/param&gt;
+ &lt;param&gt;
+  &lt;value&gt;
+   &lt;string&gt;$weblog_url&lt;/string&gt;
+  &lt;/value&gt;
+ &lt;/param&gt;
+&lt;/params&gt;
+&lt;/methodCall&gt;
+EOT;
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $ping_url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true );
+curl_setopt($ch, CURLOPT_POST, true );
+curl_setopt($ch, CURLOPT_POSTFIELDS, trim($request)); 
+$result = curl_exec($ch);
+curl_close($ch); 
+
+</code>
+</pre>
+<p>I'll let you go ahead and make a function out of it by yourself, I just threw it inline with my blog post method, so I didn't care. :-)</p>
+<p>Hope that helps someone someday!</p>
+<p>-Russ</p>
+]]></content>
+	</entry>
+	<entry>
+		<title type="html"><![CDATA[More Feedburner/Twitter Testing...]]></title>
+		<link href="http://www.russellbeattie.com/blog/more-feedburnertwitter-testing" />
+		<author>
+			<name>Russell Beattie</name>
+			<email>russ@russellbeattie.com</email>
+		</author>
+		<id>http://www.russellbeattie.com/blog/more-feedburnertwitter-testing</id>
+		<updated>2009-12-27T16:49:10-08:00</updated>
+		<published>2009-12-27T16:49:10-08:00</published>
+		<content type="html"><![CDATA[<p>So weird! Feedburner is adding new features, but their old features like their ping server are <a href="http://feedburnerstatus.blogspot.com/2009/12/status-of-ping-is-throttled-errors.html">having issues</a>. I wonder if they're doing some sort of wholesale update, or if they're just understaffed, or what.</p>
+<p>Anyways, this post is supposedly updating their ping server via XML-RPC, and should notify Twitter within seconds. Crossing my fingers!</p>
+<p>:-)</p>
+<p>-Russ</p>
+<p>Update: Yep, it worked instantly. Cool!</p>
+]]></content>
+	</entry>
+	<entry>
+		<title type="html"><![CDATA[Mag+ is the future of all computing]]></title>
+		<link href="http://www.russellbeattie.com/blog/mag-is-the-future-of-all-computing" />
+		<author>
+			<name>Russell Beattie</name>
+			<email>russ@russellbeattie.com</email>
+		</author>
+		<id>http://www.russellbeattie.com/blog/mag-is-the-future-of-all-computing</id>
+		<updated>2009-12-18T15:21:03-08:00</updated>
+		<published>2009-12-18T15:21:03-08:00</published>
+		<content type="html"><![CDATA[<p><object width="400" height="225"><param name="allowfullscreen" value="true" />
+<param name="allowscriptaccess" value="always" />
+<param name="movie" value="http://vimeo.com/moogaloop.swf?clip_id=8217311&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=ffffff&amp;fullscreen=1" />
+<embed src="http://vimeo.com/moogaloop.swf?clip_id=8217311&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=ffffff&amp;fullscreen=1" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="400" height="225" /></object></p>
+<p><a href="http://vimeo.com/8217311">Mag+</a> from <a href="http://vimeo.com/bonnier">Bonnier</a>.</p>
+<p>Check out this amazing video from Bonnier about a digital magazine concept they call Mag+. It's focused on replicating the experience of reading a magazine, but the size, shape and interactivity of the tablet mockup they have is emblematic of where all computing is going, I'm convinced. The simplicity of the device is just gorgeous - a big screen in a thin, light frame, with multi-touch actions for control. Perfect. Simple, but powerful.</p>
+<p>I'm not the only one that thinks that tablets are going to be huge - the buzz around the CrunchPad before it died shows that. But seeing how the iPhone and iPod Touch has opened up "casual" computing to a whole new class of users who may have never have used a computer outside of specific tasks (like for work) shows where we're headed, in my opinion. Rather than just those who are able to deal with the relatively arcane experience of keyboard, mouse, and WIMP interfaces, tablets will let anyone consume digital content as easily as picking up a magazine.</p>
+<p>I'm amazed we haven't seen more effort put into creating something like the video above for real. Sooo cool.</p>
+<p>-Russ</p>
+]]></content>
+	</entry>
+	<entry>
+		<title type="html"><![CDATA[Feedburner to Twitter is working]]></title>
+		<link href="http://www.russellbeattie.com/blog/feedburner-to-twitter-is-working" />
+		<author>
+			<name>Russell Beattie</name>
+			<email>russ@russellbeattie.com</email>
+		</author>
+		<id>http://www.russellbeattie.com/blog/feedburner-to-twitter-is-working</id>
+		<updated>2009-12-16T18:19:03-08:00</updated>
+		<published>2009-12-16T18:19:03-08:00</published>
+		<content type="html"><![CDATA[<p>Now I'm testing out how fast the update gets added to Twitter. I'm pinging http://pubsubhubbub.appspot.com/ with curl when I save the new post, so in theory it should route immediately. It seems to work already for the hosted feed updates (my last post went through really fast), so now we'll see if it makes it through as quickly to Twitter.</p>
+<p>By the way, there's a bug right now (which is being fixed) where if you have rel="alternate" in your Atom feed links (like I did), Feedburner would barf on it. So I took those out and poof, it seems to be working.</p>
+<p>-Russ</p>
+<p>Update: The feed has been updated, but Twitter took a while... I thought it was broken again at first. Maybe even mentioning that attribute in the body of my post hosed it? :-)</p>
+]]></content>
+	</entry>
+	<entry>
+		<title type="html"><![CDATA[Testing Feedburner to Twitter again...]]></title>
+		<link href="http://www.russellbeattie.com/blog/testing-feedburner-to-twitter-again" />
+		<author>
+			<name>Russell Beattie</name>
+			<email>russ@russellbeattie.com</email>
+		</author>
+		<id>http://www.russellbeattie.com/blog/testing-feedburner-to-twitter-again</id>
+		<updated>2009-12-16T17:22:05-08:00</updated>
+		<published>2009-12-16T17:22:05-08:00</published>
+		<content type="html"><![CDATA[<p>Just testing to see if this post gets picked up by Feedburner and sent to Twitter. There was some bug, let's see if they rolled out the fix yet. :-)</p>
+<p>-Russ</p>
+]]></content>
+	</entry>
+	<entry>
+		<title type="html"><![CDATA[Socializing with Feedburner]]></title>
+		<link href="http://www.russellbeattie.com/blog/socializing-with-feedburner" />
+		<author>
+			<name>Russell Beattie</name>
+			<email>russ@russellbeattie.com</email>
+		</author>
+		<id>http://www.russellbeattie.com/blog/socializing-with-feedburner</id>
+		<updated>2009-12-14T16:45:56-08:00</updated>
+		<published>2009-12-14T16:45:56-08:00</published>
+		<content type="html"><![CDATA[<p><img src="http://www.russellbeattie.com/blog/media/feedburner-twitter.png" alt="[image]" /></p>
+<p>I love Feedburner mostly because I *hate* RSS/Atom robots. By pointing my feed url at Google's servers, I don't have to deal with their constant pinging my server. Others like Feedburner because of all the stats, etc. but I could care less about that - just being able to offload all those useless pings from my server is worth enough that I'd actually pay for it if I had to. It's that much of a service.</p>
+<p>This morning I was reading about the new goo.gl URL shortening service, and it took me a bit to realize that this was because of <a href="http://adsenseforfeeds.blogspot.com/2009/12/socializing-your-feed-with-twitter.html">a new Feedburner option</a> which automagically posts new blog updates to Twitter. That's awesome! I had been meaning to sign up to Tweetfeed or something for a while, but never got around to it. Since I already have my feed set up using Feedburner, it was a two second setup - it even uses OAuth, so I didn't have to give up my username/password. Perfect!</p>
+<p>Hmmm... looking at the options, is Google "embracing and extending" Twitter?</p>
+<p>Think about it for a sec. The thing that I dislike most about Twitter is that they are holding on to all my updates. I've been thinking about setting up a "personal" status blog on my own server, which would simply repost to Twitter (and Facebook) when I write to it, so that way I get to control my own content like I do with my blog. But most people would never have that ability, so they just use Twitter. But now they can, for example, use WordPress or Blogger to create status updates, and use Feedburner to post those updates to Twitter - with or without a title and links - it'd look exactly like any other Twitter post.</p>
+<p>All that would be needed to cut Twitter out of this loop would be the ability to keep track of updates immediately. <a href="http://adsenseforfeeds.blogspot.com/2009/07/whats-all-hubbub-about-pubsubhubbub.html">Feedburner already supports PubsubHubbub</a>, which means that any feed they're tracking is already "real time". All that's needed next is some sort of integrated "real time news reader" and I can't imagine it'd be that hard to integrate that into Google Reader. Think of a form at the top of the page which lets you update any weblog via standard APIs. Then, through the power of PubsubHubbub that update would immediately be pushed out to other real time news readers and clients, and lastly Twitter for those who still use it.</p>
+<p>Pretty straight forward if you ask me. Maybe what's missing is some meta data marking a post as "real time" but maybe not. Either way, I bet we start to see these sorts of services popping up before the end of next year.</p>
+<p>-Russ</p>
+]]></content>
+	</entry>
+	<entry>
+		<title type="html"><![CDATA[AOL's new logo]]></title>
+		<link href="http://www.russellbeattie.com/blog/aols-new-logo" />
+		<author>
+			<name>Russell Beattie</name>
+			<email>russ@russellbeattie.com</email>
+		</author>
+		<id>http://www.russellbeattie.com/blog/aols-new-logo</id>
+		<updated>2009-12-14T12:24:53-08:00</updated>
+		<published>2009-12-14T12:24:53-08:00</published>
+		<content type="html"><![CDATA[<p><img src="http://www.russellbeattie.com/blog/media/aolbluemonster.jpg" alt="[image]" /></p>
+<p>I like AOL's new logo design a lot. It's sort of similar to Nokia's OVI branding (which I like as well), but reversed - you can see "through" OVI's logo to different backgrounds, whereas AOL's plain white logo sits on top of different backgrounds (or punches a hole through it, depending on how you look at it). It's definitely a cool new logo treatment for the modern age which gets away from the basic <a href="http://en.wikipedia.org/wiki/Paul_rand">Paul Rand</a> style logos which were made to look good in black and white in the yellow pages.</p>
+<p>But what I don't understand is the "Aol." typography, if you want to call it that. AOL is an acronym for America Online, yet the new type has "A" capitalized and the "ol" in lowercase like "Aol" is a pronounceable word. But it's not. No one says "AY-ohl" to my knowledge. What's even more confusing is the period at the end... like "Aol." is short for a longer word, like "prof." is short for "professor". But, again, it's not an abbreviation for a single word - it's an acronym.</p>
+<p>Basically, it just doesn't make sense. Not that it has to, but you know, it just seems dumb to me. It feels like a designer just threw together a bunch of ways of writing the letters A O and L on some mockups, and then a committee (or a harried new CEO) who didn't think about it picked one they liked best and they went with it.</p>
+<p>Here's my best guess at the reasoning behind the logo - ready for it? Someone really liked a dot at the end of the logo, which - like the exclamation point at the end of Yahoo! - gave the word mark a sense of being it's own sentence. AOL-period. As in, "AOL has everything you need, no need to go anywhere else. Done." But, the problem is that "aol." and "AOL." don't give that same connotation, do they? You'd be looking for the missing "com" at the end of those words. So the only way to make it work is by making AOL seem like a word: "Aol.", which visually seems to convey that message, despite being grammatically dubious.</p>
+<p>Personally, I think that AOL should have just rebranded all together. Despite the name recognition, the AOL brand has been badly damaged over the past couple decades and won't ever recover. They own *so* many good domains, they could have easily chosen a new and interesting one to relaunch themselves under any of them: love.com, seed.com, aim.com, sphere.com, wow.com and when.com to name a few. Any would have been a better choice than trying to refresh the aging AOL brand, IMHO.</p>
+<p>Regardless, like I said, I like the new design treatment a lot, if not the actual letters in the logo. It's something that only an established big company could get away with, I think, but I bet it starts a new logo trend.</p>
+<p>By the way, I like the "blue monster" version best. He's cute. :-)</p>
+<p>-Russ</p>
+]]></content>
+	</entry>
+	<entry>
+		<title type="html"><![CDATA[Happy MITS-MAS!! December 1975 Altair Christmas Ad from Popular Mechanics]]></title>
+		<link href="http://www.russellbeattie.com/blog/happy-mits-mas-december-1975-altair-christmas-ad-from-popular-mechanics" />
+		<author>
+			<name>Russell Beattie</name>
+			<email>russ@russellbeattie.com</email>
+		</author>
+		<id>http://www.russellbeattie.com/blog/happy-mits-mas-december-1975-altair-christmas-ad-from-popular-mechanics</id>
+		<updated>2009-12-01T21:11:45-08:00</updated>
+		<published>2009-12-01T21:11:45-08:00</published>
+		<content type="html"><![CDATA[<table>
+<tr>
+<td><a href="http://www.russellbeattie.com/images/altair/page33.jpg"><img src="http://www.russellbeattie.com/images/altair/page33_thumb.jpg" alt="[image]" /></a></td>
+<td><a href="http://www.russellbeattie.com/images/altair/page34.jpg"><img src="http://www.russellbeattie.com/images/altair/page34_thumb.jpg" alt="[image]" /></a></td>
+</tr>
+<tr>
+<td><a href="http://www.russellbeattie.com/images/altair/page35.jpg"><img src="http://www.russellbeattie.com/images/altair/page35_thumb.jpg" alt="[image]" /></a></td>
+<td><a href="http://www.russellbeattie.com/images/altair/page36.jpg"><img src="http://www.russellbeattie.com/images/altair/page36_thumb.jpg" alt="[image]" /></a></td>
+</tr>
+<tr>
+<td><a href="http://www.russellbeattie.com/images/altair/page37.jpg"><img src="http://www.russellbeattie.com/images/altair/page37_thumb.jpg" alt="[image]" /></a></td>
+<td><a href="http://www.russellbeattie.com/images/altair/page38.jpg"><img src="http://www.russellbeattie.com/images/altair/page38_thumb.jpg" alt="[image]" /></a></td>
+</tr>
+<tr>
+<td><a href="http://www.russellbeattie.com/images/altair/page39.jpg"><img src="http://www.russellbeattie.com/images/altair/page39_thumb.jpg" alt="[image]" /></a></td>
+<td><a href="http://www.russellbeattie.com/images/altair/page40.jpg"><img src="http://www.russellbeattie.com/images/altair/page40_thumb.jpg" alt="[image]" /></a></td>
+</tr>
+</table>
+<p>I was messing with my home networking, and I finally got around to linking up my TiVo and my Ubuntu Media Center, which brought to fore a downloaded version of <a href="http://www.pbs.org/nerds/">Triumph of the Nerds</a>, so I started watching it (for like the 80th time). It starts with the story of the <a href="http://en.wikipedia.org/wiki/MITS_Altair">MITS Altair 8800</a>, the first personal computer, and its influence on Microsoft and other companies that came after.</p>
+<p>This reminded me of my prized copy of Popular Mechanics from December 1975 which I found in a rented cabin in Yosemite about 10 years ago. The famous <a href="http://en.wikipedia.org/wiki/File:Popular_Electronics_Cover_Jan_1975.jpg">Altair launch issue</a> was from January of that year, but in December, MITS bought a eight page advertisement promoting their products and peripherals, which 34 years later, is pretty fun to read. So I decided to scan the ad and post them here in the spirit of the season.</p>
+<p>Enjoy!</p>
+<p>:-)</p>
+<p>-Russ</p>
+]]></content>
+	</entry>
+	<entry>
+		<title type="html"><![CDATA[Android is splintering, just not how you think it is... ]]></title>
+		<link href="http://www.russellbeattie.com/blog/android-is-splintering-just-not-how-you-think-it-is" />
+		<author>
+			<name>Russell Beattie</name>
+			<email>russ@russellbeattie.com</email>
+		</author>
+		<id>http://www.russellbeattie.com/blog/android-is-splintering-just-not-how-you-think-it-is</id>
+		<updated>2009-11-21T20:16:42-08:00</updated>
+		<published>2009-11-21T20:16:42-08:00</published>
+		<content type="html"><![CDATA[<p><img src="http://www.russellbeattie.com/blog/media/android_big.jpg" alt="[image]" /></p>
+<p>Not to be too condescending, but I think it's amusing to watch the old-school techies in the past couple years finally get around to paying attention to the mobile market that I've had been ranting about exclusively for the better part of the past decade. <a href="http://www.tbray.org/ongoing/When/200x/2009/11/20/Android-Splintering">Tim Bray has a post today</a> about the Android OS, dismissing the idea that there's splintering going on, or that it's a big deal if there is.</p>
+<p>Well, actually, I have to say there *is* splintering going on, and it *is* a big deal. The splintering isn't in the traditional "binary break" style that one normally thinks of when using that word, but it's still just as deadly to a platform.</p>
+<p>First, back up and look at a couple other mobile OSs, and how they handle compatibility:</p>
+<p>The iPhone and iPod touch run the latest and greatest version of their OS because of Apple's tight control of the both the hardware and software, and ability to ignore the carriers. Pretty much, no matter if you have a first generation EDGE version of the iPhone from 2007 or the latest 3GS, the OS is the same, and thus the user and developer experience doesn't change either. (Except in instances where the iPod touch user doesn't pony up the $10 or whatever to upgrade - or a developer uses the new graphics hardware on the 3GS). We can all see the benefits of this model.</p>
+<p>On the flip side of this is what Nokia (my employer) has done, which is slightly tweak the Symbian/S60 version of the OS for every new phone that comes out, letting the carrier add additional tweaks, and not really attempting to homogenize the various versions through (rarely applied) updates. Multiply the number of models per year (10-20) by the number of years Symbian's been around by the various custom carrier modifications, and you get complete developer and consumer confusion.</p>
+<p>Okay, now you have Android. I recently bought an Archos 5, which I'm very happy with as a gadget. However, it's stuck on v1.5 of the Android OS right now, with a custom GUI extension added to make up for its lack of keys and home/menu/back. Additionally, it's not a Google-sanctioned distribution, so there's no Android Marketplace, nor able to run any of the important Google apps: Mail, IM, Maps, etc.</p>
+<p>So is there binary compatibility? Sure. But only if the apps are written very carefully (or simply). Case in point is an SSH app I downloaded for the Archos 5 - it assumes you have a real keyboard, and thus doesn't provide the ability to use important combos (like control+anything) since the virtual keyboard doesn't do that. It's thus unusable, though it does "run". Additionally there are apps that ACTUALLY just won't run for whatever reason - no idea why maybe API calls or assumptions about file structure that shouldn't have been made, or whatever. On the Archos forums, users are swapping lists of apps that work and don't work (or semi-work).</p>
+<p>As a technical user I can understand why this is happening - the platform is young, manufacturers are rushing out products and there hasn't been any sort of standards put in place yet.</p>
+<p>But to a normal end user - they expect that if they see the friendly green Android on the box, that it'll work the same and run the same software as their shiny new smartphone. Right now that isn't the case, nor will it be in the foreseeable future. Compare the Verizon Droid to the T-Mobile G1 to the Archos 5 to the various other products (eBooks, HTC phones) running on Android and you get very vastly different experiences and capabilities. Whether or not that's "technically" splintering doesn't matter - it makes things difficult for everyone involved: developers, consumers, manufacturers, etc.</p>
+<p>Can you write an .apk application that runs on all devices? Theoretically, yes. But not without testing on an ever-increasing number of gadgets. This is the problem that Symbian and J2ME phones have, and the road that Android is headed down if Google doesn't reign in control and quickly. Differing OS versions, different manufacturer and carrier customizations, and various app stores are going to hobble the OS before too long.</p>
+<p>All that said, I still believe it's got a real future after using it regularly on my Archos, but Google needs to get control quickly. I had originally suggested using the Android logo and trademark (which they may or may not own) as a way of ensuring compatibility, but it seems the logo is creative commons. So maybe they need to come up with an "Android Approved" logo or something.</p>
+<p>Regardless, the point is that splintering is happening, right now, and it's not something that'll fix itself without serious effort. The alternative is not a free-market style survival of the fittest, but simply a broken ecosystem and a lost opportunity to create a truly open alternative to the Apple mobile juggernaut.</p>
+<p>-Russ</p>
+]]></content>
+	</entry>
+	<entry>
+		<title type="html"><![CDATA[Stuff Twitter needs next (IMHO)]]></title>
+		<link href="http://www.russellbeattie.com/blog/stuff-twitter-needs-next-imho" />
+		<author>
+			<name>Russell Beattie</name>
+			<email>russ@russellbeattie.com</email>
+		</author>
+		<id>http://www.russellbeattie.com/blog/stuff-twitter-needs-next-imho</id>
+		<updated>2009-11-12T14:12:42-08:00</updated>
+		<published>2009-11-12T14:12:42-08:00</published>
+		<content type="html"><![CDATA[<p><img src="http://www.russellbeattie.com/blog/media/twitter.png" alt="[image]" /></p>
+<p>I'll admit, a few years ago, I was wrong about the original vision of Twitter. I thought it was good, but too simple and was positive they were going to have to create "channels" or "groups" in order for it to be really useful. But as its growth has shown us, focusing on simplicity was the right thing to do.</p>
+<p>But now Twitter is adding new features like Lists and Retweet views, and I'm wondering if they're going off the rails a bit. They're losing the core simplicity of the service, but instead of addressing issues that have been out there for a while, they're going off in areas that I don't particularly understand. Maybe that's because I'm out of touch with how 90% of the people use Twitter... but there's some stuff seems head-slappingly obvious to me that are being ignored, and I don't know why.</p>
+<p>* <strong>Longer tweets</strong> - Come on! We've been suffering with the minimum length for a couple years now, and it's starting to get ridiculous. I'm not talking about making tweets unlimited in length, but how about doubling that number to give us more room to put our thoughts out there? The length of the updates being so limited has created a whole sub-industry of URL shorteners for little to no reason. Even Evan promotes "LongUrlPlease", which is a plug-in that automagically de-references short urls. That wouldn't be necessary if there was enough room to begin with. Also, it makes adding any intelligible comments on Retweets almost impossible.</p>
+<p>* <strong>Integrated multimedia</strong> - Pownce had this down years ago and Facebook as well. If someone includes a URL of an image or a video, I want to see a thumbnail of it in the stream. Why do I have to constantly click through to see what's up?</p>
+<p>* <strong>Live tweets on the home page and in Twitter Search</strong> - They just made a change to the main home page where, like in the search, it'll tell you when you have new tweets, but it still makes you refresh to see them. Why not do what they did with the Election coverage and show the new tweets and have the flow automatically stop if you click the pause button or hover your mouse over a tweet? Why are whole other companies like Brizzly adding basic new UI features like this instead of Twitter?</p>
+<p>* <strong>Better profile pages and homepage customization</strong> - The profile information in Twitter is ridiculously small, and no one can really use their Twitter page as their home page because it barely gives any customization options. All those hacks out there to add more detailed personal information statically contained in the background image is a hint that maybe this would be a good place to add some more effort, no? Also, why are tweet URLs just a lonely update on an essentially blank page? Many tweets are made within a context - why not give the option of having tweet URLs point to a full-day's list of tweets, #anchoring to the specific tweet id? It'd be much more micro-blog like, and easier to catch up on a friend's tweets. Also, it'd be nice to click on a specific tweet and see the full conversation around it as well - since the reply IDs have been recorded for some time now, this is technically possible, and very useful.</p>
+<p>* <strong>Better archives</strong> - If you miss a tweet, it's pretty much gone. Unless you do what I do, and use a custom news reader which saves everyone's tweets since I last marked them as read, but organizes them by user and date. I can browse through a thousand tweets posted over the past day or so in a few minutes to see what people have been up to. No one else does it that way though, which leads to double posting, lost threads of conversation, etc.</p>
+<p>* <strong>Have the option of auto-tweeting account activity</strong> - I like within Facebook seeing when someone adds another person as a friend. Why not have this as an option within Twitter? And why not have the Favorites star actually do something useful - like automatically firing off a Retweet update?</p>
+<p>* <strong>Can we have XMPP/Jabber support back now?</strong> - Enough said really. It can't be that hard, is it? They've got $100MM hanging around, surely Twitter can hire some Erlang folk or something that can get it working stably?</p>
+<p>Okay, that's enough. You get the idea - none of this in my opinion are drastic changes that would have too huge an effect on the service. Much is just adding in features, functionality and customization options that would enhance how people use the service, doing little to affect the overall site and be much less drastic than things like Lists and Retweet displays. What do you think?</p>
+<p>-Russ</p>
+]]></content>
+	</entry>
+	<entry>
+		<title type="html"><![CDATA[Q Launcher Widget v3]]></title>
+		<link href="http://www.russellbeattie.com/blog/q-launcher-widget-v3" />
+		<author>
+			<name>Russell Beattie</name>
+			<email>russ@russellbeattie.com</email>
+		</author>
+		<id>http://www.russellbeattie.com/blog/q-launcher-widget-v3</id>
+		<updated>2009-10-23T23:39:02-07:00</updated>
+		<published>2009-10-23T23:39:02-07:00</published>
+		<content type="html"><![CDATA[<p><img src="http://www.russellbeattie.com/blog/media/qlauncher3.jpg" width="240" alt="[image]" /></p>
+<p>After using it for a month or so, I decided that I really didn't like the drop down box on my second version of my "quick launch" widget <a href="http://www.russellbeattie.com/blog/q-launcher-widget-for-the-n97">I wrote about</a> in September. I just didn't like the extra couple clicks it took to choose a different type of search rather than the default. So I started messing with it tonight looking to improve the interface a bit. I took a screenshot above.</p>
+<p>Originally, I was thinking I would use a bunch of buttons in a grid like on the home screen - one for each search type - but once I got into it I realized it just looked really bland with just text, no matter how I jazzed up the buttons with CSS. Then I started down the path of making custom logo icons for each service and then stopped myself, backed up and started browsing some good looking iPhone apps for inspiration. I ended up with something I like which is still simple to update with new services. (It actually looks a bit like the <a href="http://www.moubail.com/downloads/isearch-a-web-search-launcher-for-s60-5th-edition/">iSearch widget</a> that was a clone of my original widget, though that wasn't my intention. And iSearch still has some more features as well.)</p>
+<p>One thing I took out was the option to add the widget to the main S60 screen using a "mini-view". It works just as well as an icon or menu choice and doesn't take up an entire row for just a button (and simplifies the CSS quite a bit.)</p>
+<p>You can download the newest version of <a href="http://www.russellbeattie.com/download/qlauncher.wgz">Q Launcher here</a>.</p>
+<p>Anyways, this is definitely one of those "scratch an itch" projects, as I use the app daily. It's very, very useful for getting to the net quickly. I'm making a mental list of really cool things to add someday. For example, an option menu for adding/removing/moving services, history of searches, predictive text for both search terms and internal bookmarks, and the ability to launch on-phone apps like a mobile-Quicksilver. All of that would be possible and relatively easy using the Widget APIs, so it's just a matter of getting around to coding it up. Until then, enjoy!</p>
+<p>-Russ</p>
+]]></content>
+	</entry>
+</feed>

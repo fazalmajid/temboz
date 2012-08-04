@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" media="screen" href="/~d/styles/rss2full.xsl"?><?xml-stylesheet type="text/css" media="screen" href="http://feeds.feedburner.com/~d/styles/itemcontent.css"?><rss xmlns:feedburner="http://rssnamespace.org/feedburner/ext/1.0" version="2.0">
+    <channel>
+        <title>The Quantified Self</title>
+
+ <link>http://www.kk.org/quantifiedself/</link>
+
+ <description /> <copyright>Copyright 2010</copyright> <lastBuildDate>Mon, 01 Nov 2010 09:22:35 -0800</lastBuildDate> <generator>http://www.movabletype.org/?v=4.32-en</generator> <docs>http://blogs.law.harvard.edu/tech/rss</docs> 
+
+<atom10:link xmlns:atom10="http://www.w3.org/2005/Atom" rel="self" type="application/rss+xml" href="http://feeds.feedburner.com/QuantifiedSelf" /><feedburner:info uri="quantifiedself" /><atom10:link xmlns:atom10="http://www.w3.org/2005/Atom" rel="hub" href="http://pubsubhubbub.appspot.com/" /><feedburner:emailServiceId>QuantifiedSelf</feedburner:emailServiceId><feedburner:feedburnerHostname>http://feedburner.google.com</feedburner:feedburnerHostname><item>
+
+  <title>Self-Tracking Tools Review 1</title>
+            <description>&lt;p&gt;This is the first part of a series in which I will review several self-tracking tools. For each tool, I will highlight the features of the tool to help you track and explore data about yourself. There are two goals for these reviews: 1) we want to help users find the right tools for them; and 2) we want to encourage sharing of experiences with these different tools.&lt;/p&gt;
+
+&lt;p&gt; &lt;strong&gt;Zeo&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="http://www.myzeo.com/"&gt;Zeo&lt;/a&gt; is a sleep tracking device, which has two parts. First, there is a black headband that you wear around your head while you sleep. This headband contains the sleep sensors. From my own experience, the headband is comfortable to wear. Second, there is the base station that stores the data from the headband. The base station also serves as the primary way to see your data. In big digital letters, the display shows your personal sleep score or ZQ score and the amount of time you were in &lt;span class="caps"&gt;REM &lt;/span&gt;sleep, light sleep, and deep sleep. The base station can store your ZQ score for two weeks. If you want to look at your data in depth, the Zeo allows you to upload your data to your computer, where you can use visualizations to explore your data. To do this, you have to take the SD card from the base station and transfer the files to your computer. This can be tedious if you must do it everyday, but acceptable if you only want to look at your data on your computer once a week. The display in the base station is usually sufficient for getting a daily sense of your sleep quality. In addition to using Zeo as a way to track your sleep quality, you can also use it as a smart alarm clock. The Zeo will wake you up at you "natural awakening point" based on your sleep patterns.&lt;/p&gt;
+
+&lt;p&gt;More info:&lt;/p&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://www.myzeo.com/pages/44_how_it_works.cfm"&gt;Zeo: How It Works&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+
+
+&lt;p&gt;&lt;img alt="review1-zeo.jpg" src="http://www.kk.org/quantifiedself/review1-zeo.jpg" width="264" height="202" class="mt-image-center" style="text-align: center; display: block; margin: 0 auto 20px;" /&gt;&lt;/p&gt;
+
+&lt;p&gt; &lt;strong&gt;iPod nano&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;I don't know how many people know this, but iPod nanos have a built in pedometer. Using an iPod nano for step counting has several benefits. First, since most people carry their iPods all day, they can track their step counts all day. Second, the iPod nano's small form factor is not a bother to wear. Just clip it on and you will hardly notice it throughout the day. Lastly, you can even keep listening to music all day while you're exercising and the battery will still last all day.&lt;/p&gt;
+
+&lt;p&gt;Unlike the Nike+iPod sport kit, you don't have to buy a specialized Nike shoe with an insert. However, if you already have a Nike+iPod sport kit, you can also use the kit with your iPod nano. At the end of the day when you're done tracking your step counts, you can upload all your data to the Nike+ web site where you can set your daily step goals and check your progress. The web site also has social networking features, so you can share your physical activity information with your friends.&lt;/p&gt;
+
+&lt;p&gt;More info:&lt;/p&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://www.apple.com/ipodnano/features.html"&gt;iPod nano Features&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://walking.about.com/od/prpedometer/fr/ipodpedometer.htm"&gt;iPod nano Pedometer Review&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+
+
+&lt;p&gt;&lt;img alt="review1-ipod-nano.jpg" src="http://www.kk.org/quantifiedself/review1-ipod-nano.jpg" width="325" height="210" class="mt-image-center" style="text-align: center; display: block; margin: 0 auto 20px;" /&gt;&lt;/p&gt;
+
+&lt;p&gt; &lt;strong&gt;Foursquare and WhereDoYouGo&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="http://foursquare.com/"&gt;FourSquare&lt;/a&gt; is a service that makes it easy for you to track the places that you go. You can "check-in" to places that you visit using your mobile phone, such as the iPhone, Android, Blackberry, etc. Foursquare describes itself as "a friend finder, a social city guide, and a game that challenges users to experience new things and rewards them for doing so." &lt;/p&gt;
+
+&lt;p&gt;Did you know you can also use Foursquare to learn which places you frequent the most? Foursquare itself doesn't have the interface to explore your location data, but Steven Lehrburger has created such an interface. Steven created &lt;a href="http://wheredoyougo.net/"&gt;WhereDoYouGo&lt;/a&gt; , a web site that visualizes your FourSquare checkins using heat maps. Heat maps are visualizations that use color to indicate frequency of visits to a particular location. Using WhereDoYouGo, you can easily find which places you frequent most often on a map. To use, just visit the site and follow the authentication process. While it's a litttle complicated because you have to authenticate twice using Google and Foursquare, the visualization is worth it. When you generate your visualizations, check which neighborhood you "check-in" the most. Is it what you expected? Check for the outliers. Which places did you go that is off the beaten path? From what you see, which places do you think you should visit next? You can also share your visualizations by sharing the links generated by the service. &lt;/p&gt;
+
+&lt;p&gt;For developers who are interested in the how the service was created, Stephen has graciously provided &lt;a href="http://github.com/lehrblogger/where-do-you-go"&gt;the code on GitHub&lt;/a&gt; .&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt="review1-foursquare-wheredoyougo.png" src="http://www.kk.org/quantifiedself/review1-foursquare-wheredoyougo.png" width="510" height="202" class="mt-image-center" style="text-align: center; display: block; margin: 0 auto 20px;" /&gt;&lt;/p&gt;
+
+&lt;p&gt; &lt;strong&gt;Last.fm and LastHistory&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="http://last.fm/"&gt;Last.fm&lt;/a&gt; is a music recommendation web site, but it's also a great way to track your music listening habits. Last.fm has even created a word for the activity of tracking the music that you listen to: scrobbling. When you install Last.fm's Scrobbler application, you can track the music that you listen to iTunes, Winamp, and even on your iPhone and Android phones. Last.fm provides an &lt;span class="caps"&gt;RSS &lt;/span&gt;feed, so you can share the music that you listened to recently.&lt;/p&gt;
+
+&lt;p&gt;Last.fm doesn't provide an interface for you to explore your listening behavior in depth, but there are several tools that developers have created, which you can find at &lt;a href="http://build.last.fm/"&gt;build.last.fm&lt;/a&gt;. In this review, I will highlight &lt;a href="http://www.frederikseiffert.de/lasthistory/"&gt;LastHistory&lt;/a&gt;, a desktop application that visualizes your music listening histories from Last.fm. Unfortunately, the application is only available on the Mac OS X. The application creates an interactive visualization to help you explore your past music listening patterns combined with your own photos and calendar entries. The tool has two modes: Analysis and Personal. In Analysis mode, you can look at your history in three dimensions: time, tracks, and genres. You can search, highlight, zoom, and get detailed information about your history. In Personal mode, you can explore your data along with your iPhoto library and calendar entries from iCal. This mode can help you reminisce about your past in more detail.&lt;/p&gt;
+
+&lt;p&gt;For developers who are interested in building applications with Last.fm, there is &lt;a href="http://www.last.fm/api"&gt;an &lt;span class="caps"&gt;API &lt;/span&gt;to access user data&lt;/a&gt; .&lt;/p&gt;
+
+&lt;p&gt;More info:&lt;/p&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://docs.google.com/gview?url=http%3A%2F%2Fwww.frederikseiffert.de%2Flasthistory%2Fdownload%2FVisualizing%20Music%20Listening%20Histories.pdf"&gt;Thesis on LastHistory&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+
+
+&lt;p&gt;&lt;img alt="review1-lastfm-lasthistory.png" src="http://www.kk.org/quantifiedself/review1-lastfm-lasthistory.png" width="450" height="219" class="mt-image-center" style="text-align: center; display: block; margin: 0 auto 20px;" /&gt;&lt;/p&gt;
+
+&lt;p&gt; &lt;strong&gt;Bio&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="http://ianli.com/projects/"&gt;Ian Li&lt;/a&gt; is a PhD candidate in &lt;a href="http://www.hcii.cmu.edu/"&gt;Human-Computer Interaction Institute at Carnegie Mellon University&lt;/a&gt; . His research is on &lt;span class="caps"&gt;HCI &lt;/span&gt;and personal informatics. He is the creator of various self-tracking tools, such as: &lt;a href="http://personalinformatics.org"&gt;PersonalInformatics.org&lt;/a&gt; , &lt;a href="http://grafitter.com/"&gt;Grafitter&lt;/a&gt; , &lt;a href="http://moodjam.org"&gt;MoodJam&lt;/a&gt; , &lt;a href="http://belikeben.com/"&gt;Be Like Ben&lt;/a&gt; , and &lt;a href="http://ianli.com/dd/"&gt;DeliciousDiscovery&lt;/a&gt; .&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://feedads.g.doubleclick.net/~a/OnRhZNRL-AhmOyFqsbrZdk5OEEg/0/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/OnRhZNRL-AhmOyFqsbrZdk5OEEg/0/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;br/&gt;
+&lt;a href="http://feedads.g.doubleclick.net/~a/OnRhZNRL-AhmOyFqsbrZdk5OEEg/1/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/OnRhZNRL-AhmOyFqsbrZdk5OEEg/1/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;/p&gt;&lt;img src="http://feeds.feedburner.com/~r/QuantifiedSelf/~4/f6o7lSlZOYc" height="1" width="1"/&gt;</description>
+            <link>http://feedproxy.google.com/~r/QuantifiedSelf/~3/f6o7lSlZOYc/self-tracking-tools-review-1.php</link>
+            <guid isPermaLink="false">http://www.kk.org/quantifiedself/2010/11/self-tracking-tools-review-1.php</guid>
+
+
+<category /> <pubDate>Mon, 01 Nov 2010 09:22:35 -0800</pubDate> <feedburner:origLink>http://www.kk.org/quantifiedself/2010/11/self-tracking-tools-review-1.php</feedburner:origLink></item>  
+
+<item>
+
+  <title>Max Winter Osterhaus on Total Consumption Tracking</title>
+            <description>From the &lt;a href="meetup.com/quantifiedself/"&gt;Bay Area QS Show&amp;Tell group&lt;/a&gt;: Max Winter Osterhaus (tagline: "I make charts") talks about tracking all of his purchases for the past 5 years in incredible detail. He tracks right down to the kind of fruit or bread he buys, and admits to being somewhat addicted to combing through receipts. Watch the video below to see why Max does this and some of the surprising things he has learned.
+
+&lt;br /&gt;&lt;br /&gt; &lt;iframe src="http://player.vimeo.com/video/15884430" width="400" height="300" frameborder="0"&gt;&lt;/iframe&gt;&lt;p&gt;&lt;a href="http://vimeo.com/groups/17842/videos/15884430"&gt;Max Winter Osterhaus - Consumption Tracking&lt;/a&gt; from &lt;a href="http://vimeo.com/user1008982"&gt;Gary Wolf&lt;/a&gt; on &lt;a href="http://vimeo.com"&gt;Vimeo&lt;/a&gt;.&lt;/p&gt;
+
+Max has also started making visual charts for his body, garden, and other systems in his life, loosely based on his data. Here's a bigger view of the chart from his video.&lt;br /&gt;&lt;br /&gt;
+
+&lt;a href="http://www.kk.org/quantifiedself/IMG_1004.jpg"&gt;&lt;img src="http://www.kk.org/quantifiedself/assets_c/2010/10/IMG_1004-thumb-450x337-7562.jpg"&gt;&lt;/a&gt;
+&lt;br /&gt;
+&lt;p&gt;&lt;a href="http://feedads.g.doubleclick.net/~a/II9g3iw0Kx5xSIgXLlfEutgRCg0/0/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/II9g3iw0Kx5xSIgXLlfEutgRCg0/0/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;br/&gt;
+&lt;a href="http://feedads.g.doubleclick.net/~a/II9g3iw0Kx5xSIgXLlfEutgRCg0/1/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/II9g3iw0Kx5xSIgXLlfEutgRCg0/1/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;/p&gt;&lt;img src="http://feeds.feedburner.com/~r/QuantifiedSelf/~4/C0DBtV5SdYk" height="1" width="1"/&gt;</description>
+            <link>http://feedproxy.google.com/~r/QuantifiedSelf/~3/C0DBtV5SdYk/max-winter-osterhaus-on-total.php</link>
+            <guid isPermaLink="false">http://www.kk.org/quantifiedself/2010/10/max-winter-osterhaus-on-total.php</guid>
+
+
+<category /> <pubDate>Sun, 31 Oct 2010 16:51:56 -0800</pubDate> <feedburner:origLink>http://www.kk.org/quantifiedself/2010/10/max-winter-osterhaus-on-total.php</feedburner:origLink></item>  
+
+<item>
+
+  <title>Where's the Universal Self-Tracking Gadget?</title>
+            <description>&lt;p&gt;&lt;img alt="one-size-fits-all-cropped.png" src="http://www.kk.org/quantifiedself/one-size-fits-all-cropped.png" class="mt-image-left" style="float: left; margin: 0pt 20px 20px 0pt;" width="240" height="180" /&gt;A few months ago I was fatigued and decided to try a more rigorous sleep hygiene routine to see if it would help (&lt;a href="http://edison.thinktrylearn.com/experiments/show/206"&gt;it did&lt;/a&gt;). To make the experiment fun I thought I'd look for a nifty iPhone app to track the data. After a fairly extensive search I noticed that most of the tools were either highly specialized to a domain (e.g., &lt;a href="http://itunes.apple.com/us/app/sleep-on-it-sleep-tracker/id393927199?mt=8"&gt;Sleep On It&lt;/a&gt;), or more general purpose (e.g., &lt;a href="http://itunes.apple.com/fi/app/ilogger/id319110300"&gt;iLogger&lt;/a&gt;). This got me wondering about why there isn't a universal self-tracking gadget, and what one might look like.&lt;/p&gt;
+
+&lt;p&gt;Below I sketch some ideas on what such a beast would need to do to support any data-driven effort. I'd love to know if this makes sense to you, and what you think. (Note: I'm excluding &lt;em&gt;memories for life&lt;/em&gt; applications such as Gordon Bell's &lt;a href="http://www.kk.org/quantifiedself/2010/09/gordon-bell-on-mylifebits.php"&gt;MyLifeBits&lt;/a&gt;.)&lt;/p&gt;
+
+
+&lt;h2&gt;Overall functionality&lt;/h2&gt;
+
+&lt;p&gt;Regardless of the particular domain - sleep, exercise, mood, sex, reading, etc. - is there a set of common tools and sensors that could satisfy the majority of data-driven activities? Overall the goal would be to help answer the types of questions we ask when self-experimenting. That is, to help us discover useful patterns. The kinds of things it would need to "know" include:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Physiological state&lt;/strong&gt;: Physical context like pulse and temperature. (&lt;em&gt;What's going on in your body?&lt;/em&gt;)
+  &lt;/li&gt;&lt;li&gt;&lt;strong&gt;Mental state&lt;/strong&gt;: Cognitive context like thinking patterns, mood, and happiness. (&lt;em&gt;What are you thinking? How do you feel?&lt;/em&gt;)
+  &lt;/li&gt;&lt;li&gt;&lt;strong&gt;Location&lt;/strong&gt;: Spatial context like transitions, surroundings, environment, and activity. (&lt;em&gt;Where are you? What's going on around you? Where are you going?&lt;/em&gt;)
+  &lt;/li&gt;&lt;li&gt;&lt;strong&gt;Incidents&lt;/strong&gt;: Temporal context like performing exercise, taking medication, attending an event, or eating. (&lt;em&gt;What did you just do?&lt;/em&gt;)
+  &lt;/li&gt;&lt;li&gt;&lt;strong&gt;People&lt;/strong&gt;: Social context (&lt;em&gt;Who are you with? What interactions are you having?&lt;/em&gt;)
+&lt;/li&gt;&lt;/ul&gt;
+
+&lt;p&gt;How would it collect these things? I don't have all the answers, but I'm thinking of three sources: &lt;strong&gt;Direct measurement&lt;/strong&gt;, &lt;strong&gt;inference&lt;/strong&gt;, and &lt;strong&gt;self-reporting&lt;/strong&gt;. The first category, direct measurement, clearly is collected by sensors, and there is exciting progress on this front. See &lt;a href="http://www.kk.org/quantifiedself/2009/06/measuring-vital-signs-from-40.php"&gt;Measuring Vital Signs From 40 Feet Away&lt;/a&gt; or &lt;a href="http://singularityhub.com/2009/11/17/nasa-develops-tricorder-adapts-iphone-to-detect-dangerous-chemicals/"&gt;NASA Adapts iPhone to Detect Chemicals&lt;/a&gt;, for example.&lt;/p&gt;
+
+&lt;p&gt;I'm less sure about the second category, inference, but I'm thinking of tools that deduce some of the above, such as "You're asleep" (&lt;a href="http://whatiszeo3.myzeo.com/hp/3/whatiszeo.php"&gt;zeo&lt;/a&gt;), "You're at work" (&lt;a href="http://www.skyhookwireless.com/"&gt;Skyhook&lt;/a&gt;), "You're at a party" (&lt;a href="http://www.apple.com/macosx/what-is-macosx/mail-ical-address-book.html"&gt;iCal&lt;/a&gt;), or "You're around someone interesting" (&lt;a href="http://www.meetmoi.com/welcome"&gt;MeetMoi&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;The final category is the most applicable to self-tracking, but also the most problematic. The closest concept I could find was Wikipedia's &lt;a href="http://en.wikipedia.org/wiki/Self-report_inventory"&gt;Self-report inventory&lt;/a&gt; entry, but the gist is there's a lot we have to report explicitly. Think of anything you've tracked in the above contexts and you'll come up with plenty of examples, such as "I feel great," "I drank a beer," or "I just had an argument with my spouse." This category is problematic because self-reporting is biased, and because it requires manual input (see Gary's &lt;a href="http://www.kk.org/quantifiedself/2010/08/which-is-better-automated-or-m.php"&gt;Which is Better: Automated or Manual?&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;I think it's this last category of data capture that's generally applicable to most self-tracking needs. Putting on my computer science hat, it seems there's a fixed set of data types that we'd need. The typical ones include itemized lists (mood from 1 to 5 stars, or yes/no), counts (number of push ups), durations (minutes of exercise), number (weight in pounds), and text notes. All would be time-stamped, of course.&lt;/p&gt;
+
+
+&lt;h2&gt;Pros and cons of specialized vs. general&lt;/h2&gt;
+
+&lt;p&gt;Nothing comes for free, so what would be the trade offs of using a general-purpose data capture device? The pros are that there'd be no reinventing the wheel, everyone would know how to use it, and manufacturing economies of scale would be possible. Also, if we assume a open data access API then any site could use the data, enabling custom uses, novel visualizations, and social applications.&lt;/p&gt;
+
+&lt;p&gt;For cons, just look at Alex's roundup series of "vertical" tracking tools: &lt;a href="http://www.kk.org/quantifiedself/2010/10/roundup-food-tracking-tools.php"&gt;food&lt;/a&gt;, &lt;a href="http://www.kk.org/quantifiedself/2010/10/roundup-location-tracking-tool.php"&gt;location&lt;/a&gt;, &lt;a href="http://www.kk.org/quantifiedself/2010/09/roundup-fitness-tracking-tools.php"&gt;fitness&lt;/a&gt;, and &lt;a href="http://www.kk.org/quantifiedself/2010/09/roundup-mood-tracking-tools.php"&gt;mood&lt;/a&gt;. Because these are specialized to their domain they offer benefits like precise language, customized input (such as &lt;a href="http://itunes.apple.com/us/app/ecbt-mood/id324060472?mt=8"&gt;eCBT Mood&lt;/a&gt;), inferred measurements, and inbuilt information such as a food/calorie database.&lt;/p&gt;
+
+&lt;p&gt;Workarounds are possible and would be driven by an experimental design perspective. Self-trackers would set up their experiments by specifying types of measurements, units, frequency of capture (including reminders), and measurement groupings. (An example of the latter is needing to capture a set of daily mood chart data in one shot, like exercise, medications, menses, energy, and agitation level.) By making the gadget's UI "skinnable" we could generate interfaces automatically for each experiment.&lt;/p&gt;
+
+
+&lt;h2&gt;Usage characteristics (or Why your phone should be a Tricorder)&lt;/h2&gt;
+
+&lt;p&gt;&lt;img alt="proto-typeTricorder-small.png" src="http://www.kk.org/quantifiedself/proto-typeTricorder-small.png" class="mt-image-right" style="float: right; margin: 0pt 0pt 20px 20px;" width="183" height="240" /&gt;So what would the thing actually look like? In addition to the physical sensors, there are characteristics required for a universal data-tracker to be usable. What comes to mind are ubiquitous availability, rapid manual entry, and notifications to the senses ("What's that smell? Oh, it's time to check if I'm procrastinating.")&lt;/p&gt;
+
+&lt;p&gt;Fortunately we have a classic model to start with - the venerable Star Trek &lt;a href="http://en.wikipedia.org/wiki/Tricorder"&gt;Tricorder&lt;/a&gt;. It was portable, had powerful recording and analysis capabilities, and could measure things like environmental make-up, life forms, and power sources. Combining the general-purpose and medical &lt;a href="http://encyclopedia.wizards.pro/index.php/Tricorder#Tricorder_variants"&gt;variants&lt;/a&gt; into your cell phone (the de facto does-it-all device), and adding additional sensors and controls (real buttons, please - much faster than touch screens), wouldn't we have something that self-trackers would love?&lt;/p&gt;
+
+
+&lt;h2&gt;A catalyst for citizen science?&lt;/h2&gt;
+
+&lt;p&gt;Inspired by Kevin's conclusion in &lt;a href="http://kk.org/ct2/2008/03/a-web-page-for-every-species.php"&gt;A Web Page For Every Species&lt;/a&gt;, I wonder if having a universal device for self-experimentation could launch self-tracking for all.&lt;/p&gt;
+
+&lt;p&gt;As he puts it,&lt;/p&gt;
+
+&lt;blockquote&gt;When anyone can buy a hand held species identifier, an amazing transformation will take place: everyone will become a taxonomist.&lt;/blockquote&gt;
+
+&lt;p&gt;Could this be true for individual experimentation? Would everyone become a personal scientist? It's exciting to imagine this kicking off a widespread movement to fulfill the promise of citizen science and social self-improvement. What would be the result, and how might that change how we interact with ourselves, each other, and the world?&lt;/p&gt;
+
+
+&lt;h2&gt;What do you think?&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Is such a gadget possible?&lt;/li&gt;
+  &lt;li&gt;Would it apply to most self-tracking apps, or would it be too general?&lt;/li&gt;
+  &lt;li&gt;Do you use a general purpose app? How has it worked for you?&lt;/li&gt;
+  &lt;li&gt;Do you see it drawing people into the experiment-driven life?&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;&lt;p&gt;[Images from &lt;a href="http://www.flickr.com/photos/sooperkuh/358241806/"&gt;Ralph Aichinger&lt;/a&gt; and &lt;a href="http://www.tk560.com/tricorders.html"&gt;TK560&lt;/a&gt;]&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;(Matt is a terminally curious ex-NASA engineer and avid self-experimenter. His projects include developing the &lt;a href="http://www.matthewcornell.org/ttl-about/"&gt;Think, Try, Learn&lt;/a&gt; philosophy, creating the &lt;a href="http://edison.thinktrylearn.com/"&gt;Edison&lt;/a&gt; experimenter's journal, and writing at his blog, &lt;a href="http://www.matthewcornell.org/blog/"&gt;The Experiment-Driven Life&lt;/a&gt;. Give him a holler at &lt;a href="mailto:matt@matthewcornell.org"&gt;matt@matthewcornell.org&lt;/a&gt;)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://feedads.g.doubleclick.net/~a/CldAQNIKPdLTLbgbQl2Uz_sNAko/0/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/CldAQNIKPdLTLbgbQl2Uz_sNAko/0/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;br/&gt;
+&lt;a href="http://feedads.g.doubleclick.net/~a/CldAQNIKPdLTLbgbQl2Uz_sNAko/1/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/CldAQNIKPdLTLbgbQl2Uz_sNAko/1/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;/p&gt;&lt;img src="http://feeds.feedburner.com/~r/QuantifiedSelf/~4/mWxRT5DzVDI" height="1" width="1"/&gt;</description>
+            <link>http://feedproxy.google.com/~r/QuantifiedSelf/~3/mWxRT5DzVDI/wheres-the-universal-self-trac.php</link>
+            <guid isPermaLink="false">http://www.kk.org/quantifiedself/2010/10/wheres-the-universal-self-trac.php</guid>
+
+
+<category /> <pubDate>Fri, 29 Oct 2010 09:48:12 -0800</pubDate> <feedburner:origLink>http://www.kk.org/quantifiedself/2010/10/wheres-the-universal-self-trac.php</feedburner:origLink></item>  
+
+<item>
+
+  <title>Brennan Moore on Poyozo</title>
+            <description>From the &lt;a href="http://www.meetup.com/NYQuantifiedSelf/"&gt;New York QS Show&amp;amp;Tell group&lt;/a&gt;: Brennan Moore, co-founder of &lt;a href="http://mypoyozo.com/"&gt;Poyozo&lt;/a&gt; with Max Van Kleek, talks about his thoughts on using life tracking data to help people manage their lives. His vision is to build an automatic personal assistant that respects your time/attention and reminds, recommends, and filters things for you. Watch a demo of Poyozo in the video below, where data is automatically pulled in from all over the web, stored on your local client, and shown to you in the context of your day.&lt;br /&gt;&lt;br /&gt;
+&lt;iframe src="http://player.vimeo.com/video/14911076" width="400" height="300" frameborder="0"&gt;&lt;/iframe&gt;&lt;p&gt;&lt;a href="http://vimeo.com/groups/17842/videos/14911076"&gt;Brennan Moore - Poyozo&lt;/a&gt; from &lt;a href="http://vimeo.com/user1864037"&gt;Steve Dean&lt;/a&gt; on &lt;a href="http://vimeo.com"&gt;Vimeo&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://feedads.g.doubleclick.net/~a/YM6wgQFp-m-0q78ghcmBvKhUmsQ/0/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/YM6wgQFp-m-0q78ghcmBvKhUmsQ/0/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;br/&gt;
+&lt;a href="http://feedads.g.doubleclick.net/~a/YM6wgQFp-m-0q78ghcmBvKhUmsQ/1/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/YM6wgQFp-m-0q78ghcmBvKhUmsQ/1/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;/p&gt;&lt;img src="http://feeds.feedburner.com/~r/QuantifiedSelf/~4/_thAf0ADK7c" height="1" width="1"/&gt;</description>
+            <link>http://feedproxy.google.com/~r/QuantifiedSelf/~3/_thAf0ADK7c/brennan-moore-on-poyozo.php</link>
+            <guid isPermaLink="false">http://www.kk.org/quantifiedself/2010/10/brennan-moore-on-poyozo.php</guid>
+
+
+<category /> <pubDate>Thu, 28 Oct 2010 17:38:09 -0800</pubDate> <feedburner:origLink>http://www.kk.org/quantifiedself/2010/10/brennan-moore-on-poyozo.php</feedburner:origLink></item>  
+
+<item>
+
+  <title>1st San Diego QS Show &amp; Tell  (Nov 16, 2010)</title>
+            <description>Hello from San Diego where we're excited to announce our first Quantified Self Show &amp;amp; Tell!&lt;span style="font-size: 11pt; font-family: Arial; color: rgb(0, 0, 0); background-color: transparent; font-weight: normal; font-style: normal; text-decoration: none; vertical-align: baseline;" id="internal-source-marker_0.45866433660230177"&gt;&lt;br /&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style="font-size: 11pt; font-family: Arial; color: rgb(0, 0, 0); background-color: transparent; font-weight: normal; font-style: normal; text-decoration: none; vertical-align: baseline;"&gt;&lt;/span&gt;San Diego has a rich history in both Wireless Technology and the Life Sciences. Many companies have combined talent from both fields and are collaborating to create future technologies. These technologies will be small, low power, minimally invasive, easy to use and will give us all the opportunity to follow the data toward better individualized health. &lt;br /&gt;&lt;span style="font-size: 11pt; font-family: Arial; color: rgb(0, 0, 0); background-color: transparent; font-weight: normal; font-style: normal; text-decoration: none; vertical-align: baseline;"&gt;&lt;/span&gt;&lt;br /&gt;Luckily we have two such entities that will be represented at our first Show &amp;amp; Tell. &lt;span style="font-size: 11pt; font-family: Arial; color: rgb(0, 0, 0); background-color: transparent; font-weight: normal; font-style: normal; text-decoration: none; vertical-align: baseline;"&gt;&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;The &lt;a href="http://www.westwirelesshealth.org/the-institute/purpose.html"&gt;Gary &amp;amp; Mary West Wireless Health Institute&lt;/a&gt; have generously donated the use of their Training Facility for our first gathering.&lt;br /&gt;&lt;br /&gt;Our first confirmed speaker is Ramesh Rao. He is a both an Electrical Engineering Professor at UCSD and a Director at Calit2. His work has been featured on on the Quantified Self blog with his fascinating &lt;a href="http://www.kk.org/quantifiedself/2010/04/numbers-from-the-heart.php"&gt;Numbers from the Heart&lt;/a&gt; post, and he has volunteered to share his knowledge with us.&lt;br /&gt;&lt;br /&gt;We are looking for more presenters to give a 5-10 minute talk about self tracking in any form. Please contact us if you're interested! &lt;br /&gt;&lt;br /&gt;Ideally we will have a few devices and SW tools on display for participants to take a look at. If you have created your own home brew tracking system, use a tracking device or work for a company and you can bring a prototype please bring it with you!&lt;br /&gt;&lt;br /&gt;We are also in search of sponsors and volunteers who are willing to provide audio/video recording services and refreshments for our gatherings. &lt;br /&gt;&lt;br /&gt;Please join our MeetUp to be kept informed of future events: &lt;a href="http://www.meetup.com/QuantifiedSelfSD/"&gt;MeetUp.com/QuantifiedSelfSD/&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;See you at West Wireless on November 16th.&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;The QS San Diego Team&lt;br /&gt;&lt;br /&gt;QuantifiedSelfSD (at) gmail (dot) com&lt;br /&gt;&lt;a href="http://twitter.com/QSSanDiego"&gt;@QSSanDiego&lt;/a&gt;&lt;br /&gt;&lt;span style="font-size: 11pt; font-family: Arial; color: rgb(0, 0, 0); background-color: transparent; font-weight: normal; font-style: normal; text-decoration: none; vertical-align: baseline;"&gt;&lt;/span&gt;
+&lt;p&gt;&lt;a href="http://feedads.g.doubleclick.net/~a/DzdBfJ7sA0x6hXj6KcUiKuvT4k8/0/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/DzdBfJ7sA0x6hXj6KcUiKuvT4k8/0/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;br/&gt;
+&lt;a href="http://feedads.g.doubleclick.net/~a/DzdBfJ7sA0x6hXj6KcUiKuvT4k8/1/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/DzdBfJ7sA0x6hXj6KcUiKuvT4k8/1/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;/p&gt;&lt;img src="http://feeds.feedburner.com/~r/QuantifiedSelf/~4/_9VTRp2sBGY" height="1" width="1"/&gt;</description>
+            <link>http://feedproxy.google.com/~r/QuantifiedSelf/~3/_9VTRp2sBGY/1st-san-diego-qs-show-tell-nov.php</link>
+            <guid isPermaLink="false">http://www.kk.org/quantifiedself/2010/10/1st-san-diego-qs-show-tell-nov.php</guid>
+
+
+<category /> <pubDate>Thu, 28 Oct 2010 16:47:02 -0800</pubDate> <feedburner:origLink>http://www.kk.org/quantifiedself/2010/10/1st-san-diego-qs-show-tell-nov.php</feedburner:origLink></item>  
+
+<item>
+
+  <title>Roundup: Food Tracking Tools</title>
+            <description>&lt;meta charset="utf-8"&gt;&lt;span class="Apple-style-span" style="color: rgb(0, 0, 0); font-family: arial, sans-serif; border-collapse: collapse; "&gt;&lt;div&gt;&lt;span&gt;&lt;img alt="Screen shot 2010-10-25 at 8.56.18 PM.png" src="http://www.kk.org/quantifiedself/Screen%20shot%202010-10-25%20at%208.56.18%20PM.png" width="450" height="248" class="mt-image-center" style="text-align: center; display: block; margin: 0 auto 20px;" /&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;Given that the United States eats more average daily calories per person than any other country, it's probably a good idea for us to track what we eat a little more closely. QS Amsterdam folks can sit this one out if you like!&amp;nbsp;&lt;/span&gt;This week's roundup is for food tracking tools.&lt;/div&gt;&lt;div&gt;&amp;nbsp;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;span class="Apple-style-span" style="border-collapse: separate; font-family: Arial; font-size: 11px; line-height: 17px; "&gt;It's part of our regular weekly tool roundup for the complete catalog we're putting together of all the self-tracking tools out there. Please help us to make sure we include your favorite tool, your company, or your project.&amp;nbsp;&lt;b&gt;Self-promotion is allowed!&lt;/b&gt;&lt;/span&gt;&lt;br /&gt;&lt;/span&gt;&lt;span class="Apple-style-span" style="border-collapse: separate; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; line-height: 17px; "&gt;&lt;div id="magicdomid221" class="" style="text-align: left; padding-right: 1px; color: rgb(0, 0, 0); font-family: Arial, sans-serif; font-size: 11px; line-height: 17px; "&gt;&lt;span class="font-family-Arial" style="cursor: auto; padding-top: 1px; padding-bottom: 1px; font-family: Arial; "&gt;&lt;br /&gt;&lt;/span&gt;&lt;/div&gt;&lt;div id="magicdomid221" class="" style="text-align: left; padding-right: 1px; color: rgb(0, 0, 0); font-family: Arial, sans-serif; font-size: 11px; line-height: 17px; "&gt;&lt;span class="font-family-Arial" style="cursor: auto; padding-top: 1px; padding-bottom: 1px; font-family: Arial; "&gt;Here are all the food tracking tools we've found so far.&amp;nbsp;&lt;b&gt;Please let me know what we're missing in the comments below.&amp;nbsp;&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div id="magicdomid221" class="" style="text-align: left; padding-right: 1px; color: rgb(0, 0, 0); font-family: Arial, sans-serif; font-size: 11px; line-height: 17px; "&gt;&lt;span class="font-family-Arial" style="cursor: auto; padding-top: 1px; padding-bottom: 1px; font-family: Arial; "&gt;&lt;b&gt;&lt;br /&gt;&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;a href="http://eat.ly/"&gt;Eat.ly&lt;/a&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;a href="http://fatsecret.com/"&gt;FatSecret&lt;/a&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;a href="http://www.my-calorie-counter.com/"&gt;MyCalorieCounter&lt;/a&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;a href="http://www.thecaloriecounter.com/"&gt;The Calorie Counter&lt;/a&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;a href="http://www.thedailyplate.com/"&gt;The Daily Plate&lt;/a&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;a href="http://www.tweetwhatyoueat.com"&gt;TweetWhatYouEat&lt;/a&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;a href="http://www.tweetyoureats.com/"&gt;TweetYourEats&lt;/a&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;Note: We're looking for tools&amp;nbsp;that were not already covered in the&amp;nbsp;&lt;a href="http://www.kk.org/quantifiedself/2010/09/roundup-fitness-tracking-tools.php" style="text-decoration: underline; "&gt;Fitness roundup&lt;/a&gt;&amp;nbsp;(DailyBurn, WeightWatchers, etc already made that list.)&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;[Photo credit: &lt;a href="http://www.flickr.com/photos/laurenmanning/2979577079/"&gt;Lauren Manning&lt;/a&gt;]&lt;/div&gt;&lt;/span&gt;
+&lt;p&gt;&lt;a href="http://feedads.g.doubleclick.net/~a/GJh-g892XIju5LcCoe88dpmJHxc/0/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/GJh-g892XIju5LcCoe88dpmJHxc/0/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;br/&gt;
+&lt;a href="http://feedads.g.doubleclick.net/~a/GJh-g892XIju5LcCoe88dpmJHxc/1/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/GJh-g892XIju5LcCoe88dpmJHxc/1/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;/p&gt;&lt;img src="http://feeds.feedburner.com/~r/QuantifiedSelf/~4/jfBAsbhTK1o" height="1" width="1"/&gt;</description>
+            <link>http://feedproxy.google.com/~r/QuantifiedSelf/~3/jfBAsbhTK1o/roundup-food-tracking-tools.php</link>
+            <guid isPermaLink="false">http://www.kk.org/quantifiedself/2010/10/roundup-food-tracking-tools.php</guid>
+
+
+<category /> <pubDate>Tue, 26 Oct 2010 06:52:47 -0800</pubDate> <feedburner:origLink>http://www.kk.org/quantifiedself/2010/10/roundup-food-tracking-tools.php</feedburner:origLink></item>  
+
+<item>
+
+  <title>Matt Haughey on Sharing Gas Mileage Data</title>
+            <description>From the &lt;a href="http://www.meetup.com/quantifiedself/"&gt;Bay Area QS Show&amp;Tell group&lt;/a&gt;: Matt Haughey from &lt;a href="http://www.fuelly.com"&gt;Fuelly&lt;/a&gt; talks about tracking, sharing, and comparing gas mileage data. He tells the story of his efforts to move from 18 to 20 mpg - it required a great amount of concentration, and only ended up saving him $6. Watch the video below to hear what Matt has learned from running Fuelly. He has good advice for entrepreneurs and gas guzzlers alike.
+
+&lt;br /&gt;&lt;br /&gt; &lt;iframe src="http://player.vimeo.com/video/15883541" width="400" height="300" frameborder="0"&gt;&lt;/iframe&gt;&lt;p&gt;&lt;a href="http://vimeo.com/groups/17842/videos/15883541"&gt;Matt Haughey - Fuelly&lt;/a&gt; from &lt;a href="http://vimeo.com/user1008982"&gt;Gary Wolf&lt;/a&gt; on &lt;a href="http://vimeo.com"&gt;Vimeo&lt;/a&gt;.&lt;/p&gt;&lt;br /&gt;&lt;br /&gt;
+&lt;p&gt;&lt;a href="http://feedads.g.doubleclick.net/~a/eQVIrnC_LsqeOm63c3ewRevOABI/0/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/eQVIrnC_LsqeOm63c3ewRevOABI/0/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;br/&gt;
+&lt;a href="http://feedads.g.doubleclick.net/~a/eQVIrnC_LsqeOm63c3ewRevOABI/1/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/eQVIrnC_LsqeOm63c3ewRevOABI/1/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;/p&gt;&lt;img src="http://feeds.feedburner.com/~r/QuantifiedSelf/~4/gM2arAd-wI8" height="1" width="1"/&gt;</description>
+            <link>http://feedproxy.google.com/~r/QuantifiedSelf/~3/gM2arAd-wI8/matt-haughey-on-sharing-gas-mi.php</link>
+            <guid isPermaLink="false">http://www.kk.org/quantifiedself/2010/10/matt-haughey-on-sharing-gas-mi.php</guid>
+
+
+<category /> <pubDate>Mon, 25 Oct 2010 08:18:14 -0800</pubDate> <feedburner:origLink>http://www.kk.org/quantifiedself/2010/10/matt-haughey-on-sharing-gas-mi.php</feedburner:origLink></item>  
+
+<item>
+
+  <title>Peter Robinett on Predicting Productivity</title>
+            <description>From the &lt;a href="http://www.meetup.com/qsamsterdam/"&gt;Amsterdam QS Show&amp;Tell group&lt;/a&gt;: Peter Robinett talks about a simple system he created to track, visualize and predict his productivity. Using &lt;a href="http://docs.google.com/"&gt;Google Spreadsheets&lt;/a&gt;, he color-coded his activities by week to help him manage multiple consulting contracts. Watch the video below to see what tweaks he found most useful and how closely his predictions matched reality. &lt;br /&gt;&lt;br /&gt;
+
+&lt;iframe src="http://player.vimeo.com/video/15217753" width="400" height="300" frameborder="0"&gt;&lt;/iframe&gt;&lt;p&gt;&lt;a href="http://vimeo.com/groups/17842/videos/15217753"&gt;Peter Robinett - Quantifiying productivity&lt;/a&gt; from &lt;a href="http://vimeo.com/qsams"&gt;Quantified Self Amsterdam&lt;/a&gt; on &lt;a href="http://vimeo.com"&gt;Vimeo&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://feedads.g.doubleclick.net/~a/ULP1-t8naI-O-Q5uyzfvI6YO16k/0/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/ULP1-t8naI-O-Q5uyzfvI6YO16k/0/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;br/&gt;
+&lt;a href="http://feedads.g.doubleclick.net/~a/ULP1-t8naI-O-Q5uyzfvI6YO16k/1/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/ULP1-t8naI-O-Q5uyzfvI6YO16k/1/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;/p&gt;&lt;img src="http://feeds.feedburner.com/~r/QuantifiedSelf/~4/M2FdVboXhuY" height="1" width="1"/&gt;</description>
+            <link>http://feedproxy.google.com/~r/QuantifiedSelf/~3/M2FdVboXhuY/peter-robinett-on-predicting-p.php</link>
+            <guid isPermaLink="false">http://www.kk.org/quantifiedself/2010/10/peter-robinett-on-predicting-p.php</guid>
+
+
+<category /> <pubDate>Sat, 23 Oct 2010 17:48:12 -0800</pubDate> <feedburner:origLink>http://www.kk.org/quantifiedself/2010/10/peter-robinett-on-predicting-p.php</feedburner:origLink></item>  
+
+<item>
+
+  <title>What if you don't like the data?</title>
+            <description>&lt;p&gt;&lt;img alt="2677824178_b876aaa98b_m.jpg" src="http://www.kk.org/quantifiedself/2677824178_b876aaa98b_m.jpg" class="mt-image-right" style="float: right; margin: 0pt 0pt 20px 20px;" height="128" width="240" /&gt;In collecting data about ourselves we naturally encounter information that is unpleasant or unwelcome. This can range in scope from the prosaic ("I'm not losing weight fast enough") to the the profound ("I just found out I have cancer.")&lt;/p&gt;
+
+&lt;p&gt;While this is a pervasive aspect of being human - resolving the conflict between What Is and What Ought To Be (apologies to &lt;a href="http://en.wikipedia.org/wiki/Is%E2%80%93ought_problem"&gt;David Hume&lt;/a&gt;) - I want to play with going beyond the general case of dealing with bad news, such as the oft-mentioned Kübler-Ross model (Shock, Denial, Anger, Bargaining, Depression, Testing, and Acceptance). I wonder if we can get guidance and some measure of equanimity by framing the data from a scientific mindset. Let's see.&lt;/p&gt;
+
+&lt;h2&gt;Objectivity&lt;/h2&gt;
+&lt;p&gt;A hallmark of science is striving to view results objectively - what I call a "healthy sense of detachment." I'm humbled by how Victor Frankl puts it in his book &lt;a href="http://en.wikipedia.org/wiki/Man%27s_Search_for_Meaning"&gt;Man's Search for Meaning&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt; Cold curiosity predominated even in Auschwitz, somehow detaching the mind from its surroundings, which came to be regarded with a kind of objectivity. &lt;/blockquote&gt;
+
+&lt;p&gt;This is not to say you don't acknowledge or experience your emotions; far from it. In fact, your reactions and feelings are &lt;em&gt;themselves&lt;/em&gt; data. But it helps to think of them as playing a separate role.&lt;/p&gt;
+
+&lt;h2&gt;The act of tracking&lt;/h2&gt;
+&lt;p&gt;We can draw comfort from keeping an &lt;strong&gt;experimenter's journal&lt;/strong&gt;, which is your record of not just the data but of your experimentation process itself. While this is a common tool in the self-help literature, our take here is inspired by what Jim Collins termed &lt;a href="http://ventureswell.com/innovation-made-personal-tom-k"&gt;a bug called Jim&lt;/a&gt; - the idea of studying and gaining insights from the odd and fascinating creatures that we are. This further reinforces objectivity.&lt;/p&gt;
+
+&lt;h2&gt;Rational analysis&lt;/h2&gt;
+&lt;p&gt;Doing an analysis of the data can activate the rational mind, rather than being mired in reactive mode from the bad news. To do this you might ask,&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;What was my theory going in?
+  &lt;/li&gt;&lt;li&gt;Is the data correct?
+  &lt;/li&gt;&lt;li&gt;What is it telling me?
+  &lt;/li&gt;&lt;li&gt;Is my interpretation valid?
+  &lt;/li&gt;&lt;li&gt;What are my options moving forward?
+&lt;/li&gt;&lt;/ul&gt;
+
+
+&lt;h2&gt;Action through exploration&lt;/h2&gt;
+One of the two things we can control - our thinking and behavior - acting on the data is empowering. If we can keep our curiosity intact, there is always more to discover. Here are some possible steps to follow:
+
+&lt;ol&gt;
+  &lt;li&gt;Classify it as a problem.
+  &lt;/li&gt;&lt;li&gt;Give it a label.
+  &lt;/li&gt;&lt;li&gt;Examine the situation.
+  &lt;/li&gt;&lt;li&gt;Plan solutions.
+  &lt;/li&gt;&lt;li&gt;Execute them.
+&lt;/li&gt;&lt;/ol&gt;
+
+
+&lt;h2&gt;Control and acceptance&lt;/h2&gt;
+&lt;p&gt;Constraints simplify. In our model of the situation the data describe, we have a finite set of things we can do. As students of self-quantification it is logical to identify realms of control, and to take some comfort from concrete reality - that is, facing the brutal facts. I suppose this is my attempt to make a secular version of the saccharine &lt;a href="http://en.wikipedia.org/wiki/Serenity_Prayer"&gt;Serenity Prayer&lt;/a&gt;. This perspective doesn't mean you have to be passive, though. Remember that self-tracking is about the power of discovery.&lt;/p&gt;
+
+&lt;h2&gt;Collaboration&lt;/h2&gt;
+&lt;p&gt;Finally, rather than the cold, solitary scientist portrayed on TV in a sterile white lab coat, in reality the best science is done in collaboration with others. Soliciting the help of friends, family, and fellow experimenters can enable identifying biases, fleshing out our analysis, and importantly, giving emotional support. This makes it so that it's not just you and the data. I love Lewis Thomas's observation that he could tell when something important was going on in an experimental lab by the laughter. And being able to laugh in the face of nasty data - that's a true gift.&lt;/p&gt;
+
+&lt;br /&gt;
+
+&lt;p&gt;[Image from &lt;a href="http://www.flickr.com/photos/24443965@N08/2677824178/"&gt;Okinawa Soba&lt;/a&gt;]&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;(Matt is a terminally-curious ex-NASA engineer and avid self-experimenter. His projects include developing the &lt;a href="http://www.matthewcornell.org/ttl-about/"&gt;Think, Try, Learn&lt;/a&gt; philosophy, creating the &lt;a href="http://edison.thinktrylearn.com/"&gt;Edison&lt;/a&gt; experimenter's journal, and writing at his blog, &lt;a href="http://www.matthewcornell.org/blog/"&gt;The Experiment-Driven Life&lt;/a&gt;. Give him a holler at &lt;a href="mailto:matt@matthewcornell.org"&gt;matt@matthewcornell.org&lt;/a&gt;)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://feedads.g.doubleclick.net/~a/vlA1ERqJkB8BZUrI4uMo_K7UJBw/0/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/vlA1ERqJkB8BZUrI4uMo_K7UJBw/0/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;br/&gt;
+&lt;a href="http://feedads.g.doubleclick.net/~a/vlA1ERqJkB8BZUrI4uMo_K7UJBw/1/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/vlA1ERqJkB8BZUrI4uMo_K7UJBw/1/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;/p&gt;&lt;img src="http://feeds.feedburner.com/~r/QuantifiedSelf/~4/Br5GDo0Vu_4" height="1" width="1"/&gt;</description>
+            <link>http://feedproxy.google.com/~r/QuantifiedSelf/~3/Br5GDo0Vu_4/what-if-you-dont-like-the-data.php</link>
+            <guid isPermaLink="false">http://www.kk.org/quantifiedself/2010/10/what-if-you-dont-like-the-data.php</guid>
+
+
+<category /> <pubDate>Thu, 21 Oct 2010 08:54:14 -0800</pubDate> <feedburner:origLink>http://www.kk.org/quantifiedself/2010/10/what-if-you-dont-like-the-data.php</feedburner:origLink></item>  
+
+<item>
+
+  <title>Indhira Rojas on Managing Consumption</title>
+            <description>From the &lt;a href="http://www.kk.org/quantifiedself/2010/10/bay-area-qs-showtell-16---reca.php"&gt;Bay Area QS Show&amp;Tell&lt;/a&gt; group: Indhira Rojas explains Indexer, a database she is building for tracking consumption and managing waste. She wants to help people answer two questions: How much do I throw away? and, How do I recycle properly? In the video below, Indhira explains her project. See what she learned from studying seven households and photographing all of their waste. &lt;br /&gt;&lt;br /&gt;
+
+&lt;iframe src="http://player.vimeo.com/video/16009619" width="400" height="300" frameborder="0"&gt;&lt;/iframe&gt;&lt;p&gt;&lt;a href="http://vimeo.com/16009619"&gt;Indhira Rojas - Indexer&lt;/a&gt; from &lt;a href="http://vimeo.com/user1008982"&gt;Gary Wolf&lt;/a&gt; on &lt;a href="http://vimeo.com"&gt;Vimeo&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://feedads.g.doubleclick.net/~a/A8uMFTp4gLCimQ0s0CM3hTEbbYU/0/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/A8uMFTp4gLCimQ0s0CM3hTEbbYU/0/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;br/&gt;
+&lt;a href="http://feedads.g.doubleclick.net/~a/A8uMFTp4gLCimQ0s0CM3hTEbbYU/1/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/A8uMFTp4gLCimQ0s0CM3hTEbbYU/1/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;/p&gt;&lt;img src="http://feeds.feedburner.com/~r/QuantifiedSelf/~4/M0OYzlw4rQk" height="1" width="1"/&gt;</description>
+            <link>http://feedproxy.google.com/~r/QuantifiedSelf/~3/M0OYzlw4rQk/indhira-rojas-on-managing-cons.php</link>
+            <guid isPermaLink="false">http://www.kk.org/quantifiedself/2010/10/indhira-rojas-on-managing-cons.php</guid>
+
+
+<category /> <pubDate>Wed, 20 Oct 2010 07:41:18 -0800</pubDate> <feedburner:origLink>http://www.kk.org/quantifiedself/2010/10/indhira-rojas-on-managing-cons.php</feedburner:origLink></item>  
+
+<item>
+
+  <title>Does QS Need An Ethical Review Board?</title>
+            <description>&lt;span class="Apple-style-span" style="color: rgb(0, 0, 0); font-family: arial, sans-serif; border-collapse: collapse; "&gt;&lt;div&gt;I am a strong supporter of self experimentation and citizen science, particularly when it comes to health (full disclosure: I'm CoFounder of &lt;a href="http://curetogether.com"&gt;CureTogether.com&lt;/a&gt;).&amp;nbsp;Since our bodies all differ to varying degrees, we need to experiment with foods, lifestyles and medications to find out what will work best for each of us. And pooling our individual data can guide us in choosing intelligently, rather than randomly, which experiments will have the highest chance of yielding answers that will help us.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;It will come as no surprise that I'm a great fan of fellow QS member Seth Roberts - a modern pioneer and champion of self-experimentation. At a recent QS Meetup, Seth drew lots of attention from the crowd when he discussed the results of his &lt;a href="http://www.kk.org/quantifiedself/2010/09/seth-roberts-on-arithmetic-and.php"&gt;Butter-Arithmetic experiment&lt;/a&gt;.&amp;nbsp;In fact, there was so much interest, that some people decided they wanted to run the same experiment on themselves and pool the data to see if they could replicate his results. This led to Eri Gentry's &lt;a href="http://www.kk.org/quantifiedself/2010/10/will-butter-make-you-smarter-i.php"&gt;Butter-Mind... and Coconut-Mind Study&lt;/a&gt;, in which she outlines a good, scientific protocol and writes: "I am currently looking for Butter Mind participants."&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;And this is when I became concerned.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;In a subtle shift, we went from one person reporting on an experiment he ran on his own body, to a group of people deciding they want to try the same thing, to a public call for participants.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;Some would argue that such a call qualifies as an advertisement for a human interventional study, which creates ethical, if not legal, responsibility to establish proper oversight.&amp;nbsp;Specifically, it would require assessment and disclosure of any potential risks of participating and verification that all participants have given voluntary and fully informed consent.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;Personally, I think the Butter-Mind experiment is quite safe, and most members of the QS community are likely sufficiently sophisticated to be fully aware of whatever risks it may present. But some might reasonably challenge this, particularly for certain potential participants, and especially when the details of the study are communicated to a wider audience. We already had a cardiologist express concern to Seth about the risks to cardiovascular health of increasing saturated fat consumption.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;Most importantly, it is not up to the designers of a study to make the determination of whether research is ethical, whether potential risks and benefits have been properly communicated, and whether informed consent is sufficient. This is the job of an ethical&amp;nbsp;review board.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;As the QS movement ventures from simple self-tracking to more sophisticated social experimentation, which offers compelling scientific rewards, there are a couple of options for proceeding.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;If there are going to be public calls for participation, then I would strongly&amp;nbsp;urge the QS community to assemble its own ethical&amp;nbsp;review board, according to federal regulations, and to review all studies that in any way seek to actively recruit others to participate.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;If we alternatively decide this would pose too great a burden on us self-experimenters, then we need to figure out how to help people with similar interests come together and share data, without anyone "advertising" their study such that it binds us to play by the same rules that were established long ago for pharmaceutical companies.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;I am not at all an expert in this, but I think it's an important distinction that we need to understand and develop rules against.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;It would be truly tragic if the nascent QS movement, and its promise for social benefit, became overburdened with regulatory oversight for failure of its pioneers to take appropriate safety precautions. The best way to avoid this is to demonstrate that we have considered the ethical&amp;nbsp;issues and can responsibly regulate ourselves.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;For those who might think this is excessive, consider what might happen if, in some future experiment, someone who was not fully informed of potential risks ends up seriously harming themselves.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;/span&gt; &lt;div style="background-image: initial; background-attachment: initial; background-origin: initial; background-clip: initial; background-color: rgb(255, 255, 191); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-style: initial; border-color: initial; color: rgb(0, 0, 0); margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; font-family: arial, sans-serif; font-size: 13px; font-style: normal; font-variant: normal; font-weight: normal; height: auto; line-height: normal; text-align: left; width: auto; direction: ltr; z-index: 99995; background-position: initial initial; background-repeat: initial initial; "&gt;&lt;/div&gt;&lt;div style="background-image: initial; background-attachment: initial; background-origin: initial; background-clip: initial; background-color: rgb(255, 255, 191); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-style: initial; border-color: initial; color: rgb(0, 0, 0); margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; font-family: arial, sans-serif; font-size: 13px; font-style: normal; font-variant: normal; font-weight: normal; height: auto; line-height: normal; text-align: left; width: auto; direction: ltr; z-index: 99995; background-position: initial initial; background-repeat: initial initial; "&gt;&lt;/div&gt;
+&lt;p&gt;&lt;a href="http://feedads.g.doubleclick.net/~a/YzP-kIokzx2wARMxYviph_w0_lI/0/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/YzP-kIokzx2wARMxYviph_w0_lI/0/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;br/&gt;
+&lt;a href="http://feedads.g.doubleclick.net/~a/YzP-kIokzx2wARMxYviph_w0_lI/1/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/YzP-kIokzx2wARMxYviph_w0_lI/1/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;/p&gt;&lt;img src="http://feeds.feedburner.com/~r/QuantifiedSelf/~4/5w_f-HIcPdw" height="1" width="1"/&gt;</description>
+            <link>http://feedproxy.google.com/~r/QuantifiedSelf/~3/5w_f-HIcPdw/does-qs-need-an-ethical-review.php</link>
+            <guid isPermaLink="false">http://www.kk.org/quantifiedself/2010/10/does-qs-need-an-ethical-review.php</guid>
+
+
+<category /> <pubDate>Tue, 19 Oct 2010 07:40:29 -0800</pubDate> <feedburner:origLink>http://www.kk.org/quantifiedself/2010/10/does-qs-need-an-ethical-review.php</feedburner:origLink></item>  
+
+<item>
+
+  <title>Roundup: Location Tracking Tools</title>
+            <description>&lt;meta charset="utf-8"&gt;&lt;span class="Apple-style-span" style="color: rgb(0, 0, 0); font-family: arial, sans-serif; border-collapse: collapse; "&gt;&lt;div&gt;&lt;span&gt;&lt;span class="Apple-style-span" style="border-collapse: separate; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; line-height: 17px; "&gt;&lt;a href="http://www.kk.org/quantifiedself/Screen%20shot%202010-10-18%20at%205.51.22%20AM.png"&gt;&lt;img alt="location.png" src="http://www.kk.org/quantifiedself/assets_c/2010/10/Screen shot 2010-10-18 at 5.51.22 AM-thumb-450x270-7587.png" width="450" height="270" class="mt-image-center" style="text-align: center; display: block; margin: 0 auto 20px;" /&gt;&lt;/a&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;span class="Apple-style-span" style="border-collapse: separate; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; line-height: 17px; "&gt;Tracking location is a relatively new phenomenon, thanks to the ubiquity of cheap, embedded GPS receivers. When I was a kid, my parents had no idea where I was. Today, my daughter wants to see exactly where I am if I'm not in the same room as she is. As you might have guessed, this week's roundup is focused on location tracking tools.&lt;/span&gt;&lt;div style="border-collapse: separate; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; line-height: 17px; "&gt;&lt;br /&gt;&lt;/div&gt;&lt;div style="border-collapse: separate; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; line-height: 17px; "&gt;&lt;div id="magicdomid221" class="" style="text-align: left; padding-right: 1px; color: rgb(0, 0, 0); font-family: Arial, sans-serif; font-size: 11px; line-height: 17px; "&gt;&lt;span class="font-family-Arial" style="cursor: auto; padding-top: 1px; padding-bottom: 1px; font-family: Arial; "&gt;It's part of our regular weekly tool roundup for the complete catalog we're putting together of all the self-tracking tools out there. Please help us to make sure we include your favorite tool, your company, or your project.&amp;nbsp;&lt;b&gt;Self-promotion is allowed!&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div id="magicdomid221" class="" style="text-align: left; padding-right: 1px; color: rgb(0, 0, 0); font-family: Arial, sans-serif; font-size: 11px; line-height: 17px; "&gt;&lt;span class="font-family-Arial" style="cursor: auto; padding-top: 1px; padding-bottom: 1px; font-family: Arial; "&gt;&lt;br /&gt;&lt;/span&gt;&lt;/div&gt;&lt;div id="magicdomid221" class="" style="text-align: left; padding-right: 1px; color: rgb(0, 0, 0); font-family: Arial, sans-serif; font-size: 11px; line-height: 17px; "&gt;&lt;span class="font-family-Arial" style="cursor: auto; padding-top: 1px; padding-bottom: 1px; font-family: Arial; "&gt;Here are all the location tracking tools we've found so far.&amp;nbsp;&lt;b&gt;Please let me know what we're missing in the comments below.&amp;nbsp;&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;/span&gt;
+&lt;p&gt;&lt;a href="http://feedads.g.doubleclick.net/~a/jWaCRIG0jGmIgStn4XVc_JhZG1M/0/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/jWaCRIG0jGmIgStn4XVc_JhZG1M/0/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;br/&gt;
+&lt;a href="http://feedads.g.doubleclick.net/~a/jWaCRIG0jGmIgStn4XVc_JhZG1M/1/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/jWaCRIG0jGmIgStn4XVc_JhZG1M/1/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;/p&gt;&lt;img src="http://feeds.feedburner.com/~r/QuantifiedSelf/~4/6GwBzVB8yds" height="1" width="1"/&gt;</description>
+            <link>http://feedproxy.google.com/~r/QuantifiedSelf/~3/6GwBzVB8yds/roundup-location-tracking-tool.php</link>
+            <guid isPermaLink="false">http://www.kk.org/quantifiedself/2010/10/roundup-location-tracking-tool.php</guid>
+
+
+<category /> <pubDate>Mon, 18 Oct 2010 05:42:08 -0800</pubDate> <feedburner:origLink>http://www.kk.org/quantifiedself/2010/10/roundup-location-tracking-tool.php</feedburner:origLink></item>  
+
+<item>
+
+  <title>Eri Gentry on Butter Mind/Coconut Mind</title>
+            <description>For those of you following our &lt;a href="http://www.kk.org/quantifiedself/2010/10/will-butter-make-you-smarter-i.php"&gt;first Quantified Self group experiment&lt;/a&gt;, here is Eri Gentry telling the &lt;a href="http://www.kk.org/quantifiedself/2010/10/bay-area-qs-showtell-16---reca.php"&gt;Bay Area QS Show&amp;Tell meetup&lt;/a&gt; about the Butter Mind/Coconut Mind experiment. The question she wants to answer is, does eating 3 tbsp. of butter or coconut oil a day improve math scores? Hear more directly from Eri below.&lt;br /&gt;&lt;br /&gt;
+
+ &lt;iframe src="http://player.vimeo.com/video/15884539" width="400" height="300" frameborder="0"&gt;&lt;/iframe&gt;&lt;p&gt;&lt;a href="http://vimeo.com/15884539"&gt;Eri Gentry - Butter Mind/Coconut Mind&lt;/a&gt; from &lt;a href="http://vimeo.com/user1008982"&gt;Gary Wolf&lt;/a&gt; on &lt;a href="http://vimeo.com"&gt;Vimeo&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://feedads.g.doubleclick.net/~a/RLNtfoAOY2AerxFSvZurahIJBB4/0/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/RLNtfoAOY2AerxFSvZurahIJBB4/0/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;br/&gt;
+&lt;a href="http://feedads.g.doubleclick.net/~a/RLNtfoAOY2AerxFSvZurahIJBB4/1/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/RLNtfoAOY2AerxFSvZurahIJBB4/1/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;/p&gt;&lt;img src="http://feeds.feedburner.com/~r/QuantifiedSelf/~4/qY_Qo01spvU" height="1" width="1"/&gt;</description>
+            <link>http://feedproxy.google.com/~r/QuantifiedSelf/~3/qY_Qo01spvU/eri-gentry-on-butter-mindcocon.php</link>
+            <guid isPermaLink="false">http://www.kk.org/quantifiedself/2010/10/eri-gentry-on-butter-mindcocon.php</guid>
+
+
+<category /> <pubDate>Sat, 16 Oct 2010 16:11:09 -0800</pubDate> <feedburner:origLink>http://www.kk.org/quantifiedself/2010/10/eri-gentry-on-butter-mindcocon.php</feedburner:origLink></item>  
+
+<item>
+
+  <title>New York QS Show&amp;Tell #9 - Recap</title>
+            <description>&lt;p&gt;&lt;img alt="ny_qs_9.jpg" src="http://www.kk.org/quantifiedself/ny_qs_9.jpg" width="500" height="214" class="mt-image-center" style="text-align: center; display: block; margin: 0 auto 20px;" /&gt;&lt;/p&gt;&lt;div&gt;Last night self-quantifying New Yorkers came out in the rain to witness another fascinating round of QS talks. A special thanks to our hosts&amp;nbsp;&lt;a href="http://twitter.com/MsMatchGirl"&gt;Briana&lt;/a&gt;, &lt;a href="http://twitter.com/thedvl"&gt;Daniel&lt;/a&gt;&amp;nbsp;and the crew at the digital innovation agency&amp;nbsp;&lt;a href="http://www.zemoga.com"&gt;Zemoga&lt;/a&gt;. They're doing some great work and be sure to check out their &lt;a href="http://vimeo.com/14367889"&gt;Follow Me app&lt;/a&gt; concept that they presented at our last Show&amp;amp;Tell.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;img alt="cw_rfid.jpg" src="http://www.kk.org/quantifiedself/cw_rfid.jpg" width="240" height="159" class="mt-image-left" style="float: left; margin: 0 20px 20px 0;" /&gt;&lt;div&gt;We started off the evening with designer &lt;a href="http://www.chriswoebken.com"&gt;&lt;strong&gt;Chris Woebken&lt;/strong&gt;&lt;/a&gt;&amp;nbsp;who critiques and interrogates raw-data driven transactions to uncover what it is that we've designed out of these experiences. His talk focused on our relationship to digital money where he melted an &lt;a href="http://en.wikipedia.org/wiki/Oyster_card"&gt;Oyster card&lt;/a&gt;&amp;nbsp;(London's electronic transport ticket) down to its RFID reader. It still worked. What do we lose as we move to cashless form factors? Can we design sensual experiences back into data-driven ones?&lt;/div&gt;&lt;div&gt;&amp;nbsp;&lt;/div&gt;&lt;div&gt;Then &lt;strong&gt;Kenneth Wright &lt;/strong&gt;shared with the group his personal tracking experience using &lt;a href="http://stickk.com"&gt;StickK&lt;/a&gt;&amp;nbsp;to moderate his alcohol consumption. He's had great success even though his referee won't log in to StickK to support him but the group agreed that StickK could be used to trigger the referee to participate.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;img alt="as_maclogger.jpg" src="http://www.kk.org/quantifiedself/as_maclogger.jpg" width="253" height="143" class="mt-image-right" style="float: right; margin: 0 20px 20px 0;" /&gt;&lt;div&gt;&lt;a href="http://andrewschaaf.com"&gt;&lt;strong&gt;Andrew Schaaf&lt;/strong&gt;&lt;/a&gt; walked us through his very simple Mac app that logs data about how you're using your Mac over time. Get Andrew's &lt;a href="http://github.com/andrewschaaf/MacLogger"&gt;MacLogger now on GitHub&lt;/a&gt;.&amp;nbsp;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;&lt;img alt="rr_mindmap.gif" src="http://www.kk.org/quantifiedself/rr_mindmap.gif" width="391" height="160" class="mt-image-center" style="text-align: center; display: block; margin: 0 auto 20px;" /&gt;&lt;/div&gt;&lt;div&gt;&lt;a href="http://robertrabinovitz.com/"&gt;&lt;strong&gt;Robert Rabinovitz&lt;/strong&gt;&lt;/a&gt;, a designer and educator, captivated the audience with his talk on mind mapping his own design process to a brain seizure he had in 2007 and the minutes leading up to the life-changing event.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;img alt="cs_tomato.jpg" src="http://www.kk.org/quantifiedself/cs_tomato.jpg" width="213" height="130" class="mt-image-right" style="float: right; margin: 0 0 20px 20px;" /&gt;&lt;div&gt;&lt;a href="http://twitter.com/colinschiller"&gt;&lt;strong&gt;Colin Schiller&lt;/strong&gt;&lt;/a&gt; an entrepreneur who, with the arrival of his new baby, saw a decrease in the elasticity of his own time. He undertook some very rigorous time management and productivity experiments using the &lt;a href="http://www.pomodorotechnique.com"&gt;Pomodoro Technique&lt;/a&gt;&amp;nbsp;to discover that he netted out at about 85% efficiency.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;img alt="medhelp.png" src="http://www.kk.org/quantifiedself/medhelp.png" width="110" height="107" class="mt-image-left" style="float: left; margin: 0 20px 20px 0;" /&gt;&lt;div&gt;To cap off the evening, we had the pleasure of a visit from &lt;strong&gt;John de Souza&lt;/strong&gt;, the CEO of &lt;a href="http://www.medhelp.org"&gt;MedHelp&lt;/a&gt;, the world's largest online health community and a sponsor of the Bay Area QS meetups, to share with us his own personal self-tracking experiments and some of the incredibly detailed things that folks are tracking on MedHelp.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;Thanks to everyone who made the evening possible. We'll get videos up soon. See you again in December.&lt;/div&gt;
+&lt;p&gt;&lt;a href="http://feedads.g.doubleclick.net/~a/mPvfvWrOFklTqIlWgtbRDJqTwqk/0/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/mPvfvWrOFklTqIlWgtbRDJqTwqk/0/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;br/&gt;
+&lt;a href="http://feedads.g.doubleclick.net/~a/mPvfvWrOFklTqIlWgtbRDJqTwqk/1/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/mPvfvWrOFklTqIlWgtbRDJqTwqk/1/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;/p&gt;&lt;img src="http://feeds.feedburner.com/~r/QuantifiedSelf/~4/T4qS3NlfP44" height="1" width="1"/&gt;</description>
+            <link>http://feedproxy.google.com/~r/QuantifiedSelf/~3/T4qS3NlfP44/new-york-qs-showtell-9---recap.php</link>
+            <guid isPermaLink="false">http://www.kk.org/quantifiedself/2010/10/new-york-qs-showtell-9---recap.php</guid>
+
+
+<category /> <pubDate>Fri, 15 Oct 2010 06:45:24 -0800</pubDate> <feedburner:origLink>http://www.kk.org/quantifiedself/2010/10/new-york-qs-showtell-9---recap.php</feedburner:origLink></item>  
+
+<item>
+
+  <title>Is there a data-driven personality?</title>
+            <description>&lt;p&gt;&lt;img alt="3841160835_2357897a19_m.jpg" src="http://www.kk.org/quantifiedself/3841160835_2357897a19_m.jpg" class="mt-image-right" style="float: right; margin: 0pt 0pt 20px 20px;" width="225" height="240" /&gt;Let's admit it. People who do stuff are more interesting than those who don't. Naturally we're biased as Self-Quantifiers, but don't you love running into folks at gatherings who have surprises and results to share about themselves, gained from experimentation and tasty data? It's stimulating to hear about an insight ("I eat less when I'm happy"), a problem they're getting a handle on ("I'm seeing if exercise helps my mood"), or a delightful surprise ("I'll be darned - I'm smarter when I eat butter.")&lt;/p&gt;&lt;p&gt;A meta question I'm curious about is whether we can quantify the self-quantifier. That is, can we find a personality type that's common to all of us who experiment on ourselves? Let's play with it by looking at a few possible attributes.
+
+&lt;/p&gt;&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;The insatiably curious&lt;/strong&gt;. If any of these dimensions are universally applicable, I'd guess it's the trait that got the species to where it is now - the urge to answer innate questions like "Why did &lt;em&gt;that&lt;/em&gt; happen?" or "What if I tried...?" Can there really be anyone who isn't curious?&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Gadget lovers, early adopters&lt;/strong&gt;. There's no question that the explosion of self-tracking widgets is exciting. Electronics for measuring sleep, exercise, even power consumption provide motivation through novelty, and ease the tracking burden through automation. A little test: Anyone using low-tech tools? Graph paper and lab notebooks for example?
+  &lt;/li&gt;&lt;li&gt;&lt;strong&gt;Risk takers&lt;/strong&gt;. Collecting data means trying new things, and as a species &lt;a href="http://www.scientificamerican.com/article.cfm?id=set-in-our-ways"&gt;change is hard&lt;/a&gt;. In my case, some of the experiments I try out can feel pretty scary. In your life, how much of a stretch is it for you to do your experiments?
+  &lt;/li&gt;&lt;li&gt;&lt;strong&gt;Fans of Occam's razor&lt;/strong&gt;. Experimentation is a function of the scientific method, which requires a rational "prove it to me" mindset. Can we be motivated to collect data about ourselves yet not be skeptical?
+  &lt;/li&gt;&lt;li&gt;&lt;strong&gt;Problem solvers&lt;/strong&gt;. Often our foray into experimentation is driven by a problem such as a major health concern. (There are over 600 of them at Alex's &lt;a href="http://curetogether.com/"&gt;CureTogether&lt;/a&gt;.) I wonder if motivation to solve a particular situation is at right angles to a general experimental sense. Or maybe it's the other way around - those who work actively to address a problem are by definition self-experimenters.
+  &lt;/li&gt;&lt;li&gt;&lt;strong&gt;Tireless self-improvers&lt;/strong&gt;. As Gary pointed out in his &lt;a href="http://www.nytimes.com/2010/05/02/magazine/02self-measurement-t.html"&gt;New York Times piece&lt;/a&gt;, we track data ultimately to peel back the layers of our behaviors: "The goal isn't to figure out something about human beings generally but to discover something about yourself." There's probably a set of folks who are happy with themselves the way they are, but I don't think they congregate here. Then again, I always appreciate when someone chimes in and questions our movement.
+  &lt;/li&gt;&lt;li&gt;&lt;strong&gt;Thrill-seekers&lt;/strong&gt;. If it's true that we have built-in &lt;a href="http://www.sciam.com/article.cfm?id=learning-by-surprise"&gt;novelty detectors&lt;/a&gt;, are we more likely to try things because results are more stimulating? I'd argue that, because of our curious nature, &lt;em&gt;experimenting feels good&lt;/em&gt;. In your case, what kind of jolt do you get from discoveries?
+  &lt;/li&gt;&lt;li&gt;&lt;strong&gt;Willing to change&lt;/strong&gt;. What's the point of thinking up things to try, doing them, and then capturing and analyzing results if we don't make a change, either in our thinking or behavior? I don't mean that change is always the goal (I'm a firm believer that observation leads to awareness, which leads to change), but without change is this work simply waste? Maybe there are stages, starting with "data-curious?"
+&lt;/li&gt;&lt;/ul&gt;
+
+&lt;p&gt;What do you think? Is it possible to define useful characteristics that capture the data-driven personality? Do any describe you? Which ones would you add or remove?&lt;/p&gt;&lt;p&gt;[image from &lt;a href="http://www.flickr.com/photos/x-ray_delta_one/3841160835/"&gt;x-ray delta one&lt;/a&gt;]&lt;br /&gt;
+
+&lt;/p&gt;&lt;p&gt;&lt;em&gt;(Matt is a terminally-curious ex-NASA engineer and avid self-experimenter. His projects include developing the &lt;a href="http://www.matthewcornell.org/ttl-about/"&gt;Think, Try, Learn&lt;/a&gt; philosophy, creating the &lt;a href="http://edison.thinktrylearn.com/"&gt;Edison&lt;/a&gt; experimenter's journal, and writing at his blog, &lt;a href="http://www.matthewcornell.org/blog/"&gt;The Experiment-Driven Life&lt;/a&gt;. Give him a holler at &lt;a href="mailto:matt@matthewcornell.org"&gt;matt@matthewcornell.org&lt;/a&gt;)&lt;/em&gt;
+&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://feedads.g.doubleclick.net/~a/Vi1RIorir5hhNvqbY0QDhLdf7s8/0/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/Vi1RIorir5hhNvqbY0QDhLdf7s8/0/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;br/&gt;
+&lt;a href="http://feedads.g.doubleclick.net/~a/Vi1RIorir5hhNvqbY0QDhLdf7s8/1/da"&gt;&lt;img src="http://feedads.g.doubleclick.net/~a/Vi1RIorir5hhNvqbY0QDhLdf7s8/1/di" border="0" ismap="true"&gt;&lt;/img&gt;&lt;/a&gt;&lt;/p&gt;&lt;img src="http://feeds.feedburner.com/~r/QuantifiedSelf/~4/RKesnVPjp2g" height="1" width="1"/&gt;</description>
+            <link>http://feedproxy.google.com/~r/QuantifiedSelf/~3/RKesnVPjp2g/is-there-a-data-driven-persona.php</link>
+            <guid isPermaLink="false">http://www.kk.org/quantifiedself/2010/10/is-there-a-data-driven-persona.php</guid>
+
+
+<category /> <pubDate>Thu, 14 Oct 2010 13:58:29 -0800</pubDate> <feedburner:origLink>http://www.kk.org/quantifiedself/2010/10/is-there-a-data-driven-persona.php</feedburner:origLink></item> 
+ 
+ </channel> </rss>

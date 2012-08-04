@@ -94,7 +94,7 @@ class TagRule(Rule):
     if self.check_expires():
       return False
     for tag in item['item_tags']:
-      if self.rule == normalize.lower(tag):
+      if self.rule == tag:
         return True
     return False
   def highlight_content(self, html):
@@ -119,7 +119,7 @@ class AuthorRule(Rule):
 # functions used inside Python rules
 def link_already(url):
   from singleton import db
-  print >> param.log, 'checking for deja-vu for', url,
+  print >> param.activity, 'checking for deja-vu for', url,
   c = db.cursor()
   c.execute("select count(*) from fm_items where item_link like ?",
             [url + '%'])

@@ -213,7 +213,10 @@ def decode_entities(s):
 # XXX need to normalize for HTML entities as well
 def lower(s):
   """Turn a string lower-case, including stripping accents"""
-  s = unicode(s)
+  try:
+    s = unicode(s)
+  except UnicodeDecodeError:
+    s = s.decode('utf8')
   return strip_diacritics(decode_entities(s)).translate(lc_map).lower()
 
 # XXX this implementation is hopefully correct, but inefficient
@@ -580,7 +583,7 @@ def normalize(item, f, run_filters=True):
   # intercepted by feedparser.FeedParserDict.__getitemm__ and treated as
   # special case
   if 'tags' in item and type(item['tags']) == list:
-    item['item_tags'] = set([t['term'].lower() for t in item['tags']])
+    item['item_tags'] = set([lower(t['term']) for t in item['tags']])
   else:
     item['item_tags'] = []
   ########################################################################

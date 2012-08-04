@@ -1,7 +1,7 @@
 #!/usr/local/bin/python
-# $Id$
-import sys, os, stat, logging, base64, time, imp, gzip
-import BaseHTTPServer, SocketServer, cStringIO, urlparse, urllib
+# $Id: server.py,v 1.47 2010/09/07 11:59:13 majid Exp $
+import sys, os, stat, logging, base64, time, imp, gzip, traceback, pprint
+import threading, BaseHTTPServer, SocketServer, cStringIO, urlparse, urllib
 import TembozTemplate, param, update, filters, util
 
 # add the Cheetah template directory to the import path
@@ -377,6 +377,31 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
                             ['Location: ' + redirect_url])
         return
 
+      if path.startswith('/threads'):
+        frames = sys._current_frames()
+        row = 0
+        out = []
+        for thread_id, frame in sorted(frames.iteritems()):
+          if thread_id == threading.currentThread()._Thread__ident:
+            continue
+          row += 1
+          if row % 2:
+            color = '#ddd'
+          else:
+            color = 'white'
+          out.append('<div style="background-color: ' + color + '">\n<pre>')
+          out.append('Thread %s (%d refs)\n'
+                     % (thread_id, sys.getrefcount(frame)))
+          out.append(''.join(traceback.format_stack(frame)).replace(
+            '&', '&amp;').replace('<', '&lt;').replace('>', '&gt;'))
+          out.append('\n<hr>\n')
+          out.append(pprint.pformat(frame.f_locals).replace(
+            '&', '&amp;').replace('<', '&lt;').replace('>', '&gt;'))
+          out.append('\n</pre>\n</div>\n')
+        del frames
+        self.browser_output(200, 'text/html', ''.join(out))
+        return
+
       if path.startswith('/xmlfeedback/'):
         op, item_uid = path.split('/')[2::2]
         item_uid = item_uid.split('.')[0]
@@ -411,6 +436,9 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
         c.close()
         self.xml()
         return
+
+      if path.endswith('.css'):
+        path = path.replace('.css', '_css')
 
       tmpl = path.split('/', 1)[1].strip('/')
       self.use_template(tmpl, [self.input])

@@ -1,7 +1,7 @@
 /**
- * $RCSfile$
- * $Revision$
- * $Date$
+ * $RCSfile: editable_selects.js,v $
+ * $Revision: 1.1 $
+ * $Date: 2006/08/28 07:00:37 $
  *
  * Makes select boxes editable.
  *

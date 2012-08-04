@@ -1,0 +1,31 @@
+## -*- html -*-
+#extends TembozTemplate
+#implements respond
+#import urllib, urllib2
+#import param, social, update
+#from singleton import db
+#set c = db.cursor()
+#silent update.load_settings(db, c)
+#set app_id = param.settings.get('fb_app_id', '')
+#set secret = param.settings.get('fb_secret', '')
+#if app_id and secret
+  ## XXX cannot assume https://
+  #set redir = urllib.quote_plus('https://' + $headers['host'] + '/facebook?op=oauth_redirect')
+  #set op = $getVar('op', '')
+  #if not op
+    #raise self.redirect('https://graph.facebook.com/oauth/authorize?display=touch&client_id=' + app_id + '&scope=publish_stream,read_stream,offline_access&redirect_uri=' + redir)
+  #elif op == 'oauth_redirect'
+    #set code = $getVar('code', '')
+    #if code
+      #set token = urllib2.urlopen('https://graph.facebook.com/oauth/access_token?client_id=' + app_id + '&client_secret=' + secret + '&code=' + urllib.quote(code) + '&redirect_uri=' + redir).read().split('access_token=', 1)[-1]
+      #silent update.setting(db, c, fb_token=token)
+      #silent update.load_settings(db, c)
+      #raise self.redirect('settings#facebook')
+    #end if
+  #end if
+#else
+<h1>Error</h1>
+<p class="error">You need to set the App ID first in <a
+  href="settings#facebook">settings</a>.</p>
+#end if
+#silent c.close()

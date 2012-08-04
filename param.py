@@ -71,16 +71,25 @@ max_errors = 100
 
 #debug = True
 debug = False
+debug_sql = True
+#profile = False
 
 # logging
 import sys, os
 if '--server' in sys.argv:
-  log_filename = 'temboz.log'
+  log_filename = 'error.log'
   # if you modify mode and buffer size, see also update.py:cleanup
   # for the code that rotates this file daily
   log = open(log_filename, 'a', 0)
   os.dup2(log.fileno(), 1)
   os.dup2(log.fileno(), 2)
+  activity = open('activity.log', 'a')
 else:
   log = sys.stderr
+  activity = sys.stderr
 # redirect stout and stderr to the log file
+
+# These settings are managed in the database and will ultimately supersede
+# param.py
+settings = {}
+

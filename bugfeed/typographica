@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>Typographica</title>
+	<atom:link href="http://new.typographica.org/feed/" rel="self" type="application/rss+xml" />
+	<link>http://new.typographica.org</link>
+	<description>A journal of typography with a focus on typeface reviews.</description>
+	<lastBuildDate>Thu, 05 Nov 2009 00:22:33 +0000</lastBuildDate>
+	<generator>http://wordpress.org/?v=2.8.4</generator>
+	<language>en</language>
+	<sy:updatePeriod>hourly</sy:updatePeriod>
+	<sy:updateFrequency>1</sy:updateFrequency>
+	<cloud domain='new.typographica.org' port='80' path='/?rsscloud=notify' registerProcedure='' protocol='http-post' />
+		<item>
+		<title>Bonesana</title>
+		<link>http://new.typographica.org/2009/typeface-reviews/bonesana/</link>
+		<comments>http://new.typographica.org/2009/typeface-reviews/bonesana/#comments</comments>
+		<pubDate>Thu, 08 Oct 2009 03:51:17 +0000</pubDate>
+		<dc:creator>Typographica</dc:creator>
+				<category><![CDATA[Gestalten]]></category>
+		<category><![CDATA[Matthieu Cortat]]></category>
+		<category><![CDATA[Nameplates]]></category>
+		<category><![CDATA[Serif]]></category>
+		<category><![CDATA[Type Reviews]]></category>
+
+		<guid isPermaLink="false">http://new.typographica.org/?p=5523</guid>
+		<description><![CDATA[<img width="500" height="610" src="http://new.typographica.org/wp-content/uploads/2009/10/Bonesana.gif" class="attachment-large" alt="" title="Bonesana fonts" /><br />Special thanks to Gestalten for sponsoring the Typographica nameplate for October, 2009 with Bonesana.
+Gestalten is known for very contemporary designs — the modular and the post-mod — so this tribute to the 18th century is quite a departure. Designed by Matthieu Cortat of Switzerland, Bonesana was initially developed for the new edition of the book [...]]]></description>
+			<content:encoded><![CDATA[<p>Special thanks to <a href="http://www.gestalten.com">Gestalten</a> for sponsoring the Typographica <a href="http://new.typographica.org/2009/on-typography/a-new-nameplate-tradition/">nameplate</a> for October, 2009 with <a href="http://www.gestalten.com/fonts/detail/?id=ceaea76523135ee601232d91c392009c">Bonesana</a>.</p>
+<p>Gestalten is known for very contemporary designs — the <a href="http://www.gestalten.com/fonts/detail/?id=ceaea7651fc964c301210b0205c6015f">modular</a> and the <a href="http://www.gestalten.com/fonts/detail/?id=402881820693de75010693debc1600d3">post-mod</a> — so this tribute to the 18th century is quite a departure. Designed by Matthieu Cortat of Switzerland, Bonesana was initially developed for the new edition of the book “On Crimes and Punishment” written by the Italian philosopher Cesare Bonesana in the late 1700s. </p>
+<p>A family optimized for book text, there are <a href="http://fontfeed.com/archives/figuring-it-out-osf-lf-and-tf-explained/">oldstyle, lining, proportional, and tabular figures</a>, small caps, and italics, but there is no bold. Still, with a subtle tone, an extended Latin, Greek, and Cyrillic character set, and a complement of beautiful open face caps, Bonesana is versatile enough to set elegant text and titles in a variety of contexts.</p>
+]]></content:encoded>
+			<wfw:commentRss>http://new.typographica.org/2009/typeface-reviews/bonesana/feed/</wfw:commentRss>
+		<slash:comments>0</slash:comments>
+		</item>
+		<item>
+		<title>Audio from the Web Fonts Panel at TypeCon2009</title>
+		<link>http://new.typographica.org/2009/on-typography/audio-from-the-web-fonts-panel-at-typecon2009/</link>
+		<comments>http://new.typographica.org/2009/on-typography/audio-from-the-web-fonts-panel-at-typecon2009/#comments</comments>
+		<pubDate>Mon, 20 Jul 2009 22:56:11 +0000</pubDate>
+		<dc:creator>Stephen Coles</dc:creator>
+				<category><![CDATA[Commentary]]></category>
+
+		<guid isPermaLink="false">http://new.typographica.org/2009/on-typography/audio-from-the-web-fonts-panel-at-typecon2009/</guid>
+		<description><![CDATA[<br />Yesterday at <a href="http://www.typecon.com">TypeCon2009</a> in Atlanta, 11 representatives from the type community packed a stage to discuss the <a href="http://ilovetypography.com/2009/07/20/web-fonts-%E2%80%94-where-are-we/">controversial and convoluted</a> issue of licensing fonts for the web. The full two hours of audio is now online.]]></description>
+			<content:encoded><![CDATA[<p>Yesterday at <a href="http://www.typecon.com">TypeCon2009</a> in Atlanta, 11 representatives from the type community packed a stage to discuss the <a href="http://ilovetypography.com/2009/07/20/web-fonts-%E2%80%94-where-are-we/">controversial and convoluted</a> issue of licensing fonts for the web. I sat at the AV table and recorded the session for TypeCon. The full <a href="http://typecon.com/talk.php?id=333">two hours of audio</a> is now online. <a href="http://www.typecon.com/talk.php?id=333">SOTA hopes to follow with video later</a>, but I thought the interest was strong enough to warrant posting something audible as soon as we could.</p>
+<p> <span id="more-5477"></span>
+<ul><strong><a href="http://www.typecon.com/speakers.php">Panelists</a></strong></p>
+<li>Moderator: <a href="http://kentlew.com/About.html">Kent Lew</a> <em>type designer, SOTA Board Member</em>
+<li>Ted Harrison, <a href="http://www.fontlab.com">FontLab</a> <em>type design software vendor</em></li>
+<li><a href="http://www.ascendercorp.com/about/bill-davis/">Bill Davis</a>, Ascender (font vendor)</li>
+<li>David DeWitt, <a href="http://www.fonts.com/AboutUs/AboutAMT.htm">Monotype Imaging</a> (font vendor)</li>
+<li><a href="http://store1.adobe.com/cfusion/store/html/index.cfm?store=OLS-US&#038;event=displayDesignerInfo&#038;code=SLYE">Christopher Slye</a>, <a href="http://www.adobe.com/type/">Adobe</a> <em>type designer</em></li>
+<li>Shu Lai, <a href="http://shudesign.com/">ShuDesign</a> <em>web designer</em></li>
+<li>Ivo Gabrowitsch, <a href="http://www.fontfont.com">FontFont</a> <em>font vendor</em></li>
+<li><a href="http://www.tiro.com/contact.html">John Hudson</a>, Tiro Typeworks <em>type designer</em></li>
+<li><a href="http://www.bryanmason.com/about">Bryan Mason</a>, <a href="http://typekit.com/">Typekit</a> <em>web font service provider</em></li>
+<li><a href="http://garrickvanburen.com/about">Garrick Van Buren</a>, <a href="http://kernest.com/">Kernest</a> <em>web font service provider</em></li>
+<li><a href="http://martinezgroup.com/aboutusstaff.html">Frank J. Martinez, Esq.</a> <em>copyright attorney</em></li>
+</ul>
+<p>Maybe we should have cut the 30 seconds of relaxed jazz at the beginning, but I find it an amusing counterpoint to the urgency and heat of the discussion. It beats the more obvious “<a href="http://en.wikipedia.org/wiki/Ride_of_the_Valkyries">Ride of the Valkyries</a>”.</p>
+<p>You can also have a look at Typographica’s <a href="http://twitter.com/typographica">Twitter stream</a> which I filled with a play-by-play and a bit of commentary from the event. Anyone got a script that will take a selection of Tweets and post it reverse order for posterity?</p>
+]]></content:encoded>
+			<wfw:commentRss>http://new.typographica.org/2009/on-typography/audio-from-the-web-fonts-panel-at-typecon2009/feed/</wfw:commentRss>
+		<slash:comments>6</slash:comments>
+		</item>
+		<item>
+		<title>Marlene</title>
+		<link>http://new.typographica.org/2009/typeface-reviews/marlene/</link>
+		<comments>http://new.typographica.org/2009/typeface-reviews/marlene/#comments</comments>
+		<pubDate>Wed, 22 Apr 2009 20:17:42 +0000</pubDate>
+		<dc:creator>Aegir Hallmundur</dc:creator>
+				<category><![CDATA[Nikola Djurek]]></category>
+		<category><![CDATA[Serif]]></category>
+		<category><![CDATA[Type Reviews]]></category>
+		<category><![CDATA[Typefaces of 2008]]></category>
+		<category><![CDATA[Typonine]]></category>
+
+		<guid isPermaLink="false">http://new.typographica.org/?p=5393</guid>
+		<description><![CDATA[<img width="500" height="800" src="http://new.typographica.org/wp-content/uploads/2009/04/marlene.png" class="attachment-large" alt="" title="Marlene type specimen" /><br />Marlene is an elegant, high contrast Egyptian face with a distinctive and contemporary calligraphic flourish. When I first saw it I was impressed at how incredibly crisp it was, as if drawn with a pen so sharp it could just as easily cut the paper as leave ink there. 
+The italic expresses this sharpness with [...]]]></description>
+			<content:encoded><![CDATA[<p><a href="http://typonine-fonts.com/fonts/marlene/">Marlene</a> is an elegant, high contrast Egyptian face with a distinctive and contemporary calligraphic flourish. When I first saw it I was impressed at how incredibly crisp it was, as if drawn with a pen so sharp it could just as easily cut the paper as leave ink there. </p>
+<p>The italic expresses this sharpness with a wonderful sense of speed; those beautiful thin upstrokes and unusually high connection points of the bowls on a, g and y, and the standout exuberance of the k feel as if it can&#8217;t wait to get you moving on to the next letter, with the stark horizontal of the terminal serif seemingly flinging you onward. The horizontal serifs along the x-height and baseline also create strong lines that add yet more of a sense of urgency and pace to text set with it. This face isn&#8217;t hanging around for anyone.</p>
+<p>The face is contrasty too, not just of the thick and thin of upstrokes and downstrokes, but of the speed and sudden direction changes that give this face such quirky character and appeal. The regular a is unusual in carrying through such a heavy serif from more open characters like the c and r, and as a result ends up with a tiny counter that successfully keeps the character balanced. It&#8217;s a sign of the quality of overall design in this face that such a conceit not only works well but adds a distinctive and appealing character. I think the face is a great release and while it&#8217;d work well for body copy, especially for magazines and short copy, it will really shine in a display setting.</p>
+<p><small><strong><a href="http://aegir.me/">Aegir Hallmundur</a></strong> is a type-obsessed web and graphic designer living and working Brighton, England. He also runs <a href="http://ministryoftype.co.uk">The Ministry of Type</a>, a website mainly about type and sometimes calligraphy, illustration, architecture and photography.</small></p>
+]]></content:encoded>
+			<wfw:commentRss>http://new.typographica.org/2009/typeface-reviews/marlene/feed/</wfw:commentRss>
+		<slash:comments>5</slash:comments>
+		</item>
+		<item>
+		<title>Archer</title>
+		<link>http://new.typographica.org/2009/typeface-reviews/archer/</link>
+		<comments>http://new.typographica.org/2009/typeface-reviews/archer/#comments</comments>
+		<pubDate>Wed, 22 Apr 2009 11:28:17 +0000</pubDate>
+		<dc:creator>David John Earls</dc:creator>
+				<category><![CDATA[Hoefler & Frere-Jones]]></category>
+		<category><![CDATA[Slab Serif]]></category>
+		<category><![CDATA[Type Reviews]]></category>
+		<category><![CDATA[Typefaces of 2008]]></category>
+
+		<guid isPermaLink="false">http://new.typographica.org/?p=5342</guid>
+		<description><![CDATA[<img width="500" height="500" src="http://new.typographica.org/wp-content/uploads/2009/04/archer.png" class="attachment-large" alt="" title="Archer type specimen" /><br />A slew of slab serifs were released in 2008. Most of them continuing last year’s trend of following the cute and chunky approach, often to delicious effect. 
+But as marvelous as so many of those slab serifs were, sadly they were let down when it came to lighter, or more usable text weights. For me, [...]]]></description>
+			<content:encoded><![CDATA[<p>A slew of slab serifs were released in 2008. Most of them continuing last year’s trend of following the cute and chunky approach, often to delicious effect. </p>
+<p>But as marvelous as so many of those slab serifs were, sadly they were let down when it came to lighter, or more usable text weights. For me, it is <a href="http://www.typography.com/fonts/font_overview.php?affiliateID=15&#038;productLineID=100033">Archer</a> that stood out, with H&#038;FJ concentrating on the lighter half of the spectrum, eight weights offering a delightful range of contrast, but never venturing heavier than bold. Making a text face distinctive with a clear personality that can scale right up to display sizes is a mammoth task at the best of times, but a slab? </p>
+<p>Yet here it is; with its judicious yet brave use of <a href="http://new.typographica.org/2006/type_commentary/bevy-of-ball-terminals/">ball terminals</a>, and blending geometry with sexy cursive forms, all brought together with the kind of historical and intellectual rigour you fully expect from this particular foundry, Archer succeeds where others falter. I only hope that in its use out in the wild (and away from that jailbird Martha Stewart) people give it the same level of thought.</p>
+<p><small><a href="http://typographer.org"><strong>David Earls</strong></a> is a recovering graphic designer based in London. He sometimes designs typefaces for his own enjoyment, but considers himself to be very much an amateur who never wants to stop learning. David founded Typographer.org in 1999 in the hope it should provide fiercely independent voice on the web, with honesty, impartiality and independence of funding at its core.</small></p>
+]]></content:encoded>
+			<wfw:commentRss>http://new.typographica.org/2009/typeface-reviews/archer/feed/</wfw:commentRss>
+		<slash:comments>15</slash:comments>
+		</item>
+		<item>
+		<title>Turning the Page</title>
+		<link>http://new.typographica.org/2009/on-typography/turning-the-page/</link>
+		<comments>http://new.typographica.org/2009/on-typography/turning-the-page/#comments</comments>
+		<pubDate>Wed, 22 Apr 2009 10:41:22 +0000</pubDate>
+		<dc:creator>Stephen Coles</dc:creator>
+				<category><![CDATA[Commentary]]></category>
+		<category><![CDATA[Typographica]]></category>
+
+		<guid isPermaLink="false">http://new.typographica.org/?p=5262</guid>
+		<description><![CDATA[<img width="500" height="250" src="http://new.typographica.org/wp-content/uploads/2009/04/typographica-editors.jpg" class="attachment-large" alt="" title="Typographica Editors" /><br />“How do you know you should start a blog? Because people keep telling you to shut up. You just won’t shut up about a subject.” — Merlin Mann, SXSW Interactive 2009
+“Obsession times voice” is what luminary bloggers Merlin Mann and John Gruber offer as a simple formula for successful writing. It’s exactly these qualities that Joshua [...]]]></description>
+			<content:encoded><![CDATA[<p>“How do you know you should start a blog? Because people keep telling you to shut up. You just won’t shut up about a subject.” <small>— Merlin Mann, SXSW Interactive 2009</small></p>
+<p>“<a href="http://daringfireball.net/2009/03/obsession_times_voice">Obsession times voice</a>” is what luminary bloggers Merlin Mann and John Gruber offer as a simple formula for successful writing. It’s exactly these qualities that Joshua Lurie-Terrell hurled at the burgeoning bloggernet on May 1, 2002 when he opened an account on blogspot.com and called it <em>Typographica</em>. I asked JLT to recount those olden days:</p>
+<blockquote><p>Back when blogs were a “new thing”, I wanted to experiment with this new mode of publishing. I didn&#8217;t have much to say about my personal life — and I still don’t — but I was interested in meeting other folks who shared my primary interests: letterpress printing, typography, and the Arts &#038; Crafts design aesthetic. Thus, <em>Typographica</em> was born. Being that there was a bit of a void in the medium for the first two subjects<small><font style="vertical-align:3px;">1</font></small> — there were mailing lists and a few newsgroups, but nothing really accessible — it quickly became much more popular than I had expected, and even more quickly put me in touch with dozens of interesting people working in these fields, many of whom have become good friends.</p></blockquote>
+<p><img src="http://new.typographica.org/wp-content/uploads/2009/04/firefoxscreensnapz004-315x466.png" alt="Ye Olde Typographica" title="Ye Olde Typographica" width="315" height="466" style="float:right; margin:2px 0 0 15px;" />In his carefree, gung-ho way, JLT liberally bestowed author accounts on those he respected in the realm of typography and encouraged them to post whatever they wanted on the site. News and discussion sparked quickly. Smart, opinionated folks from all corners of the type world contributed to what became an bustling throng of obsessive voices. </p>
+<p>The site design, a judiciously modified Blogger template, was hardly touched for nearly seven years. <a href="http://en.wikipedia.org/wiki/Georgia_(typeface)">Georgia</a>, <a href="http://en.wikipedia.org/wiki/Verdana">Verdana</a>, blue, orange, and the <a href="http://new.typographica.org/archives/a-new-nameplate-tradition/">rotating nameplate</a> served the site remarkably well through many internet-wide design phases, from Web 1.5 to 2.0. In fact, <em>Typographica</em> trudged ahead at a steady pace for most of its lifespan, aside from a <a href="http://typographica.org/000898.php">minor bump in the Canadian highway</a>.</p>
+<p>But sometime in 2006 site activity slowed to a cold maple syrup drip. JLT had moved on to his other ventures, most notably <a href="http://www.hewnandhammered.com/">Hewn &#038; Hammered</a>. And I somehow landed in a desk at <a href="http://www.fontshop.com">FontShop</a> in San Francisco, where writing about type and playing with fonts became a full-time gig. </p>
+<p>It wasn’t just that our attention was diverted — other type bloggers took the reins and did it better, more <a href="http://ministryoftype.co.uk/">beautifully</a> and <a href="http://fontfeed.com/">comprehensively</a>, with more <a href="http://www.typography.com/ask/index.php">brains</a>, more <a href="http://ilovetypography.com/">fervor</a>, and more <a href="http://www.typeoff.de/">expertise</a>. And, of course, there’s really no reason to go anywhere else to discuss type with knowledgeable peers than <a href="http://www.typophile.com/">Typophile</a>.</p>
+<p>This new typoblogosphere calls for a new <em>Typographica</em>. It’s clear that what the type world needs now is not another blog. No, what’s missing is what keeps readers coming back to the site every year, despite our relative silence: <em>informed reviews</em>. The accessibility of type design tools and distribution is yielding hundreds of new font releases every month. Most of them are rubbish. Some of them are good. And a select few are worthy of your money (or your client’s). Our annual <a href="http://new.typographica.org/2009/features/our-favorite-typefaces-of-2008/">Favorites</a> are dedicated to that last group. And now, thanks to a new website facilitated by the Wordpress wizardry and design dexterity of <a href="http://www.chrishamamoto.com">Chris Hamamoto</a>, <em>Typographica</em> has a new mission as a vehicle for typeface recommendations and reviews. </p>
+<p>The move is still underway — some of the legacy odds and ends are missing or malformed. So until we feel comfortable in our new home, the <a href="http://typographica.org">original location</a> will remain open. But all new content will live here. We hope you enjoy the new format and welcome your comments (as long as your name isn’t <a href="http://typographica.org/000455.php">Joe Clark</a><small><font style="vertical-align:3px;">2</font></small>).</p>
+<p>A final word from our founder:</p>
+<blockquote><p>I&#8217;m especially glad that <em>Typographica</em> found its real focus — the art, craft, and business of typography and type design — and that Stephen Coles was the one who was there to pick up and run with it. He has become one of my closest friends, and it would never have been as successful as it has been without him.</p></blockquote>
+<p>Thank you, JLT. We’ll do our best to stay obsessed.</p>
+<p><img src="http://new.typographica.org/wp-content/uploads/2009/04/typographica-editors.jpg" alt="Typographica Editors" title="Typographica Editors" width="500" height="250" class="alignnone size-full wp-image-5409" /><br />
+<small>Joshua Lurie-Terrell and Stephen Coles at a crossroads. Photo courtesy <a href="http://www.flickr.com/photos/27531276@N00/34914453">Adam Twardoch</a>.</small></p>
+<p style="margin-top:30px;"><strong>Special thanks</strong> to the brilliant Matthew Bardram and <a href="http://patricking.com/">Patric King</a> for their assistance in the early years; to <a href="http://grahamhicks.com/">Graham Hicks</a> for crafting a beautiful blog design that never saw the light of day due to my change of plans; to <a href="http://www.nicksherman.com">Nick Sherman</a> for his deceptively simple <a href="http://new.typographica.org/favicon.ico">favicon</a> and for tying up a lot of loose ends this week; to Chris for his countless hours and endless patience with my waffling and tweaking; and to all the contributors whose writing and camaraderie made this journey such a joy from the beginning — your accounts are still open.</p>
+<p><small>1. Notable exceptions were <a href="http://typographica.org/000254.php">Lines &#038; Splines</a> (lost to the abyss) and <a href="http://typographer.org">Typographer.org</a> (still kickin’), but both were single-author blogs.</p>
+<p>2. This is a joke.</small></p>
+<p>Hear more about <em>Typographica’s</em> early history from Joshua and myself on <a href="http://www.typeradio.org/loudblog/index.php?cat=Coles,Stephen">Typeradio</a>, recorded at TypeCon San Francisco in July 2004.</p>
+]]></content:encoded>
+			<wfw:commentRss>http://new.typographica.org/2009/on-typography/turning-the-page/feed/</wfw:commentRss>
+		<slash:comments>44</slash:comments>
+		</item>
+		<item>
+		<title>FontBook, 4th Edition</title>
+		<link>http://new.typographica.org/2009/typography-books/fontbook-4th-edition/</link>
+		<comments>http://new.typographica.org/2009/typography-books/fontbook-4th-edition/#comments</comments>
+		<pubDate>Tue, 21 Apr 2009 23:11:07 +0000</pubDate>
+		<dc:creator>Tiffany Wardle de Sousa</dc:creator>
+				<category><![CDATA[Books]]></category>
+		<category><![CDATA[Erik Spiekermann (editor)]]></category>
+		<category><![CDATA[FontShop International]]></category>
+		<category><![CDATA[Jürgen Siebert (editor)]]></category>
+		<category><![CDATA[Mai-Linh Thi Truong (editor)]]></category>
+
+		<guid isPermaLink="false">http://new.typographica.org/?p=5212</guid>
+		<description><![CDATA[<img width="400" height="716" src="http://new.typographica.org/wp-content/uploads/2009/04/fontbook-400.jpg" class="attachment-large" alt="" title="FontBook, 4th Edition" /><br />Long before there were hi-res laser printers in every design firm and PDF specimens on every foundry website, typographers discovered, compared, and selected type using specimen books. 
+There is too much separation from the display to the printed page for a designer to see how the curves, the straights, and the joins truly interact. The [...]]]></description>
+			<content:encoded><![CDATA[<p>Long before there were hi-res laser printers in every design firm and PDF specimens on every foundry website, typographers discovered, compared, and selected type using specimen books. </p>
+<p>There is too much separation from the display to the printed page for a designer to see how the curves, the straights, and the joins truly interact. The best way to review and analyze the utility of a typeface is through viewing the samples in print. Nothing can replace this.</p>
+<p>To this end, “<a href="http://fontbook.com">FontBook</a>” is a type reference worth much more than its weight in gold. And it weighs a lot! (More than six-and-a-half pounds, in fact.)</p>
+<p>Some might say, “but it’s a book and it can’t be updated.” True. Containing font releases up to 2006, “FontBook” is best used in conjunction with FontShop.com and other online vendors for a more current view of what’s available. But the book offers insight not found online, such as the “see also” cross-references, and offset printed samples complete enough to really give a good idea of what you’ll get when you go to press.</p>
+<p>This comprehensive reference is curated, organized, and printed with loving and tender care — a vital tool for keeping things original and fresh for each client and project.</p>
+<p><small><strong><a href="http://www.typegirl.com/">Tiffany Wardle de Sousa</a></strong> is a typographer living and working in San Jose, California. She earned her MA in the Theory and History of Typography at <a href="http://www.typophile.com/node/12257">Reading</a>. Active in the type community, Tiffany has written for several design publications and serves as a <a href="http://www.typesociety.org/">SOTA</a> board member and <a href="http://www.typophile.com">Typophile</a> moderator.</small></p>
+]]></content:encoded>
+			<wfw:commentRss>http://new.typographica.org/2009/typography-books/fontbook-4th-edition/feed/</wfw:commentRss>
+		<slash:comments>3</slash:comments>
+		</item>
+		<item>
+		<title>Glosa</title>
+		<link>http://new.typographica.org/2009/typeface-reviews/glosa/</link>
+		<comments>http://new.typographica.org/2009/typeface-reviews/glosa/#comments</comments>
+		<pubDate>Tue, 21 Apr 2009 08:39:21 +0000</pubDate>
+		<dc:creator>Nick Sherman</dc:creator>
+				<category><![CDATA[DSType]]></category>
+		<category><![CDATA[Dino dos Santos]]></category>
+		<category><![CDATA[Display]]></category>
+		<category><![CDATA[Serif]]></category>
+		<category><![CDATA[Type Reviews]]></category>
+		<category><![CDATA[Typefaces of 2008]]></category>
+
+		<guid isPermaLink="false">http://new.typographica.org/?p=5207</guid>
+		<description><![CDATA[<img width="500" height="500" src="http://new.typographica.org/wp-content/uploads/2009/04/glosa.png" class="attachment-large" alt="" title="Glosa type specimen" /><br />Contrasting sharp serifs with rotund ball terminals, Portuguese designer Dino dos Santos evokes the vibrant work of 18th-century punchcutter Johann Fleischman with his 2008 release of Glosa. Dos Santos is clearly aiming for something beyond a revival though, and introduces enough contemporary flair and personal quirk to do so successfully.
+Designed as an extended series of [...]]]></description>
+			<content:encoded><![CDATA[<p>Contrasting sharp serifs with rotund ball terminals, Portuguese designer Dino dos Santos evokes the vibrant work of 18th-century punchcutter Johann Fleischman with his 2008 release of <a href="http://www.dstype.com/index.php?id=22">Glosa</a>. Dos Santos is clearly aiming for something beyond a revival though, and introduces enough contemporary flair and personal quirk to do so successfully.</p>
+<p>Designed as an extended series of complementary font subsets, Glosa is well-suited for editorial design or other complex systems where a wide range in size, texture, and functionality (small caps, oldstyle figures, ligatures, etc) is desired. The face&#8217;s crisp cut gives it a lively sparkle; but for longer text, where the standard design&#8217;s angularity could become distracting, dos Santos offers Glosa Text, with bracketed serifs and other softened details.</p>
+<p>On the other end of the spectrum, the series includes Glosa Headline, with an increased x-height, for more impact at larger sizes. Finally, it seems relevant to mention Glosa Display (even though it technically wasn&#8217;t released until early 2009); this latest addition to the series pushes Glosa&#8217;s sharp contrast to the limit, making it attractive for flashier decorative work.</p>
+<p><small><a href="http://www.nicksherman.com/">Nick Sherman</a> is a designer and writer working for <a href="http://www.myfonts.com/">MyFonts</a>. He is also a skateboarder, musician, typography teacher at <a href="http://www.massart.edu/">MassArt</a>, <a href="http://www.pizzarules.com/">pizza eater</a>, letterpress printer, classic horror film fan, and <a href="http://www.kaiju.com/">monster wrestler</a>. At present he is technically homeless, but spends most of his time between Boston and New York City.</small></p>
+]]></content:encoded>
+			<wfw:commentRss>http://new.typographica.org/2009/typeface-reviews/glosa/feed/</wfw:commentRss>
+		<slash:comments>0</slash:comments>
+		</item>
+		<item>
+		<title>Baskerville 10</title>
+		<link>http://new.typographica.org/2009/typeface-reviews/baskerville-10/</link>
+		<comments>http://new.typographica.org/2009/typeface-reviews/baskerville-10/#comments</comments>
+		<pubDate>Tue, 21 Apr 2009 03:40:16 +0000</pubDate>
+		<dc:creator>Adam Twardoch</dc:creator>
+				<category><![CDATA[František Štorm]]></category>
+		<category><![CDATA[John Baskerville]]></category>
+		<category><![CDATA[Otakar Karlas]]></category>
+		<category><![CDATA[Serif]]></category>
+		<category><![CDATA[Storm]]></category>
+		<category><![CDATA[Type Reviews]]></category>
+		<category><![CDATA[Typefaces of 2008]]></category>
+
+		<guid isPermaLink="false">http://new.typographica.org/?p=5039</guid>
+		<description><![CDATA[<img width="500" height="704" src="http://new.typographica.org/wp-content/uploads/2009/04/baskerville10.gif" class="attachment-large" alt="" title="Baskerville 10 type specimen" /><br />When it comes to the number of type designers per capita, the Netherlands can be challenged by only a few countries — but the Czech Republic is a close runner-up. One of the country’s most prolific digital typefounders is František Štorm.
+Throughout all his work, František has been constantly applying a vibrant, individual style to the [...]]]></description>
+			<content:encoded><![CDATA[<p>When it comes to the number of type designers per capita, the Netherlands can be challenged by only a few countries — but the Czech Republic is a close runner-up. One of the country’s most prolific digital typefounders is František Štorm.</p>
+<p>Throughout all his work, František has been constantly applying a vibrant, individual style to the letterforms he draws. In some cases, his idiosyncrasies are taken to the extreme (Biblon, Serapion), making his faces expressive and inimitable. But every now and then, Štorm steps on a more refined, humble path. One such project is his Baskerville revival, done in collaboration with another Czech designer, Otakar Karlas. </p>
+<p>What started almost ten years ago as an “analytical transcription” (as Štorm calls it) of Baskerville’s 14-point roman and italic from the early 1760s, has now become a solid yet versatile text family in three optical sizes. The newest addition to the family is <a href="http://www.stormtype.com/typefaces-fonts-shop/families-77-baskerville-10-pro">Baskerville 10</a>, a set of four OpenType fonts with pan-European Latin, Cyrillic and Greek alphabets. Štorm admires Baskerville’s letter for its “sober elegance and clear design” and attests to its “character of a gentleman.” While this respect for the English master is clearly visible in this adaptation, Štorm by no means slavishly followed the historical specimens. He much rather created a beautiful, lively and very practical text family for all sorts of text work. How much Baskerville is in Štorm’s Baskerville 10? A lot. How much Štorm is in it? Just enough. “When in doubt, use Baskerville. Stormtype Baskerville, of course,” says František. Good advice.</p>
+<p><small>Based in Berlin, <strong><a href="http://www.twardoch.com/adam/">Adam Twardoch</a></strong> works as product and marketing manager at <a href="http://www.fontlab.com">FontLab</a> as well as multilingual typography and font technology consultant for <a href="http://www.myfonts.com">MyFonts</a> and other clients. He teaches at universities in the UK, USA, Germany, Poland, and Russia. In 2007, Adam edited the Polish edition of Robert Bringhurst’s “The Elements of Typographic Style”.</small></p>
+]]></content:encoded>
+			<wfw:commentRss>http://new.typographica.org/2009/typeface-reviews/baskerville-10/feed/</wfw:commentRss>
+		<slash:comments>0</slash:comments>
+		</item>
+		<item>
+		<title>Studio Lettering</title>
+		<link>http://new.typographica.org/2009/typeface-reviews/studio-lettering/</link>
+		<comments>http://new.typographica.org/2009/typeface-reviews/studio-lettering/#comments</comments>
+		<pubDate>Tue, 21 Apr 2009 03:02:59 +0000</pubDate>
+		<dc:creator>Adam Twardoch</dc:creator>
+				<category><![CDATA[House Industries]]></category>
+		<category><![CDATA[Ken Barber]]></category>
+		<category><![CDATA[Script]]></category>
+		<category><![CDATA[Tal Leming]]></category>
+		<category><![CDATA[Type Reviews]]></category>
+		<category><![CDATA[Typefaces of 2008]]></category>
+
+		<guid isPermaLink="false">http://new.typographica.org/?p=4998</guid>
+		<description><![CDATA[<img width="500" height="750" src="http://new.typographica.org/wp-content/uploads/2009/04/studiolettering.gif" class="attachment-large" alt="" title="Studio Lettering type specimen" /><br />Ken Barber is an incredibly talented letterer. And Tal Leming is an incredibly talented font technology whiz (and a good type designer as well). House Industries’ Studio Lettering series unifies great lettering, cutting-edge OpenType font technology, and one more thing: culturally-sensitive design. 
+The three script fonts — Studio Lettering Swing, Slant and Sable — deliver [...]]]></description>
+			<content:encoded><![CDATA[<p><a href="http://typeandlettering.com/about/">Ken Barber</a> is an incredibly talented letterer. And Tal Leming is an incredibly talented font technology whiz (and a good type designer as well). House Industries’ Studio Lettering series unifies great lettering, cutting-edge OpenType font technology, and one more thing: culturally-sensitive design. </p>
+<p>The three script fonts — <a href="http://www.houseind.com/fonts/studiolettering">Studio Lettering Swing, Slant and Sable</a> — deliver just what one expects from a House Industries font family: high-quality, fresh, lively signwriter-style “hand lettering”. Yet unlike most “script fonts,” text set in the Studio Lettering faces looks anything but mechanical. Smart OpenType programming produces alternating letter shapes so that the result looks natural. </p>
+<p>Owing some to House’s earlier successes, <a href="http://www.houseind.com/fonts/signpainterfontkit/viewfonts">House Script and House Casual</a>, the first member of the series, Sable, recreates the friendly “store signwriter” look — but takes it a few steps ahead. After an extensive study of handwriting differences between America and various European countries, Ken Barber created (in all three fonts of the series) letter and digit variants that follow different national preferences. In Sable, there is a “forward” and a “reverse” ‘r’, a ‘7’ with and without a horizontal stroke in the middle, or a ‘p’ with a swoosh or with a bowl. The variants have been linked to the OpenType language selection mechanism, so assigning a different language in InDesign automatically gives the text the appropriate local flavor. Bloody awesome! Also, the diacritics in all three fonts are really well done. I only wish Sable included the all-favorite “Sale! Yes! Free! Call!”<br />
+wordmarks, ideally with localized variants.</p>
+<p>With more than 1,400 glyphs, Studio Lettering Swing has the most extensive character set in the suite. Though this be madness, yet there is method in ’t. Rather than randomly switching alternate letterforms, Swing smoothly flows between slightly larger and smaller shapes, which produces a recurring rhythm. Signwriter-style, and a bit girly. </p>
+<p>To me, the third member of the suite, Studio Lettering Slant, is probably the most impressive. The localized flavors in this bold, backslanted, somewhat serious script go as far as allowing the user to switch to a German-style flavor, in which some letterforms are derived from <a href="http://en.wikipedia.org/wiki/S%C3%BCtterlin">Sütterlin</a> — a kind of a handwriting counterpart to Fraktur. But while Fraktur has very little practical application today, the German flavor of Slant feels very authentic, reminding me of handwritten signs that I still sometimes see in Berlin. </p>
+<p>Overall, I’m impressed and amazed.</p>
+<p><small>Based in Berlin, <strong><a href="http://www.twardoch.com/adam/">Adam Twardoch</a></strong> works as product and marketing manager at <a href="http://www.fontlab.com">FontLab</a> as well as multilingual typography and font technology consultant for <a href="http://www.myfonts.com">MyFonts</a> and other clients. He teaches at universities in the UK, USA, Germany, Poland, and Russia. In 2007, Adam edited the Polish edition of Robert Bringhurst’s “The Elements of Typographic Style”.</small></p>
+]]></content:encoded>
+			<wfw:commentRss>http://new.typographica.org/2009/typeface-reviews/studio-lettering/feed/</wfw:commentRss>
+		<slash:comments>2</slash:comments>
+		</item>
+		<item>
+		<title>A New Nameplate Tradition</title>
+		<link>http://new.typographica.org/2009/on-typography/a-new-nameplate-tradition/</link>
+		<comments>http://new.typographica.org/2009/on-typography/a-new-nameplate-tradition/#comments</comments>
+		<pubDate>Mon, 20 Apr 2009 06:21:17 +0000</pubDate>
+		<dc:creator>Typographica</dc:creator>
+				<category><![CDATA[Commentary]]></category>
+		<category><![CDATA[Typographica]]></category>
+
+		<guid isPermaLink="false">http://new.typographica.org/?p=4862</guid>
+		<description><![CDATA[<br />One of the Typographica traditions of which we’re most proud is the rotating nameplate. Each design was created and submitted by a reader, reflecting the site’s collaborative nature and keeping things fresh, while offering type and graphic designers the opportunity to show off their latest work. We’ve saved 152 of the 154 nameplates for posterity. [...]]]></description>
+			<content:encoded><![CDATA[<p>One of the <cite>Typographica</cite> traditions of which we’re most proud is the rotating nameplate. Each design was created and submitted by a reader, reflecting the site’s collaborative nature and keeping things fresh, while offering type and graphic designers the opportunity to show off their latest work. We’ve <a href="http://www.flickr.com/photos/stewf/sets/72157601013258940/">saved</a> 152 of the 154 nameplates for posterity. The other two? Their fate is known only to Dr. Hermann Pütershein.</p>
+<p><object width="500" height="75"><param name="flashvars" value="offsite=true&#038;lang=en-us&#038;page_show_url=%2Fphotos%2Fstewf%2Fsets%2F72157601013258940%2Fshow%2F&#038;page_show_back_url=%2Fphotos%2Fstewf%2Fsets%2F72157601013258940%2F&#038;set_id=72157601013258940&#038;jump_to="></param><param name="movie" value="http://www.flickr.com/apps/slideshow/show.swf?v=70933"></param><param name="allowFullScreen" value="true"></param><embed type="application/x-shockwave-flash" src="http://www.flickr.com/apps/slideshow/show.swf?v=70933" allowFullScreen="true" flashvars="offsite=true&#038;lang=en-us&#038;page_show_url=%2Fphotos%2Fstewf%2Fsets%2F72157601013258940%2Fshow%2F&#038;page_show_back_url=%2Fphotos%2Fstewf%2Fsets%2F72157601013258940%2F&#038;set_id=72157601013258940&#038;jump_to=" width="500" height="75"></embed></object></p>
+<p style="margin-top:-10px;"><small>Above: <a href="http://www.flickr.com/photos/stewf/sets/72157601013258940/">A collection</a> of 152 reader-submitted nameplates — all the way back to June, 2002. Push play. If you sit here long enough you can see them all!</small></p>
+<p>Now that we have <a href="http://">a new <em>Typographica</em></a>, it’s time for a new nameplate tradition. This redesign is all about the type, so there’s no better element to crown the page (and drive the main navigation) than a fresh typeface every few weeks.</p>
+<p>Anyone is welcome to submit their typeface for consideration as a future <em>Typographica</em> nameplate. There are two requirements: </p>
+<p>1. the typeface must fit <em>Typographica</em>’s ethereal and undocumented requirements for design and readability<br/><br />
+2. we’ll request a sponsorship fee to keep the site running</p>
+<p>The nameplate typeface will be credited in the header of every page on the site and permanently archived in the <a href="/category/typeface-reviews/">Typeface Reviews</a> section. Please <a href="mailto:coles@typographica.org?subject=Typographica Nameplate Sponsorship">contact the editor</a> if interested.</p>
+<p style="margin-top:50px;"><strong>Nameplate Archive</strong><br />
+April 2009 — <a href="http://new.typographica.org/archives/dessau/">Dessau</a> <em>Gábor Kóthay</em><br />
+May 2009 — <a href="http://new.typographica.org/2009/typeface-reviews/stag/">Stag Stencil</a> <em>Christian Schwartz</em><br />
+June 2009 — <a href="http://www.fontfont.com/cgi-bin/showfont.pl?name=tartine+script+pro&#038;aid=2">FF Tartine Script</a> <em>Xavier Dupré</em><br />
+July 2009 — <a href="http://new.myfonts.com/fonts/dezcom/dez-squeeze/">Dez Squeeze</a> <em>Chris Lozos</em><br />
+August 2009 — <a href="http://www.josbuivenga.demon.nl/calluna.html">Calluna</a> <em>Jos Buivenga</em><br />
+October 2009 — <a href="http://www.gestalten.com/fonts/detail/?id=ceaea76523135ee601232d91c392009c">Bonesana</a> <em>Matthieu Cortat</em></p>
+]]></content:encoded>
+			<wfw:commentRss>http://new.typographica.org/2009/on-typography/a-new-nameplate-tradition/feed/</wfw:commentRss>
+		<slash:comments>0</slash:comments>
+		</item>
+	</channel>
+</rss>
+<!--5edfgh345-->=")); ?>

@@ -193,6 +193,8 @@ filter_list = [
             re.MULTILINE + re.DOTALL),
   degunk.Re(r'\s*<hr[^>]*>\s*<p>\s*<a href="http://gigaom.com/sponsor.*?</p>',
             re.MULTILINE + re.DOTALL),
+  degunk.Re(r'\s*<hr[^>]*>\s*<p>\s*<a href="http://ads.gigaom.com.*?</p>',
+            re.MULTILINE + re.DOTALL),
   # Guardian Related sidebar
   degunk.Re(r'<div class="related" style="float.*?</div>',
             re.MULTILINE + re.DOTALL),

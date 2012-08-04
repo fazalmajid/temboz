@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" media="screen" href="/~d/styles/atom10full.xsl"?><?xml-stylesheet type="text/css" media="screen" href="http://feeds.feedburner.com/~d/styles/itemcontent.css"?><feed xmlns="http://www.w3.org/2005/Atom" xmlns:thr="http://purl.org/syndication/thread/1.0" xmlns:feedburner="http://rssnamespace.org/feedburner/ext/1.0" xml:lang="en" xml:base="http://terrychay.com/wp-atom.php">
+	<title type="text">The Woodwork</title>
+	<subtitle type="text">You tell that other boy, not to touch the woodwork...</subtitle>
+
+	<updated>2010-03-18T22:47:23Z</updated>
+
+	<link rel="alternate" type="text/html" href="http://terrychay.com" />
+	<id>http://terrychay.com/feed/atom</id>
+	
+
+	<generator uri="http://wordpress.org/" version="3.0-alpha">WordPress</generator>
+		<atom10:link xmlns:atom10="http://www.w3.org/2005/Atom" rel="self" type="application/atom+xml" href="http://feeds.feedburner.com/tychay" /><feedburner:info uri="tychay" /><atom10:link xmlns:atom10="http://www.w3.org/2005/Atom" rel="hub" href="http://pubsubhubbub.appspot.com/" /><entry>
+		<author>
+			<name>tychay</name>
+						<uri>http://terrychay.com/</uri>
+					</author>
+		<title type="html"><![CDATA[Confoo: PHP without PHP]]></title>
+		<link rel="alternate" type="text/html" href="http://feedproxy.google.com/~r/tychay/~3/ZLTOmYbZxOw/confoo-php-without-php.shtml" />
+		<id>http://terrychay.com/?p=3753</id>
+		<updated>2010-03-18T22:47:23Z</updated>
+		<published>2010-03-09T14:00:30Z</published>
+		<category scheme="http://terrychay.com" term="PHP" /><category scheme="http://terrychay.com" term="presentation" /><category scheme="http://terrychay.com" term="web development" /><category scheme="http://terrychay.com" term="confoo" /><category scheme="http://terrychay.com" term="George Schlossnagle" /><category scheme="http://terrychay.com" term="php without php" /><category scheme="http://terrychay.com" term="Ruby on Rails" /><category scheme="http://terrychay.com" term="speaker" /><category scheme="http://terrychay.com" term="speaking" />		<summary type="html"><![CDATA[
+ If you are attending confoo this year, I’ll be giving a talk at the beginning of the conference. Even if you aren’t a PHP developer, I think you’ll find the talk useful—as there is no language religion in it.&#160;&#8230; <a href="http://terrychay.com/article/confoo-php-without-php.shtml">Continue&#160;reading&#160;<span class="meta-nav">&#8594;</span></a>]]></summary>
+		<content type="html" xml:base="http://terrychay.com/article/confoo-php-without-php.shtml">&lt;div class="flimg_left" style="width:150px"&gt;&lt;a href="http://confoo.ca/en/2010/session/php-without-php-philosophy-of-good-architecture"&gt;&lt;img alt="confoo.ca Web Techno Conference" style="border:0" width="150" height="100" src="http://www.confoo.ca/images/propaganda/2010/en/speaking.jpg" /&gt;&lt;/a&gt;&lt;/div&gt;
+&lt;p&gt; If you are attending &lt;a title="PHP, Python, Ruby, Java, and .NET conference." href="http://confoo.ca/en"&gt;confoo&lt;/a&gt; this year, &lt;a title="PHP Without PHP: Philosophy of Good Architecture—Confoo" href="http://confoo.ca/en/2010/session/php-without-php-philosophy-of-good-architecture"&gt;I’ll be giving a talk at the beginning of the conference&lt;/a&gt;. Even if you aren’t a PHP developer, I think you’ll find the talk useful—as &lt;a title="PHP Without PHP—PHP Advent 2008" href="http://phpadvent.org/2008/php-without-php-by-terry-chay"&gt;there is no language religion in it&lt;/a&gt;. I’ll be pleased if you attend.&lt;/p&gt;
+&lt;p&gt;It’s going to be a little different from my recent talks (less cussing). Believe it or not, there was a time I used to be a speaker who didn’t resort to scatalogy to get my point across. &lt;img src='http://terrychay.com/wordpress/wp-includes/images/smilies/icon_smile.gif' alt=':-)' class='wp-smiley' /&gt;  In fact, &lt;a title="George Schlossnagle—Message Systems" href="http://www.messagesystems.com/company/who_we_are/content/george_schlossnagle_president_and_chief_executive_officer.html"&gt;George&lt;/a&gt; once told me that his favorite talk of mine was the first one I gave—nary a cuss word to be found because I was so nervous! This talk is an attempt to return to the more-focused application of philosophy that I had done starting out.&lt;/p&gt;
+&lt;p&gt;Since my session is in the beginning of the conference, and I’ll be there until I have to leave for SXSW, I’d appreciate it if you still came up to me and talked to me about anything on your mind. Don’t worry, like a terrier (terryer?), I’m all bark and no bite.&lt;/p&gt;
+&lt;p&gt;I’m trying to reset the way I approach web development and so this may very well be the only conference I’ll be speaking at this year. I’m sure any discussion you have will be worthwhile—even if it isn’t about my talk or web development. Confoo this year is going to be about so much more than PHP, and &lt;a title="1500 Lines of Code—PHP Advent 2009" href="http://phpadvent.org/2009/1500-lines-of-code-by-terry-chay"&gt;I’m very interested in new developments on the web&lt;/a&gt;, even if it is happening in the Rails community. &lt;img src='http://terrychay.com/wordpress/wp-includes/images/smilies/icon_wink.gif' alt=';-)' class='wp-smiley' /&gt; . Besides, PHP gets nowhere without stealing from our betters. &lt;img src='http://terrychay.com/wordpress/wp-includes/images/smilies/icon_smile.gif' alt=':-)' class='wp-smiley' /&gt; &lt;/p&gt;
+&lt;p&gt;See you there!&lt;br /&gt;
+&lt;span id="more-3753"&gt;&lt;/span&gt;&lt;br /&gt;
+Update, here is the presentation:&lt;/p&gt;
+&lt;div class="flimg" style="width:477px" id="__ss_3471530"&gt;&lt;strong style="display:block;margin:12px 0 4px"&gt;&lt;a href="http://www.slideshare.net/tychay/php-without-phpconfoo" title="PHP Without PHP—Confoo"&gt;PHP Without PHP—Confoo&lt;/a&gt;&lt;/strong&gt;&lt;object width="477" height="510"&gt;&lt;param name="movie" value="http://static.slidesharecdn.com/swf/ssplayerd.swf?doc=2010-03phpwophpconfoo-100318172353-phpapp01&amp;#038;stripped_title=php-without-phpconfoo" /&gt;&lt;param name="allowFullScreen" value="true"/&gt;&lt;param name="allowScriptAccess" value="always"/&gt;&lt;embed src="http://static.slidesharecdn.com/swf/ssplayerd.swf?doc=2010-03phpwophpconfoo-100318172353-phpapp01&amp;#038;stripped_title=php-without-phpconfoo" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="477" height="510"&gt;&lt;/embed&gt;&lt;/object&gt;
+&lt;div style="padding:5px 0 12px"&gt;View more &lt;a href="http://www.slideshare.net/"&gt;documents&lt;/a&gt; from &lt;a href="http://www.slideshare.net/tychay"&gt;terry chay&lt;/a&gt;.&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;I’ll see if I can get audio somewhere when I have the time (my recording may be busted though).&lt;/p&gt;
+&lt;img src="http://feeds.feedburner.com/~r/tychay/~4/ZLTOmYbZxOw" height="1" width="1"/&gt;</content>
+		<link rel="replies" type="text/html" href="http://terrychay.com/article/confoo-php-without-php.shtml#comments" thr:count="0" />
+		<link rel="replies" type="application/atom+xml" href="http://terrychay.com/article/confoo-php-without-php.shtml/feed/atom" thr:count="0" />
+		<thr:total>0</thr:total>
+	<feedburner:origLink>http://terrychay.com/article/confoo-php-without-php.shtml</feedburner:origLink></entry>
+		<entry>
+		<author>
+			<name>tychay</name>
+						<uri>http://terrychay.com/</uri>
+					</author>
+		<title type="html"><![CDATA[MacJournal meets my Kindle]]></title>
+		<link rel="alternate" type="text/html" href="http://feedproxy.google.com/~r/tychay/~3/vJXjOZMkXP8/macjournal-kindle-notetaking.shtml" />
+		<id>http://terrychay.com/?p=3743</id>
+		<updated>2010-03-09T01:39:51Z</updated>
+		<published>2010-03-08T20:00:24Z</published>
+		<category scheme="http://terrychay.com" term="Macintosh" /><category scheme="http://terrychay.com" term="books" /><category scheme="http://terrychay.com" term="Delicious" /><category scheme="http://terrychay.com" term="Kindle" /><category scheme="http://terrychay.com" term="Kindle 2" /><category scheme="http://terrychay.com" term="kindle clippings" /><category scheme="http://terrychay.com" term="lists" /><category scheme="http://terrychay.com" term="MacHeist" /><category scheme="http://terrychay.com" term="MacJournal" /><category scheme="http://terrychay.com" term="notetaking" /><category scheme="http://terrychay.com" term="organization" /><category scheme="http://terrychay.com" term="reading" /><category scheme="http://terrychay.com" term="software" /><category scheme="http://terrychay.com" term="TaskPaper" /><category scheme="http://terrychay.com" term="Things" />		<summary type="html"><![CDATA[While going through the MacHeist nanoBundle 2 purchase, that one of the items was MacJournal. I already own it, so I gifted it. But it caused me to take a peek again at the application—the last time I used it was&#160;&#8230; <a href="http://terrychay.com/article/macjournal-kindle-notetaking.shtml">Continue&#160;reading&#160;<span class="meta-nav">&#8594;</span></a>]]></summary>
+		<content type="html" xml:base="http://terrychay.com/article/macjournal-kindle-notetaking.shtml">&lt;p&gt;While going through the &lt;a title="MacHeist nanoBundle 2" href="http://www.macheist.com/"&gt;MacHeist nanoBundle 2 purchase&lt;/a&gt;, that one of the items was &lt;a title="MacJournal: Mac journaling &amp;amp; Mac blogs oftware" href="http://marinersoftware.com/sitepage.php?page=85"&gt;MacJournal&lt;/a&gt;. I already own it, so I gifted it. But it caused me to take a peek again at the application—the last time I used it was back when it was freeware &lt;span title="Clicking on the taco used to bring up a quote from The Simpsons TV show. I imagine it still does." class="commentary"&gt;and had a taco&lt;/span&gt;.&lt;/p&gt;
+&lt;div class="flimg" style="width: 405px;"&gt;&lt;a title="MacJournal still has the taco by tychay, on Flickr" href="http://www.flickr.com/photos/tychay/4417990958/"&gt;&lt;img src="http://farm5.static.flickr.com/4024/4417990958_63c9c54439.jpg" alt="MacJournal still has the taco" width="405" height="383" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;div class="caption"&gt;&lt;span title="Here is something I didn’t know about the taco. If you hold down option-key and hit the taco, you get Shakespeare instead of The Simpsons" class="commentary"&gt;…it still does&lt;/span&gt;.&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;It occurs to me that it might make a useful reading notebook to complement &lt;a title="Firestarter" href="http://terrychay.com/article/kindle-2.shtml"&gt;my Kindle&lt;/a&gt; (and my iPad next month). I haven’t been keeping track of the &lt;a title="Kindle words: 2009-08-21" href="http://terrychay.com/article/kindle-words-2009-08-21.shtml"&gt;copious clippings and notes I take with it&lt;/a&gt;. Here is my first attempt:&lt;/p&gt;
+&lt;div class="flimg" style="width: 500px;"&gt;&lt;a title="reading notebook on MacJournal by tychay, on Flickr" href="http://www.flickr.com/photos/tychay/4417969698/"&gt;&lt;img src="http://farm5.static.flickr.com/4057/4417969698_2f74a1ed8f.jpg" alt="reading notebook on MacJournal" width="500" height="406" /&gt;&lt;/a&gt;&lt;/div&gt;
+&lt;p&gt;Here is the process I am trying to use:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Create a journal in MacJournal called “Reading Notebook.”&lt;/li&gt;
+&lt;li&gt;Import all the Kindle Clippings I’ve not clipped up as entries&lt;/li&gt;
+&lt;li&gt;Create an entry for a book I am reading, tag it with some search terms in the inspector.&lt;/li&gt;
+&lt;li&gt;Search and cut the related Kindle Clippings out of the various notes, and paste it to the bottom of the book entry.&lt;/li&gt;
+&lt;li&gt;organize, summarize, and delete as I go.&lt;/li&gt;
+&lt;li&gt;Import kindle clippings often and delete often.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;We’ll see how it goes. I made out some stubs for other ideas for journals.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Organizing Journal &amp;#8211; keep a record of my failed attempts at self-help.&lt;/li&gt;
+&lt;li&gt;The Woodwork &amp;#8211; I’ve stored unfinished drafts for blog posts in a myriad of places: Things, folders with the title, TextEdit RTF documents, and drafts on the blog. I plan to consolidate them here. Note that MacJournal has a “publish to WordPress” feature, but I don’t think it’s robust enough for me. I’ll continue to use the website, &lt;span class="commentary" title="It can sync your entries and has a ton more blog-friendly features. I’ll just delete them from the journal as they get posted"&gt;and maybe ecto, if I have the wherewithal&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;Things to Buy &amp;#8211; Things is getting too cluttered with a lot of stuff that I don’t plan on buying for years. Delicious is in the same state. (I’ll still use TaskPaper for last-minute organizing before a major purchase and other maintenance purchases.)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;For most notetaking, I’m still happy with opening an RTF, dropping it into a folder, and using Spotlight (via Leap) to find things. This just formalizes a fraction of it.&lt;/p&gt;
+&lt;p&gt;&lt;a title="MacHeist nanoBundle 2" href="http://www.macheist.com/"&gt;Purchase MacJournal with 6 other applications on MacHeist (2 days left!)&lt;/a&gt;.&lt;/p&gt;
+&lt;img src="http://feeds.feedburner.com/~r/tychay/~4/vJXjOZMkXP8" height="1" width="1"/&gt;</content>
+		<link rel="replies" type="text/html" href="http://terrychay.com/article/macjournal-kindle-notetaking.shtml#comments" thr:count="1" />
+		<link rel="replies" type="application/atom+xml" href="http://terrychay.com/article/macjournal-kindle-notetaking.shtml/feed/atom" thr:count="1" />
+		<thr:total>1</thr:total>
+	<feedburner:origLink>http://terrychay.com/article/macjournal-kindle-notetaking.shtml</feedburner:origLink></entry>
+		<entry>
+		<author>
+			<name>tychay</name>
+						<uri>http://terrychay.com/</uri>
+					</author>
+		<title type="html"><![CDATA[OpenSearch on WordPress.com]]></title>
+		<link rel="alternate" type="text/html" href="http://feedproxy.google.com/~r/tychay/~3/03i2QwsAhZg/opensearch-on-wordpress-com.shtml" />
+		<id>http://terrychay.com/?p=3690</id>
+		<updated>2010-03-06T00:37:14Z</updated>
+		<published>2010-03-07T14:00:48Z</published>
+		<category scheme="http://terrychay.com" term="Automattic" /><category scheme="http://terrychay.com" term="blavatar" /><category scheme="http://terrychay.com" term="OpenSearch" /><category scheme="http://terrychay.com" term="privacy" /><category scheme="http://terrychay.com" term="tags" /><category scheme="http://terrychay.com" term="WordPress" /><category scheme="http://terrychay.com" term="WordPress.com" />		<summary type="html"><![CDATA[A couple months ago, I did something so small it doesn’t really deserve mention. Nial and I got OpenSearch working on WordPress.com for individual blogs:
+
+Search of the entire domain has always been working, but this allows you to add a&#160;&#8230; <a href="http://terrychay.com/article/opensearch-on-wordpress-com.shtml">Continue&#160;reading&#160;<span class="meta-nav">&#8594;</span></a>]]></summary>
+		<content type="html" xml:base="http://terrychay.com/article/opensearch-on-wordpress-com.shtml">&lt;p&gt;A couple months ago, I did something so small it doesn’t really deserve mention. Nial and I got &lt;a href="http://www.opensearch.org/" title="OpenSearch"&gt;OpenSearch&lt;/a&gt; working on WordPress.com for individual blogs:&lt;/p&gt;
+&lt;div class="flimg" style="width:375px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4403745452/" title="Opensearch on WordPress.com by tychay, on Flickr"&gt;&lt;img src="http://farm5.static.flickr.com/4040/4403745452_fffd6a37d6.jpg" width="375" height="500" alt="Opensearch on WordPress.com" /&gt;&lt;/a&gt;&lt;/div&gt;
+&lt;p&gt;Search of the entire domain has always been working, but this allows you to add a special search for one blog. To activate this, open Firefox (or Internet Explorer), and click on the search dropdown and you’ll see a new entry to “Add &lt;i&gt;your blog name&lt;/i&gt;.” Select that.&lt;/p&gt;
+&lt;p&gt;Maybe I’ll add a plugin to WordPress with this code. I’m not too sure there’s a need though since there are already a couple OpenSearch plugins and this one only works in WPMU and PHP 5. There’s also a couple of WordPress.com-specific features like tags, privacy flags, and &lt;a href="http://en.support.wordpress.com/avatars/blavatars/" title="Avatars - Blavatars—WordPress Support"&gt;blavatar&lt;/a&gt; support in this one.&lt;/p&gt;
+&lt;img src="http://feeds.feedburner.com/~r/tychay/~4/03i2QwsAhZg" height="1" width="1"/&gt;</content>
+		<link rel="replies" type="text/html" href="http://terrychay.com/article/opensearch-on-wordpress-com.shtml#comments" thr:count="1" />
+		<link rel="replies" type="application/atom+xml" href="http://terrychay.com/article/opensearch-on-wordpress-com.shtml/feed/atom" thr:count="1" />
+		<thr:total>1</thr:total>
+	<feedburner:origLink>http://terrychay.com/article/opensearch-on-wordpress-com.shtml</feedburner:origLink></entry>
+		<entry>
+		<author>
+			<name>tychay</name>
+						<uri>http://terrychay.com/</uri>
+					</author>
+		<title type="html"><![CDATA[Geolocation sharing in Aperture 3]]></title>
+		<link rel="alternate" type="text/html" href="http://feedproxy.google.com/~r/tychay/~3/--lIp_JxUC0/geolocation-sharing-in-aperture-3.shtml" />
+		<id>http://terrychay.com/?p=3677</id>
+		<updated>2010-03-07T05:43:39Z</updated>
+		<published>2010-03-06T14:00:13Z</published>
+		<category scheme="http://terrychay.com" term="Apple Aperture" /><category scheme="http://terrychay.com" term="Adam Duffy" /><category scheme="http://terrychay.com" term="Alicia Kenworthy" /><category scheme="http://terrychay.com" term="Amy Lee" /><category scheme="http://terrychay.com" term="Apple Aperture 3" /><category scheme="http://terrychay.com" term="Bernadette Balla" /><category scheme="http://terrychay.com" term="faces" /><category scheme="http://terrychay.com" term="FlickrExport" /><category scheme="http://terrychay.com" term="Fraser Spiers" /><category scheme="http://terrychay.com" term="geolocation" /><category scheme="http://terrychay.com" term="GPS" /><category scheme="http://terrychay.com" term="Greg Stein" /><category scheme="http://terrychay.com" term="Krystyl Baldwin" /><category scheme="http://terrychay.com" term="places" /><category scheme="http://terrychay.com" term="Sean McCollough" /><category scheme="http://terrychay.com" term="sync" /><category scheme="http://terrychay.com" term="upload" />		<summary type="html"><![CDATA[A lot of people are complaining that the flickr sharing feature in Aperture 3 is missing geolocation data (Places).
+This is not true, all you have to do is go to Aperture > Preferences… > Web and check the box to&#160;&#8230; <a href="http://terrychay.com/article/geolocation-sharing-in-aperture-3.shtml">Continue&#160;reading&#160;<span class="meta-nav">&#8594;</span></a>]]></summary>
+		<content type="html" xml:base="http://terrychay.com/article/geolocation-sharing-in-aperture-3.shtml">&lt;p&gt;A lot of people are complaining that &lt;a href="http://documentation.apple.com/en/aperture/usermanual/#chapter=25%26section=3" title="Publishing Images to Flickr and Facebook—Aperture 3 User Manual"&gt;the flickr sharing feature in Aperture 3&lt;/a&gt; is missing geolocation data (&lt;a href="http://documentation.apple.com/en/aperture/usermanual/index.html#chapter=13%26section=0" title="Locating and Organizing Images with Places—Aperture 3 User Manual"&gt;Places&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;This is not true, all you have to do is go to Aperture &gt; Preferences… &gt; Web and check the box to “Include location information for published photos.”
+&lt;div class="flimg" style="width:500px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4403544374/" title="Geolocation sharing in Aperture 3 by tychay, on Flickr"&gt;&lt;img src="http://farm5.static.flickr.com/4068/4403544374_e41380eaeb.jpg" width="500" height="340" alt="Geolocation sharing in Aperture 3" /&gt;&lt;/a&gt;&lt;/div&gt;
+&lt;p&gt;Then click on the “radar” buttons to the right of the Flickr sets in Aperture to force a resync. Your image geocodes will be re-uploaded (I noticed in my case, it re-uploaded the images instead of just resyncing the metadata, but that bug may have been fixed in Aperture 3.0.1).&lt;/p&gt;
+&lt;p&gt;Here is a photo I uploaded via Aperture 3’s flickr sharing:&lt;/p&gt;
+&lt;div class="flimg" style="width:375px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4388652254/" title="The Concourse Level by tychay, on Flickr"&gt;&lt;img src="http://farm5.static.flickr.com/4006/4388652254_22649b16dc.jpg" width="375" height="500" alt="The Concourse Level" /&gt;&lt;/a&gt;
+&lt;div class="caption"&gt;&lt;b&gt;The Concourse Level&lt;/b&gt;&lt;br /&gt;
+&lt;a href="http://westfield.com/sanfrancisco/" title="San Francisco Centre Shopping Mall—Westfield"&gt;Westfield San Francisco Centre&lt;/a&gt;, Market Street, San Francisco, California&lt;/p&gt;
+&lt;p&gt;&lt;i&gt;Sony DSC-WX1&lt;/i&gt;&lt;br /&gt;
+1/30sec @ ƒ2.4, ISO160, 4mm (24mm)&lt;/p&gt;
+&lt;p&gt;I was so tired after the run, I could shop no longer…or rather, watch my friends shop. I decided to hang outside and take photos of the curvy escalators in Westfield San Francisco. And I actually needed to buy a suitcase from &lt;span title="About 30 feet from where I was standing. I was THAT tired." class="commentary"&gt;the Tumi store&lt;/span&gt;, too.&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;You can see it has been &lt;a href="http://www.flickr.com/photos/tychay/map/?photo=4388652254&amp;#038;zl=1"&gt;placed on the map automatically&lt;/a&gt;.&lt;br /&gt;
+&lt;!--Continue reading about Flickr and Facebook sync after the jump →--&gt;&lt;/p&gt;
+&lt;h3&gt;Sync, not Upload&lt;/h3&gt;
+&lt;p&gt;One thing a lot of people don’t realize is the flickr sharing is a &lt;strong&gt;synchronization&lt;/strong&gt;, not an upload. This means that edits you make on flickr appear as metadata modifications in the original file. (I think it does not sync down changes to the image, but new images in a set do get brought down.) It also means you can’t do an upload without creating a set. It also means you are limited in the tags by what tags you explicity upload (instead of tag hierarchy). It also means you are limited to the amount of resizing you can do on export. It also means you can’t do things like add a watermark on your export. It also means you can’t batch add to a group, or another set, or anything without using flickr’s online organizr.&lt;/p&gt;
+&lt;p&gt;If you don’t like that, then that’s why &lt;a href="http://connectedflow.com/flickrexport/" title="FlickrExport for iPhoto and Aperture—Connected Flow"&gt;Frasier Spears is still selling FlickrExport&lt;/a&gt; and has &lt;a href="http://getsatisfaction.com/connectedflow/topics/flickrexport_3_1_beta_release_64bit_for_aperture_3"&gt;recently updated it for 64-bit&lt;/a&gt;. I own it, and use it.&lt;/p&gt;
+&lt;div class="flimg" style="width:500px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/2630777879/" title="Frasier, Bernie, Greg and Amy by tychay, on Flickr"&gt;&lt;img src="http://farm4.static.flickr.com/3022/2630777879_639d6b6a17.jpg" width="500" height="334" alt="Frasier, Bernie, Greg and Amy" /&gt;&lt;/a&gt;
+&lt;div class="caption"&gt;&lt;b&gt;Fraser, Bernie, Greg, and Amy&lt;/b&gt;&lt;br /&gt;
+Buzz Andersen’s 5th Annual WWDC Party&lt;br /&gt;
+111 Minna, South of Market, San Francisco, California&lt;/p&gt;
+&lt;p&gt;&lt;i&gt;Nikon D3, 24-70mm f/2.8G, SB-800&lt;/i&gt;&lt;br /&gt;
+1/30 sec @ ƒ/2.8, iso 1000, 24 mm&lt;/p&gt;
+&lt;p&gt;Fraser Speirs with some of my friends. &lt;a href="http://terrychay.com/article/hangovers.shtml" title="Hangovers"&gt;I got really shit-faced that night&lt;/a&gt; (it was my birthday so I was making everyone buy me drinks).&lt;/p&gt;
+&lt;p&gt;I believe I uploaded this image with his software. &lt;img src='http://terrychay.com/wordpress/wp-includes/images/smilies/icon_smile.gif' alt=':-)' class='wp-smiley' /&gt; &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Oh yeah, the &amp;#8220;check mark&amp;#8221; you see next to the image in Aperture’s Flickr albums is the image actually uploaded/synced with flickr. I have no idea how to change it other than deleting it and dragging a new one. This is a major bummer for me.&lt;/p&gt;
+&lt;h3&gt;Faces sync in Facebook&lt;/h3&gt;
+&lt;p&gt;Faces are synced back in Aperture. You can tell because Facebook added faces are now searchable. Right now, getting the Facebook Faces back into your Aperture faces is a little buggy. The only way to do that is to go to the set, click the &amp;#8220;Name&amp;#8221; icon, and manually go through each image confirming the facebook entries by clicking the “f” icons and hitting return. Still it does guess faces well.&lt;/p&gt;
+&lt;div class="flimg" style="width:500px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4403092611/" title="Faces Facebook syncback by tychay, on Flickr"&gt;&lt;img src="http://farm5.static.flickr.com/4032/4403092611_97e30299d2.jpg" width="500" height="293" alt="Faces Facebook syncback" /&gt;&lt;/a&gt;
+&lt;div class="caption"&gt;Photo from &lt;a href="http://terrychay.com/article/spontaneous-drinking-reunion.shtml"&gt;this article&lt;/a&gt; was synced to Facebook and Flickr.&lt;/p&gt;
+&lt;p&gt;Basically click on the “f” and then hit return and those names will be synced back. Notice that even though Alicia Kenworthy has only been tagged in a different Facebook photo, it guessed the face here.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;I hope they fix that.&lt;/p&gt;
+&lt;img src="http://feeds.feedburner.com/~r/tychay/~4/--lIp_JxUC0" height="1" width="1"/&gt;</content>
+		<link rel="replies" type="text/html" href="http://terrychay.com/article/geolocation-sharing-in-aperture-3.shtml#comments" thr:count="1" />
+		<link rel="replies" type="application/atom+xml" href="http://terrychay.com/article/geolocation-sharing-in-aperture-3.shtml/feed/atom" thr:count="1" />
+		<thr:total>1</thr:total>
+	<feedburner:origLink>http://terrychay.com/article/geolocation-sharing-in-aperture-3.shtml</feedburner:origLink></entry>
+		<entry>
+		<author>
+			<name>tychay</name>
+						<uri>http://terrychay.com/</uri>
+					</author>
+		<title type="html"><![CDATA[Camera manuals to go]]></title>
+		<link rel="alternate" type="text/html" href="http://feedproxy.google.com/~r/tychay/~3/NY-GVO8-asU/camera-manuals-on-iphone.shtml" />
+		<id>http://terrychay.com/?p=3698</id>
+		<updated>2010-03-06T00:47:38Z</updated>
+		<published>2010-03-05T14:00:59Z</published>
+		<category scheme="http://terrychay.com" term="iPod" /><category scheme="http://terrychay.com" term="photography" /><category scheme="http://terrychay.com" term="Air Sharing" /><category scheme="http://terrychay.com" term="apps" /><category scheme="http://terrychay.com" term="camera beep" /><category scheme="http://terrychay.com" term="camera manuals" /><category scheme="http://terrychay.com" term="custom function" /><category scheme="http://terrychay.com" term="depth of field" /><category scheme="http://terrychay.com" term="Digital Photography Book" /><category scheme="http://terrychay.com" term="Dropbox" /><category scheme="http://terrychay.com" term="Focalware" /><category scheme="http://terrychay.com" term="GoodReader" /><category scheme="http://terrychay.com" term="iPhone" /><category scheme="http://terrychay.com" term="Leica M8" /><category scheme="http://terrychay.com" term="manual" /><category scheme="http://terrychay.com" term="MobileMe" /><category scheme="http://terrychay.com" term="nik Silver Efex Pro" /><category scheme="http://terrychay.com" term="Nikon D5000" /><category scheme="http://terrychay.com" term="Olympus E-P2" /><category scheme="http://terrychay.com" term="PDF" /><category scheme="http://terrychay.com" term="PhotographyBB" /><category scheme="http://terrychay.com" term="reference" /><category scheme="http://terrychay.com" term="Scott Kelby" /><category scheme="http://terrychay.com" term="Sony DSC-WX1" /><category scheme="http://terrychay.com" term="The Photographer’s GUide to Silver Efex Pro" /><category scheme="http://terrychay.com" term="Thom Hogan" /><category scheme="http://terrychay.com" term="Topaz Adjust" /><category scheme="http://terrychay.com" term="white balance" />		<summary type="html"><![CDATA[Buried in a previous article, instead of carrying the paper manuals around, I mentioned that you should download your manufacturer’s camera manuals onto the iPhone for reference. But I didn’t explain how this could be done or why it is&#160;&#8230; <a href="http://terrychay.com/article/camera-manuals-on-iphone.shtml">Continue&#160;reading&#160;<span class="meta-nav">&#8594;</span></a>]]></summary>
+		<content type="html" xml:base="http://terrychay.com/article/camera-manuals-on-iphone.shtml">&lt;p&gt;&lt;a href="http://terrychay.com/article/entry-kit-7.shtml/2" title="When (to learn more about) dSLR (photography) [The entry kit dSLR Part 7]"&gt;Buried in a previous article&lt;/a&gt;, instead of carrying the paper manuals around, I mentioned that you should download your manufacturer’s camera manuals onto the iPhone for reference. But I didn’t explain how this could be done or why it is useful.&lt;/p&gt;
+&lt;p&gt;Here are three applications I’ve used that render PDFs:&lt;/p&gt;
+&lt;div class="flimg" style="width:320px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4402777913/" title="Three apps: Air Sharing, Dropbox, and GoodReader by tychay, on Flickr"&gt;&lt;img src="http://farm3.static.flickr.com/2786/4402777913_f55b457f59.jpg" width="320" height="480" alt="Three apps: Air Sharing, Dropbox, and GoodReader" /&gt;&lt;/a&gt;
+&lt;div class="caption"&gt;Air Sharing, Dropbox, and GoodReader&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;I’ll be talking about Air Sharing, Dropbox, and GoodReader. If you want to know the solution I use for camera manuals, skip to the section on GoodReader.&lt;/p&gt;
+&lt;p&gt;&lt;span id="more-3698"&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;h3&gt;Air Sharing&lt;/h3&gt;
+&lt;p&gt;The first application is &lt;a href="http://avatron.com/apps/air-sharing/" title="Air Sharing"&gt;Air Sharing&lt;/a&gt;. I used it because it was free at the time I bought it. I managed to read the first 400 pages of Thom Hogan’s book using it. It saves your place as long as it doesn’t crash—which happened a few times. It’s major focus is as an internet drive application.&lt;/p&gt;
+&lt;h3&gt; Dropbox&lt;/h3&gt;
+&lt;p&gt;The second application is &lt;a href="https://www.dropbox.com/iphoneapp" title="Get the Dropbox iPhone app—DropBox"&gt;Dropbox app&lt;/a&gt;. &lt;a href="http://www.dropbox.com/" title+"Dropbox: Online backup, file sync,and sharing made easy"&gt;Dropbox&lt;/a&gt; is a seemless internet drive for Mac and PC with both &lt;a href="http://www.dropbox.com/pricing" title="Dropbox pricing"&gt;a free and premium service based on storage size&lt;/a&gt;. For this sort of thing, you can use the free account. And I highly recommend you use it, even if you don’t have an iPhone.&lt;/p&gt;
+&lt;div class="flimg" style="width:320px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4403543852/" title="DropBox by tychay, on Flickr"&gt;&lt;img src="http://farm3.static.flickr.com/2712/4403543852_040a6066ac.jpg" width="320" height="480" alt="DropBox" /&gt;&lt;/a&gt;&lt;/div&gt;
+&lt;p&gt;This app allows you to access your DropBox from your iPhone, which is actually quite handy. While I don’t read manuals on it, I do keep a folder on DropBox of any PDFs I’m currently reading so that I can read them no matter what computer I’m on. You can now access them from the iPhone using the app:&lt;/p&gt;
+&lt;div class="flimg" style="width:320px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4403544052/" title="PDFs I’m reading on multiple computers by tychay, on Flickr"&gt;&lt;img src="http://farm5.static.flickr.com/4057/4403544052_a551ab464f.jpg" width="320" height="480" alt="PDFs I’m reading on multiple computers" /&gt;&lt;/a&gt;
+&lt;div class="caption"&gt;If it’s a PDF, it has pretty much been on my DropBox for some period of time. I also use DropBox to move small things like bookmarks and notes between computers, and sync chat logs and TaskPaper/Things tasks.&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;That’s cool, because sometimes you just don’t have your laptop nearby. Stuck on a bus? How about reading &lt;a href="http://www.photographybb.com/magazine/" title="Magazine—PotographyBB"&gt;a back issue of PhotographyBB&lt;/a&gt; you’ve been putting off?&lt;/p&gt;
+&lt;div class="flimg" style="width:320px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4403544262/" title="Ahh, free PDF magazines on DropBox by tychay, on Flickr"&gt;&lt;img src="http://farm3.static.flickr.com/2697/4403544262_ca97b88a0a.jpg" width="320" height="480" alt="Ahh, free PDF magazines on DropBox" /&gt;&lt;/a&gt;
+&lt;div class="caption"&gt;PhotographyBB isn’t exactly that challenging a read, but I like reading it because it makes me rethink how to explain photography to people.&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;I also use it to dish off a couple boring manuals, because &lt;a href="http://www.topazlabs.com/adjust/" title="Topaz Adjust: Easily make your photos pop"&gt;Topaz&lt;/a&gt; doesn’t change that much from version to version—or plugin-to-plugin for that matter.&lt;/p&gt;
+&lt;div class="flimg" style="width:320px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4402980389/" title="Topaz Adjust docs in DropBox by tychay, on Flickr"&gt;&lt;img src="http://farm5.static.flickr.com/4041/4402980389_1e885d665d.jpg" width="320" height="480" alt="Topaz Adjust docs in DropBox" /&gt;&lt;/a&gt;
+&lt;div class="caption"&gt;I open this screenshot in another window when I use Topaz, until I get the hang of the shortcuts.&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;I even took a screenshot of the keyboard shortcuts as a reference. I can never remember them. &lt;img src='http://terrychay.com/wordpress/wp-includes/images/smilies/icon_smile.gif' alt=':-)' class='wp-smiley' /&gt; &lt;/p&gt;
+&lt;div class="flimg" style="width:480px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4402980451/" title="Topaz Adjust shortcuts by tychay, on Flickr"&gt;&lt;img src="http://farm5.static.flickr.com/4052/4402980451_de462a0702.jpg" width="480" height="320" alt="Topaz Adjust shortcuts" /&gt;&lt;/a&gt;&lt;/div&gt;
+&lt;p&gt;This application also remembers your place. You just have to wait a while to load it up (since it’s downloading from the web). I do not recommend it for long reading, even if you turn it into a locally cached copy—the viewer is extremely sluggish and crashes even more often than Air Sharing does.&lt;/p&gt;
+&lt;p&gt;Another idea I plan on abusing is to create a packing spreadsheet for all the different bags/shooting situation cominations I have to prepare for, and adding the lists to my DropBox account. Since the checklist will be in iWork, you can view them in DropBox and even get at it on my iPhone.&lt;/p&gt;
+&lt;p&gt;At the rate I’m using DropBox, I might spring for the pro account someday. It’s is certainly more functional than the 20.5GB I still have free on my &lt;a href="http://www.apple.com/mobileme/" title="MobileMe: Your iPhone, Mac, and PC. In perfect sync."&gt;MobileMe account&lt;/a&gt;.&lt;/p&gt;
+&lt;h3&gt;GoodReader&lt;/h3&gt;
+&lt;p&gt;Okay, that covers the possibly already have anyway and the free case. But what do I really use?&lt;/p&gt;
+&lt;p&gt;My criteria is don’t crash, don’t have trouble with large files, have a “go to page” functionality, and be text searchable. Search is especially important for manufacturer manuals. So what app can handle this? The 99 cent version of &lt;a href="http://goodiware.com/goodreader.html" title="GoodReader—goodiware"&gt;GoodReader&lt;/a&gt;, of course!&lt;/p&gt;
+&lt;div class="flimg" style="width:320px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4402777601/" title="Download your camera manuals in GoodReader by tychay, on Flickr"&gt;&lt;img src="http://farm5.static.flickr.com/4071/4402777601_ee2988a49c.jpg" width="320" height="480" alt="Download your camera manuals in GoodReader" /&gt;&lt;/a&gt;
+&lt;div class="caption"&gt;These are manuals for the Nikon D3, Nikon D70, Nikon D5000, Sony DSC-WX1, Olympus E-P2, Leica M8, and Nikon SB-800 flash. The only one missing is the Leica SF-24D flash, because Leica doesn’t put the manual online. Doh!&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;It’s a PDF reader first, and a web drive second. Since it only works via WebDAV, it can be incredibly &lt;span title="Can you say, lock up?" class="commentary"&gt;frustrating when using Mac OS X Finder to copy the files over&lt;/span&gt;. Also, ignore the advertised DropBox support—it’s only via the web interface and nowhere near as cool as DropBox.&lt;/p&gt;
+&lt;p&gt;It’s nice always having your manuals nearby:&lt;/p&gt;
+&lt;div class="flimg" style="width:320px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4402777355/" title="Sony DSC-WX1 manual in Good Reader by tychay, on Flickr"&gt;&lt;img src="http://farm3.static.flickr.com/2438/4402777355_a0fe38e110.jpg" width="320" height="480" alt="Sony DSC-WX1 manual in Good Reader" /&gt;&lt;/a&gt;
+&lt;div class="caption"&gt;Manual for the Sony DSC-WX1. This pocket camera will rock your world&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;I even can see the callouts for my Leica M8:&lt;/p&gt;
+&lt;div class="flimg" style="width:480px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4402777487/" title="Leica M8 manual in GoodReader by tychay, on Flickr"&gt;&lt;img src="http://farm3.static.flickr.com/2779/4402777487_fd3c093c30.jpg" width="480" height="320" alt="Leica M8 manual in GoodReader" /&gt;&lt;/a&gt;
+&lt;div class="caption"&gt;Ever think, even the simplest of cameras is way too complicated?&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Too bad, &lt;a href="http://www.bythom.com/books.htm" title="Books by Thom Hogan—byThom"&gt;Thom Hogan&lt;/a&gt; doesn’t put a PDF copy of &lt;a href="http://terrychay.com/article/entry-kit-7.shtml/2" title="When (to learn more about) dSLR (photography) [ The entry kit dSLR Part 7]. I do mention his book here" class="commentary"&gt;his portable printed guide&lt;/a&gt; on the book CD. &lt;img src='http://terrychay.com/wordpress/wp-includes/images/smilies/icon_sad.gif' alt=':-(' class='wp-smiley' /&gt;  Maybe I should suggest he do that. &lt;img src='http://terrychay.com/wordpress/wp-includes/images/smilies/icon_smile.gif' alt=':-)' class='wp-smiley' /&gt; &lt;/p&gt;
+&lt;p&gt;In addition to that, if you are too cheap to spring for &lt;a href="http://terrychay.com/article/looking-behind.shtml" title="Looking behind—iPhone"&gt;Photography for iPhone apps&lt;/a&gt; like &lt;a href="http://www.digitalweddingforum.com/blog/top-5-depth-of-field-calculators" title="Top 5 Depth of Field Calculators—DWF"&gt;a decent depth-of-field calculator&lt;/a&gt; (&lt;a href="http://itunes.apple.com/us/app/dof-calculator/id287113033?mt=8"&gt;here’s the one I have&lt;/a&gt;) and a good &lt;a href="http://spiraldev.com/focalware/" title="Focalware—Spiral Development"&gt;Sun/Moon-rise/set calculator&lt;/a&gt;, you can generate the tables yourself. print to PDF, and drop them into GoodReader as necessary.&lt;/p&gt;
+&lt;p&gt;I’m sure there are other documents that are handy to have stored in here. Use your imagination.&lt;/p&gt;
+&lt;h4&gt;Using the manuals&lt;/h4&gt;
+&lt;p&gt;I’m sure there are other solutions for good PDF reading other than GoodReader, and &lt;a href="http://terrychay.com/article/kindle-2.shtml" title="Firestarter. You need something to render graphics easily. I bought a Kindle for text-only books. But the DX is the only good PDF viewer and so large you have to leave it at home. I’m sure home PDF reading will be replaced by an iPad." class="commentary"&gt;its showcase function, the ability to convert a page to text file, is useless for what camera manuals&lt;/a&gt;. Just remember the app needs both search and go to page.&lt;/p&gt;
+&lt;p&gt;Let me show you why in two use cases:&lt;/p&gt;
+&lt;p&gt;The first example is a homage to &lt;a href="http://terrychay.com/article/entry-kit-7.shtml/2" title="When (to learn more about) dSLR (photography) [The entry kit dSLR Part 7]"&gt;the article mentioned&lt;/a&gt;. Let’s say you are reading &lt;a href="http://terrychay.com/article/entry-kit-7.shtml/3" title="When (to learn more about) dSLR (photography) [The entry kit dSLR Part 7]"&gt;Scott Kelby’s &lt;cite&gt;the Digital Photography Book&lt;/cite&gt;&lt;/a&gt; vol 2,as I recommended, and you’re in the chapter on wedding photography. In it, he suggest to turn off the audio focus lock confirmation beep for indoor weddings. Sounds like a good idea to do in general, but how do you do that on your recently purchased Nikon D5000?&lt;/p&gt;
+&lt;p&gt;Open the manual in GoodRead, hit the magnifying glass to Find Text…&lt;/p&gt;
+&lt;div class="flimg" style="width:320px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4403744418/" title="GoodReads Find Text… by tychay, on Flickr"&gt;&lt;img src="http://farm3.static.flickr.com/2735/4403744418_4452db9943.jpg" width="320" height="480" alt="GoodReads Find Text…" /&gt;&lt;/a&gt;&lt;/div&gt;
+&lt;p&gt;Now search for beep.&lt;/p&gt;
+&lt;div class="flimg" style="width:320px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4403744542/" title="beep search by tychay, on Flickr"&gt;&lt;img src="http://farm3.static.flickr.com/2679/4403744542_d402a0f3d4.jpg" width="320" height="480" alt="beep search" /&gt;&lt;/a&gt;&lt;/div&gt;
+&lt;p&gt;Found, pretty quickly!&lt;/p&gt;
+&lt;div class="flimg" style="width:480px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4403744658/" title="Beep found by tychay, on Flickr"&gt;&lt;img src="http://farm5.static.flickr.com/4011/4403744658_c9e17aae3b.jpg" width="480" height="320" alt="Beep found" /&gt;&lt;/a&gt;&lt;/div&gt;
+&lt;p&gt;Now I just scroll to that  158 + 16 pages (because that’s the offset in this manual) and…&lt;/p&gt;
+&lt;div class="flimg" style="width:480px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4403744772/" title="Beep instructions found by tychay, on Flickr"&gt;&lt;img src="http://farm5.static.flickr.com/4045/4403744772_9916303821.jpg" width="480" height="320" alt="Beep instructions found" /&gt;&lt;/a&gt;
+&lt;div class="caption"&gt;Oh look, it looks just like the photo in the book. The menu is Custom Settings menu d1. Hmm, Scott didn’t mention that. That’s because it’s different on different Nikons.&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;That’s fine enough for the beginner photographer, so let me show you an example I ran into recently. I wanted to preset the white balance on my Olympus E-P2 because it’s always wrong in incandescent light. Let’s search for “white balance”:&lt;/p&gt;
+&lt;div class="flimg" style="width:480px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4403744876/" title="Searching… by tychay, on Flickr"&gt;&lt;img src="http://farm5.static.flickr.com/4052/4403744876_1ff3b4dfe1.jpg" width="480" height="320" alt="Searching…" /&gt;&lt;/a&gt;
+&lt;div class="caption"&gt;after a brief wait.&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Oh look, it’s on page 68.&lt;/p&gt;
+&lt;div class="flimg" style="width:480px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4403744980/" title="Found white balance by tychay, on Flickr"&gt;&lt;img src="http://farm3.static.flickr.com/2429/4403744980_e73d1911d9.jpg" width="480" height="320" alt="Found white balance" /&gt;&lt;/a&gt;&lt;/div&gt;
+&lt;p&gt;Now because Olympus didn’t do moronic page numbering like Nikon did, you can jump to the page explicitly with “GoTo Page…”&lt;/p&gt;
+&lt;div class="flimg" style="width:480px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4402980153/" title="Jump to page 68 by tychay, on Flickr"&gt;&lt;img src="http://farm5.static.flickr.com/4037/4402980153_ddf8f3ffa8.jpg" width="480" height="320" alt="Jump to page 68" /&gt;&lt;/a&gt;&lt;/div&gt;
+&lt;p&gt;I read that page and the next few until I got to this:&lt;/p&gt;
+&lt;div class="flimg" style="width:480px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4402980267/" title="One touch White Balance on the E-P2 by tychay, on Flickr"&gt;&lt;img src="http://farm5.static.flickr.com/4056/4402980267_2030761147.jpg" width="480" height="320" alt="One touch White Balance on the E-P2" /&gt;&lt;/a&gt;
+&lt;div class="caption"&gt;To set the white balance based on an exposure, remember to “Set [Fn Function[ to [strange icon] beforehand.” and then use the menus to get to white balance.&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Hmm, You have to override the Fn button to set it to “one touch white balance” there is no “Pre” white balance functionality in the camera otherwise. That’s strange because the only way to get to the white balance is through the menu. They shouldn’t call this “one touch” they should call it “five touches and fucking takes away one of your buttons.” What moron thought of this?&lt;/p&gt;
+&lt;p&gt;Someone at Olympus needs to be fired. No matter, I stopped using “Five-touch-and-fuck-the-Fn” White Balance. It turns out I get a “[WB NG RETRY]” in any lighting but a daylight. Useless!&lt;/p&gt;
+&lt;p&gt;(Still, Olympus, please fire someone and fix the firmware.)&lt;/p&gt;
+&lt;h4&gt;More than manuals&lt;/h4&gt;
+&lt;p&gt;I found GoodReader useful to do some general purpose PDF reading of large texts on the iPhone. This will hold me over until the iPad comes out. I moved the camera manuals into their own folder, and created a new folder for the other reads:&lt;/p&gt;
+&lt;div class="flimg" style="width:320px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4402777767/" title="Give your manuals their own folder by tychay, on Flickr"&gt;&lt;img src="http://farm3.static.flickr.com/2750/4402777767_18469cb6b4.jpg" width="320" height="480" alt="Give your manuals their own folder" /&gt;&lt;/a&gt;&lt;/div&gt;
+&lt;p&gt;Here’s a &lt;a href="http://www.niksoftware.com/silverefexpro/usa/entry.php" title="Silver Efex Pro: THe Power of Black &amp;#038; White—nik Software"&gt;nik Silver Efex Pro&lt;/a&gt; book, &lt;cite&gt;&lt;a href="http://www.luminescentphoto.com/silver_efex/silver_efex_guide.html" title="The Photographer’s GUide to Silver Efex Pro"&gt;The Photographer’s Guide to Silver Efex Pro&lt;/a&gt;&lt;/cite&gt;, I bought a while ago. I forgot to finish the last 80 pages of it.&lt;/p&gt;
+&lt;div class="flimg" style="width:480px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4402777121/" title="Reading PDF in GoodReader by tychay, on Flickr"&gt;&lt;img src="http://farm5.static.flickr.com/4026/4402777121_3ccb7da42b.jpg" width="480" height="320" alt="Reading PDF in GoodReader" /&gt;&lt;/a&gt;&lt;/div&gt;
+&lt;p&gt;Not bad. But I just remembered it has embedded video content…&lt;/p&gt;
+&lt;div class="flimg" style="width:480px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4403543086/" title="There are some things GoodReader can’t do by tychay, on Flickr"&gt;&lt;img src="http://farm3.static.flickr.com/2769/4403543086_1b8c6e6ccd.jpg" width="480" height="320" alt="There are some things GoodReader can’t do" /&gt;&lt;/a&gt;
+&lt;div class="caption"&gt;GoodReader PDFs caught in the crossfire between Adobe and Apple&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Doh!&lt;/p&gt;
+&lt;img src="http://feeds.feedburner.com/~r/tychay/~4/NY-GVO8-asU" height="1" width="1"/&gt;</content>
+		<link rel="replies" type="text/html" href="http://terrychay.com/article/camera-manuals-on-iphone.shtml#comments" thr:count="2" />
+		<link rel="replies" type="application/atom+xml" href="http://terrychay.com/article/camera-manuals-on-iphone.shtml/feed/atom" thr:count="2" />
+		<thr:total>2</thr:total>
+	<feedburner:origLink>http://terrychay.com/article/camera-manuals-on-iphone.shtml</feedburner:origLink></entry>
+		<entry>
+		<author>
+			<name>tychay</name>
+						<uri>http://terrychay.com/</uri>
+					</author>
+		<title type="html"><![CDATA[Camera testing bias]]></title>
+		<link rel="alternate" type="text/html" href="http://feedproxy.google.com/~r/tychay/~3/yoqvV5M7RaI/ken-rockwell-bias.shtml" />
+		<id>http://terrychay.com/?p=3707</id>
+		<updated>2010-03-04T18:33:39Z</updated>
+		<published>2010-03-04T14:00:06Z</published>
+		<category scheme="http://terrychay.com" term="Science" /><category scheme="http://terrychay.com" term="photography" /><category scheme="http://terrychay.com" term="accuracy" /><category scheme="http://terrychay.com" term="Canon 5DmkII" /><category scheme="http://terrychay.com" term="diffraction" /><category scheme="http://terrychay.com" term="dynamic range" /><category scheme="http://terrychay.com" term="image processing" /><category scheme="http://terrychay.com" term="Ken Rockwell" /><category scheme="http://terrychay.com" term="Leica M9" /><category scheme="http://terrychay.com" term="medium format digital" /><category scheme="http://terrychay.com" term="Mimiya" /><category scheme="http://terrychay.com" term="Nikon D3" /><category scheme="http://terrychay.com" term="precision" /><category scheme="http://terrychay.com" term="processing" /><category scheme="http://terrychay.com" term="quantization" /><category scheme="http://terrychay.com" term="shot noise" />		<summary type="html"><![CDATA[Ken Rockwell goes on a tear with his new camera, a medium format digital.
+As his habit, Ken Rockwell exhibits a bad case of selection bias. For example, let’s take this quote from the first article:
+ All the 35mm rangefinders and&#160;&#8230; <a href="http://terrychay.com/article/ken-rockwell-bias.shtml">Continue&#160;reading&#160;<span class="meta-nav">&#8594;</span></a>]]></summary>
+		<content type="html" xml:base="http://terrychay.com/article/ken-rockwell-bias.shtml">&lt;p&gt;Ken Rockwell &lt;a href="http://kenrockwell.com/mamiya/dm33/tone.htm"&gt;goes&lt;/a&gt; &lt;a href="http://kenrockwell.com/mamiya/dm33/iso.htm"&gt;on&lt;/a&gt; a &lt;a href="http://kenrockwell.com/mamiya/dm33/sharp.htm"&gt;tear&lt;/a&gt; with his new camera, a medium format digital.&lt;/p&gt;
+&lt;p&gt;As his habit, Ken Rockwell exhibits a bad case of &lt;a href="http://en.wikipedia.org/wiki/Selection_bias" title="Selection bias—Wikipedia. In this case he chooses cameras with similar pixel pitch instead of choosing camera/lens combis of similar price range (his previous test). At the price of the Mamiya a good bracket should be the Leica S2, the Nikon D3X, and the Canon 1Ds Mk III." class="commentary"&gt;selection bias&lt;/a&gt;. For example, let’s take this quote from the first article:&lt;/p&gt;
+&lt;blockquote&gt;&lt;p&gt; All the 35mm rangefinders and DSLRs look pretty much the same, and the point-and-shoot is the worst.&lt;/p&gt;
+&lt;p&gt;I&amp;#8217;ve also shown the fallacy of falling for claims of 12-bit, 16-bit or 24-bit image processing in-camera.&lt;/p&gt;
+&lt;p&gt;As those of us who have done this for a living since the 1980s know, the noise level of any of these sensors is much larger than even 12-bit processing. Throwing more real bits at the ADC only serves to quantize the noise more accurately; there isn&amp;#8217;t any meaningful image data needing that precision.&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;Well anyone can see from his sample the 35mm cameras are not the same: the Nikon D3 exhibits tonality better than the Canon 5D Mk II and the Leica M9, &lt;a href="http://www.dxomark.com/index.php/eng/Image-Quality-Database/Compare-cameras/(appareil1)/297|0/(appareil2)/250|0/(appareil3)/305|0/(onglet)/0/(brand)/Nikon/(brand2)/Leica/(brand3)/Canon" title="Compare Nikon D3, Leica M8, Canon EOS 5D Mk II—DxO Mark. Look at dynamic range, The M9 should be better than the M8, btw." class="commentary"&gt;as it should&lt;/a&gt;. And those aren’t even &lt;a href="http://www.dxomark.com/index.php/eng/Image-Quality-Database/Compare-cameras/(appareil1)/297|0/(appareil2)/341|0/(appareil3)/287|0/(onglet)/0/(brand)/Nikon/(brand2)/Nikon/(brand3)/Nikon" title="Compare Nikon D3, Nikon D3s, Nikon D3X. The right camera to be testing is the Nikon D3X which has a stop and a half of extra dynamic range here. The Nikon D3X is about half the price of the Mayima ($9000 body only vs. $22k for body and lens)" class="commentary"&gt;the right 35mm cameras to be testing against&lt;/a&gt;—I will bet you’ll get nearly the same result as the Mamiya DM33 in the Nikon D3X (&lt;a href="http://www.zeiss.de/c12567a8003b58b9/Contents-Frame/4f374d297a6e3d7ec12571ec0051dbe5" title="Makro-Planar T* 2/50—Zeiss, He puts a 50mm f/1.4G AF-S on it and calls it the “best standard lens”. It’s a mass-produced autofocusing lens. Try putting a modern manual focus macro lens (I’m sure you can rent one for a reasonable day rate)." class="commentary"&gt;with a Zeiss ZF optic on it&lt;/a&gt;). He does &lt;span title="Like using extra megapixels to smooth the noise away? C’mon, you aren’t even trying Ken!" class="commentary"&gt;similar manipulations&lt;/span&gt; of &lt;a href="http://en.wikipedia.org/wiki/Outcome_bias" title="outcome bias—Wikipedia"&gt;outcome bias&lt;/a&gt; in order to get the result he is wants to get before hand in his high ISO test.&lt;/p&gt;
+&lt;p&gt;&lt;span id="more-3707"&gt;&lt;/span&gt;Just because I shoot a Nikon and Leica doesn’t make me biased against the tests—I’ve been &lt;a href="http://terrychay.com/article/sensing-a-great-disturbance-in-the-force.shtml" title="Sensing a great disturbance in the force"&gt;hoping to switch to digital medium format for five years now&lt;/a&gt;. Comparing them to a &lt;a href="http://www.photographyblog.com/news/mamiya_dm40_gets_a_price_tag/" title="Maumya DM40 Gets a Price Tag—PhotographyBlog"&gt;$22,000 camera&lt;/a&gt;, however, does not make for a fair fight. (FYI, $22k for a camera like this is a good deal.)&lt;/p&gt;
+&lt;p&gt;If you are wondering how the Nikon D3 manages so well on this test and the ISO test, it’s because the latest Nikons and Canons have &lt;a href="http://imaging.nikon.com/products/imaging/technology/scene/24/index.htm" title="Nikon FX-Format CMOS Sensor—Nikon Imaging. Gapless microlenses first appeared in the 2007 with the Nikon D3. That coupled with focus offset does wonders to make up for weaknesses in CMOS sensor stacks trying to use the full area of the sensor and still getting good performance" class="commentary"&gt;gapless microlenses&lt;/a&gt;. (The Leica has a CCD instead of CMOS with &lt;span title="Leica claims it is because of the engineering restriction of a small sensor stack in the rangefinder design. I believe it’s most likely because it makes for a sharper image and people who spend $10k on lenses are going to pixel peep the image" class="commentary"&gt;a very weak anti-alias filter&lt;/span&gt; so can’t achieve as high ISOs.) Furthermore, the Nikon D3 and D3s trade off the pixel pitch of the Canons (resolution and &lt;span title="Only if the lens is good enough and diffraction hasn’t kicked in" class="commentary"&gt;sharpness&lt;/span&gt;) for higher ISO and &lt;a href="http://terrychay.com/article/canon-t2i-550d-vs-nikon-d90.shtml" title="Nikons and Canons are still the same. There is no reason for dynamic range not to be higher in a smaller pixel pitch camera, the price you have to pay is electrical communication of the sensors during acquisition because a higher pitch means electron wells are smaller and can be measured less accurately. This is the tradeoff that the Nikon D2x appears to be making. The Canons appear to be using this technology to get higher ISOs (almost as good as the Nikons) than the D3x at the cost of dynamic range." class="commentary"&gt;a moderately higher dynamic range&lt;/a&gt;. Now by cramming technology and tricks like this, the latest 35mm dSLRs seem to be crushing medium format film cameras in the same way that &lt;a href="http://terrychay.com/article/aps-c-vs-35mm.shtml" title="APS-C vs 35mm. BTW, I was right about Canon leaving the APS-C door open. Nikon stepped in and stomped them with D3 trickling sales to the D300, D90, and D40x. Canon has finally responded with two new Rebels and the 7D—all but abandoning the 30D, 40D, 50D, etc."&gt;APS-C dSLRs beat film 35mm&lt;/a&gt;. By the way, medium format digital is not really “full frame” either—&lt;span title="The Mamiya (and others) tested is 48x36mm, and most medium format films are 60mmx45mm (but they can be as large as 60mmx70mm). If you do the math, you see it‘s the same ratio as APS-C to “full frame”" class="commentary"&gt; it’s closer to half frame&lt;/span&gt;. In terms of sensors, the D3x and the Sony seem to be as good, or better than, &lt;span title="The Hasselblad H2D 39 was about #60k with lens. As noted below there are still some tests the H2D will easily beat the Nikon/Sony’s at" class="commentary"&gt;the $60k+ digital medium formats of five years ago&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;But things get decidedly unfair (in medium format’s favor) when your engineering hits its heads against the laws of physics—&lt;span title="They kick in by f/4 on most 35mm lens designs, and they dominate by f/9 (APS-C) or f/11 (full frame). There is a 35mm lens out there that is actually diffraction limited at f/4!" class="commentary"&gt;when diffraction effects kick in&lt;/span&gt;, for instance. Or when the economics of spending 5x on a manual focus prime simply &lt;span title="Have you ever thought what goes into an autofocus zoom lens? The lenses that have to be moved must have to be small to be pushed and the design should accommodate a lot of manufacture variation. These manual focus prime medium format lenses, which cost as much as a high-end dSLR by themselves, don’t need that. A micron off in manufacturing ruins the lens? No problem!" class="commentary"&gt;allows the lens to be machined to tighter tolerances&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Ken hovers around being correct. In this series, it is true the Mamiya is going to best any 35mm in sharpness since it has both more megapixels &lt;strong&gt;and&lt;/strong&gt; &lt;span title="He was shooting f/5.6…it’s both diffraction AND resolution"&gt;a less diffracted lens&lt;/span&gt;, and &lt;span title="Take those same lenses and shoot them at f/11. The Canon S90 will be a blur and you’ll start to lose sharpness on the 35mm. The MFD will be barely affected." class="commentary"&gt;you could do a stopped down test that will be even more enlightening&lt;/span&gt;. You could even go all Michael Johnston and start talking about bokeh. But when he’s wrong, he’s so wrong as to be misleading. And his influence is a verbal avalanche that spreads across the camera world until everyone is quoting gospel of bullshit—that’s why &lt;a href="http://thefakekenrockwell.wordpress.com/"&gt;so many photographers dislike him&lt;/a&gt;. (I’m not too sure where I stand on him. He seems to be both helpful and harmful with the seasons, sort of like a glacier in the Arctic. &lt;span title="And we haven’t been studying him as long or as rigorously as climate change" class="commentary"&gt;It’ll take a lot of measurements over a number of years before there can be much consensus&lt;/span&gt;.) &lt;a href="http://blog.bahneman.com/content/ken-rockwell-facts?story=Ken_Rockwell_Facts" title="The Original Ken Rockwell Facts—Time to Think"&gt;In the meantime, he does amuse.&lt;/a&gt; &lt;img src='http://terrychay.com/wordpress/wp-includes/images/smilies/icon_biggrin.gif' alt=':-D' class='wp-smiley' /&gt; &lt;/p&gt;
+&lt;p&gt;…&lt;/p&gt;
+&lt;p&gt;By the way, examining the quote above pretty much sums Rockwell to a real scientist: “Throwing more real bits at the ADC only serves to quantize the noise more accurately.” No, Ken, it’s “&lt;a href="http://en.wikipedia.org/wiki/Quantization_error" title="Quantization error—Wikipedia. And it’s not clear what noise we’re quantizing. The noise Ken is alluding to is shot noise which is somewhat related to quantum efficiency of the sensor. Quantization error of this should appear strongest in dark parts of the image and the level of bit processing introduces quantization error. What Ken doesn’t explain is that your quantization error in processing should be lower than the shot noise—and preferably much lower/ What these chips are doing is carrying calculations out to many decimal places and then rounding off at the end (like you did in high school or college lab). When shot at base ISO, there is a slight, measurable (informational) difference in these cameras between the 12-bit RAW and 14-bit RAWs, so we’re not talking about marketing B.S. Quantization errors are real—with the caveat that you are shooting at the base ISO of the camera and they are almost insignificant even then." class="commentary"&gt;quantizing noise&lt;/a&gt;” more &lt;strong&gt;precisely&lt;/strong&gt;, not &lt;strong&gt;accurately&lt;/strong&gt;—&lt;a href="http://en.wikipedia.org/wiki/Accuracy_and_precision" title="Accuracy and precision—Wikipedia"&gt;big difference&lt;/a&gt;! Not only that, but the test that would show what he describes would be if &lt;span title="Almost all in-camera processing is done in 16-bits and then downsampled to the final format: 12 or 14 bits." class="commentary"&gt;you could somehow have an 8-bit &lt;acronym title="Digital Signal Processor"&gt;DSP&lt;/acronym&gt;&lt;/span&gt;, &lt;span title="Nikon lets you downsample to 12-bit NEFs. And there is lossy compression of highlights available down to about 6 or 7 bits, but it’ll still not show quantization error because the compression algorithm used is designed to be visually lossless and take advantage of this noise distribution." class="commentary"&gt;not RAW file&lt;/span&gt;, and &lt;span title="Because the image would be crap, not “a fallacy of falling for claims” as Ken states" class="commentary"&gt;that doesn’t exist&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Ken always talks &lt;strong&gt;precisely&lt;/strong&gt;, but never &lt;strong&gt;accurately&lt;/strong&gt;, giving laypeople the illusion he knows what he’s talking about, but ultimately leading many to uninformed decisions. He’s the photographic equivalent to a caliper with its screwed sheered off still dutifully reporting three decimal place accuracy, but you have no idea what it is measuring.&lt;/p&gt;
+&lt;img src="http://feeds.feedburner.com/~r/tychay/~4/yoqvV5M7RaI" height="1" width="1"/&gt;</content>
+		<link rel="replies" type="text/html" href="http://terrychay.com/article/ken-rockwell-bias.shtml#comments" thr:count="0" />
+		<link rel="replies" type="application/atom+xml" href="http://terrychay.com/article/ken-rockwell-bias.shtml/feed/atom" thr:count="0" />
+		<thr:total>0</thr:total>
+	<feedburner:origLink>http://terrychay.com/article/ken-rockwell-bias.shtml</feedburner:origLink></entry>
+		<entry>
+		<author>
+			<name>tychay</name>
+						<uri>http://terrychay.com/</uri>
+					</author>
+		<title type="html"><![CDATA[Live view aperture on the E-P2]]></title>
+		<link rel="alternate" type="text/html" href="http://feedproxy.google.com/~r/tychay/~3/ObJNNhWGad0/live-view-aperture-on-the-e-p2.shtml" />
+		<id>http://terrychay.com/?p=3665</id>
+		<updated>2010-03-04T17:16:53Z</updated>
+		<published>2010-03-03T14:00:59Z</published>
+		<category scheme="http://terrychay.com" term="photography" /><category scheme="http://terrychay.com" term="20mm f/1.7" /><category scheme="http://terrychay.com" term="aperture" /><category scheme="http://terrychay.com" term="autofocus" /><category scheme="http://terrychay.com" term="Camera Hirano" /><category scheme="http://terrychay.com" term="depth of field" /><category scheme="http://terrychay.com" term="EVIL camera" /><category scheme="http://terrychay.com" term="live view" /><category scheme="http://terrychay.com" term="Olympus E-P2" /><category scheme="http://terrychay.com" term="Roberts Imaging" />		<summary type="html"><![CDATA[Now that my E-P2 has finally found a jacket-pocketable lens, the 20mm f/1.7 pancake from Panasonic (purchase from Amazon or Roberts Imaging), I’ve been carrying it a lot more often.
+
+E-P2 w/ 20mm f/1.7
+San Francisco, California, USA
+Nikon D3, 50mm f/1.4G
+1/50 sec&#160;&#8230; <a href="http://terrychay.com/article/live-view-aperture-on-the-e-p2.shtml">Continue&#160;reading&#160;<span class="meta-nav">&#8594;</span></a>]]></summary>
+		<content type="html" xml:base="http://terrychay.com/article/live-view-aperture-on-the-e-p2.shtml">&lt;p&gt;Now that &lt;span title="I had a 17mm f/2.8 with my E-P1, but that was sold along with the camera" class="commentary"&gt;my E-P2 has finally found a jacket-pocketable lens&lt;/span&gt;, the 20mm f/1.7 pancake from Panasonic (purchase from &lt;a href="http://www.amazon.com/gp/product/B002IKLJVE?tag=terrychay-20" title="Purchase Panasonic Lumix G 20mm f/1.7 from Amazon"&gt;Amazon&lt;/a&gt; or &lt;a href="http://www.robertsimaging.com/stock/Camera%20Lenses/Primes%20(Standard)/Panasonic/Lumix%20G%2020mm%20f-1.7%20Micro%204-3%20(4610).jsp" title="As I’ve noted in blog posts, I usually try to buy lenses from Roberts in Indiana because their prices are good and they’re reliable." class="commentary"&gt;Roberts Imaging&lt;/a&gt;), I’ve been carrying it a lot more often.&lt;/p&gt;
+&lt;div class="flimg" style="width:331px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4403353572/" title="E-P2 w/ 20mm f/1.7 by tychay, on Flickr"&gt;&lt;img src="http://farm5.static.flickr.com/4052/4403353572_2852c5abd1.jpg" width="331" height="500" alt="E-P2 w/ 20mm f/1.7" oversrc="http://farm5.static.flickr.com/4024/4395706611_8e8ac6029d.jpg" class="mouseover" /&gt;&lt;/a&gt;
+&lt;div class="caption"&gt;&lt;b&gt;E-P2 w/ 20mm f/1.7&lt;/b&gt;&lt;br /&gt;
+San Francisco, California, USA&lt;/p&gt;
+&lt;p&gt;&lt;i&gt;Nikon D3, 50mm f/1.4G&lt;/i&gt;&lt;br /&gt;
+1/50 sec @ ƒ/2.2, iso 2500, 50mm&lt;/p&gt;
+&lt;p&gt;A 20mm f/1.7 lens and &lt;a href="http://www.japanexposures.com/2009/07/10/hand-made-leather-camera-case-for-olympus-e-p1/" title="Hand-made leather camera case for Olympus E-P1—Japan Exposures"&gt;a Hirano case&lt;/a&gt; make the E-P2 an effective kit. If you want to pocket it, just unscrew the case and pop out the EVF.&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;One curious behavior I noticed while shooting is that the aperture is electronically controlled to make the CCD’s life easier in the camera live view—since this is an EVIL camera, it always has live view. When it’s quiet, you can hear the aperture click as you move it around to different lighting conditions. Furthermore, it never seems to set the aperture wider than about ƒ/2.8 unless you are autofocusing. This means when night shooting in the dark with this lens, &lt;span title="Your eyes take “video” as if it’s ƒ/4" class="commentary"&gt;it’s brighter than your eyes&lt;/span&gt;, but &lt;span title="By about a stop and a third" class="commentary"&gt;not as bright as the lens is actually capable of&lt;/span&gt;. Not only that, but &lt;span title="It usually is in dSLRs, unless you shoot wide-open or use the depth-of-field preview button" class="commentary"&gt;the depth-of-field you see in the live view is independent of the final output&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;I decided to take a video of the behavior with Marie’s D5000. Since I accidentally hit the shutter button while focusing, here is a still:&lt;/p&gt;
+&lt;div class="flimg" style="width:500px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4402517259/" title="20/1.7 aperture by tychay, on Flickr"&gt;&lt;img src="http://farm3.static.flickr.com/2776/4402517259_ff510912e8.jpg" width="500" height="419" alt="20/1.7 aperture" /&gt;&lt;/a&gt;
+&lt;div class="caption"&gt;&lt;b&gt;20/1.7 aperture&lt;/b&gt;&lt;br /&gt;
+San Francisco, California, USA&lt;/p&gt;
+&lt;p&gt;&lt;i&gt;Nikon D5000, 18-55mm f/3.5-5.6 DX VR&lt;/i&gt;&lt;br /&gt;
+1/30 sec @ ƒ/7.1, iso 560, 55mm (78mm)&lt;/p&gt;
+&lt;p&gt;To get this photo, I jury rigged my D200 RRS L-bracket onto the D5000 so I could tripod mount it.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;and here is the movie:&lt;/p&gt;
+&lt;div class="flimg" style="width:500px"&gt;&lt;object type="application/x-shockwave-flash" width="500" height="331" data="http://www.flickr.com/apps/video/stewart.swf?v=71377" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"&gt;&lt;param name="flashvars" value="intl_lang=en-us&amp;#038;photo_secret=051d90873f&amp;#038;photo_id=4402713986&amp;#038;flickr_show_info_box=true"&gt;&lt;/param&gt;&lt;param name="movie" value="http://www.flickr.com/apps/video/stewart.swf?v=71377"&gt;&lt;/param&gt;&lt;param name="bgcolor" value="#000000"&gt;&lt;/param&gt;&lt;param name="allowFullScreen" value="true"&gt;&lt;/param&gt;&lt;embed type="application/x-shockwave-flash" src="http://www.flickr.com/apps/video/stewart.swf?v=71377" bgcolor="#000000" allowfullscreen="true" flashvars="intl_lang=en-us&amp;#038;photo_secret=051d90873f&amp;#038;photo_id=4402713986&amp;#038;flickr_show_info_box=true" height="331" width="500"&gt;&lt;/embed&gt;&lt;/object&gt;
+&lt;div class="caption"&gt;I’m just waving my hand in front of the lens a few times. And then I turn the camera off.&lt;/p&gt;
+&lt;p&gt;The overexposure was the camera’s decision. I didn’t have time to figure out how to keep the Auto ISO from overcompensating my setting.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Do any of you notice this behavior on the Panasonic GF-1?&lt;/p&gt;
+&lt;img src="http://feeds.feedburner.com/~r/tychay/~4/ObJNNhWGad0" height="1" width="1"/&gt;</content>
+		<link rel="replies" type="text/html" href="http://terrychay.com/article/live-view-aperture-on-the-e-p2.shtml#comments" thr:count="3" />
+		<link rel="replies" type="application/atom+xml" href="http://terrychay.com/article/live-view-aperture-on-the-e-p2.shtml/feed/atom" thr:count="3" />
+		<thr:total>3</thr:total>
+	<feedburner:origLink>http://terrychay.com/article/live-view-aperture-on-the-e-p2.shtml</feedburner:origLink></entry>
+		<entry>
+		<author>
+			<name>tychay</name>
+						<uri>http://terrychay.com/</uri>
+					</author>
+		<title type="html"><![CDATA[Canon and Nikon are still the same]]></title>
+		<link rel="alternate" type="text/html" href="http://feedproxy.google.com/~r/tychay/~3/JLi96_NmXRU/canon-t2i-550d-vs-nikon-d90.shtml" />
+		<id>http://terrychay.com/?p=3647</id>
+		<updated>2010-03-02T20:21:02Z</updated>
+		<published>2010-03-02T20:00:44Z</published>
+		<category scheme="http://terrychay.com" term="photography" /><category scheme="http://terrychay.com" term="cameras" /><category scheme="http://terrychay.com" term="Canon 550D" /><category scheme="http://terrychay.com" term="Canon 7D" /><category scheme="http://terrychay.com" term="dSLR" /><category scheme="http://terrychay.com" term="dynamic range" /><category scheme="http://terrychay.com" term="ISO" /><category scheme="http://terrychay.com" term="Nikon D300s" /><category scheme="http://terrychay.com" term="Nikon D5000" /><category scheme="http://terrychay.com" term="Nikon D90" /><category scheme="http://terrychay.com" term="sensor" />		<summary type="html"><![CDATA[Camera Labs compares the Canon 550D (Rebel T2i) to the Nikon D90 at high ISO.
+I’ll give you the summary: at high ISO in JPEG comparison, the Canon delivers similar performance but with higher resolution.
+This may sound like a surprise, but&#160;&#8230; <a href="http://terrychay.com/article/canon-t2i-550d-vs-nikon-d90.shtml">Continue&#160;reading&#160;<span class="meta-nav">&#8594;</span></a>]]></summary>
+		<content type="html" xml:base="http://terrychay.com/article/canon-t2i-550d-vs-nikon-d90.shtml">&lt;p&gt;&lt;a href="http://www.cameralabs.com/reviews/Canon_EOS_550D_Rebel_T2i/noise_JPEG.shtml" title="Canon EOS 550D / Rebel T2i High ISO JPEG Noise preview—Camera Labs"&gt;Camera Labs compares the Canon 550D (Rebel T2i) to the Nikon D90 at high ISO&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;I’ll give you the summary: at high ISO in JPEG comparison, the Canon delivers similar performance but with higher resolution.&lt;/p&gt;
+&lt;p&gt;This may sound like a surprise, but let’s look at was buried in &lt;a href="http://terrychay.com/article/entry-kit-5.shtml"&gt;my article where I mention the Rebel T2i&lt;/a&gt;.&lt;/p&gt;
+&lt;blockquote&gt;&lt;p&gt; Not only that, but the newly minted Canon 550D has nearly the same ISO performance as the Nikon [D5000] and 20% greater resolution—the cost of that resolution is a one stop worse dynamic range&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;(The Nikon D5000 and D90 have the same sensor design.)&lt;/p&gt;
+&lt;p&gt;This is the problem with reviews snippets taken in isolation: the Canon 550D and the Nikon D90 are nearly the same (street) price so it may seem that the Nikon D90 is a bad value but this isn’t the case at all. The Nikon D5000 is much cheaper than the Canon 550D and delivers the same ISO performance as the D90, are we to say the 550D is a bad value then? The Canon 550D has the same sensor as the Canon 7D are we to say that the Canon 7D is a rip off?&lt;/p&gt;
+&lt;p&gt;No. Because the Nikon D90 has a much, much brighter viewfinder and better dynamic range than the Canon 550D—in turn the Canon 550D has a better video mode and higher resolution than the D90. And the Canon 7D tops the D90 with even all-metal construction and a 100% viewfinder (both notoriously expensive to manufacture). Here is a small table:&lt;/p&gt;
+&lt;table&gt;
+&lt;tr&gt;
+&lt;th&gt;Cheaper&lt;/th&gt;
+&lt;th&gt;More expensive&lt;/th&gt;
+&lt;th&gt;Pros (upgrade)&lt;/th&gt;
+&lt;th&gt;Cons (upgrade)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Nikon D5000&lt;/td&gt;
+&lt;td&gt;Nikon D90&lt;/td&gt;
+&lt;td&gt;higher res LCD, pentaprism,backward compatible AF motor,flash commander mode&lt;/td&gt;
+&lt;td&gt;$250 more, lose articulation&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Nikon D5000&lt;/td&gt;
+&lt;td&gt;Canon 550D&lt;/td&gt;
+&lt;td&gt;20% higher resolution, higher res LCD, better video&lt;/td&gt;
+&lt;td&gt;$350 more, loose dynamic range, lose articulation&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Nikon D90&lt;/td&gt;
+&lt;td&gt;Canon 550D&lt;/td&gt;
+&lt;td&gt;20% higher resolution, better video&lt;/td&gt;
+&lt;td&gt;$150 more, lose dynamic range, lose pentaprism&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Nikon D90&lt;/td&gt;
+&lt;td&gt;Nikon D300s&lt;/td&gt;
+&lt;td&gt;7fps, metal body, 100%viewfinder, two card slots, advanced AF, meters old lenses, pro setup&lt;/td&gt;
+&lt;td&gt;$700 more, lose scene modes&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Canon 550D&lt;/td&gt;
+&lt;td&gt;Nikon D300s&lt;/td&gt;
+&lt;td&gt;7fps, pentaprism, 100% viewfinder, metal body, two card slots, advanced AF, dynamic range,pro setup&lt;/td&gt;
+&lt;td&gt;$550 more, worse video, lose resolution&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Canon 550D&lt;/td&gt;
+&lt;td&gt;Canon 7D&lt;/td&gt;
+&lt;td&gt;8fps, pentaprism, 100% viewfinder, all metal construction&lt;/td&gt;
+&lt;td&gt;$650 more&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Nikon D300S&lt;/td&gt;
+&lt;td&gt;Canon 7D&lt;/td&gt;
+&lt;td&gt;1fps faster, 20% higher resolution, better video&lt;/td&gt;
+&lt;td&gt;$100 more, lose dynamic range, lose 2nd card slot&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;p&gt;(My street prices were rounded to the nearest $50.) &lt;a href="http://nikonrumors.com/2010/03/01/nikon-rebates-are-on-now.aspx" title="Nikon rebates are now online—NikonRumors"&gt;Plus there is a $100 &amp;#8211; $200 rebate if you purchase Nikon bodies with a lens&lt;/a&gt;: as I noted earlier, the street price of Canon tends to drop faster and Nikon tries to maintain the price longer but offer rebates instead.&lt;/p&gt;
+&lt;p&gt;(As for JPEG, that’s a post-processing design decision. Did you know that Nikon’s tend to be undersharpened and have more faithful red channel color? So what.)&lt;/p&gt;
+&lt;p&gt;The table shows you that basically these cameras have a price interleave that is nearly exactly right. The D90 is the 550D with different tradeoffs; the D300S is the the 7D with tradeoffs. The D90/550D give up similar things to the D300S/7D. I mentioned this before. When it comes to sensors, Nikons tend to have better ISO and dynamic range but at the cost of resolution. I also mentioned this before.&lt;/p&gt;
+&lt;p&gt;This sort of pixel peeping is going to give you the exact same result that a Nikon D3000S/Canon 7D comparison gave you last year. I bet if I tested resolution at low ISO the Canon would win; if I tested dynamic range, the Nikon would win. Yawn!&lt;/p&gt;
+&lt;img src="http://feeds.feedburner.com/~r/tychay/~4/JLi96_NmXRU" height="1" width="1"/&gt;</content>
+		<link rel="replies" type="text/html" href="http://terrychay.com/article/canon-t2i-550d-vs-nikon-d90.shtml#comments" thr:count="1" />
+		<link rel="replies" type="application/atom+xml" href="http://terrychay.com/article/canon-t2i-550d-vs-nikon-d90.shtml/feed/atom" thr:count="1" />
+		<thr:total>1</thr:total>
+	<feedburner:origLink>http://terrychay.com/article/canon-t2i-550d-vs-nikon-d90.shtml</feedburner:origLink></entry>
+		<entry>
+		<author>
+			<name>tychay</name>
+						<uri>http://terrychay.com/</uri>
+					</author>
+		<title type="html"><![CDATA[When (to learn more about) dSLR (photography) [The entry kit dSLR Part 7]]]></title>
+		<link rel="alternate" type="text/html" href="http://feedproxy.google.com/~r/tychay/~3/6TgZpK4dAwg/entry-kit-7.shtml" />
+		<id>http://terrychay.com/?p=2937</id>
+		<updated>2010-03-06T07:55:42Z</updated>
+		<published>2010-03-01T14:00:39Z</published>
+		<category scheme="http://terrychay.com" term="photography" /><category scheme="http://terrychay.com" term="books" /><category scheme="http://terrychay.com" term="breezy style" /><category scheme="http://terrychay.com" term="camera" /><category scheme="http://terrychay.com" term="Complete Guide to the Nikon D3" /><category scheme="http://terrychay.com" term="Complete Guide to the Nikon D5000" /><category scheme="http://terrychay.com" term="conversational styles" /><category scheme="http://terrychay.com" term="Darrell Young" /><category scheme="http://terrychay.com" term="dSLR" /><category scheme="http://terrychay.com" term="DVD" /><category scheme="http://terrychay.com" term="Fast Fun &amp; Easy" /><category scheme="http://terrychay.com" term="flackette" /><category scheme="http://terrychay.com" term="From Snapshots to Great Shots" /><category scheme="http://terrychay.com" term="Jeff Revell" /><category scheme="http://terrychay.com" term="Jim Goldstein" /><category scheme="http://terrychay.com" term="Kara E. Murphy" /><category scheme="http://terrychay.com" term="learning" /><category scheme="http://terrychay.com" term="Magic Lantern Guides" /><category scheme="http://terrychay.com" term="manual" /><category scheme="http://terrychay.com" term="Mastering the Nikon D5000" /><category scheme="http://terrychay.com" term="Michael freeman" /><category scheme="http://terrychay.com" term="Nikon D5000: From Snapshots to Great Shots" /><category scheme="http://terrychay.com" term="Nikon School" /><category scheme="http://terrychay.com" term="On Writing Well" /><category scheme="http://terrychay.com" term="Photo Recipes Live" /><category scheme="http://terrychay.com" term="return policy" /><category scheme="http://terrychay.com" term="Ryan Brenizer" /><category scheme="http://terrychay.com" term="Scott Kelby" /><category scheme="http://terrychay.com" term="The Photographer’s Eye" /><category scheme="http://terrychay.com" term="Thom Hogan" /><category scheme="http://terrychay.com" term="William Zinsser" /><category scheme="http://terrychay.com" term="workshop" />		<summary type="html"><![CDATA[(Article continued from part 6)
+Recall the story of the enthusiast and the entry-level dSLR photographers trading cameras. While I admonished against the danger of buying too much of a dSLR, I glossed the obvious problem: the entry-level photographers had a&#160;&#8230; <a href="http://terrychay.com/article/entry-kit-7.shtml">Continue&#160;reading&#160;<span class="meta-nav">&#8594;</span></a>]]></summary>
+		<content type="html" xml:base="http://terrychay.com/article/entry-kit-7.shtml">&lt;p&gt;(&lt;a href="http://terrychay.com/article/entry-kit-6.shtml"&gt;Article continued from part 6&lt;/a&gt;)&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://terrychay.com/article/entry-kit-3.shtml" title="What dSLR (not to buy)? [The entry kit dSLR Part 3]"&gt;Recall the story of the enthusiast and the entry-level dSLR photographers trading cameras&lt;/a&gt;. While I admonished against the danger of buying too much of a dSLR, I glossed the obvious problem: the entry-level photographers had a problem shooting the professional dSLR. &lt;a href="http://terrychay.com/article/entry-kit-4.shtml" title="What (entry) dSLR (to buy)? [The entry kit dSLR Part 4]"&gt;How do you get there from here&lt;/a&gt;?&lt;/p&gt;
+&lt;p&gt;The answer is simple: learning.&lt;/p&gt;
+&lt;p&gt;Inside every dSLR is a complex computer and that computer makes decisions for you. This is true in both the entry and pro dSLRs: the difference is the entry-level cameras are configured to make more decisions for you. The trick is to realize that the entry-level cameras give you access to the pro-level settings, but you have to be willing to leave the safety of automation in guides, scenes, and McDonald’s-style graphical menus. I’m not a snob. &lt;span title="I use the same features myself when available. On most pocket cameras, I never venture out of them" class="commentary"&gt;There is nothing wrong with those features&lt;/span&gt; and the computer makes some pretty smart decisions. It’s just unless you are bumping your head against the decisions it makes, you’re limiting yourself in the sort of photography you can do.&lt;/p&gt;
+&lt;div class="flimg" style="width:500px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4397009445/" title="Marie at The Corner by tychay, on Flickr"&gt;&lt;img src="http://farm3.static.flickr.com/2712/4397009445_0b6a363461.jpg" width="500" height="350" alt="Marie at The Corner" oversrc="http://farm3.static.flickr.com/2695/4397795566_d99bea1045.jpg" class="mouseover" /&gt;&lt;/a&gt;
+&lt;div class="caption"&gt;&lt;b&gt;Marie at The Corner&lt;/b&gt;&lt;br /&gt;
+The Corner, Mission, San Francisco, California&lt;/p&gt;
+&lt;p&gt;&lt;i&gt;Nikon D3, Nikkor 50mm f/1.4G, SB-800&lt;/i&gt;&lt;br /&gt;
+1/20sec @ f/3.5 iso3200, 50mm&lt;/p&gt;
+&lt;p&gt;This series had an inside joke. While it is a discussion of dSLR cameras, every photo was supposed to be taken with a non dSLR camera. Unfortunately, &lt;span title="Good flash photography requires the complex computer in the dSLR, not my Leica. I wouldn’t trust my Olympus E-P2 either: the settings are too difficult to get at and ISO 3200 on it is unusable." class="commentary"&gt;this photo is simply too difficult to be taken by anything other than a SLR&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;In this case, you can’t take this photo with the scene modes in your dSLR. Yes, the “night portrait” mode might get you close, but you’d need to pump the ISO even further, &lt;span title="Dragging the shutter means lowering the shutter speed more than is practical. The idea is the flash will stop the movement so camera shake isn’t an issue. Unless you shoot “rear-curtain” the shutter won’t drag at all" class="commentary"&gt;drag the shutter&lt;/span&gt; even more, &lt;span title="Auto white balance mode only works within a narrow range. Incandescent is below that. Technically the white balance here was not enough—I should shoot even warmer. Not only that, but I have a tungsten gel in front of my flash. When you do that the camera ignores this and guesses WAY wrong." class="commentary"&gt;change the white balance to incandescent&lt;/span&gt;, and &lt;span title="If you have rear curtain, the preflash fires long before the flash does. People’s reactions change and their pupils do too. Not the same photograph!" class="commentary"&gt;set the flash curtain to front.&lt;/p&gt;
+&lt;p&gt;If you mouseover the image, you’ll see the original. My camera broke and decided to only record in TIFF that day, so I couldn’t have even depended on the RAW mode safety net for dynamic range and white balance recovery.&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Even if we restrict ourselves to discussion of &lt;span title="No lights or light modifiers. Ignore framing, focus, white balance, etc." class="commentary"&gt;the same exposure&lt;/span&gt;, we are still left with setting shutter speed, aperture, and ISO. These three have a complementary relationship and are associated with different tradeoffs. Scene modes in your camera make the decision for you, but unless you know what that decision is and when it is wrong, you can’t really grow as a photographer.&lt;/p&gt;
+&lt;div class="flimg" style="width:500px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4399571755/" title="P3010840 by tychay, on Flickr"&gt;&lt;img src="http://farm3.static.flickr.com/2789/4399571755_0bc1192d65.jpg" width="500" height="375" alt="P3010840" /&gt;&lt;/a&gt;
+&lt;div class="caption"&gt;A plethora of learning materials exist out there. Here are a few of the ones I’ll be mentioning in this article.&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;span id="more-2937"&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;h3&gt;Books: Replacing the manual&lt;/h3&gt;
+&lt;blockquote&gt;&lt;p&gt;“You can’t get there from here.”&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;Buried inside your camera is a professional camera: nearly every control is accessible through the menus, nearly everything that can be set is settable. Not only that, but often how you can set the setting is also settable!&lt;/p&gt;
+&lt;p&gt;That’s the problem with computers: they require you read the user manual, and user manuals are unreadable.&lt;/p&gt;
+&lt;p&gt;That’s not a fault exclusive to camera manufacturers—I don’t curl up in bed with my car manual either. Manuals by manufacturers focused on listing the features with a &lt;acronym title="Cover Your Ass" class="commentary"&gt;CYA&lt;/acronym&gt; mentality, but they’re not designed to teach you anything; they’re not designed to solve any problems but manufacturer defects; they’re designed to warn you that if you’re in the Antarctic, your camera battery might not work as advertised.&lt;/p&gt;
+&lt;p&gt;But you can’t get there from here if you don’t know what the controls of your camera and associated menus do.&lt;/p&gt;
+&lt;p&gt;So, unless you like curling up in bed with a good read of your car manual, you’ll actually want a user manual that’s a &lt;strong&gt;user&lt;/strong&gt; manual, not a manufacturer manual. &lt;a href="http://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Dstripbooks&amp;#038;field-keywords=d5000&amp;#038;x=0&amp;#038;y=0&amp;#038;tag=terrychay-20" title="This is a search for D5000 books on Amazon. You should try searching for the camera model you bought (and if it’s Canon, remember there are multiple names for the same camera)" class="commentary"&gt;There are many of these on the market&lt;/a&gt;. So which one do we read?&lt;/p&gt;
+&lt;img src="http://feeds.feedburner.com/~r/tychay/~4/6TgZpK4dAwg" height="1" width="1"/&gt;</content>
+		<link rel="replies" type="text/html" href="http://terrychay.com/article/entry-kit-7.shtml#comments" thr:count="3" />
+		<link rel="replies" type="application/atom+xml" href="http://terrychay.com/article/entry-kit-7.shtml/feed/atom" thr:count="3" />
+		<thr:total>3</thr:total>
+	<feedburner:origLink>http://terrychay.com/article/entry-kit-7.shtml</feedburner:origLink></entry>
+		<entry>
+		<author>
+			<name>tychay</name>
+						<uri>http://terrychay.com/</uri>
+					</author>
+		<title type="html"><![CDATA[Mapping the Long Tail (of drinking)]]></title>
+		<link rel="alternate" type="text/html" href="http://feedproxy.google.com/~r/tychay/~3/fhuVyB-XWGc/spontaneous-drinking-reunion.shtml" />
+		<id>http://terrychay.com/?p=3581</id>
+		<updated>2010-03-03T11:44:43Z</updated>
+		<published>2010-03-01T04:00:00Z</published>
+		<category scheme="http://terrychay.com" term="social networking" /><category scheme="http://terrychay.com" term="society and culture" /><category scheme="http://terrychay.com" term="Adam Duffy" /><category scheme="http://terrychay.com" term="Alicia Kenworthy" /><category scheme="http://terrychay.com" term="Andrew Mager" /><category scheme="http://terrychay.com" term="bangs" /><category scheme="http://terrychay.com" term="Bernadette Balla" /><category scheme="http://terrychay.com" term="Cindy Phung" /><category scheme="http://terrychay.com" term="earmuffs" /><category scheme="http://terrychay.com" term="Greg Stein" /><category scheme="http://terrychay.com" term="House of Shields" /><category scheme="http://terrychay.com" term="Krystyl Baldwin" /><category scheme="http://terrychay.com" term="Patrick Reilly" /><category scheme="http://terrychay.com" term="purple earmuffs" /><category scheme="http://terrychay.com" term="Robert Balousek" /><category scheme="http://terrychay.com" term="round eyes" /><category scheme="http://terrychay.com" term="San Francisco" /><category scheme="http://terrychay.com" term="Sean McCullough" /><category scheme="http://terrychay.com" term="Spontaneous Drinking Night" /><category scheme="http://terrychay.com" term="Web 2.0" />		<summary type="html"><![CDATA[It’s hard to believe it’s been over two years, since we’ve last had a Spontaneous Drinking Night—an event with only two rules: a weeknight and less than twenty four hours notice.
+
+Spontaneous Drinking Founders (minus one)
+House of Shields, South of Market,&#160;&#8230; <a href="http://terrychay.com/article/spontaneous-drinking-reunion.shtml">Continue&#160;reading&#160;<span class="meta-nav">&#8594;</span></a>]]></summary>
+		<content type="html" xml:base="http://terrychay.com/article/spontaneous-drinking-reunion.shtml">&lt;p&gt;It’s hard to believe it’s been over two years, since we’ve last had a &lt;a href="http://terrychay.com/article/spontaneous-drinking-night.shtml" title="Spontaneous Drinking"&gt;Spontaneous Drinking Night&lt;/a&gt;—an event with only two rules: a weeknight and &lt;span title="And we broke that rule." class="commentary"&gt;less than twenty four hours notice&lt;/span&gt;.&lt;/p&gt;
+&lt;div class="flimg" style="width:500px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4389506549/" title="_DSC1455 by tychay, on Flickr"&gt;&lt;img src="http://farm5.static.flickr.com/4044/4389506549_3fdbfc2ddd.jpg" width="500" height="333" alt="_DSC1455" class="mouseover" oversrc="http://farm5.static.flickr.com/4062/4393209210_9a34a91106.jpg" /&gt;&lt;/a&gt;
+&lt;div class="caption"&gt;&lt;b&gt;Spontaneous Drinking Founders (minus one)&lt;/b&gt;&lt;br /&gt;
+House of Shields, South of Market, San Francisco, California&lt;/p&gt;
+&lt;p&gt;&lt;i&gt;Nikon D3, Nikkor 50mm f/1.4G, SB-800&lt;/i&gt;&lt;br /&gt;
+1/30sec @ f/2.2 iso3200, 50mm&lt;/p&gt;
+&lt;p&gt;Cindy Phung, &lt;a href="http://andrewmager.com/"&gt;Andrew Mager&lt;/a&gt;, and &lt;a href="http://robert.balousek.net/"&gt;Robert Balousek&lt;/a&gt;. Only one founder is missing from this photo.&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;But &lt;a href="http://en.wikipedia.org/wiki/Greg_Stein" title="Greg Stein—Wikipedia"&gt;Greg&lt;/a&gt; was visiting and &lt;a href="http://www.houseofshields.com/" title="House of Shields: One of the oldest bars in San Francisco"&gt;House of Shields&lt;/a&gt; &lt;a href="http://www.sfgate.com/cgi-bin/article.cgi?f=/c/a/2010/02/25/DD4N1C611V.DTL" title="Is the armor up at S.F.’s House of Shields?—SFGate"&gt;may be closing soon&lt;/a&gt; so we had to schedule &lt;a href="http://www.facebook.com/event.php?eid=324379107765"&gt;a reunion&lt;/a&gt;.&lt;br /&gt;
+&lt;span id="more-3581"&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;How long is two years? Back then &lt;a href="http://terrychay.com/article/our-real-selves.shtml" title="Our real selves. Thanks for confusing me with your haircut!" class="commentary"&gt;Cindy had bangs&lt;/a&gt;:&lt;/p&gt;
+&lt;div class="flimg" style="width:500px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/1807177857/" title="Round eyes by tychay, on Flickr"&gt;&lt;img src="http://farm3.static.flickr.com/2363/1807177857_b845939b03.jpg" width="500" height="335" alt="Round eyes" class="mouseover" oversrc="http://farm5.static.flickr.com/4070/4392588107_744cdf4403.jpg" /&gt;&lt;/a&gt;
+&lt;div class="caption"&gt;&lt;b&gt;Round Eyes&lt;/b&gt;&lt;br /&gt;
+&lt;a href="http://www.outspark.com/" rel="nofollow"&gt;Outspark&lt;/a&gt; Launch Party, 1015 Folsom, SOMA, San Francisco, California&lt;/p&gt;
+&lt;p&gt;&lt;i&gt;Nikon D200, Tokina AT-X PRO 16-50mm f/2.8 DX, SB-800&lt;/i&gt;&lt;br /&gt;
+1/100sec @ f/2.8, iso900, 16mm (24mm)&lt;/p&gt;
+&lt;p&gt;&lt;span class="commentary" title="…and, apparently, rounder eyes"&gt;See, we can be white people too&lt;/span&gt;. (Yes, my indoor photography was weak sauce back then.)&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Now she has purple ears:&lt;/p&gt;
+&lt;div class="flimg" style="width:333px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4389514159/" title="Purple ear muffs by tychay, on Flickr"&gt;&lt;img src="http://farm5.static.flickr.com/4018/4389514159_9795c2fd70.jpg" width="333" height="500" alt="Purple ear muffs" class="mouseover" oversrc="http://farm3.static.flickr.com/2787/4393399418_7b2eb01ba2.jpg" /&gt;&lt;/a&gt;
+&lt;div class="caption"&gt;&lt;b&gt;Purple Ear Muffs&lt;/b&gt;&lt;br /&gt;
+House of Shields, South of Market, San Francisco, California&lt;/p&gt;
+&lt;p&gt;&lt;i&gt;Nikon D3, Nikkor 50mm f/1.4G, SB-800&lt;/i&gt;&lt;br /&gt;
+1/30sec @ f/2.2 iso3200, 50mm&lt;/p&gt;
+&lt;p&gt;This camera’s ISO was pushed 3 stops higher than the above photo, but there was much more to recover. It was so dark in the bar, I thought the earmuffs were grey until the flash triggered.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;It’s hard to believe the House of Shields may be closing. The bar is an original speakeasy, over 100 years old, with a tunnel to allow &lt;a href="http://www.sfpalace.com/"&gt;the Palace Hotel&lt;/a&gt; patrons across the street to access it. It was where we had our first official Spontaneous Drinking Night. It is even rumored that &lt;a href="http://www.trutv.com/library/crime/terrorists_spies/assassins/warren_harding/5.html" title="The Strange Life and Death of Preident Harding—TruTV"&gt;President Warren G. Harding&lt;/a&gt; actually died there.&lt;/p&gt;
+&lt;p&gt;And yet, Spontaneous Drinking lives on. It’s only agenda is to have a few beers after work with friends. That’s true—whether that was two years ago:&lt;/p&gt;
+&lt;div class="flimg" style="width:336px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4392772011/" title="Bernie and Patrick @ SDN by tychay, on Flickr"&gt;&lt;img src="http://farm3.static.flickr.com/2726/4392772011_a96a1bd9f0.jpg" width="336" height="500" alt="Bernie and Patrick @ SDN"  class="mouseover" oversrc="http://farm3.static.flickr.com/2681/4393545292_23478a4447.jpg" /&gt;&lt;/a&gt;
+&lt;div class="caption"&gt;&lt;b&gt;Bernie and Patrick @ SDN&lt;/b&gt;&lt;br /&gt;
+John Collins, South of Market, San Francisco, California&lt;/p&gt;
+&lt;p&gt;&lt;i&gt;Leica M8, Cosina-Voigtländer NOKTON 35mm f1.2 ASPH.&lt;/i&gt;&lt;br /&gt;
+1/16 sec, iso640, 35mm (47mm)&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://preilly.me/"&gt;Patrick Reilly&lt;/a&gt; and &lt;a href="http://www.bernadetteballa.com/"&gt;Bernadette Balla&lt;/a&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;…or today:&lt;/p&gt;
+&lt;div class="flimg" style="width:500px"&gt;&lt;a href="http://www.flickr.com/photos/tychay/4389516071/" title="_DSC1538 by tychay, on Flickr"&gt;&lt;img src="http://farm5.static.flickr.com/4014/4389516071_5d006b7dd8.jpg" width="500" height="333" alt="_DSC1538" class="mouseover" oversrc="http://farm5.static.flickr.com/4014/4396060695_d3fd98dba0.jpg" /&gt;&lt;/a&gt;
+&lt;div class="caption"&gt;&lt;b&gt;Adam, Krystyl, Alicia, and Sean&lt;/b&gt;&lt;br /&gt;
+House of Shields, South of Market, San Francisco, California&lt;/p&gt;
+&lt;p&gt;&lt;i&gt;Nikon D3, Nikkor 50mm f/1.4G, SB-800&lt;/i&gt;&lt;br /&gt;
+1/30sec @ f/2.2 iso3200, 50mm&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://twitter.com/pingadam"&gt;Adam Duffy&lt;/a&gt;, &lt;a href="http://www.krystyl.net/"&gt;Krystyl Baldwin&lt;/a&gt;, &lt;a href="http://alicialamericaine.typepad.com/"&gt;Alicia Kenworthy&lt;/a&gt;, and &lt;a href="http://noisebeard.com/"&gt;Sean McCullough&lt;/a&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;We’ll have to schedule some more spontaneous drinking. Hopefully we can get President Harding to show up to the next one.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://www.flickr.com/photos/tychay/sets/72157623389003743/show/"&gt;See the other photos from that evening&lt;/a&gt; or &lt;a href="http://www.flickr.com/photos/tychay/sets/72157623522125692/show/"&gt;two years ago&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://www.facebook.com/group.php?gid=6882266156"&gt;Join our group&lt;/a&gt; or &lt;a href="http://twitter.com/DrinkingNight"&gt;follow us on twitter&lt;/a&gt;.&lt;/p&gt;
+&lt;img src="http://feeds.feedburner.com/~r/tychay/~4/fhuVyB-XWGc" height="1" width="1"/&gt;</content>
+		<link rel="replies" type="text/html" href="http://terrychay.com/article/spontaneous-drinking-reunion.shtml#comments" thr:count="2" />
+		<link rel="replies" type="application/atom+xml" href="http://terrychay.com/article/spontaneous-drinking-reunion.shtml/feed/atom" thr:count="2" />
+		<thr:total>2</thr:total>
+	<feedburner:origLink>http://terrychay.com/article/spontaneous-drinking-reunion.shtml</feedburner:origLink></entry>
+	</feed><!-- Dynamic page generated in 0.640 seconds. --><!-- Cached page generated by WP-Super-Cache on 2010-03-27 16:34:15 -->
