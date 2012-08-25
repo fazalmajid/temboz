@@ -25,10 +25,11 @@ ratings = [
   ('filtered', 'filtered',      'Filtered only',     'item_rating = -2')
 ]
 sorts = [
-  ('created',  'article date',  'Article date',      'item_created DESC'),
-  ('seen',     'cached date',   'Cached date',       'item_uid DESC'),
-  ('rated',    'rated on',      'Rated on',          'item_rated DESC'),
-  ('snr',      'feed SNR',      'Feed SNR',          'snr DESC'),
+  ('created',  'Article date',  'Article date',      'item_created DESC'),
+  ('seen',     'Cached date',   'Cached date',       'item_uid DESC'),
+  ('rated',    'Rated on',      'Rated on',          'item_rated DESC'),
+  ('snr',      'Feed SNR',      'Feed SNR',          'snr DESC'),
+  ('oldest',   'Oldest seen',   'Oldest seen',       'item_uid ASC'),
 ]
 sorts_dict = dict((sorts[i][0], i) for i in range(len(sorts)))
 
