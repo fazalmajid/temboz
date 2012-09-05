@@ -319,7 +319,8 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     speed, specially with CGI
     """
     self.set_mime_type(tmpl)
-    tmpl = getattr(__import__(tmpl), tmpl)
+    mod = __import__(tmpl)
+    tmpl = getattr(mod, tmpl)
     tmpl = tmpl(searchList=searchlist)
     tmpl.respond(trans=self)
     self.flush()
