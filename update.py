@@ -444,6 +444,7 @@ def fetch_feed(feed_uid, feed_xml, feed_etag, feed_modified):
     if param.debug:
       util.print_stack()
     f = {'channel': {}, 'items': []}
+  normalize.normalize_feed(f)
   return f
 
 def increment_errors(db, c, feed_uid):

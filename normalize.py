@@ -363,7 +363,12 @@ def normalize_feed(f):
   if 'description' not in f['channel']:
     f['channel']['description'] = f['channel'].get('title', '')
   if 'modified' in f and type(f['modified']) == str:
-    f['modified'] = time.strptime(f['modified'], '%a, %d %b %Y %H:%M:%S GMT')
+    try:
+      f['modified'] = time.strptime(f['modified'],
+                                    '%a, %d %b %Y %H:%M:%S GMT')
+    except ValueError:
+      f['modified'] = time.strptime(f['modified'],
+                                    '%a, %d %b %Y %H:%M:%S +0000')
 
 # Often, broken RSS writers will not handle daylight savings time correctly
 # and use a timezone that is off by one hour. For instance, in the US/Pacific
