@@ -106,8 +106,10 @@ from v_feeds_snr order by feed_status ASC, """ \
 ## Flag feeds with errors
 ##
 ########################################################################
-#if errors > 0
+#if errors > 10
 #set error_flag = ' class="error"'
+#elif errors > 0
+#set error_flag = ' class="small-error"'
 #else
 #set error_flag = ''
 #end if
