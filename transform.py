@@ -100,6 +100,9 @@ filter_list = [
   degunk.Re('&nbsp;<br><a href=[^>]*>Comment on this post</a>\s*<br>Related.*',
             re.IGNORECASE + re.DOTALL),
   degunk.Re('<div class="feedflare">.*?</div>', re.IGNORECASE + re.DOTALL),
+  # Le Figaro cross-shilling
+  degunk.Re('<div class="mf-related"><p>Articles en rapport.*</div>',
+            re.IGNORECASE + re.DOTALL),
   # Pheedo ads
   degunk.Re('<div style="font-size: xx-small; color: gray; padding-bottom:'
             '0.5em;">Presented By:</div>[^<>]*<div><a href="http://ads.pheedo'
