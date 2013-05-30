@@ -219,6 +219,7 @@ class PseudoDB:
         print >> param.log, 'WARNING: empty database, populating...',
         self.populate_tables()
         print >> param.log, 'done.'
+        self.__class__ = SQLite3Factory
     self.c = self.db.cursor()
   def cursor(self):
     return PseudoCursor3(self.db)
