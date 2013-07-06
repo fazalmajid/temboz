@@ -1,50 +1,52 @@
-import sys, os, re, pyRXP, singleton
+import sys, os, re, xml.etree.ElementTree, singleton
 sqlite = singleton.sqlite
 
-def opml_process(tree, level=0, out=[]):
-  if type(tree) != tuple:
-    return
-  tag, attrs, children, spare = tree
-  if tag == 'head':
-    return
-  if tag == 'body':
-    level = 0
-  if tag == 'outline':
-    # Sharpreader
-    if 'xmlUrl' in attrs:
-      # skip myself
-#       if 'majid.info' in attrs['xmlUrl']:
-#         return
-      out.append({
-        'xmlUrl': attrs['xmlUrl'].replace('\'', '\'\''),
-        'htmlUrl': attrs['htmlUrl'].replace('\'', '\'\''),
-        'title': attrs['title'].replace('\'', '\'\''),
-        'desc': re.sub('<[^>]*>', '', attrs.get('description', '')).replace(
-        '"', '&quot;').replace(
-        '& ', '&amp; ').replace(
-        '\xa9', '&copy;').replace('\'', '\'\'')})
-    # FeedOnFeeds
-    elif 'xmlurl' in attrs:
-      # skip myself
-#       if 'majid.info' in attrs['xmlurl']:
-#         return
-      out.append({
-        'xmlUrl': attrs['xmlurl'].replace('\'', '\'\''),
-        'htmlUrl': attrs['htmlurl'].replace('\'', '\'\''),
-        'title': attrs['title'].replace('\'', '\'\''),
-        'desc': re.sub('<[^>]*>', '', attrs.get('description', '')).replace(
-        '"', '&quot;').replace(
-        '& ', '&amp; ').replace(
-        '\xa9', '&copy;').replace('\'', '\'\'')})
-  if children:
-    for t in children:
-      opml_process(t, level + 1, out)
-
 def parse_opml(opml_file):
-  opml = pyRXP.Parser().parse(open(
-    os.path.expanduser(opml_file)).read())
+  try:
+    opml = xml.etree.ElementTree.parse(os.path.expanduser(opml_file))
+  except xml.etree.ElementTree.ParseError:
+    try:
+      opml = xml.etree.ElementTree.parse(
+        os.path.expanduser(opml_file),
+        xml.etree.ElementTree.XMLParser(encoding='UTF-8'))
+    except xml.etree.ElementTree.ParseError:
+      opml = xml.etree.ElementTree.parse(
+        os.path.expanduser(opml_file),
+        xml.etree.ElementTree.XMLParser(encoding='ISO8859-1'))
   tree = []
-  opml_process(opml, 0, tree)
+  #import code
+  #code.interact(local=locals())
+  # XML is case-sensitive. xmlUrl is what is officially in the OPML spec
+  for node in opml.getroot().findall('.//outline[@xmlUrl]'):
+    if node is not None:
+      attrs = node.get
+      tree.append(
+        {
+          'xmlUrl': attrs('xmlUrl', ''),
+          'htmlUrl': attrs('htmlUrl', ''),
+          'title': attrs('title', ''),
+          'desc': re.sub('<(^>, '')*>', '',
+                         attrs('description', '')).replace(
+            '"', '&quot;').replace(
+            '& ', '&amp; ').replace(
+            '\u00a9', '&copy;')
+          }
+        )
+  # invalid format, e.g. as used by FeedOnFeeds
+  for node in opml.getroot().findall('.//outline[@xmlurl]'):
+    if node is not None:
+      attrs = node.get
+      tree.append(
+        {
+          'xmlUrl': attrs('xmlurl', ''),
+          'htmlUrl': attrs('htmlurl', ''),
+          'title': attrs('title', ''),
+          'desc': re.sub('<(^>, '')*>', '', attrs('description', '')).replace(
+            '"', '&quot;').replace(
+            '& ', '&amp; ').replace(
+            '\u00a9', '&copy;')
+          }
+        )
   return tree
 
 def import_opml(opml_file):
@@ -58,8 +60,7 @@ def import_opml(opml_file):
     try:
       c.execute("""insert into fm_feeds
       (feed_xml, feed_etag, feed_html, feed_title, feed_desc) values
-      ('%(xmlUrl)s', '%(feed_etag)s', '%(htmlUrl)s', '%(title)s',
-      '%(desc)s')""" % feed)
+      (:xmlUrl, :feed_etag, :htmlUrl, :title, :desc)""", feed)
       ok += 1
     except sqlite.IntegrityError, e:
       if 'feed_xml' not in str(e):
@@ -69,7 +70,17 @@ def import_opml(opml_file):
   print ok, 'feeds imported,', dup, 'rejected as duplicates'
 
 if __name__ == '__main__':
-  #import_opml('../mylos/data/gems/sharpreader.opml')
-  print parse_opml('fof.opml')
-  #print parse_opml('../mylos/data/gems/sharpreader.opml')
+  for feed in [
+    # FeedOnFeeds
+    'fof.opml',
+    # these tests are from http://dev.opml.org/spec2.html
+    'test/subscriptionList.opml',
+    'test/simpleScript.opml',
+    'test/placesLived.opml',
+    'test/directory.opml',
+    'test/category.opml',
+    ]:
+    print feed
+    print parse_opml(feed)
+    print '-' * 72
   
