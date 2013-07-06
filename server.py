@@ -12,11 +12,17 @@ try:
 except:
   tmpl_dir = os.getcwd()
 if tmpl_dir:
-  Cheetah.ImportHooks.setCacheDir(tmpl_dir + os.sep + 'modules')
+  mod_dir = tmpl_dir + os.sep + 'modules'
   tmpl_dir += os.sep + 'pages'
 else:
   tmpl_dir = 'pages'
-  Cheetah.ImportHooks.setCacheDir('modules')
+  mod_dir = 'modules'
+try:
+  os.mkdir(mod_dir)
+except OSError:
+  pass
+Cheetah.ImportHooks.setCacheDir(mod_dir)
+sys.path.append(mod_dir)
 sys.path.append(tmpl_dir)
 
 class Server(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
