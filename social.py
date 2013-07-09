@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import logging, simplejson, urllib2
+import logging, urllib2
 import param, normalize, util
 
 def fb_post(token, msg, url):
@@ -10,6 +10,20 @@ def fb_post(token, msg, url):
          + '&link=' + urllib2.quote(url)
   try:
     req = urllib2.urlopen(fb_url, data)
+    return req.read()
+  except urllib2.HTTPError as e:
+    print >> param.log, '$' * 72
+    print >> param.log, 'FACEBOOK API ERROR'
+    print >> param.log, 'FB_URL = %r' % fb_url
+    print >> param.log, 'FB_DATA = %r' % data
+    print >> param.log, 'INFO = %r' % e.read()
+    print >> param.log, '$' * 72
+    raise
+
+def fb_feed(token):
+  fb_url = 'https://graph.facebook.com/me/home?access_token=' + token
+  try:
+    req = urllib2.urlopen(fb_url)
     return req.read()
   except urllib2.HTTPError as e:
     print >> param.log, '$' * 72
