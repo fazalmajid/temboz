@@ -10,7 +10,7 @@ Prerequisites:
 1.	Edit the file param.py. The login and password used to "secure" the web
 	interface is set in a dictionary there.
 
-2.	(optional) Import feeds from an OPML file (pyRXP required):
+2.	(optional) Import feeds from an OPML file:
 	temboz --import some_opml_file.opml
 
 3.	(optional) Prime the pump
