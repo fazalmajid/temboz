@@ -4,6 +4,17 @@ import sys, os, stat, logging, base64, time, imp, gzip, traceback, pprint
 import threading, BaseHTTPServer, SocketServer, cStringIO, urlparse, urllib
 import TembozTemplate, param, update, filters, util
 
+# work around incompatibility between html5lib and Cheetah ImportHooks
+import __builtin__, Cheetah.ImportManager, logging
+sys_import = __builtin__.__import__
+def fix_import(self, *args, **kwargs):
+  try:
+    return self.saved_importHook(*args, **kwargs)
+  except:
+    #logging.exception('Cheetah import hook error')
+    return sys_import(*args, **kwargs)
+Cheetah.ImportManager.ImportManager.saved_importHook = Cheetah.ImportManager.ImportManager.importHook
+Cheetah.ImportManager.ImportManager.importHook = fix_import
 # add the Cheetah template directory to the import path
 import Cheetah.ImportHooks
 Cheetah.ImportHooks.install()

@@ -1,6 +1,6 @@
 # -*- coding: iso-8859-1 -*-
 import sys, time, re, codecs, string, traceback, socket, HTMLParser, hashlib
-import unicodedata, htmlentitydefs, urllib2, urlparse
+import unicodedata, htmlentitydefs, urllib2, urlparse, html5lib
 import feedparser, param, transform, util
 
 # XXX TODO
@@ -292,12 +292,11 @@ block = set(block)
 closing = set(closing)
 banned = set(banned)
 
-# XXX should really use html5lib for this once it has stabilized,
-# XXX as this lexer is not robust, e.g.
-# XXX <a href="javascript:alert('foo>bar')">
 tag_re = re.compile(r'(<>|<[^!].*?>|<!\[CDATA\[|\]\]>|<!--.*?-->|<[!]>)',
                     re.DOTALL | re.MULTILINE)
 def balance(html, limit_words=None, ellipsis=' ...'):
+  if not limit_words:
+    return html5lib.serialize(html5lib.parse(html))
   word_count = 0
   tokens = tag_re.split(html)
   out = []
@@ -451,6 +450,10 @@ def normalize(item, f, run_filters=True):
         item[key] = item[key][0]
       else:
         candidate = [i for i in item[key] if i.get('type') == 'text/html']
+        if len(candidate) > 1 and key == 'content':
+          candidate = sorted(candidate,
+                             key=lambda i: len(i.get('value', '')),
+                             reverse=True)[:1]
         if len(candidate) == 1:
           item[key] = candidate[0]
         else:

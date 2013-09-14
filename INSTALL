@@ -6,6 +6,7 @@ Prerequisites:
 	Cheetah 2.0 or later
 	SQLite 3.x
 	Python's built-in SQLite module or PySQLite 2.4 and later
+	html5lib 0.99 or later
 
 1.	Edit the file param.py. The login and password used to "secure" the web
 	interface is set in a dictionary there.
