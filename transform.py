@@ -224,4 +224,7 @@ filter_list = [
   degunk.Re('<p><hr />\s*<p>\\s*<a href="http://laughingsquid.us/">'
             '.*?Laughing Squid Web Hosting</a>.</p></p>',
             re.MULTILINE + re.DOTALL),
+  # Use m.xkcd.com instead of desktop xkcd to get the alt text
+  degunk.ReUrl(url=r'http://m.xkcd.com\1',
+               regex_url=r'http://xkcd.com(.*)'),
   ]
