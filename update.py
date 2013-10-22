@@ -699,7 +699,7 @@ def cleanup(db=None, c=None):
   os.system((sqlite_cli + ' rss.db .dump | %s > backups/daily_' \
              + time.strftime('%Y-%m-%d') + '%s') % param.backup_compressor)
   # rotate the log
-  os.rename('temboz.log', 'backups/log_' + time.strftime('%Y-%m-%d'))
+  os.rename(param.log_filename, 'backups/log_' + time.strftime('%Y-%m-%d'))
   param.log.close()
   param.log = open(param.log_filename, 'a', 0)
   os.dup2(param.log.fileno(), 1)
