@@ -4,6 +4,7 @@
 #block CSS
 <link rel="stylesheet" type="text/css" media="screen" href="temboz_css">
 <link rel="stylesheet" type="text/css" media="print" href="temboz_css?media=print">
+<link rel="stylesheet" type="text/css" media="only screen and (max-device-width: 480px)" href="iphone_css">
 #end block
 
 #block MENUBAR
@@ -14,7 +15,7 @@
   &nbsp;&nbsp;
   #for (name, link) in [('All unread', 'view'), ('All feeds', 'feeds'), ('Add feed', 'add'), ('Filters', 'rules')]
     #if not trans.path[1:].startswith(link)
-  <li>
+  <li class="non-iphone">
       <a href="$link">$name</a>
   </li>
     #end if
@@ -24,7 +25,7 @@
 ## Crude search functionality
 ##
 ########################################################################
-  <li><span>
+  <li class="non-iphone"><span>
     <form method="GET" action="view" target="_blank" class="inline">
       #if $getVar('feed_uid', None)
 	<input name="feed_uid" type="hidden" value="$feed_uid">
@@ -46,7 +47,7 @@
   </li>
 #end block
 #block HELP
-<li class="help">
+<li class="help non-iphone">
   <span><a href="http://www.temboz.com/help<%=trans.path%>" target="_blank">Help</a></span>
 </li><li class="help">
   <span><a href="settings">Settings</a></span>
