@@ -343,8 +343,6 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     self.flush()
 
   def process_request(self):
-    if not self.require_auth(param.auth_dict):
-      return
     try:
       if self.path in ['', '/']:
         self.browser_output(301, None, 'This document has moved.',
@@ -383,6 +381,14 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
       if path.count('favicon.ico') > 0:
         self.favicon()
 
+      if path.endswith('.css'):
+        path = path.replace('.css', '_css')
+        tmpl = path.split('/', 1)[1].strip('/')
+        self.use_template(tmpl, [self.input])
+
+      if not self.require_auth(param.auth_dict):
+        return
+      
       if path.startswith('/redirect/'):
         from singleton import db
         c = db.cursor()
