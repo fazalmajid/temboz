@@ -44,6 +44,8 @@ filter_list = [
             re.MULTILINE + re.DOTALL + re.IGNORECASE),
   degunk.Re('<a [^>]* href="http://twitter.com/home/[?]status.*?</a>',
             re.MULTILINE + re.DOTALL + re.IGNORECASE),
+  degunk.Re('<a [^>]*feedblitz.com.*?</a>',
+            re.MULTILINE + re.DOTALL + re.IGNORECASE),
   # Feedburner annoyances
   degunk.Re('<a href[^>]*><img src="http://feeds.feedburner[^>]*></a>'),
   degunk.Re('<p><a href="(http://feeds\\.[^"/>]*/~./)[^"]*">'
@@ -122,8 +124,8 @@ filter_list = [
   degunk.Re('<img [^>]*invitemedia.com[^>]*>',
             re.MULTILINE + re.DOTALL + re.IGNORECASE),
   # Mediafed ads
-  degunk.Re('<br><a href="http://[^"]*.feedsportal.com/[^"]*"><img border="0" '
-            'src="http://[^"]*.feedsportal.com[^"]*" /></a>'),
+  degunk.Re('<br><a[^>]* href="?http://[^"]*.feedsportal.com.*?</a>',
+            re.MULTILINE + re.DOTALL),
   # IDFuel URLs should point to full article, not teaser
   degunk.ReUrl(url=r'http://www.idfuel.com/index.php?p=\1&more=1',
                regex_url=r'http://www.idfuel.com/index.php\?p=([0-9]*)'),
@@ -223,6 +225,9 @@ filter_list = [
   # Laughing Squid
   degunk.Re('<p><hr />\s*<p>\\s*<a href="http://laughingsquid.us/">'
             '.*?Laughing Squid Web Hosting</a>.</p></p>',
+            re.MULTILINE + re.DOTALL),
+  # FeedBlitz
+  degunk.Re('<table.*?feedblitz.com.*?</table>',
             re.MULTILINE + re.DOTALL),
   # Use m.xkcd.com instead of desktop xkcd to get the alt text
   degunk.ReUrl(url=r'http://m.xkcd.com\1',
