@@ -323,17 +323,23 @@ class RatingsWorker(threading.Thread):
         where item_uid=?""", [rating, item_uid])
         fb_token = param.settings.get('fb_token', None)
         if rating == 1 and fb_token:
-          c.execute("""select item_link, item_title, feed_private
+          c.execute("""select feed_uid, item_link, item_title, feed_private
           from fm_items, fm_feeds
           where item_uid=? and feed_uid=item_feed_uid""",
                     [item_uid])
-          url, title, private = c.fetchone()
+          feed_uid, url, title, private = c.fetchone()
         db.commit()
         if rating == 1 and fb_token and not private:
           callout = random.choice(
             ['Interesting: ', 'Notable: ', 'Recommended: ', 'Thumbs-up: ',
              'Noteworthy: ', 'FYI: ', 'Worth reading: '])
-          social.fb_post(fb_token, callout + title, url)
+          try:
+            social.fb_post(fb_token, callout + title, url)
+          except social.ExpiredToken:
+            notification(db, c, feed_uid, 'Service notification',
+              'The Facebook access token has expired',
+              link='/settings#facebook')
+
       except:
         util.print_stack()
     # this will never be reached
@@ -645,13 +651,14 @@ Returns a tuple (number of items added unread, number of filtered items)"""
   
   return (num_added, num_filtered)
 
-def notification(db, c, feed_uid, title, content):
+def notification(db, c, feed_uid, title, content, link=None):
   """Insert a service notification, e.g. to notify before a feed is disabled
   due to too many errors"""
   hash = hashlib.md5(content).hexdigest()
   guid = 'temboz://%s/%s' % (feed_uid, hash)
   # do nothing if the link is clicked
-  link = '/feed_info?feed_uid=%d' % feed_uid
+  if link is None:
+    link = '/feed_info?feed_uid=%d' % feed_uid
   c.execute("""insert into fm_items (item_feed_uid, item_guid,
   item_created, item_modified, item_link, item_md5hex,
   item_title, item_content, item_creator, item_rating, item_rule_uid)

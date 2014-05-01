@@ -2,6 +2,9 @@
 import logging, urllib2
 import param, normalize, util
 
+class ExpiredToken(Exception):
+  pass
+
 def fb_post(token, msg, url):
   print >> param.activity, 'FACEBOOK', msg, url
   msg = normalize.decode_entities(msg).encode('utf-8')
@@ -16,8 +19,11 @@ def fb_post(token, msg, url):
     print >> param.log, 'FACEBOOK API ERROR'
     print >> param.log, 'FB_URL = %r' % fb_url
     print >> param.log, 'FB_DATA = %r' % data
-    print >> param.log, 'INFO = %r' % e.read()
+    info = e.read()
+    print >> param.log, 'INFO = %r' % info
     print >> param.log, '$' * 72
+    if 'access token' in info:
+      raise ExpiredToken
     raise
 
 def fb_feed(token):
