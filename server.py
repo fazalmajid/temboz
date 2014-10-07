@@ -1,6 +1,6 @@
 #!/usr/local/bin/python
 # $Id: server.py,v 1.47 2010/09/07 11:59:13 majid Exp $
-import sys, os, stat, logging, base64, time, imp, gzip, traceback, pprint
+import sys, os, stat, logging, base64, time, imp, gzip, traceback, pprint, csv
 import threading, BaseHTTPServer, SocketServer, cStringIO, urlparse, urllib
 import TembozTemplate, param, update, filters, util
 
@@ -40,7 +40,10 @@ class Server(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
   pass
 
 # HTTP header to force caching
-no_expire = 'Expires: Fri, 1 Jan 2038 00:00:00 GMT'
+no_expire = [
+  'Expires: Thu, 31 Dec 2037 23:55:55 GMT',
+  'Cache-Control: max_age=2592000'
+]
 
 class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
   tmpl_cache = {}
@@ -120,7 +123,9 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
            and 'accept-encoding' in self.headers.dict \
            and 'gzip' in self.headers.dict['accept-encoding'] \
            and 'user-agent' in self.headers.dict \
-           and 'MSIE' not in self.headers.dict['user-agent']:
+           and 'MSIE' not in self.headers.dict['user-agent'] \
+           and False \
+           and 'gondwana.majid.org:8443' not in self.headers['host']:
       http_headers.append('Content-Encoding: gzip')
       gzbuf = cStringIO.StringIO()
       gzfile = gzip.GzipFile(fileobj=gzbuf, mode='wb', compresslevel=9)
@@ -272,7 +277,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     # generated for the browser because it is browser-dependent (to deal with
     # IE standards noncompliance issues)
     if self.mime_type == 'text/css':
-      http_headers = [no_expire]
+      http_headers = no_expire
     else:
       http_headers = []
     self.browser_output(200, self.mime_type, ''.join(self.output_buffer),
@@ -288,7 +293,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     rsrc[fn] = open('rsrc/' + fn).read()
   def favicon(self):
     self.browser_output(200, 'image/x-icon', self.images['favicon.ico'],
-                        http_headers=[no_expire])
+                        http_headers=no_expire)
   def xml(self):
     self.browser_output(200, 'text/xml', '<?xml version="1.0"?><nothing />')
 
@@ -361,12 +366,12 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
 
       if path.endswith('.gif') and path[1:] in self.images:
         self.browser_output(200, 'image/gif', self.images[path[1:]],
-                            http_headers=[no_expire])
+                            http_headers=no_expire)
         return
 
       if path.endswith('.js') and path[1:] in self.rsrc:
         self.browser_output(200, 'text/javascript', self.rsrc[path[1:]],
-                            http_headers=[no_expire])
+                            http_headers=no_expire)
         return
 
       if path.startswith('/tiny_mce'):
@@ -375,7 +380,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
         assert path.startswith('tiny_mce')
         self.set_mime_type(path)
         self.browser_output(200, self.mime_type, open(path).read(),
-                            http_headers=[no_expire])
+                            http_headers=no_expire)
         return
 
       if path.count('favicon.ico') > 0:
@@ -459,6 +464,26 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
         db.commit()
         c.close()
         self.xml()
+        return
+
+      if path.startswith('/stats'):
+        from singleton import db
+        c = db.cursor()
+        c.execute("""select date(item_loaded) as date, count(*) as articles,
+        sum(case when item_rating=1 then 1 else 0 end) as interesting,
+        sum(case when item_rating=0 then 1 else 0 end) as unread,
+        sum(case when item_rating=-1 then 1 else 0 end) as filtered
+        from fm_items
+        where item_loaded > julianday('now') - 30
+        group by 1 order by 1""")
+        csvfile = cStringIO.StringIO()
+        out = csv.writer(csvfile, dialect='excel', delimiter=',')
+        out.writerow([col[0].capitalize() for col in c.description])
+        for row in c:
+          out.writerow(row)
+        self.browser_output(200, 'text/csv', csvfile.getvalue())
+        csvfile.close()
+        c.close()
         return
 
       if path.endswith('.css'):

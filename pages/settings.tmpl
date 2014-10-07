@@ -9,7 +9,8 @@
 
 <html>
 <head><title>Temboz settings</title>
-<script language="JavaScript" src="temboz.js"></script>
+<script src="temboz.js"></script>
+<script src="dygraph-combined.js"></script>
 $CSS
 <style type="text/css">
 form.yappi, form#yappi_refresh, form#debug {
@@ -25,6 +26,12 @@ div#yappi_stats table th {
   background: #bfff80;
   padding: 6px;
   text-align: center;
+}
+.dygraph-legend > span {
+  display: none;
+}
+.dygraph-legend > span.highlight {
+  display: inline;
 }
 </style>
 <script type="text/javascript">
@@ -59,6 +66,21 @@ function load_yappi() {
   \$("div#settings").tabs();
   \$("form.yappi").submit(yappi);
   \$("form#yappi_refresh").submit(load_yappi);
+  // Graphs
+  opts = {
+    highlightCircleSize: 2,
+    strokeWidth: 1,
+    strokeBorderWidth: 1,
+    highlightSeriesOpts: {
+      strokeWidth: 3,
+      strokeBorderWidth: 1,
+      highlightCircleSize: 5,
+    }
+  };
+  function load_stats() {
+    dg = new Dygraph(document.getElementById("stats"), "/stats", opts);
+  }
+  load_stats();
 });
 init_popups();
 \$(document).ready(function() {
@@ -132,6 +154,9 @@ $MENUBAR(trans=trans)
     <form method="POST"><input type="hidden" name="op" value="refresh">
       <input type="submit" value="Manual refresh"></td>
     </form>
+    <h2>Statistics</h2>
+    <div id="stats" style="width:100%; height:300px;" class="stats"></div>
+    <p>Zoom: click-drag, Pan: shift-click-drag, Restore: double-click</p>
   </div>
   <div id="passwd" class="ui-tabs-hide">
     <form method="POST"><input type="hidden" name="op" value="passwd">
