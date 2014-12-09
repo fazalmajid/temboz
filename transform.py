@@ -232,4 +232,13 @@ filter_list = [
   # Use m.xkcd.com instead of desktop xkcd to get the alt text
   degunk.ReUrl(url=r'http://m.xkcd.com\1',
                regex_url=r'http://xkcd.com(.*)'),
+  # AnandTech
+  degunk.Re('<p align=center>'
+            '<a href="http://dynamic[^"]*.anandtech.com/www/delivery/'
+            '.*?</a>',
+            re.MULTILINE + re.DOTALL),
+  degunk.Re('<p align=center>'
+            '<a href=\'http://dynamic[^\']*.anandtech.com/www/delivery/'
+            '.*?</a>',
+            re.MULTILINE + re.DOTALL),
   ]
