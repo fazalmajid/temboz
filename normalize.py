@@ -1,7 +1,7 @@
 # -*- coding: iso-8859-1 -*-
 import sys, time, re, codecs, string, traceback, socket, HTMLParser, hashlib
 import unicodedata, htmlentitydefs, urllib2, urlparse, html5lib
-import feedparser, param, transform, util
+import feedparser, param, transform, util, porter2
 
 # XXX TODO
 #
@@ -187,6 +187,7 @@ for c in string.whitespace:
 del lc_map[32]
 for c in string.punctuation + '\'\xab\xbb':
   punct_map[ord(c)] = 32
+punct_map[0x2019] = u"'"
 
 # decode HTML entities with known Unicode equivalents
 ent_re = re.compile(r'\&([^;]*);')
@@ -245,7 +246,7 @@ def replace_first(s, pat, repl):
 strip_tags_re = re.compile('<[^>]*>')
 def get_words(s):
   return set([
-    word for word
+    porter2.stem(word) for word
     in lower(unicode(strip_tags_re.sub('', unicode(s)))
              ).translate(punct_map).split()
     if word not in stop_words])
