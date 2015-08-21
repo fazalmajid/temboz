@@ -161,6 +161,8 @@ filter_list = [
   degunk.UseFirstLink('http://www.pythonware.com/daily/'),
   degunk.ReTitle('\\1', '<div class="description">.*?<a href=.*?>(.*?)</a>',
                  re.MULTILINE + re.DOTALL),
+  # also broken
+  degunk.UseFirstLink('http://evanmiller.org/'),
   # Inquirer clutter
   degunk.Re('<p><small>[^<>]*<a href="http://www.theinquirer.net[^<>]*><i>'
             '[^<>]*Read the full article.*', re.MULTILINE + re.DOTALL),
@@ -235,10 +237,10 @@ filter_list = [
   # AnandTech
   degunk.Re('<p align=center>'
             '<a href="http://dynamic[^"]*.anandtech.com/www/delivery/'
-            '.*?</a>',
+            '.*?</[ap]>',
             re.MULTILINE + re.DOTALL),
   degunk.Re('<p align=center>'
             '<a href=\'http://dynamic[^\']*.anandtech.com/www/delivery/'
-            '.*?</a>',
+            '.*?</[ap]>',
             re.MULTILINE + re.DOTALL),
   ]
