@@ -95,9 +95,10 @@ class UseFirstLink(Filter):
     self.prefix = prefix
   def apply(self, content, *args, **kwargs):
     item = args[1]
-    urls = self.url_re.findall(content)
-    if item['link'].startswith(self.prefix) and len(urls):
-      item['link'] = urls[0]
+    if item['link'].startswith(self.prefix):
+      urls = self.url_re.findall(content)
+      if len(urls):
+        item['link'] = urls[0]
     return content
 
 class Dereference(Filter):
