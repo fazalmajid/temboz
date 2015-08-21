@@ -2,7 +2,7 @@
 # $Id: server.py,v 1.47 2010/09/07 11:59:13 majid Exp $
 import sys, os, stat, logging, base64, time, imp, gzip, traceback, pprint, csv
 import threading, BaseHTTPServer, SocketServer, cStringIO, urlparse, urllib
-import TembozTemplate, param, update, filters, util
+import TembozTemplate, param, update, filters, util, normalize
 
 # work around incompatibility between html5lib and Cheetah ImportHooks
 import __builtin__, Cheetah.ImportManager, logging
@@ -440,6 +440,12 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
             item_uid = int(item_uid)
           getattr(self, 'op_' + op)(item_uid)
         self.xml()
+        return
+
+      if path.startswith('/stem'):
+        txt = self.input['q']
+        stem = ' '.join(normalize.stem(normalize.get_words(txt)))
+        self.browser_output(200, 'text/plain', stem)
         return
 
       if path.startswith('/add_kw_rule'):

@@ -87,6 +87,11 @@
 <head>
 ########################################################################
 $CSS
+<style>
+input#stem {
+  background-color: #FFFFCC;
+}
+</style>
 <title>Temboz - $item_desc items</title>
 <meta name="robots" content="noarchive,noindex,follow,nocache">
 <meta name="viewport" content="initial-scale=1.0">
@@ -119,6 +124,30 @@ function refresh_counter() {
   }
   return articles;
 }
+function set_context(context) {
+  if (context == "word") {
+    \$('.ui-dialog-content input[name="stem"]').show();
+    \$('.ui-dialog-content input[name="kw"]').hide();
+  } else {
+    \$('.ui-dialog-content input[name="stem"]').hide();
+    \$('.ui-dialog-content input[name="kw"]').show();
+  }
+  if (context == "tag" || context == "author") {
+    \$('.ui-dialog-content select[name="target"]').hide();
+    \$('.ui-dialog-content td:first').html(capitalize(context));
+  } else {
+    \$('.ui-dialog-content select[name="target"]').show();
+    if(context == "word") {
+      \$('.ui-dialog-content td:first').html("Keyword");
+    } else if(context == "exactword") {
+      \$('.ui-dialog-content td:first').html("Keyword");
+    } else if(context == "all") {
+      \$('.ui-dialog-content td:first').html("Keywords");
+    } else {
+      \$('.ui-dialog-content td:first').html("Phrase");
+    }
+  }
+}
 function kw_dialog(id, kw, context) {
   var tmpl = \$("div#kw_form_tmpl");
   var body = '<div title="Add a keyword rule">' + tmpl.html() + '</div>';
@@ -142,25 +171,17 @@ function kw_dialog(id, kw, context) {
 ##      background: "black"
 ##    }
   }).find(":text").val(kw);
+  \$('.ui-dialog-content input[name="kw"]').hide();
+  \$.get("/stem", {"q": kw}, function(data) {
+    \$('.ui-dialog-content input[name="stem"]').val(\$.trim(data));
+  });
   \$('.ui-dialog-content select[name="match"]').change(function() {
     var context = \$(this).val();
-    if(context == "tag" || context == "author") {
-      \$('.ui-dialog-content select[name="target"]').hide();
-      \$('.ui-dialog-content td:first').html(capitalize(context));
-    } else {
-      \$('.ui-dialog-content select[name="target"]').show();
-      if(context == "word") {
-        \$('.ui-dialog-content td:first').html("Keyword");
-      } else if(context == "all") {
-        \$('.ui-dialog-content td:first').html("Keywords");
-      } else {
-        \$('.ui-dialog-content td:first').html("Phrase");
-      }
-    }
+    set_context(context);
   })
   if(kw.search(" ") != -1 || kw.search("-") != -1) {
     \$('.ui-dialog-content select[name="match"]').val('phrase_lc');
-    \$('.ui-dialog-content td:first').html("Phrase");
+    set_context("phrase_lc");
   }
   if(context) {
     \$('.ui-dialog-content select[name="match"]').val(context.toLowerCase());
@@ -311,9 +332,12 @@ $MENUBAR(trans=trans)
 <div id="kw_form_tmpl" style="display:none">
   <form name="kw_form" method="GET" action="/add_kw_rule">
     <table>
-      <tr><td>Keyword</td><td><input name="kw" size="30"></td></tr>
+      <tr><td>Keyword</td>
+      <td><input name="kw" id="kw" size="30">
+          <input name="stem" id="stem" size="30"></td></tr>
       <tr><td>Match type</td><td><select name="match">
       <option value="word" selected>Any words</option>
+      <option value="exactword">Any words (exact match)</option>
       <option value="all">All words</option>
       <option value="phrase_lc">Phrase</option>
       <option value="phrase">Phrase (case-sensitive)</option>

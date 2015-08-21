@@ -38,8 +38,10 @@ class KeywordRule(Rule):
     Rule.__init__(self, uid, expires)
     self.target, self.match = rtype.split('_', 1)
     assert self.target in ['title', 'content']
-    if self.match in ['word', 'all']:
+    if self.match in ['exactword']:
       self.rule = normalize.get_words(rule)
+    elif self.match in ['word', 'all']:
+      self.rule = normalize.stem(normalize.get_words(rule))
     else:
       self.rule = rule
   def __str__(self):
@@ -289,10 +291,12 @@ def add_kw_rule(db, c, kw=None, item_uid=None, match='word', target='title',
   else:
     item_uid = None
 
+  if match == 'word':
+    kw = stem
   if not kw: return
   if match in ['author', 'tag', 'phrase_lc']:
     words = [normalize.lower(kw)]
-  elif match == 'word':
+  elif match in {'word', 'exactword'}:
     words = normalize.get_words(kw)
   elif match == 'all':
     words = [' '.join(normalize.get_words(kw))]

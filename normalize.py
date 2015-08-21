@@ -246,10 +246,12 @@ def replace_first(s, pat, repl):
 strip_tags_re = re.compile('<[^>]*>')
 def get_words(s):
   return set([
-    porter2.stem(word) for word
+    word for word
     in lower(unicode(strip_tags_re.sub('', unicode(s)))
              ).translate(punct_map).split()
     if word not in stop_words])
+def stem(words):
+  return {porter2.stem(word) for word in words}
   
 ########################################################################
 # HTML tag balancing logic
@@ -474,7 +476,8 @@ def normalize(item, f, run_filters=True):
     from sys import exit
     code.interact(local=locals())
   item['title_lc'] =   lower(item['title'])
-  item['title_words'] =  get_words(item['title_lc'])
+  item['title_words_exact'] =  get_words(item['title_lc'])
+  item['title_words'] =  stem(item['title_words_exact'])
   ########################################################################
   # link
   #
@@ -584,7 +587,8 @@ def normalize(item, f, run_filters=True):
   item['content'] = content
   # we recalculate this as content may have changed due to tag rebalancing, etc
   item['content_lc'] = lower(content)
-  item['content_words'] = get_words(item['content_lc'])
+  item['content_words_exact'] = get_words(item['content_lc'])
+  item['content_words'] = stem(item['content_words_exact'])
   item['union_lc'] = item['title_lc'] + '\n' + item['content_lc']
   item['union_words'] = item['title_words'].union(item['content_words'])
   item['urls'] = url_re.findall(content)
