@@ -282,7 +282,7 @@ def update_rule(db, c, uid, expires, text, delete):
   invalidate()
 
 def add_kw_rule(db, c, kw=None, item_uid=None, match='word', target='title',
-                feed_only=False, retroactive=False, **kwargs):
+                feed_only=False, retroactive=False, stem=None, **kwargs):
   feed_only = bool(feed_only)
   retroactive = bool(retroactive)
 
