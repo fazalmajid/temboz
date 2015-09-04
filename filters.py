@@ -52,12 +52,16 @@ class KeywordRule(Rule):
       return False
     if self.match in ['word', 'all']:
       suffix = '_words'
+    elif self.match == 'exactword':
+      suffix = '_words_exact'
     elif self.match == 'phrase_lc':
       suffix = '_lc'
     else:
       suffix = ''
     target = item[self.target + suffix]
-    if self.match == 'word':
+    if self.match in ('word', 'exactword'):
+      return bool(target.intersection(self.rule))
+    elif self.match == 'exactword':
       return bool(target.intersection(self.rule))
     elif self.match == 'all':
       return bool(target.issuperset(self.rule))
