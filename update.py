@@ -30,6 +30,7 @@ sorts = [
   ('rated',    'Rated on',      'Rated on',          'item_rated DESC'),
   ('snr',      'Feed SNR',      'Feed SNR',          'snr DESC'),
   ('oldest',   'Oldest seen',   'Oldest seen',       'item_uid ASC'),
+  ('random',   'Random order',  'Random order',      'random() ASC'),
 ]
 sorts_dict = dict((sorts[i][0], i) for i in range(len(sorts)))
 
