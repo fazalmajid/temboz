@@ -13,6 +13,9 @@ import feedparser, param, transform, util, porter2
 #date_fmt = '%a, %d %b %Y %H:%M:%S %Z'
 date_fmt = '%Y-%m-%d %H:%M:%S'
 
+# strip out class attributes from articles
+feedparser._HTMLSanitizer.acceptable_attributes.remove('class')
+
 # strip diacritics. Unicode normalization form D (NFD) maps letters with
 # diacritics into the base letter followed by a combining diacritic, all
 # we need to do is get rid of the combining diacritics
