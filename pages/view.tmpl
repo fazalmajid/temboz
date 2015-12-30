@@ -49,6 +49,12 @@
     #set global $where = $where + ' and item_rule_uid=' + rule_uid
   #end if
 #end if
+#if $getVar('min', '')
+  #set global $where = $where + ' and item_uid >= ' + $min
+#end if
+#if $getVar('max', '')
+  #set global $where = $where + ' and item_uid <= ' + $max
+#end if
 ##
 #set params = []
 ## optimizations for mobile devices

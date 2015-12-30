@@ -336,3 +336,23 @@ def exempt_feed_retroactive(db, c, feed_uid, **kwargs):
     select rule_uid from fm_rules
     where rule_feed_uid is null and item_rule_uid=rule_uid
   )""", [feed_uid])
+
+########################################################################
+# stats
+def stats(c):
+  c.execute("""select rule_uid, rule_type, rule_text,
+    coalesce(rule_feed_uid, -1), feed_title,
+    sum(case when item_created > julianday('now')-7 then 1 else 0 end) last_7,
+    sum(case when item_created < julianday('now')-7 then 1 else 0 end) prev_7,
+    min(case when item_created > julianday('now')-7
+             then item_uid else 2000000000 end),
+    max(case when item_created > julianday('now')-7
+             then item_uid else 0 end)
+  from fm_rules
+  join fm_items on item_rule_uid=rule_uid
+  left join fm_feeds on rule_feed_uid=feed_uid
+  where item_created > julianday('now') -14
+  group by 1, 2, 3, 4, 5
+  order by 6 desc
+  limit 100""")
+  return c.fetchall()
