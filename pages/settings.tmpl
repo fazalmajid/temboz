@@ -61,11 +61,7 @@ function load_yappi() {
   });
   return false;
 }
-\$(document).ready(function() {
-  \$("form.yappi").hide();
-  \$("div#settings").tabs();
-  \$("form.yappi").submit(yappi);
-  \$("form#yappi_refresh").submit(load_yappi);
+function load_stats() {
   // Graphs
   opts = {
     highlightCircleSize: 2,
@@ -77,9 +73,17 @@ function load_yappi() {
       highlightCircleSize: 5,
     }
   };
-  function load_stats() {
-    dg = new Dygraph(document.getElementById("stats"), "/stats", opts);
-  }
+  dg = new Dygraph(document.getElementById("stats"), "/stats", opts);
+}
+\$(document).ready(function() {
+  \$("form.yappi").hide();
+  \$("div#settings").tabs(
+    {
+##    activate: function(event, ui) {
+##    }
+  });
+  \$("form.yappi").submit(yappi);
+  \$("form#yappi_refresh").submit(load_yappi);
   load_stats();
 });
 init_popups();
@@ -136,6 +140,7 @@ $MENUBAR(trans=trans)
 
 <div id="settings" class="ui-tabs">
   <ul>
+    <li><a href="#statistics"><span>Stats</span></a></li>
     <li><a href="#refresh"><span>Refresh</span></a></li>
     <li><a href="#passwd"><span>Password</span></a></li>
     <li><a href="#server"><span>Server</span></a></li>
@@ -149,14 +154,17 @@ $MENUBAR(trans=trans)
     <li><a href="#maint"><span>Maintenance</span></a></li>
     <li><a href="#status"><span>Info</span></a></li>
   </ul>
+  <div id="statistics" class="ui-tabs">
+    <h2>Statistics</h2>
+    <div id="stats" style="width:100%; height:300px;" class="stats"></div>
+    <p>Zoom: click-drag, Pan: shift-click-drag, Restore: double-click</p>
+    <h2>Top filters</h2>
+  </div>
   <div id="refresh" class="ui-tabs-hide">
     <p>Manually refresh all feeds</p>
     <form method="POST"><input type="hidden" name="op" value="refresh">
       <input type="submit" value="Manual refresh"></td>
     </form>
-    <h2>Statistics</h2>
-    <div id="stats" style="width:100%; height:300px;" class="stats"></div>
-    <p>Zoom: click-drag, Pan: shift-click-drag, Restore: double-click</p>
   </div>
   <div id="passwd" class="ui-tabs-hide">
     <form method="POST"><input type="hidden" name="op" value="passwd">

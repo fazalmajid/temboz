@@ -23,12 +23,14 @@ sync:
 	-mv feedparser.py feedparser.old
 	wget http://feedparser.googlecode.com/svn/trunk/feedparser/feedparser.py
 
-JUI=	spool/jquery-ui/development-bundle/ui
+JUI=	spool/jquery-ui/*
 sync-js:
-	vcheck --verbose -d --file etc/vcheck
-	(cd spool; wget -N http://jquery.malsup.com/form/jquery.form.js)
+	../src/scripts/vcheck --verbose -d --file etc/vcheck
+	(cd spool; wget -N http://malsup.github.io/jquery.form.js)
 js:
-	cat $(JUI)/../jquery-[0-9]*.js spool/jquery.form.js $(JUI)/ui.core.js  $(JUI)/ui.dialog.js $(JUI)/ui.tabs.js spool/jquery.hotkeys.meta.js rsrc/specific.js | $(JSMIN) > rsrc/temboz.js
+	cat $(JUI)/external/jquery/jquery*.js spool/jquery.form.js \
+	$(JUI)/jquery-ui.js \
+	spool/jquery.hotkeys.meta.js rsrc/specific.js | $(JSMIN)>rsrc/temboz.js
 	./temboz --kill
 changelog:
 	cvs2cl.pl --tags -g -q

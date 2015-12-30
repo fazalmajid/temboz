@@ -153,7 +153,7 @@ function kw_dialog(id, kw, context) {
   var body = '<div title="Add a keyword rule">' + tmpl.html() + '</div>';
   body = body.replace(/__item_uid__/, id);
   body = body.replace(/__feed_title__/, \$('#feed' + id + ':first').text());
-  \$(body).dialog({
+  \$(body).appendTo("body").dialog({
     buttons: {
       "Add": function() {
         \$(this).find("form").ajaxSubmit();
@@ -161,6 +161,7 @@ function kw_dialog(id, kw, context) {
       },
       "Cancel": function() {
         \$(this).dialog("destroy");
+        \$(this).remove();
       }
     },
     width: 500,
@@ -198,6 +199,8 @@ function hide(id) {
     refresh_counter();
   } else {
     var kw = \$.trim(get_selection());
+    hidden[hidden.length] = elt;
+    elt.style.display = "none";
     if(kw!="" && elt.innerHTML.indexOf(kw)!=-1) {
       kw_dialog(id, kw);
     } else {
@@ -211,8 +214,6 @@ function hide(id) {
         }
       }
     }
-    hidden[hidden.length] = elt;
-    elt.style.display = "none";
     webop('demote', id);
     refresh_counter();
   }
