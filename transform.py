@@ -51,6 +51,7 @@ filter_list = [
   degunk.Re('<p><a href="(http://feeds\\.[^"/>]*/~./)[^"]*">'
             '<img src="\\1[^>]*></a></p>'),
   degunk.Re('<img src="http://feeds.feedburner.com.*?/>'),
+  degunk.Re('<div>\\s*<a href="[^"]*/~ff/.*?</div>', re.IGNORECASE + re.DOTALL),
   # web bugs dumb enough to reveal themselves
   degunk.Re('<img[^>]*width="1"[^>]*height="1"[^>]*>'),
   degunk.Re('<img[^>]*height="1"[^>]*width="1"[^>]*>'),
