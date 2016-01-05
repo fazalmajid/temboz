@@ -255,10 +255,7 @@ function unhide_all() {
   }
   hidden = Array();
 }
-function unhide_last(event) {
-  if (event.alreadyHandled) {
-    return;
-  }
+function unhide_last() {
   if (hidden.length > 0) {
     elt = hidden[hidden.length - 1];
     elt.style.display = "block";
@@ -266,6 +263,12 @@ function unhide_last(event) {
     refresh_counter();
     hidden.length = hidden.length - 1
   }
+}
+function undo(event) {
+  if (event.alreadyHandled) {
+    return;
+  }
+  unhide_last();
   event.alreadyHandled = true;
 }
 function toggle(item) {
@@ -284,9 +287,9 @@ function assign_column() {
 }
 \$(document).ready(function() {
   \$("span.tag").click(toggle_tag);
-  \$(document).bind("keydown", "ctrl+z", unhide_last);
-  \$(document).bind("keydown", "meta+z", unhide_last);
-  \$(document).bind("keydown", "ctrl+meta+z", unhide_last);
+  \$(document).bind("keydown", "ctrl+z", undo);
+  \$(document).bind("keydown", "meta+z", undo);
+  \$(document).bind("keydown", "ctrl+meta+z", undo);
   refresh_counter();
   var articles = \$("div.article");
   if(\$("body").width() >= $TWOCOL_WIDTH) {
