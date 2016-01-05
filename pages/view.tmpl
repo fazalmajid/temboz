@@ -255,14 +255,18 @@ function unhide_all() {
   }
   hidden = Array();
 }
-function unhide_last() {
-  if(hidden.length > 0) {
+function unhide_last(event) {
+  if (event.alreadyHandled) {
+    return;
+  }
+  if (hidden.length > 0) {
     elt = hidden[hidden.length - 1];
     elt.style.display = "block";
     webop('basic', elt.id.substring(3));
     refresh_counter();
     hidden.length = hidden.length - 1
   }
+  event.alreadyHandled = true;
 }
 function toggle(item) {
   document.items[item].checked = !document.items[item].checked;
@@ -282,7 +286,6 @@ function assign_column() {
   \$("span.tag").click(toggle_tag);
   \$(document).bind("keydown", "ctrl+z", unhide_last);
   \$(document).bind("keydown", "meta+z", unhide_last);
-  \$(document).bind("keydown", "meta+ctrl+z", unhide_last);
   \$(document).bind("keydown", "ctrl+meta+z", unhide_last);
   refresh_counter();
   var articles = \$("div.article");

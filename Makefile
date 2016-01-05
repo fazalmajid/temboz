@@ -27,6 +27,7 @@ JUI=	spool/jquery-ui/*
 sync-js:
 	../src/scripts/vcheck --verbose -d --file etc/vcheck
 	(cd spool; wget -N http://malsup.github.io/jquery.form.js)
+	(cd spool; wget -N https://raw.githubusercontent.com/jeresig/jquery.hotkeys/master/jquery.hotkeys.js)
 js:
 	cat $(JUI)/external/jquery/jquery*.js spool/jquery.form.js \
 	$(JUI)/jquery-ui.js \
