@@ -1,4 +1,3 @@
-## -*- html -*-
 #block ENTIRE_PAGE
 <!DOCTYPE HTML>
 #extends menubar
@@ -178,7 +177,6 @@ function kw_dialog(id, kw, context) {
 ##      background: "black"
 ##    }
   }).find(":text").val(kw);
-  \$('.ui-dialog-content input[name="kw"]').hide();
   \$.get("/stem", {"q": kw}, function(data) {
     \$('.ui-dialog-content input[name="stem"]').val(\$.trim(data));
   });
@@ -194,7 +192,9 @@ function kw_dialog(id, kw, context) {
     \$('.ui-dialog-content select[name="match"]').val(context.toLowerCase());
     \$('.ui-dialog-content select[name="target"]').hide();
     \$('.ui-dialog-content :checkbox').val(["feed_only"]);
+    \$('.ui-dialog-content :checkbox').prop("checked", true);
     \$('.ui-dialog-content td:first').html(context);
+    set_context(context);                       
   }
 }
 function hide(id) {
