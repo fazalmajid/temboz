@@ -177,6 +177,7 @@ function kw_dialog(id, kw, context) {
 ##      background: "black"
 ##    }
   }).find(":text").val(kw);
+  \$('.ui-dialog-content input[name="kw"]').hide();
   \$.get("/stem", {"q": kw}, function(data) {
     \$('.ui-dialog-content input[name="stem"]').val(\$.trim(data));
   });
@@ -187,6 +188,10 @@ function kw_dialog(id, kw, context) {
   if(kw.search(" ") != -1 || kw.search("-") != -1) {
     \$('.ui-dialog-content select[name="match"]').val('phrase_lc');
     set_context("phrase_lc");
+  } else {
+    if (!context) {
+      \$('.ui-dialog-content input[name="kw"]').hide();
+    }
   }
   if(context) {
     \$('.ui-dialog-content select[name="match"]').val(context.toLowerCase());
