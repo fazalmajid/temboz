@@ -495,12 +495,9 @@ def normalize(item, f, run_filters=True):
       item['id'] = 'HASH_CONTENT'
       item['RUNT'] = True
   if type(item['link']) == unicode:
-    item['link'] = str(item['link'])
+    item['link'] = str(item['link'].encode('UTF-8'))
   if type(item['link']) != str:
-    print >> param.log, 'LINK' * 18
-    import code
-    from sys import exit
-    code.interact(local=locals())
+    print >> param.log, 'LINK IS NOT str', repr(item['link'])
   # XXX special case handling for annoying Sun/Roller malformed entries
   if 'blog.sun.com' in item['link'] or 'blog.sun.com' in item['link']:
     item['link'] = item['link'].replace(
