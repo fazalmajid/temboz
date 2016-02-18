@@ -13,6 +13,35 @@
 #end def
 
 #def rule_tabset(c, feed_uid)
+  #set $feed_uid = $getVar('feed_uid', None)
+  #if feed_uid
+    #silent c.execute("""select item_rule_uid, rule_type, rule_text, count(*)
+                         from fm_items
+			 join fm_rules on rule_uid=item_rule_uid
+                         where item_feed_uid=? and item_rating=-2
+			 group by 1, 2, 3 order by 4 DESC, 3
+			 limit 25""", [feed_uid])
+    #set l = c.fetchall()
+    #if l
+<h2>Top filter rules</h2>
+<table>
+  <tr><th>Rule</th><th>Type</th><th>Text</th><th>Filtered articles</th></tr>
+      #set rowclass = None
+      #set prev_count = None
+      #for uid, rtype, text, count in l
+        #if count != prev_count
+          #set rowclass = 'even' if rowclass == 'odd' else 'odd'
+	  #set prev_count = count
+	#end if
+  <tr><td></td><td></td><td></td><td></td></tr>
+  <tr valign="top" class="$rowclass" id="rule_$uid"><td>$uid</td>
+    <td>$rtype</td><td>$text</td>
+    <td><a href="view?show=filtered&feed_uid=$feed_uid&rule_uid=$uid">$count
+filtered articles</a></td></tr>
+      #end for
+    #end if
+</table>
+  #end if
 <div id="tabset" class="ui-tabs">
   #set $rownum = 0
   #if feed_uid
@@ -64,7 +93,6 @@
           #end if
           <tr valign="top" class="$rowclass" id="rule_$uid"><td>$uid</td>
           <td>$rtype</td><td>$text</td>
-          #set $feed_uid = $getVar('feed_uid', None)
           #if $feed_uid
             <td><a href="view?show=filtered&feed_uid=$feed_uid&rule_uid=$uid">show</a></td>
           #else
