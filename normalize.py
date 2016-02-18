@@ -433,7 +433,7 @@ def dereference(url, seen=None):
     url_obj = redirect_opener.open(url)
     # no redirect occurred
     return url
-  except (urllib2.URLError, ValueError):
+  except (urllib2.URLError, ValueError, socket.error):
     return url
   except Redirect, e:
     # break a redirection loop if it occurs
