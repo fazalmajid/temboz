@@ -422,13 +422,16 @@ class DontHandleRedirect(urllib2.HTTPRedirectHandler):
 redirect_opener = urllib2.build_opener(DontHandleRedirect)
 socket.setdefaulttimeout(10)
 
-def dereference(url, seen=None):
+def dereference(url, seen=None, level=0):
   """Recursively dereference a URL"""
   # this set is used to detect redirection loops
   if seen is None:
     seen = set([url])
   else:
     seen.add(url)
+  # stop recursion if it is too deep
+  if level > 16:
+    return url
   try:
     url_obj = redirect_opener.open(url)
     # no redirect occurred
@@ -439,8 +442,13 @@ def dereference(url, seen=None):
     # break a redirection loop if it occurs
     if e.url in seen:
       return url
+    # some servers redirect to Unicode URLs, which are not legal
+    try:
+      unicode(e.url)
+    except UnicodeDecodeError:
+      return url
     # there might be several levels of redirection
-    return dereference(e.url, seen)
+    return dereference(e.url, seen, level + 1)
   except:
     util.print_stack()
     return url
