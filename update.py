@@ -630,7 +630,7 @@ Returns a tuple (number of items added unread, number of filtered items)"""
                     [feed_uid, guid])
           item_uid = c.fetchone()[0]
           for tag in item['item_tags']:
-            c.execute("""insert into fm_tags (tag_name, tag_item_uid)
+            c.execute("""insert or ignore into fm_tags (tag_name, tag_item_uid)
             values (?, ?)""", [tag, item_uid])
         if skip:
           num_filtered += 1
