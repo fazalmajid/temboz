@@ -12,7 +12,9 @@
   #set redir = urllib.quote_plus('https://' + $headers['host'] + '/facebook?op=oauth_redirect')
   #set op = $getVar('op', '')
   #if not op
-    #raise self.redirect('https://graph.facebook.com/oauth/authorize?display=touch&client_id=' + app_id + '&scope=publish_actions,read_stream&redirect_uri=' + redir)
+    #set fb_url = 'https://graph.facebook.com/oauth/authorize?display=touch&client_id=' + app_id + '&scope=publish_actions,read_stream&redirect_uri=' + redir
+    #silent print >> param.log, 'FB_URL =', fb_url
+    #raise self.redirect(fb_url)
   #elif op == 'oauth_redirect'
     #set code = $getVar('code', '')
     #if code
