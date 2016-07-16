@@ -157,17 +157,21 @@ form.feed_info, form.add, div#tabset, div#settings, .padded {
 ## SCREEN ONLY
 #if $media == 'screen'
 .print {display: none}
-span.ctarrow {font-size: 18px}
+span.ctarrow {
+  font-size: 18px;
+  cursor: pointer;
+}
 span.buttons {
   float: right;
   font-size: 24px;
   padding-top: 6px;
+  cursor: pointer;
 }
 span.buttons span.down {
   color: #b70000;
 }
 span.buttons span.up {
-color: #00b700;
+  color: #00b700;
 }
 ## work-around IE
 body>ul.menu {
