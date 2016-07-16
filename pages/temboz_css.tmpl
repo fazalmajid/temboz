@@ -158,7 +158,17 @@ form.feed_info, form.add, div#tabset, div#settings, .padded {
 #if $media == 'screen'
 .print {display: none}
 span.ctarrow {font-size: 18px}
-span.buttons {float: right}
+span.buttons {
+  float: right;
+  font-size: 24px;
+  padding-top: 6px;
+}
+span.buttons span.down {
+  color: #b70000;
+}
+span.buttons span.up {
+color: #00b700;
+}
 ## work-around IE
 body>ul.menu {
   position: fixed;
