@@ -79,7 +79,11 @@
     #set search_where = 'item_content'
   #end if
   #set global $where = $where + ' and lower(' + search_where + ') like ?'
-  #silent params.append('%' + $getVar('search').lower() + '%')
+  #if type($getVar('search')) == unicode
+    #silent params.append('%' + $getVar('search').lower().encode('ascii', 'xmlcharrefreplace') + '%')
+  #else
+    #silent params.append('%' + $getVar('search').lower() + '%')
+  #end if
 #end if
 ########################################################################
 ##

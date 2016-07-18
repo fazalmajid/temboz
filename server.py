@@ -116,7 +116,12 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     self.output_send_response(response)
     if not http_headers:
       http_headers = list()
-    if ct:
+    #text / html page use utf 8 output
+    #if ct:
+    #  self.output_send_header('Content-Type', ct)
+    if ct.startswith('text/html'):
+      self.output_send_header('Content-Type',"text/html; charset=utf-8")
+    else:
       self.output_send_header('Content-Type', ct)
     # gzip compression
     if ct and ct.startswith('text') and len(output) > 1500 \

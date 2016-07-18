@@ -31,8 +31,9 @@ class TembozTemplate(Cheetah.Template.Template):
     for d in self.searchList():
       if type(d) == dict:
         opts.update(d)
+    #value.encode('utf-8') feed Chinese editing support
     return '\n'.join('<input type="hidden" name="%s" value="%s">'
-                     % (name, urllib.quote_plus(value))
+                     % (name, urllib.quote_plus(value.encode('utf-8')))
                      for (name, value) in opts.iteritems()
                      if set(name).issubset(self.valid_chars)
                      and name not in ('referer', 'headers')
