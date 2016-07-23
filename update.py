@@ -1,11 +1,9 @@
 import sys, hashlib, time, threading, socket, Queue, signal, os, re
-import urllib2, urlparse, HTMLParser, random
-import param, feedparser, normalize, util, transform, singleton, filters
+import urllib2, urlparse, HTMLParser, random, sqlite3
+import param, feedparser, normalize, util, transform, filters, dbop
 import social
 
-sqlite = singleton.sqlite
-
-socket.setdefaulttimeout(10)
+#socket.setdefaulttimeout(10)
 feedparser.USER_AGENT = param.user_agent
 
 class ParseError(Exception):
@@ -24,6 +22,7 @@ ratings = [
   ('up',       'interesting',   'Interesting only',  'item_rating > 0'),
   ('filtered', 'filtered',      'Filtered only',     'item_rating = -2')
 ]
+ratings_dict = dict((ratings[i][0], i) for i in range(len(ratings)))
 sorts = [
   ('created',  'Article date',  'Article date',      'item_created DESC'),
   ('seen',     'Cached date',   'Cached date',       'item_uid DESC'),
@@ -130,7 +129,7 @@ def add_feed(feed_xml):
       num_added, num_filtered = process_parsed_feed(db, c, f, feed_uid)
       db.commit()
       return feed_uid, feed['title'], num_added, num_filtered
-    except sqlite.IntegrityError, e:
+    except sqlite3.IntegrityError, e:
       if 'feed_xml' in str(e):
         db.rollback()
         raise FeedAlreadyExists
@@ -156,7 +155,7 @@ def update_feed_xml(feed_uid, feed_xml):
     try:
       c.execute("update fm_feeds set feed_xml=?, feed_html=? where feed_uid=?",
                 [feed_xml, str(f.feed['link']), feed_uid])
-    except sqlite.IntegrityError, e:
+    except sqlite3.IntegrityError, e:
       if 'feed_xml' in str(e):
         db.rollback()
         raise FeedAlreadyExists
@@ -691,7 +690,7 @@ def cleanup(db=None, c=None):
       where item_created < min(julianday('now')-?, feed_oldest-7)
       and item_rating<0 and feed_uid=item_feed_uid)""", [param.garbage_items])
     db.commit()
-  singleton.snr_mv(db, c)
+  dbop.snr_mv(db, c)
   c.execute("""delete from fm_tags
   where not exists(
     select item_uid from fm_items where item_uid=tag_item_uid
@@ -787,30 +786,8 @@ class PeriodicUpdater(threading.Thread):
         util.print_stack()
       self.event.clear()
 
-def view_sql(db, c, where, sort, params, overload_threshold):
-  singleton.mv_on_demand(db, c)
-  c.execute("""create temp table articles as select
-    item_uid, item_creator, item_title, item_link, item_content,
-    datetime(item_loaded), date(item_created) as item_created,
-    datetime(item_rated) as item_rated,
-    julianday('now') - julianday(item_created) as delta_created, item_rating,
-    item_rule_uid, item_feed_uid, feed_title, feed_html, feed_xml, snr
-  from fm_items, v_feeds_snr
-  where item_feed_uid=feed_uid and """ + where + """
-  order by """ + sort + """, item_uid DESC limit ?""",
-  params + [overload_threshold])
-  c.execute("""create index articles_i on articles(item_uid)""")
-  c.execute("""select tag_item_uid, tag_name, tag_by
-  from  fm_tags, articles where tag_item_uid=item_uid""")
-  tag_dict = dict()
-  for item_uid, tag_name, tag_by in c:
-    tag_dict.setdefault(item_uid, []).append(tag_name)
-  c.execute("""select * from articles
-  order by """ + sort + """, item_uid DESC""")
-  return tag_dict
-
-def feed_info_sql(db, c, feed_uid):
-  singleton.mv_on_demand(db, c)
+def feed_info_sql(c, feed_uid):
+  dbop.mv_on_demand(c)
   c.execute("""select feed_title, feed_desc, feed_filter,
   feed_html, feed_xml, feed_pubxml,
   last_modified, interesting, unread, uninteresting, filtered, total,
@@ -829,7 +806,7 @@ def setting(db, c, **kwargs):
     try:
       c.execute("insert into fm_settings (name, value) values (?, ?)",
                 [name, str(value)])
-    except sqlite.IntegrityError, e:
+    except sqlite3.IntegrityError, e:
       c.execute("update fm_settings set value=? where name=?",
                 [value, name])
   db.commit()

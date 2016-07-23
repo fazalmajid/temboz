@@ -215,18 +215,18 @@ class PythonRule(Rule):
   def highlight_content(self, html):
     return html + '<br><p>Filtered by Python rule %d</p>' % self.uid
     
-def load_rules(db, c):
+def load_rules(c):
   global loaded, rules, feed_rules
   if loaded: return
   rules = []
   feed_rules = dict()
   try:
     try:
-      c.execute("""select rule_uid, rule_type, rule_text, rule_feed_uid,
-      strftime('%s', rule_expires)
-      from fm_rules
-      where rule_expires is null or rule_expires > julianday('now')""")
-      for uid, rtype, rule, feed_uid, expires in c:
+      for uid, rtype, rule, feed_uid, expires in \
+          c.execute("""select rule_uid, rule_type, rule_text, rule_feed_uid,
+          strftime('%s', rule_expires)
+          from fm_rules
+          where rule_expires is null or rule_expires > julianday('now')"""):
         if expires: expires = int(expires)
         if feed_uid:
           container = feed_rules.setdefault(feed_uid, list())
@@ -250,9 +250,9 @@ def load_rules(db, c):
             uid, expires, rule, rtype.replace('union_', 'content_')))
         else:
           container.append(KeywordRule(uid, expires, rule, rtype))
-      c.execute("""select feed_uid, feed_filter from fm_feeds
-      where feed_filter is not null""")
-      for feed_uid, rule in c:
+      for feed_uid, rule in \
+          c.execute("""select feed_uid, feed_filter from fm_feeds
+          where feed_filter is not null"""):
         rule = PythonRule('feed_%d' % feed_uid, None, rule)
         feed_rules.setdefault(feed_uid, list()).append(rule)
     except:

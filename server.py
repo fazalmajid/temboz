@@ -1,43 +1,8 @@
 #!/usr/local/bin/python
-# $Id: server.py,v 1.47 2010/09/07 11:59:13 majid Exp $
 import sys, os, stat, logging, base64, time, imp, gzip, traceback, pprint, csv
 import threading, BaseHTTPServer, SocketServer, cStringIO, urlparse, urllib
-import TembozTemplate, param, update, filters, util, normalize
-
-# work around incompatibility between html5lib and Cheetah ImportHooks
-import __builtin__, Cheetah.ImportManager, logging
-sys_import = __builtin__.__import__
-def fix_import(self, *args, **kwargs):
-  try:
-    return self.saved_importHook(*args, **kwargs)
-  except:
-    #logging.exception('Cheetah import hook error')
-    return sys_import(*args, **kwargs)
-Cheetah.ImportManager.ImportManager.saved_importHook = Cheetah.ImportManager.ImportManager.importHook
-Cheetah.ImportManager.ImportManager.importHook = fix_import
-# add the Cheetah template directory to the import path
-import Cheetah.ImportHooks
-Cheetah.ImportHooks.install()
-try:
-  tmpl_dir = os.path.dirname(sys.modules['__main__'].__file__)
-except:
-  tmpl_dir = os.getcwd()
-if tmpl_dir:
-  mod_dir = tmpl_dir + os.sep + 'modules'
-  tmpl_dir += os.sep + 'pages'
-else:
-  tmpl_dir = 'pages'
-  mod_dir = 'modules'
-try:
-  os.mkdir(mod_dir)
-except OSError:
-  pass
-Cheetah.ImportHooks.setCacheDir(mod_dir)
-sys.path.append(mod_dir)
-sys.path.append(tmpl_dir)
-
-class Server(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
-  pass
+import flask, sqlite3
+import param, update, filters, util, normalize, dbop, singleton
 
 # HTTP header to force caching
 no_expire = [
@@ -53,8 +18,8 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     """Return the server software version string."""
     return param.user_agent
   
-  def log_message(self, *args):
-    pass
+#  def log_message(self, *args):
+#    pass
 
   def read_mime_query_list(self, mimeinfo):
     """Magic to return attributes and attachments during a POST
@@ -415,6 +380,21 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
         frames = sys._current_frames()
         row = 0
         out = []
+        if singleton.c_opened:
+          out.append('<h1>Open Cursors</h1>\n')
+          for curs, tb in singleton.c_opened.iteritems():
+            if curs not in singleton.c_closed:
+              row += 1
+              if row % 2:
+                color = '#ddd'
+              else:
+                color = 'white'
+              out.append('<div style="background-color: ' + color + '">\n<pre>')
+              out.append(curs.replace('<', '&lt;').replace('>', '&gt;') + '\n')
+              out.append('\n'.join(tb[:-2]))
+              out.append('</pre></div>\n')
+        out.append('<h1>Threads</h1>\n')
+        row = 0
         for thread_id, frame in sorted(frames.iteritems()):
           if thread_id == threading.currentThread()._Thread__ident:
             continue
@@ -522,21 +502,6 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     parts[4] = urllib.urlencode(param, True)
     return urlparse.urlunparse(tuple(parts))
 
-def run():
-  # force loading of the database so we don't have to wait an hour to detect
-  # a database format issue
-  from singleton import db
-  c = db.cursor()
-  update.load_settings(db, c)
-  c.close()
-  
-  logging.getLogger().setLevel(logging.INFO)
-  server = Server((getattr(param, 'bind_address', ''), param.port), Handler)
-  pidfile = open('temboz.pid', 'w')
-  print >> pidfile, os.getpid()
-  pidfile.close()
-  server.serve_forever()
-
 class DummyRequest:
   """Emulate a BaseHTTPServer from a CGI"""
   def makefile(self, mode, size):
@@ -568,8 +533,210 @@ class DummyRequest:
 def require_auth(self, *args, **kwargs):
   return os.getenv('REMOTE_USER')
 
-def do_cgi():
-  """Implement a CGI using a BaseHTTPHandler subclass"""
-  param.log = open('/dev/null', 'w')
-  Handler.require_auth = require_auth
-  h = Handler(DummyRequest(), ('localhost', 80), None)
+########################################################################
+  
+app = flask.Flask(__name__)
+app.debug = getattr(param, 'debug', False)
+if not app.debug:
+  # this setting interferes with Flask debug
+  socket.setdefaulttimeout(10)
+app.jinja_env.trim_blocks=True
+app.jinja_env.lstrip_blocks=True
+
+from singleton import db
+
+def change_param(*arg, **kwargs):
+  parts = urlparse.urlparse(flask.request.full_path)
+  parts = list(parts)
+  param = urlparse.parse_qs(parts[4])
+  param.update(kwargs)
+  parts[4] = urllib.urlencode(param, True)
+  return urlparse.urlunparse(tuple(parts))
+
+def since(delta_t):
+  if not delta_t:
+    return 'never'
+  delta_t = float(delta_t)
+  if delta_t < 2.0/24:
+    return str(int(delta_t * 24.0 * 60.0)) + ' minutes ago'
+  elif delta_t < 1.0:
+    return str(int(delta_t * 24.0)) + ' hours ago'
+  elif delta_t < 2.0:
+    return 'one day ago'
+  elif delta_t < 3.0:
+    return str(int(delta_t)) + ' days ago'
+  else:
+    return time.strftime('%Y-%m-%d',
+                         time.localtime(time.time() - 86400 * delta_t))
+
+@app.route("/")
+@app.route("/view")
+def view(): 
+  # Query-string parameters for this page
+  #   show
+  #   feed_uid
+  #   search
+  #   where_clause
+  #
+  # What items to use
+  #   unread:   unread articles (default)
+  #   up:       articles already flagged interesting
+  #   down:     articles already flagged uninteresting
+  #   filtered: filtered out articles
+  #   mylos:    read-only view, e.g. http://www.majid.info/mylos/temboz.html
+  with dbop.db() as c:
+    filters.load_rules(c)
+    show = flask.request.args.get('show', 'unread')
+    i = update.ratings_dict.get(show, 1)
+    show = update.ratings[i][0]
+    item_desc = update.ratings[i][1]
+    where = update.ratings[i][3]
+    sort = flask.request.args.get('sort', 'seen')
+    i = update.sorts_dict.get(sort, 1)
+    sort = update.sorts[i][0]
+    sort_desc = update.sorts[i][1]
+    order_by = update.sorts[i][3]
+    # optimizations for mobile devices
+    mobile = bool(flask.request.args.get('mobile', False))
+    # SQL options
+    params = []
+    # filter by filter rule ID
+    if show == 'filtered':
+      try:
+        params.append(int(flask.request.args['rule_uid']))
+        where += ' and item_rule_uid=?'
+      except:
+        pass
+    # filter by uid range
+    try:
+      params.append(int(flask.request.args['min']))
+      where += ' and item_uid >= ?'
+    except:
+      pass
+    try:
+      params.append(int(flask.request.args['max']))
+      where += ' and item_uid <= ?'
+    except:
+      pass
+    # Optionally restrict view to a single feed
+    feed_uid = None
+    try:
+      feed_uid = int(flask.request.args['feed_uid'])
+      params.append(feed_uid)
+      where +=  ' and item_feed_uid=?'
+    except:
+      pass
+    # Crude search functionality
+    search = flask.request.args.get('search')
+    if search:
+      search = search.lower()
+      search_in = flask.request.args.get('search_in', 'title')
+      search_where = 'item_title' if search_in == 'title' else 'item_content'
+      where += ' and lower(%s) like ?' % search_where
+      if type(search) == unicode:
+        # XXX vulnerable to SQL injection attack
+        params.append('%%%s%%' % search.encode('ascii', 'xmlcharrefreplace'))
+      else:
+        params.append('%%%s%%' % search)
+      # Support for arbitrary where clauses in the view script. Not directly
+      # accessible from the UI
+      extra_where = flask.request.args.get('where_clause')
+      if extra_where:
+        # XXX vulnerable to SQL injection attack
+        where += ' and %s' % extra_where
+    # Preliminary support for offsets to read more than overload_threshold
+    # articles, not fully implemented yet
+    try:
+      offset = int(flask.request.args['offset'])
+    except:
+      offset = 0
+    ratings_list = ''.join(
+      '<li><a href="%s">%s</a></li>' % (change_param(show=rating_name),
+                                        rating_desc)
+      for (rating_name, rating_desc, discard, discard) in update.ratings)
+    sort_list = ''.join(
+      '<li><a href="%s">%s</a></li>' % (change_param(sort=sort_name),
+                                        sort_desc)
+      for (sort_name, sort_desc, discard, discard) in update.sorts)
+    # fetch and format items
+    tag_dict, rows = dbop.view_sql(c, where, order_by, params,
+                                   param.overload_threshold)
+    items = []
+    logging.error('ROWCOUNT = %r' % (rows.rowcount,))
+    for row in rows:
+      logging.error('ROW = %r', (row,))
+      (uid, creator, title, link, content, loaded, created, rated,
+       delta_created, rating, filtered_by, feed_uid, feed_title, feed_html,
+       feed_xml, feed_snr) = row
+      # redirect = '/redirect/%d' % uid
+      redirect = link
+      since_when = since(delta_created)
+      creator = creator.replace('"', '\'')
+      if rating == -2:
+        if filtered_by:
+          rule = filters.Rule.registry.get(filtered_by)
+          if rule:
+            title = rule.highlight_title(title)
+            content = rule.highlight_content(content)
+          elif filtered_by == 0:
+            content = '%s<br><p>Filtered by feed-specific Python rule</p>' \
+                      % content
+      if uid in tag_dict or (creator and (creator != 'Unknown')):
+        # XXX should probably escape the Unicode here
+        tag_info = ' '.join('<span class="item tag">%s</span>' % t
+                            for t in sorted(tag_dict.get(uid, [])))
+        if creator and creator != 'Unknown':
+          tag_info = '%s<span class="author tag">%s</span>' \
+                     % (tag_info, creator)
+        tag_info = '<div class="tag_info" id="tags_%s">' % uid \
+                   + tag_info + '</div>'
+        tag_call = '<a href="javascript:toggle_tags(%s);">tags</a>' % uid
+      else:
+        tag_info = ''
+        tag_call = '(no tags)'
+      items.append({
+        'uid': uid,
+        'creator': creator,
+        'loaded': loaded,
+        'feed_uid': feed_uid,
+        'title': title,
+        'feed_html': feed_html,
+        'content': content,
+        'tag_info': tag_info,
+        'redirect': redirect,
+        'feed_title': feed_title,
+      })
+
+    return flask.render_template('view.html', show=show, item_desc=item_desc,
+                                 feed_uid=feed_uid, ratings_list=ratings_list,
+                                 sort_desc=sort_desc, sort_list=sort_list,
+                                 items=items,
+                                 overload_threshold=param.overload_threshold)
+
+@app.route("/sop")
+def sop():
+  return flask.render_template('sop.html')
+
+@app.route("/robots.txt")
+def robots():
+  return ('User-agent: *\nDisallow: /\n', 200, {'Content-Type': 'text/plain'})
+
+@app.route("/favicon.ico")
+@app.route("/api/favicon.ico")
+@app.route("/apple-touch-icon.png")
+@app.route("/api/apple-touch-icon.png")
+def favicon():
+  return ('No favicon\n', 404, {'Content-Type': 'text/plain'})
+
+def run():
+  # force loading of the database so we don't have to wait an hour to detect
+  # a database format issue
+  c = db.cursor()
+  update.load_settings(db, c)
+  c.close()
+  
+  logging.getLogger().setLevel(logging.INFO)
+  # start Flask
+  app.run(host=getattr(param, 'bind_address', 'localhost'),
+          port=param.port,
+          threaded=True)

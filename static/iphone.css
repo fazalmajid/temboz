@@ -1,0 +1,6 @@
+ul.menu li.non-iphone {
+  display: none;
+}
+ul.menu span.non-iphone {
+  display: none;
+}

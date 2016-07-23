@@ -420,7 +420,7 @@ class DontHandleRedirect(urllib2.HTTPRedirectHandler):
     raise Redirect(code, newurl)
   http_error_301 = http_error_303 = http_error_307 = http_error_302
 redirect_opener = urllib2.build_opener(DontHandleRedirect)
-socket.setdefaulttimeout(10)
+#socket.setdefaulttimeout(10)
 
 def dereference(url, seen=None, level=0):
   """Recursively dereference a URL"""
