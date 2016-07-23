@@ -282,7 +282,7 @@ if($("body").width() < 760) {
     <a href="{{ i.feed_html }}" title="" class="source print"
        id="feedprint{{ i.uid }}">{{ i.feed_title }}</a>
     {% if not request.args.feed_uid %}
-    <a href="view?feed_uid={{ request.args.feed_uid }}&show={{ i.show }}"
+    <a href="view?feed_uid={{ i.feed_uid }}&show={{ show }}"
        class="ff" target="_blank">&#9658;</a>
     {% endif %}
     {{ i.since_when }}
