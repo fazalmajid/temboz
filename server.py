@@ -267,20 +267,6 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
   def xml(self):
     self.browser_output(200, 'text/xml', '<?xml version="1.0"?><nothing />')
 
-  def op_demote(self, item_uid):
-    update.set_rating(item_uid, -1)
-    
-  def op_basic(self, item_uid):
-    update.set_rating(item_uid, 0)
-    
-  def op_promote(self, item_uid):
-    update.set_rating(item_uid, 1)
-
-  def op_yappi(self, command):
-    import yappi
-    assert command in ['start', 'stop', 'clear_stats']
-    getattr(yappi, command)()
-
   def set_mime_type(self, tmpl):
     if type(tmpl) in [list, tuple]:
       tmpl = tmpl[-1]
@@ -414,17 +400,6 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
           out.append('\n</pre>\n</div>\n')
         del frames
         self.browser_output(200, 'text/html', ''.join(out))
-        return
-
-      if path.startswith('/xmlfeedback/'):
-        op, item_uid = path.split('/')[2::2]
-        item_uid = item_uid.split('.')[0]
-        # for safety, these operations should be idempotent
-        if op in ['promote', 'demote', 'basic', 'yappi']:
-          if op != 'yappi':
-            item_uid = int(item_uid)
-          getattr(self, 'op_' + op)(item_uid)
-        self.xml()
         return
 
       if path.startswith('/stem'):
@@ -662,9 +637,7 @@ def view():
     tag_dict, rows = dbop.view_sql(c, where, order_by, params,
                                    param.overload_threshold)
     items = []
-    logging.error('ROWCOUNT = %r' % (rows.rowcount,))
     for row in rows:
-      logging.error('ROW = %r', (row,))
       (uid, creator, title, link, content, loaded, created, rated,
        delta_created, rating, filtered_by, feed_uid, feed_title, feed_html,
        feed_xml, feed_snr) = row
@@ -713,10 +686,24 @@ def view():
                                  items=items,
                                  overload_threshold=param.overload_threshold)
 
-@app.route("/sop")
-def sop():
-  return flask.render_template('sop.html')
-
+@app.route("/xmlfeedback/<op>/<rand>/<arg>")
+def ajax(op, rand, arg):
+  item_uid = arg.split('.')[0]
+  # for safety, these operations should be idempotent
+  if op in ['promote', 'demote', 'basic', 'yappi']:
+    if op != 'yappi':
+      update.set_rating(int(item_uid), {
+        'demote': -1,
+        'basic': 0,
+        'promote': 1
+      }[op])
+      return '<?xml version="1.0"?><nothing />'
+    else:
+      import yappi
+      assert arg in ['start', 'stop', 'clear_stats']
+      getattr(yappi, arg)()
+  return '<?xml version="1.0"?><nothing />'
+  
 @app.route("/robots.txt")
 def robots():
   return ('User-agent: *\nDisallow: /\n', 200, {'Content-Type': 'text/plain'})

@@ -71,7 +71,7 @@ class PseudoCursor3(object):
   def __init__(self, db):
     self.c = db.cursor()
     if debug_cursors:
-      c_opened[self.c] = traceback.format_stack()
+      c_opened[repr(self.c)] = traceback.format_stack()
   def __str__(self):
     return '<SQLite3 Cursor wrapper>'
   def __repr__(self):
@@ -83,24 +83,24 @@ class PseudoCursor3(object):
   def close(self):
     self.c.close()
     if debug_cursors:
-      c_closed[self.c] = traceback.format_stack()
+      c_closed[repr(self.c)] = traceback.format_stack()
   def execute(self, *args, **kwargs):
     global db
     if debug_cursors and self.c in c_closed:
       print >> param.log, 'INVALID CURSOR USE FOR %r' % self.c
       print >> param.log, 'Cursor alloc call was in:\n'
       print >> param.log, '-' * 78
-      print >> param.log, ''.join(c_opened[self.c])
+      print >> param.log, ''.join(c_opened[repr(self.c)])
       print >> param.log, 'Cursor close call was in:\n'
       print >> param.log, '-' * 78
-      print >> param.log, ''.join(c_closed[self.c])
+      print >> param.log, ''.join(c_closed[repr(self.c)])
     # SQLite3 can deadlock when multiple writers collide, so we use a lock to
     # prevent this from happening
     if args[0].split()[0].lower() in ['insert', 'update', 'delete', 'create'] \
            and not self.locked:
       db.acquire()
     before = time.time()
-    if param.debug:
+    if param.debug_sql:
       print >> param.log, thread.get_ident(), time.time(), args
     backoff = 0.1
     done = False
@@ -131,11 +131,11 @@ def commit_wrapper(method):
     try:
       method()
       db.release()
-      if param.debug:
+      if param.debug_sql:
         print >> param.log, thread.get_ident(), time.time(), 'commit'
       done = True
     except sqlite.OperationalError, e:
-      if param.debug:
+      if param.debug_sql:
         print >> param.log, thread.get_ident(), time.time(), str(e),
         print >> param.log, 'sleeping for', backoff
       time.sleep(backoff)
@@ -158,21 +158,21 @@ associated with the corresponding cursor call.
   def acquire(self):
     t = threading.currentThread()
     if not getattr(t, '__singleton_locked', False):
-      if param.debug:
+      if param.debug_sql:
         print >> param.log, thread.get_ident(), time.time(), 'ACQUIRE'
       self.lock.acquire()
       setattr(t, '__singleton_locked', True)
-      if param.debug:
+      if param.debug_sql:
         print >> param.log, thread.get_ident(), time.time(), 'DONE'
     del t
   def release(self):
     t = threading.currentThread()
     if getattr(t, '__singleton_locked', False):
-      if param.debug:
+      if param.debug_sql:
         print >> param.log, thread.get_ident(), time.time(), 'RELEASE'
       self.lock.release()
       setattr(t, '__singleton_locked', False)
-      if param.debug:
+      if param.debug_sql:
         print >> param.log, thread.get_ident(), time.time(), 'DONE'
     del t
   
@@ -232,164 +232,6 @@ class PseudoDB:
     os.system('sqlite3 rss.db < ddl.sql')
     
 db = PseudoDB()
-
-def rebuild_v_feed_stats(db, c):
-  c.execute("select sql from sqlite_master where name='v_feeds_snr'")
-  sql = c.fetchone()
-  if sql:
-    c.execute('drop view v_feeds_snr')
-  c.execute("""create view v_feeds_snr as
-select feed_uid, feed_title, feed_html, feed_xml, feed_pubxml,
-julianday('now') - last_modified as last_modified,
-ifnull(interesting, 0) as interesting,
-ifnull(unread, 0) as unread,
-ifnull(uninteresting, 0) as uninteresting,
-ifnull(filtered, 0) as filtered,
-ifnull(total, 0) as total,
-ifnull(snr, 0) as snr,
-feed_status, feed_private, feed_exempt, feed_dupcheck, feed_errors,
-feed_desc, feed_filter
-from fm_feeds
-left outer join mv_feed_stats on feed_uid=snr_feed_uid
-group by feed_uid, feed_title, feed_html, feed_xml""")
-
-def snr_mv(db, c):
-  """SQLite does not have materialized views, so we use a conventional table
-instead. The side-effect of this is that new feeds may not be reflected
-immediately. The SNR will also lag by up to a day, which should not matter in
-practice"""
-  c.execute("select sql from sqlite_master where name='update_stat_mv'")
-  sql = c.fetchone()
-  if sql:
-    c.execute('drop trigger update_stat_mv')
-  c.execute("select sql from sqlite_master where name='insert_stat_mv'")
-  sql = c.fetchone()
-  if sql:
-    c.execute('drop trigger insert_stat_mv')
-  c.execute("select sql from sqlite_master where name='delete_stat_mv'")
-  sql = c.fetchone()
-  if sql:
-    c.execute('drop trigger delete_stat_mv')
-  c.execute("select sql from sqlite_master where name='insert_feed_mv'")
-  sql = c.fetchone()
-  if sql:
-    c.execute('drop trigger insert_feed_mv')
-  c.execute("select sql from sqlite_master where name='delete_feed_mv'")
-  sql = c.fetchone()
-  if sql:
-    c.execute('drop trigger delete_feed_mv')
-  c.execute("select sql from sqlite_master where name='mv_feed_stats'")
-  sql = c.fetchone()
-  if sql:
-    c.execute('drop table mv_feed_stats')
-  c.execute("""create table mv_feed_stats (
-  snr_feed_uid integer primary key,
-  interesting integer default 0,
-  unread integer default 0,
-  uninteresting integer default 0,
-  filtered integer default 0,
-  total integer default 0,
-  last_modified timestamp,
-  snr real default 0.0)""")
-  c.execute("""insert into mv_feed_stats
-select feed_uid,
-sum(case when item_rating=1 then 1 else 0 end),
-sum(case when item_rating=0 then 1 else 0 end),
-sum(case when item_rating=-1 then 1 else 0 end),
-sum(case when item_rating=-2 then 1 else 0 end),
-sum(1),
-max(item_modified),
-snr_decay(item_rating, item_created, ?)
-from fm_feeds left outer join (
-  select item_rating, item_feed_uid, item_created,
-    ifnull(
-      julianday(item_modified),
-      julianday(item_created)
-    ) as item_modified
-  from fm_items
-) on feed_uid=item_feed_uid
-group by feed_uid, feed_title, feed_html, feed_xml""",
-          [getattr(param, 'decay', 30)])
-  rebuild_v_feed_stats(db, c)
-  c.execute("""create trigger update_stat_mv after update on fm_items
-begin
-  update mv_feed_stats set
-  interesting = interesting
-    + case new.item_rating when 1 then 1 else 0 end
-    - case old.item_rating when 1 then 1 else 0 end,
-  unread = unread
-    + case new.item_rating when 0 then 1 else 0 end
-    - case old.item_rating when 0 then 1 else 0 end,
-  uninteresting = uninteresting
-    + case new.item_rating when -1 then 1 else 0 end
-    - case old.item_rating when -1 then 1 else 0 end,
-  filtered = filtered
-    + case new.item_rating when -2 then 1 else 0 end
-    - case old.item_rating when -2 then 1 else 0 end,
-  last_modified = max(ifnull(last_modified, 0), 
-                      ifnull(julianday(new.item_modified),
-                             julianday(new.item_created)))
-  where snr_feed_uid=new.item_feed_uid;
-end""")
-  c.execute("""create trigger insert_stat_mv after insert on fm_items
-begin
-  update mv_feed_stats set
-  interesting = interesting
-    + case new.item_rating when 1 then 1 else 0 end,
-  unread = unread
-    + case new.item_rating when 0 then 1 else 0 end,
-  uninteresting = uninteresting
-    + case new.item_rating when -1 then 1 else 0 end,
-  filtered = filtered
-    + case new.item_rating when -2 then 1 else 0 end,
-  total = total + 1,
-  last_modified = max(ifnull(last_modified, 0), 
-                      ifnull(julianday(new.item_modified),
-                             julianday(new.item_created)))
-  where snr_feed_uid=new.item_feed_uid;
-end""")
-  # XXX there is a possibility last_modified will not be updated if we purge
-  # XXX the most recent item. There are no use cases where this could happen
-  # XXX since garbage-collection works from the oldest item, and purge-reload
-  # XXX will reload the item anyway
-  c.execute("""create trigger delete_stat_mv after delete on fm_items
-begin
-  update mv_feed_stats set
-  interesting = interesting
-    - case old.item_rating when 1 then 1 else 0 end,
-  unread = unread
-    - case old.item_rating when 0 then 1 else 0 end,
-  uninteresting = uninteresting
-    - case old.item_rating when -1 then 1 else 0 end,
-  filtered = filtered
-    - case old.item_rating when -2 then 1 else 0 end,
-  total = total - 1
-  where snr_feed_uid=old.item_feed_uid;
-end""")
-  c.execute("""create trigger insert_feed_mv after insert on fm_feeds
-begin
-  insert into mv_feed_stats (snr_feed_uid) values (new.feed_uid);
-end""")
-  # XXX there is a possibility last_modified will not be updated if we purge
-  # XXX the most recent item. There are no use cases where this could happen
-  # XXX since garbage-collection works from the oldest item, and purge-reload
-  # XXX will reload the item anyway
-  c.execute("""create trigger delete_feed_mv after delete on fm_feeds
-begin
-  delete from mv_feed_stats
-  where snr_feed_uid=old.feed_uid;
-end""")
-  db.commit()  
-
-def mv_on_demand(db, c):
-  """creating the materialized view is not more expensive than running the
-  slow full table scan way, so we do so on demand (rather than at startup)"""
-  c.execute("select sql from sqlite_master where name='mv_feed_stats'")
-  sql = c.fetchone()
-  if not sql:
-    print >> param.log, 'WARNING: rebuilding mv_feed_stats...',
-    snr_mv(db, c)
-    print >> param.log, 'done'
 
 ########################################################################
 # upgrade data model on demand
@@ -508,6 +350,3 @@ if not c.fetchone()[0]:
 	value		text not null
   )""")
 # we have to recreate this view each time as param.decay may have changed
-mv_on_demand(db, c)
-rebuild_v_feed_stats(db, c)
-db.commit()  

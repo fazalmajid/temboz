@@ -31,7 +31,7 @@ sync-js:
 js:
 	cat $(JUI)/external/jquery/jquery*.js spool/jquery.form.js \
 	$(JUI)/jquery-ui.js \
-	spool/jquery.hotkeys.meta.js rsrc/specific.js | $(JSMIN)>rsrc/temboz.js
+	spool/jquery.hotkeys.meta.js static/specific.js | $(JSMIN)>static/temboz.js
 	./temboz --kill
 changelog:
 	cvs2cl.pl --tags -g -q
@@ -47,7 +47,7 @@ cvsdist disttar:: distclean changelog
 	-rm -f .*~ *~
 	cp README INSTALL NEWS LICENSE UPGRADE ChangeLog temboz *.py temboz-$(VERSION)
 	cp ddl.sql me.opml .ht* temboz-$(VERSION)
-	cp -r pages images etc tiny_mce rsrc temboz-$(VERSION)
+	cp -r templates images etc tiny_mce static temboz-$(VERSION)
 	(cd temboz-$(VERSION); mv param.py param.py.sample; mv transform.py transform.py.sample; find . -name \*.pyc -exec rm {} \;; find . -name \*.pyo -exec rm {} \;; find pages -name \*.py -exec rm {} \;)
 	-rm -f temboz-$(VERSION)/etc/.cvsignore
 	-rm -rf temboz-$(VERSION)/*/CVS
