@@ -2,7 +2,7 @@
 # $Id: server.py,v 1.47 2010/09/07 11:59:13 majid Exp $
 import sys, os, stat, logging, base64, time, imp, gzip, traceback, pprint, csv
 import threading, BaseHTTPServer, SocketServer, cStringIO, urlparse, urllib
-import TembozTemplate, param, update, filters, util, normalize
+import TembozTemplate, param, update, filters, util, normalize, singleton
 
 # work around incompatibility between html5lib and Cheetah ImportHooks
 import __builtin__, Cheetah.ImportManager, logging
@@ -119,7 +119,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     #text / html page use utf 8 output
     #if ct:
     #  self.output_send_header('Content-Type', ct)
-    if ct.startswith('text/html'):
+    if not ct or ct.startswith('text/html'):
       self.output_send_header('Content-Type',"text/html; charset=utf-8")
     else:
       self.output_send_header('Content-Type', ct)
@@ -415,6 +415,21 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
         frames = sys._current_frames()
         row = 0
         out = []
+        if singleton.c_opened:
+          out.append('<h1>Open Cursors</h1>\n')
+          for curs, tb in singleton.c_opened.iteritems():
+            if curs not in singleton.c_closed:
+              row += 1
+              if row % 2:
+                color = '#ddd'
+              else:
+                color = 'white'
+              out.append('<div style="background-color: ' + color + '">\n<pre>')
+              out.append(curs.replace('<', '&lt;').replace('>', '&gt;') + '\n')
+              out.append('\n'.join(tb[:-2]))
+              out.append('</pre></div>\n')
+        out.append('<h1>Threads</h1>\n')
+        row = 0
         for thread_id, frame in sorted(frames.iteritems()):
           if thread_id == threading.currentThread()._Thread__ident:
             continue
