@@ -136,6 +136,13 @@ $MENUBAR(trans=trans)
   #silent update.setting(db, c, fb_token='')
 #end if
 
+#if op == 'maint'
+  #import singleton
+  #set c = db.cursor()
+  #silent singleton.snr_mv(db, c)
+  #silent db.commit()
+#end if
+
 #silent update.load_settings(db, c)
 
 ########################################################################

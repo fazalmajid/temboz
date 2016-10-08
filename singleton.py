@@ -43,7 +43,7 @@ class SNR:
     # the SNR, as the uninteresting ones have been purged and thus skew
     # the metric towards 100%
     try:
-      if self.ref_date - date < param.garbage_items:
+      if date and self.ref_date - date < param.garbage_items:
         # by convention, 0 means do not decay (i.e. infinite half-life)
         if decay == 0:
           decay = 1
@@ -71,7 +71,7 @@ class PseudoCursor3(object):
   def __init__(self, db):
     self.c = db.cursor()
     if debug_cursors:
-      c_opened[self.c] = traceback.format_stack()
+      c_opened[repr(self.c)] = traceback.format_stack()
   def __str__(self):
     return '<SQLite3 Cursor wrapper>'
   def __repr__(self):
@@ -83,17 +83,17 @@ class PseudoCursor3(object):
   def close(self):
     self.c.close()
     if debug_cursors:
-      c_closed[self.c] = traceback.format_stack()
+      c_closed[repr(self.c)] = traceback.format_stack()
   def execute(self, *args, **kwargs):
     global db
     if debug_cursors and self.c in c_closed:
       print >> param.log, 'INVALID CURSOR USE FOR %r' % self.c
       print >> param.log, 'Cursor alloc call was in:\n'
       print >> param.log, '-' * 78
-      print >> param.log, ''.join(c_opened[self.c])
+      print >> param.log, ''.join(c_opened[repr(self.c)])
       print >> param.log, 'Cursor close call was in:\n'
       print >> param.log, '-' * 78
-      print >> param.log, ''.join(c_closed[self.c])
+      print >> param.log, ''.join(c_closed[repr(self.c)])
     # SQLite3 can deadlock when multiple writers collide, so we use a lock to
     # prevent this from happening
     if args[0].split()[0].lower() in ['insert', 'update', 'delete', 'create'] \
@@ -297,7 +297,7 @@ sum(case when item_rating=1 then 1 else 0 end),
 sum(case when item_rating=0 then 1 else 0 end),
 sum(case when item_rating=-1 then 1 else 0 end),
 sum(case when item_rating=-2 then 1 else 0 end),
-sum(1),
+sum(case when item_rating is not null then 1 else 0 end),
 max(item_modified),
 snr_decay(item_rating, item_created, ?)
 from fm_feeds left outer join (
