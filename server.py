@@ -411,13 +411,18 @@ def feeds():
     sort_key = 'lower(feed_title)'
   order = flask.request.form.get('order', 'DESC')
   with dbop.db() as db:
-    c = db.cursor()
-    c.execute("""select feed_uid, feed_title, feed_html, feed_xml,
+    cursor = db.cursor()
+    cursor.execute("""select feed_uid, feed_title, feed_html, feed_xml,
     last_modified, interesting, unread, uninteresting, filtered, total,
     snr, feed_status, feed_private, feed_exempt, feed_errors,
     feed_filter notnull
     from v_feeds_snr order by feed_status ASC, """ \
     + sort_key + ' ' + order + """, lower(feed_title)""")
+    rows = cursor.fetchall()
+    sum_unread      = sum(int(row['unread']) for row in rows)
+    sum_filtered    = sum(int(row['filtered']) for row in rows)
+    sum_interesting = sum(int(row['interesting']) for row in rows)
+    sum_total       = sum(int(row['total']) for row in rows)
     return flask.render_template('feeds.html',
                                  since=since, int=int, repr=repr,
                                  **locals())

@@ -36,24 +36,12 @@
 {# ########################################################################
 ##   Loop over feeds
 #}
-{% set sum_unread = 0 %}
-{% set sum_filtered = 0 %}
-{% set sum_interesting = 0 %}
-{% set sum_total = 0 %}
-{% for feed_uid, feed_title, feed_html, feed_xml, delta_t, interesting, unread, uninteresting, filtered, total, snr, status, private, exempt, errors, has_filter in c %}
-  {% set filtered = int(filtered) %}
-  {% set unread = int(unread) %}
-  {% set interesting = int(interesting) %}
-  {% set uninteresting = int(uninteresting) %}
+{% for feed_uid, feed_title, feed_html, feed_xml, delta_t, interesting, unread, uninteresting, filtered, total, snr, status, private, exempt, errors, has_filter in rows %}
   {% if not total %}
     {% set total = 0 %}
   {% else %}
     {% set total = int(total) %}
   {% endif %}
-  {% set sum_unread = sum_unread + unread %}
-  {% set sum_filtered = sum_filtered + filtered %}
-  {% set sum_interesting = sum_interesting + interesting %}
-  {% set sum_total = sum_total + total %}
   {% set flags = ['suspended'] * status + ['private'] * private + ['exempt'] * exempt + ['filtered'] * has_filter %}
   {% if flags %}
     {% set flags = ' (' + ', '.join(flags) + ')' %}

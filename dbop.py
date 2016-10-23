@@ -2,7 +2,9 @@ import sqlite3
 import param
 
 def db():
-  return sqlite3.connect('rss.db', 120.0)
+  conn = sqlite3.connect('rss.db', 120.0)
+  conn.row_factory = sqlite3.Row
+  return conn
 
 def rebuild_v_feed_stats(c):
   sql = c.execute("select sql from sqlite_master where name='v_feeds_snr'")
