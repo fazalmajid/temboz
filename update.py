@@ -120,7 +120,7 @@ def add_feed(feed_xml):
     for key, value in feed.items():
       if type(value) == str:
         feed[key] = value
-    filters.load_rules(db, c)
+    filters.load_rules(c)
     try:
       c.execute("""insert into fm_feeds
       (feed_xml, feed_etag, feed_html, feed_title, feed_desc) values
@@ -162,7 +162,7 @@ def update_feed_xml(feed_uid, feed_xml):
       else:
         db.rollback()
         raise UnknownError(str(e))
-    filters.load_rules(db, c)
+    filters.load_rules(c)
     num_added = process_parsed_feed(db, c, f, feed_uid)
     db.commit()
     return num_added
@@ -365,7 +365,7 @@ def purge_reload(feed_uid):
   c = db.cursor()
   try:
     # refresh filtering rules
-    filters.load_rules(db, c)
+    filters.load_rules(c)
     c.execute("delete from fm_items where item_feed_uid=? and item_rating=0",
               [feed_uid])
     c.execute("""delete from fm_tags
@@ -383,7 +383,7 @@ def purge_reload(feed_uid):
       raise ParseError
     normalize.normalize_feed(f)
     clear_errors(db, c, feed_uid, f)
-    filters.load_rules(db, c)
+    filters.load_rules(c)
     num_added = process_parsed_feed(db, c, f, feed_uid)
     db.commit()
   finally:
@@ -521,7 +521,7 @@ the cursor c for feed feed_uid.
 Returns a tuple (number of items added unread, number of filtered items)"""
   num_added = 0
   num_filtered = 0
-  filters.load_rules(db, c)
+  filters.load_rules(c)
   # check if duplicate title checking is in effect
   if feed_dupcheck is None:
     c.execute("select feed_dupcheck from fm_feeds where feed_uid=?",
@@ -729,7 +729,7 @@ def update(where_clause=''):
   from singleton import db
   c = db.cursor()
   # refresh filtering rules
-  filters.load_rules(db, c)
+  filters.load_rules(c)
   # at 3AM by default, perform house-cleaning
   if time.localtime()[3] == param.backup_hour:
     cleanup(db, c)
@@ -785,17 +785,6 @@ class PeriodicUpdater(threading.Thread):
       except:
         util.print_stack()
       self.event.clear()
-
-def feed_info_sql(c, feed_uid):
-  dbop.mv_on_demand(c)
-  c.execute("""select feed_title, feed_desc, feed_filter,
-  feed_html, feed_xml, feed_pubxml,
-  last_modified, interesting, unread, uninteresting, filtered, total,
-  feed_status, feed_private, feed_exempt, feed_dupcheck, feed_errors
-  from v_feeds_snr
-  where feed_uid=?
-  group by feed_uid, feed_title, feed_html, feed_xml
-  """, [feed_uid])
 
 def load_settings(db, c):
   c.execute("select name, value from fm_settings")

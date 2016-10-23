@@ -277,7 +277,7 @@ if($("body").width() < 760) {
           onclick="collapseToggle('{{ i.uid }}')">&#9660;&nbsp;</span>
     <a href="{{ i.redirect }}" class="headline" target="_blank"
        title="by {{ i.creator }}, cached at {{ i.loaded }}">{{i.title|safe}}</a>
-    <br><a href="feed_info?feed_uid={{ i.feed_uid }}" title=""
+    <br><a href="/feed/{{ i.feed_uid }}" title=""
            class="source screen" id="feed{{ i.uid }}">{{ i.feed_title }}</a>
     <a href="{{ i.feed_html }}" title="" class="source print"
        id="feedprint{{ i.uid }}">{{ i.feed_title }}</a>

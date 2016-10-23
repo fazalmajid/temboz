@@ -174,7 +174,18 @@ def view_sql(c, where, sort, params, overload_threshold):
     tag_dict.setdefault(item_uid, []).append(tag_name)
   return tag_dict, c.execute("""select * from articles
   order by """ + sort + """, item_uid DESC""")
-    
+
+def feed_info_sql(c, feed_uid):
+  mv_on_demand(c)
+  return c.execute("""select feed_title, feed_desc, feed_filter,
+  feed_html, feed_xml, feed_pubxml,
+  last_modified, interesting, unread, uninteresting, filtered, total,
+  feed_status, feed_private, feed_exempt, feed_dupcheck, feed_errors
+  from v_feeds_snr
+  where feed_uid=?
+  group by feed_uid, feed_title, feed_html, feed_xml
+  """, [feed_uid])
+
 c = db()
 mv_on_demand(c)
 rebuild_v_feed_stats(c)

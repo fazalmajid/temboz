@@ -166,6 +166,8 @@ wrapper = textwrap.TextWrapper(width=80, break_long_words=False)
 wrapper.wordsep_re = re.compile(r'(\s+)')
 def rule_lines(rule):
   "Find how many lines are needed for the rule in a word-wrapped <textarea>"
+  if not rule:
+    return 4
   lines = 0
   for line in rule.splitlines():
     if line.strip():
