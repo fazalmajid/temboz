@@ -398,7 +398,6 @@ def feed_info(feed_uid, op=None):
       exempt_text = 'Unknown'
       exempt_change_op = 'Exempt'
 
-
     return flask.render_template(
       'feed.html', filters=filters,
       len=len, max=max, **locals()
