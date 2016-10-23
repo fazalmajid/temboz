@@ -19,7 +19,7 @@
       {% for (name, link) in [('All unread', 'view'), ('All feeds', 'feeds'), ('Add feed', 'add'), ('Filters', 'rules')] %}
       {% if not request.path[1:].startswith(link) %}
       <li class="non-iphone">
-        <a href="{{ link }}">{{ name }}</a>
+        <a href="/{{ link }}">{{ name }}</a>
       </li>
       {% endif %}
       {% endfor %}

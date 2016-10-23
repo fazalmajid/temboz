@@ -43,6 +43,7 @@ app.debug = getattr(param, 'debug', False)
 if not app.debug:
   # this setting interferes with Flask debug
   socket.setdefaulttimeout(10)
+#app.jinja_options = {'extensions': ['jinja2.ext.do']}
 app.jinja_env.trim_blocks=True
 app.jinja_env.lstrip_blocks=True
 
@@ -402,6 +403,24 @@ def feed_info(feed_uid, op=None):
       'feed.html', filters=filters,
       len=len, max=max, **locals()
     )
+
+@app.route("/feeds")
+def feeds(): 
+  sort_key = flask.request.form.get('sort', '(unread > 0) DESC, snr')
+  if sort_key == 'feed_title':
+    sort_key = 'lower(feed_title)'
+  order = flask.request.form.get('order', 'DESC')
+  with dbop.db() as db:
+    c = db.cursor()
+    c.execute("""select feed_uid, feed_title, feed_html, feed_xml,
+    last_modified, interesting, unread, uninteresting, filtered, total,
+    snr, feed_status, feed_private, feed_exempt, feed_errors,
+    feed_filter notnull
+    from v_feeds_snr order by feed_status ASC, """ \
+    + sort_key + ' ' + order + """, lower(feed_title)""")
+    return flask.render_template('feeds.html',
+                                 since=since, int=int, repr=repr,
+                                 **locals())
 
 def run():
   # force loading of the database so we don't have to wait an hour to detect
