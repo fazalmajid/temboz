@@ -1,5 +1,5 @@
 # handle the various type of FilteringRules
-import time, re, textwrap
+import time, re, textwrap, requests
 import normalize, param, util
 
 rules = []
@@ -134,6 +134,13 @@ def link_already(url):
   print >> param.log, l and l[0]
   return l and l[0]
 
+def dereference_content(url):
+  try:
+    r = requests.get(url)
+    return r.text
+  except:
+    return ''
+
 # shades of LISP...
 def curry(fn, obj):
   return lambda *args: fn(obj, *args)
@@ -198,6 +205,7 @@ class PythonRule(Rule):
     filter_dict['category'] = filter_dict['item_tags']
     # used to filter echos from sites like Digg
     filter_dict['link_already'] = link_already
+    filter_dict['dereference_content'] = dereference_content
     # convenient shortcut functions
     filter_dict['title_any_words'] = curry(any, item['title_words'])
     filter_dict['content_any_words'] = curry(any, item['content_words'])
