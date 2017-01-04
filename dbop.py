@@ -1,4 +1,4 @@
-import sqlite3
+import sqlite3, string
 import param
 
 def db():
@@ -188,6 +188,40 @@ def feed_info_sql(c, feed_uid):
   group by feed_uid, feed_title, feed_html, feed_xml
   """, [feed_uid])
 
+def top_rules(c, feed_uid):
+  return c.execute("""select item_rule_uid, rule_type, rule_text, count(*)
+  from fm_items
+  join fm_rules on rule_uid=item_rule_uid
+  where item_feed_uid=? and item_rating=-2
+  group by 1, 2, 3 order by 4 DESC, 3
+  limit 25""", [feed_uid])
+
+def rules(c, feed_uid=None):
+  if feed_uid:
+    rows = c.execute("""
+    select rule_uid, rule_type, date(rule_expires), rule_text
+    from fm_rules
+    where rule_feed_uid=?
+    order by lower(rule_text)""", [feed_uid])
+  else:
+    rows = c.execute("""
+    select rule_uid, rule_type, date(rule_expires), rule_text
+    from fm_rules
+    where rule_feed_uid is NULL
+    order by lower(rule_text)""")
+  tabs = {}
+  for uid, rtype, expires, text in rows:
+    row = uid, rtype, expires, text
+    initial = text[0].upper()
+    if rtype == 'python':
+      tab = 'Python'
+    elif initial not in string.ascii_uppercase:
+      tab = '0'
+    else:
+      tab = initial
+    tabs.setdefault(tab, list()).append(row)
+  return tabs
+  
 c = db()
 mv_on_demand(c)
 rebuild_v_feed_stats(c)

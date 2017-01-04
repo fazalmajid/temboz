@@ -137,7 +137,7 @@ span.tag.highlighted {
   color: white;
   background-color: red;
 }
-a.callout, div.popup li a {
+a, a.callout, div.popup li a, h1 a {
   text-decoration: none;
 }
 a.ff {

@@ -60,7 +60,7 @@
       <td>
         <a href="{{ feed_html }}">{{ feed_title }}</a>&nbsp;&nbsp;
         <a{{ error_flag }} href="{{ feed_xml }}">(XML)</a>
-        <a href="feed_info?feed_uid={{ feed_uid }}">(details)</a>
+        <a href="feed/{{ feed_uid }}">(details)</a>
         {{ flags }}
       </td>
       <td nowrap align="right">{{ since(delta_t) }}</td>

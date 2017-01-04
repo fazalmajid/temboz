@@ -1843,3 +1843,7 @@ function hide_popups(){$(document).unbind("click",hide_popups);$("div.popup").hi
 function show_popup(event){event.stopPropagation();var callout=$(this).offset();var container=$(this).offsetParent().offset();this.popup.css("left",callout.left-container.left);this.popup.css("top",callout.top-container.top+$(this).height()+3);this.popup.toggle();$(document).click(hide_popups);}
 function init_popups(){$(document).ready(function(){$("a.callout").each(place_popup);$("a.callout").click(show_popup);});}
 function rand(){return Math.random().toString().substring(8);}
+$.widget("ui.tabs",$.ui.tabs,{_isLocal:function(anchor){if(!anchor.hash.length){return false;}
+var urlParts=["origin","pathname","search"];var isLocal=true;$.each(urlParts,function(urlPart){var anchorValue=anchor[urlPart];var locationValue=location[urlPart];try{anchorValue=decodeURIComponent(anchorValue);}catch(error){}
+try{locationValue=decodeURIComponent(locationValue);}catch(error){}
+if(anchorValue!==locationValue){isLocal=false;return false;}});return isLocal;}});

@@ -213,7 +213,7 @@ input#stem {
   <ul>{{ ratings_list|safe }}</ul>
 </li>
 <li><span class="non-iphone">sorted by</span></li>
-<li><span class="button"><a href="#">{{ sort_desc}}</a></span>
+<li><span class="button"><a href="#">{{ sort_desc }}</a></span>
   <ul>{{ sort_list|safe }}</ul>
 </li>
 <li><span class="button"><a href="#">More</a></span>
@@ -286,7 +286,7 @@ if($("body").width() < 760) {
        class="ff" target="_blank">&#9658;</a>
     {% endif %}
     {{ i.since_when }}
-    {{ i.tag_call }}
+    {{ i.tag_call|safe }}
     <a href="edit?uid={{ i.uid }}" class="screen">edit</a>
     <br>
   </div>{{ i.tag_info|safe }}

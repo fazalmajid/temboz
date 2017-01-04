@@ -20,7 +20,7 @@ class AuthWrapper:
 
   def __call__(self, environ, start_response):
     url = environ['PATH_INFO'].rstrip('/')
-    if url in whitelist:
+    if url in whitelist or url.startswith('/static/'):
       return self.application(environ, start_response)
     auth = environ.get('HTTP_AUTHORIZATION')
     auth_login = None
@@ -213,6 +213,7 @@ def view():
         tag_call = '(no tags)'
       items.append({
         'uid': uid,
+        'since_when': since_when,
         'creator': creator,
         'loaded': loaded,
         'feed_uid': feed_uid,
@@ -220,6 +221,7 @@ def view():
         'feed_html': feed_html,
         'content': content,
         'tag_info': tag_info,
+        'tag_call': tag_call,
         'redirect': redirect,
         'feed_title': feed_title,
       })
@@ -259,6 +261,17 @@ def robots():
 def favicon():
   return ('No favicon\n', 404, {'Content-Type': 'text/plain'})
 
+def rule_tabset(feed_uid=None):
+
+    return flask.render_template(
+      'feed.html', filters=filters,
+      len=len, max=max, **locals()
+    )
+
+@app.template_filter('rule_lines')
+def rule_lines(text):
+  return max(4, filters.rule_lines(text))
+  
 @app.route("/feed/<int:feed_uid>")
 @app.route("/feed/<int:feed_uid>/<op>")
 def feed_info(feed_uid, op=None):
@@ -398,7 +411,10 @@ def feed_info(feed_uid, op=None):
     else:
       exempt_text = 'Unknown'
       exempt_change_op = 'Exempt'
-
+    # Get top rules
+    top_rules = dbop.top_rules(c, feed_uid)
+    feed_rules = dbop.rules(c, feed_uid)
+    
     return flask.render_template(
       'feed.html', filters=filters,
       len=len, max=max, **locals()
