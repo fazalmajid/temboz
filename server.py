@@ -1,7 +1,7 @@
 #!/usr/local/bin/python
 import sys, os, stat, logging, base64, time, imp, gzip, traceback, pprint, csv
 import threading, BaseHTTPServer, SocketServer, cStringIO, urlparse, urllib
-import flask, sqlite3, string
+import flask, sqlite3, string, urllib2
 import param, update, filters, util, normalize, dbop, singleton
 
 # HTTP header to force caching
@@ -461,6 +461,35 @@ def rule_op(rule_uid, op):
     if op == 'del':
       filters.del_kw_rule(db, c, rule_uid)
   return '<?xml version="1.0"?><nothing />'
+
+@app.route("/add", methods=['GET', 'POST'])
+def add_feed(): 
+  if flask.request.method == 'POST':
+    feed_xml = flask.request.form.get('feed_xml', '').strip()
+    if feed_xml:
+      with dbop.db() as db:
+        c = db.cursor()
+        try:
+          feed_uid, feed_title, num_added, num_filtered \
+            = update.add_feed(feed_xml)
+        except update.ParseError:
+          feed_err = 'Connection or parse error in subcription attempt.'
+          resolution= 'check URL'
+        except update.AutodiscoveryParseError:
+          feed_err = 'Autodiscovery failed.'
+          resolution = 'you need to find a valid feed URL'
+        except update.FeedAlreadyExists:
+          feed_err = 'The feed URL is already assigned to another feed.'
+          resolution = 'check for duplicates'
+        except urllib2.URLError, e:
+          feed_err = 'Error loading URL during autodiscovery attempt: %r' % e
+        except update.UnknownError, e:
+          feed_err = 'Unknown error: %r' % e.args[0]
+    
+  return flask.render_template(
+    'add.html', filters=filters,
+    len=len, max=max, **locals()
+  )
 
 def run():
   # force loading of the database so we don't have to wait an hour to detect

@@ -43,10 +43,20 @@ a.headline {
   font-weight:bold;
   line-height:14pt;
 }
-.source, .ui-dialog form em {
+.ui-dialog form em {
   font-size:10pt;
   line-height:12px;
   color: gray;
+}
+.source {
+  font-size:10pt;
+  line-height:12px;
+  color: #999;
+}
+div.headline {
+  padding-bottom: 6px;
+  margin-bottom: 6px;
+  border-bottom: solid 1px #ddd;
 }
 .article {
   border: solid 1px gray;
