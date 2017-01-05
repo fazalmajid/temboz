@@ -3,7 +3,7 @@
     <script>
       function del_kw_rule(uid) {
         uid = String(uid);
-        $.get("/del_kw_rule?rule_uid=" + uid);
+        $.get("/rule/" + uid + "/del");
         $("tr#rule_" + uid).hide();
       };
     </script>
@@ -13,7 +13,9 @@
 <div id="tabset" class="ui-tabs">
   <ul>
     {% for initial, rules in tabs|dictsort %}
+      {% if initial != 'Python' %}
     <li><a href="#keyword_{{ initial }}"><span>{{ initial }}</span></a></li>
+      {% endif %}
     {% endfor %}
     {% if 'Python' in tabs %}
     <li><a href="#python"><span>Python</span></a></li>
@@ -52,7 +54,7 @@
         <th>Rule</th><th>Expires</th><th>Text</th><th>Delete</th>
         <th>Update</th>
       </tr>
-      {% for uid, expires, text in tabs['Python'] %}
+      {% for uid, rtype, expires, text in tabs['Python'] %}
       <tr valign="top">
         <form name="form_python_{{ uid }}" action="rules" method="GET">
           <td>{{ uid }}<input type="hidden" name="uid" value="{{ uid }}"></td>

@@ -443,6 +443,25 @@ def feeds():
                                  since=since, int=int, repr=repr,
                                  **locals())
 
+@app.route("/rules")
+def rules(): 
+  with dbop.db() as db:
+    c = db.cursor()
+    feed_rules = dbop.rules(c, None)
+    
+    return flask.render_template(
+      'rules.html', filters=filters,
+      len=len, max=max, **locals()
+    )
+
+@app.route("/rule/<int:rule_uid>/<op>")
+def rule_op(rule_uid, op): 
+  with dbop.db() as db:
+    c = db.cursor()
+    if op == 'del':
+      filters.del_kw_rule(db, c, rule_uid)
+  return '<?xml version="1.0"?><nothing />'
+
 def run():
   # force loading of the database so we don't have to wait an hour to detect
   # a database format issue
