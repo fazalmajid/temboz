@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This is a RDF-free zone -->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Temboz - interesting articles feed</title>
+  <id>http://www.majid.info/mylos/</id>
+  <link href="http://www.majid.info/mylos/temboz.atom" />
+  <generator uri="http://www.temboz.com/">Temboz</generator>
+  <link rel="self" type="application/atom+xml"
+   href="http://www.majid.info/mylos/temboz.atom" />
+  <rights>Copyright (c) 2002-2016 Fazal Majid and respective authors
+          - All rights reserved</rights>
+  <updated>{{ time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()) }}</updated>
+#set magic =  '...'
+{% for guid, creator, title, link, content, feed_title, created in last %}
+  <entry>
+    <id>{{ normalize.escape_xml(guid) }}</id>
+    <title>{{ atom_content(feed_title) }}: {{ atom_content(title) }}</title>
+    <updated>$created</updated>
+    <author><name>{% if creator == 'Unknown' %}{{ atom_content(feed_title) }}{% else %}{{ atom_content(creator) }}{% endif %}</name></author>
+    <content type="html">{{ atom_content(normalize.balance(content, 50, '...')) }}</content>
+    <link rel="alternate" href="{{ normalize.escape_xml(link) }}" />
+  </entry>
+{% endfor %}
+</feed>

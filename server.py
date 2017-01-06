@@ -1,8 +1,8 @@
 #!/usr/local/bin/python
 import sys, os, stat, logging, base64, time, imp, gzip, traceback, pprint, csv
 import threading, BaseHTTPServer, SocketServer, cStringIO, urlparse, urllib
-import flask, sqlite3, string, urllib2
-import param, update, filters, util, normalize, dbop, singleton
+import flask, sqlite3, string, urllib2, requests, re
+import param, update, filters, util, normalize, dbop, singleton, social
 
 # HTTP header to force caching
 no_expire = [
@@ -12,7 +12,7 @@ no_expire = [
 
 ########################################################################
 
-whitelist = {'/opml'}
+whitelist = {'/opml', '/_share'}
 class AuthWrapper:
   """HTTP Basic Authentication WSGI middleware for Pageserver"""
   def __init__(self, application):
@@ -57,6 +57,8 @@ def change_param(*arg, **kwargs):
   parts[4] = urllib.urlencode(param, True)
   return urlparse.urlunparse(tuple(parts))
 
+########################################################################
+# utility functions
 def since(delta_t):
   if not delta_t:
     return 'never'
@@ -72,6 +74,25 @@ def since(delta_t):
   else:
     return time.strftime('%Y-%m-%d',
                          time.localtime(time.time() - 86400 * delta_t))
+# escaping support
+ent_re = re.compile('([&<>"\'\x80-\xff])')
+# we do not support all HTML entities as only these are defined in XML
+ent_dict_xml = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&apos;'
+  }
+def ent_sub_xml(m):
+  c = m.groups()[0]
+  return ent_dict_xml.get(c, '&#%d;' % ord(c))
+def atom_content(content):
+  # XXX should strip out tags that are inappropriate in a RSS reader
+  # XXX such as <script>
+  # see:
+  #http://diveintomark.org/archives/2003/06/12/how_to_consume_rss_safely.html
+  return ent_re.sub(ent_sub_xml, content)
 
 # validate parameter names to guard against XSS attacks
 valid_chars = set(string.letters + string.digits + '_')
@@ -88,6 +109,23 @@ def regurgitate_except(*exclude):
                    and name not in ('referer', 'headers')
                    and name not in exclude)
 
+########################################################################
+# main loop of the server
+def run():
+  # force loading of the database so we don't have to wait an hour to detect
+  # a database format issue
+  c = db.cursor()
+  update.load_settings(db, c)
+  c.close()
+  
+  logging.getLogger().setLevel(logging.INFO)
+  # start Flask
+  app.run(host=getattr(param, 'bind_address', 'localhost'),
+          port=param.port,
+          threaded=True)
+
+########################################################################
+# actual request handlers
 @app.route("/")
 @app.route("/view")
 def view(): 
@@ -96,6 +134,7 @@ def view():
   #   feed_uid
   #   search
   #   where_clause
+  #   min, max (item UID)
   #
   # What items to use
   #   unread:   unread articles (default)
@@ -491,15 +530,103 @@ def add_feed():
     len=len, max=max, **locals()
   )
 
-def run():
-  # force loading of the database so we don't have to wait an hour to detect
-  # a database format issue
-  c = db.cursor()
-  update.load_settings(db, c)
-  c.close()
-  
-  logging.getLogger().setLevel(logging.INFO)
-  # start Flask
-  app.run(host=getattr(param, 'bind_address', 'localhost'),
-          port=param.port,
-          threaded=True)
+@app.route("/settings", methods=['GET', 'POST'])
+def settings(status=''): 
+  op = flask.request.form.get('op', '') or flask.request.args.get('op', '')
+  with dbop.db() as db:
+    c = db.cursor()
+
+    if op == 'refresh':
+      import __main__
+      __main__.updater.event.set()
+      status = 'Manual refresh of all feeds requested.'
+    elif op == 'debug':
+      if flask.request.form.get('debug', '') == 'Disable verbose logging':
+        setattr(param, 'debug', False)
+      else:
+        setattr(param, 'debug', True)
+    elif op == 'facebook':
+      api_key = flask.request.form.get('api_key', '').strip()
+      if api_key:
+        update.setting(db, c, fb_api_key=api_key)
+      app_id = flask.request.form.get('app_id', '').strip()
+      if app_id:
+        update.setting(db, c, fb_app_id=app_id)
+      fb_secret = flask.request.form.get('fb_secret', '').strip()
+      if fb_secret:
+        update.setting(db, c, fb_secret=fb_secret)
+    elif op == 'del_token':
+      update.setting(db, c, fb_token='')
+    elif op == 'maint':
+      dbop.snr_mv(db, c)
+      db.commit()
+
+    update.load_settings(db, c)
+    stats = filters.stats(c)
+    
+    return flask.render_template(
+      'settings.html', filters=filters,
+      executable=sys.argv[0], py_version=sys.version,
+      param_debug=param.debug, param_settings=param.settings,
+      len=len, max=max, **locals()
+    )
+
+@app.route("/stats")
+def stats(): 
+  with dbop.db() as db:
+    c = db.cursor()
+    rows = dbop.stats(c)
+    csvfile = cStringIO.StringIO()
+    out = csv.writer(csvfile, dialect='excel', delimiter=',')
+    out.writerow([col[0].capitalize() for col in c.description])
+    for row in c:
+      out.writerow(row)
+    try:
+      return (csvfile.getvalue(), 200, {'Content-Type': 'text/csv'})
+    finally:
+      csvfile.close()
+
+@app.route("/facebook")
+def facebook():
+  with dbop.db() as db:
+    c = db.cursor()
+    update.load_settings(db, c)
+    app_id = param.settings.get('fb_app_id', '')
+    secret = param.settings.get('fb_secret', '')
+    if app_id and secret:
+      ## XXX cannot assume https://
+      redir = 'https://' + flask.request.headers['host'] \
+              + '/facebook?op=oauth_redirect'
+      op = flask.request.args.get('op', '')
+      if not op:
+        fb_url = 'https://graph.facebook.com/oauth/authorize?display=touch&client_id=' + app_id + '&scope=publish_actions,read_stream&redirect_uri=' + redir
+        print >> param.log, 'FB_URL =', fb_url
+        return flask.redirect(fb_url)
+      elif op == 'oauth_redirect':
+        code = flask.request.args.get('code', '')
+        if code:
+          r = requests.get(
+            'https://graph.facebook.com/oauth/access_token',
+            params={
+              'client_id': app_id,
+              'client_secret': secret,
+              'code': code,
+              'redirect_uri': redir
+            }
+          )
+          token = r.text.split('access_token=', 1)[-1]
+          update.setting(db, c, fb_token=token)
+          update.load_settings(db, c)
+          return flask.redirect('/settings#facebook')
+    else:
+      return settings(status='You need to set the App ID first')
+
+@app.route("/_share")
+def mylos():
+  with dbop.db() as db:
+    c = db.cursor()
+    last = dbop.share(c)
+    return flask.render_template(
+      '_share.atom', time=time, normalize=normalize,
+      atom_content=atom_content, **locals()
+    )

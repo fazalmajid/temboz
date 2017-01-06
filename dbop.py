@@ -221,6 +221,24 @@ def rules(c, feed_uid=None):
       tab = initial
     tabs.setdefault(tab, list()).append(row)
   return tabs
+
+def stats(c):
+  return c.execute("""select date(item_loaded) as date, count(*) as articles,
+    sum(case when item_rating=1 then 1 else 0 end) as interesting,
+    sum(case when item_rating=0 then 1 else 0 end) as unread,
+    sum(case when item_rating=-1 then 1 else 0 end) as filtered
+  from fm_items
+  where item_loaded > julianday('now') - 30
+  group by 1 order by 1""")
+
+def share(c):
+  return c.execute("""select item_guid, item_creator, item_title, item_link,
+    item_content, feed_title,
+    strftime('%Y-%m-%dT%H:%M:%SZ', item_created)
+  from fm_items, fm_feeds where item_feed_uid=feed_uid
+  and item_rating=1 and feed_private = 0
+  order by item_rated DESC, item_uid DESC
+  limit 50""")
   
 c = db()
 mv_on_demand(c)

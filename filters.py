@@ -350,7 +350,7 @@ def exempt_feed_retroactive(db, c, feed_uid, **kwargs):
 ########################################################################
 # stats
 def stats(c):
-  c.execute("""select rule_uid, rule_type, rule_text,
+  return c.execute("""select rule_uid, rule_type, rule_text,
     coalesce(rule_feed_uid, -1), feed_title,
     sum(case when item_created > julianday('now')-7 then 1 else 0 end) last_7,
     sum(case when item_created < julianday('now')-7 then 1 else 0 end) prev_7,
@@ -365,4 +365,3 @@ def stats(c):
   group by 1, 2, 3, 4, 5
   order by 6 desc
   limit 100""")
-  return c.fetchall()

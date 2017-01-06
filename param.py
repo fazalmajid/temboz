@@ -5,7 +5,7 @@
 ########################################################################
 
 # TCP port to use for the web server
-port = 9998
+port = 9999
 # uncomment this if you want Temboz to bind to a specific IP address
 #
 # bind_address = 'localhost'
