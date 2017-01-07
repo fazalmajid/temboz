@@ -1,8 +1,8 @@
 # this module defines classes that can be used to massage the content of an
 # article, mostly to remove gunk like ads
 
-import sys, re, urllib2
-import param, util
+import sys, re, urllib2, sqlite3
+import param, util, dbop
 
 class Filter:
   """Virtual class with the interface for all degunking filters"""
@@ -118,24 +118,21 @@ class Dereference(Filter):
       try:
         # check if this item has not already been loaded before
         guid = item['id']
-        from singleton import db, sqlite
-        c = db.cursor()
-        if sqlite.paramstyle == 'qmark':
-          c.execute("select item_link from fm_items where item_guid=?", [guid])
-        elif sqlite.paramstyle == 'pyformat':
-          c.execute("select item_link from fm_items where item_guid=%guid)s",
-                    {'guid': guid})
-        link = c.fetchone()
-        c.close()
-        if link:
-          print >> param.log, 'not dereferencing', guid, '->', link[0]
-          item['link'] = link[0]
-          return content
-        # we haven't seen this article before, buck up and load it
-        deref = urllib2.urlopen(item['link']).read()
-        m = self.re.search(deref)
-        if m and m.groups():
-          item['link'] = m.groups()[0]
+        with dbop.db() as db:
+          c = db.cursor()
+          c.execute("select item_link from fm_items where item_guid=?",
+                    [guid])
+          link = c.fetchone()
+          c.close()
+          if link:
+            print >> param.log, 'not dereferencing', guid, '->', link[0]
+            item['link'] = link[0]
+            return content
+          # we haven't seen this article before, buck up and load it
+          deref = urllib2.urlopen(item['link']).read()
+          m = self.re.search(deref)
+          if m and m.groups():
+            item['link'] = m.groups()[0]
       except:
         util.print_stack()
     return content

@@ -2,7 +2,7 @@
 import sys, os, stat, logging, base64, time, imp, gzip, traceback, pprint, csv
 import threading, BaseHTTPServer, SocketServer, cStringIO, urlparse, urllib
 import flask, sqlite3, string, urllib2, requests, re
-import param, update, filters, util, normalize, dbop, singleton, social
+import param, update, filters, util, normalize, dbop, social
 
 # HTTP header to force caching
 no_expire = [
@@ -46,8 +46,6 @@ if not app.debug:
 #app.jinja_options = {'extensions': ['jinja2.ext.do']}
 app.jinja_env.trim_blocks=True
 app.jinja_env.lstrip_blocks=True
-
-from singleton import db
 
 def change_param(*arg, **kwargs):
   parts = urlparse.urlparse(flask.request.full_path)
@@ -114,9 +112,10 @@ def regurgitate_except(*exclude):
 def run():
   # force loading of the database so we don't have to wait an hour to detect
   # a database format issue
-  c = db.cursor()
-  update.load_settings(db, c)
-  c.close()
+  with dbop.db() as db:
+    c = db.cursor()
+    update.load_settings(db, c)
+    c.close()
   
   logging.getLogger().setLevel(logging.INFO)
   # start Flask
@@ -311,7 +310,7 @@ def rule_tabset(feed_uid=None):
 def rule_lines(text):
   return max(4, filters.rule_lines(text))
   
-@app.route("/feed/<int:feed_uid>")
+@app.route("/feed/<int:feed_uid>", methods=['GET', 'POST'])
 @app.route("/feed/<int:feed_uid>/<op>", methods=['GET', 'POST'])
 def feed_info(feed_uid, op=None):
   notices = []

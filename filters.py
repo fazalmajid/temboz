@@ -1,6 +1,6 @@
 # handle the various type of FilteringRules
 import time, re, textwrap, requests
-import normalize, param, util
+import normalize, param, util, dbop
 
 rules = []
 feed_rules = {}
@@ -124,15 +124,13 @@ class AuthorRule(Rule):
 ########################################################################
 # functions used inside Python rules
 def link_already(url):
-  from singleton import db
-  print >> param.activity, 'checking for deja-vu for', url,
-  c = db.cursor()
-  c.execute("select count(*) from fm_items where item_link like ?",
-            [url + '%'])
-  l = c.fetchone()
-  c.close()
-  print >> param.log, l and l[0]
-  return l and l[0]
+  with dbop.db() as db:
+    print >> param.activity, 'checking for deja-vu for', url,
+    c = db.execute("select count(*) from fm_items where item_link like ?",
+               [url + '%'])
+    l = c.fetchone()
+    print >> param.log, l and l[0]
+    return l and l[0]
 
 def dereference_content(url):
   try:

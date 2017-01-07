@@ -36,7 +36,7 @@
       <input name="feed_xml" size="80" value="{{ feed_xml }}"></td></tr>
   <tr><td>Public feed</a></td>
     <td>
-      {{ hidden }}
+      {{ hidden|safe }}
       <input name="feed_pubxml" size="80" value="{{ feed_pubxml }}">
       (if the Feed XML is not shareable)</td></tr>
   <tr><td>Desc</td><td><textarea cols="80"
