@@ -2,7 +2,7 @@ import sqlite3, string
 import param
 
 def db():
-  conn = sqlite3.connect('rss.db', 120.0)
+  conn = sqlite3.connect('rss.db', 60.0)
   conn.row_factory = sqlite3.Row
   return conn
 

@@ -658,7 +658,7 @@ def notification(db, c, feed_uid, title, content, link=None):
   guid = 'temboz://%s/%s' % (feed_uid, hash)
   # do nothing if the link is clicked
   if link is None:
-    link = '/feed_info?feed_uid=%d' % feed_uid
+    link = '/feed/%d' % feed_uid
   c.execute("""insert into fm_items (item_feed_uid, item_guid,
   item_created, item_modified, item_link, item_md5hex,
   item_title, item_content, item_creator, item_rating, item_rule_uid)

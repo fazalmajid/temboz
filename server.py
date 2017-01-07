@@ -312,20 +312,21 @@ def rule_lines(text):
   return max(4, filters.rule_lines(text))
   
 @app.route("/feed/<int:feed_uid>")
-@app.route("/feed/<int:feed_uid>/<op>")
+@app.route("/feed/<int:feed_uid>/<op>", methods=['GET', 'POST'])
 def feed_info(feed_uid, op=None):
+  notices = []
   # operations
   if op:
-    if op == 'Activate':
+    if op == 'activate':
       status = 0
       update.set_status(feed_uid, status)
-    elif op == 'Suspend':
+    elif op == 'suspend':
       status = 1
       update.set_status(feed_uid, status)
-    elif op == 'Private':
+    elif op == 'private':
       private = 1
       update.update_feed_private(feed_uid, private)
-    elif op == 'Public':
+    elif op == 'public':
       private = 0
       update.update_feed_private(feed_uid, private)
     elif op == 'Dupcheck':
@@ -334,12 +335,18 @@ def feed_info(feed_uid, op=None):
     elif op == 'NoDupcheck':
       dupcheck = 0
       update.update_feed_dupcheck(feed_uid, dupcheck)
-    elif op == 'Exempt':
+    elif op == 'exempt':
       exempt = 1
       update.update_feed_exempt(feed_uid, exempt)
-    elif op == 'Reinstate':
+    elif op == 'reinstate':
       exempt = 0
       update.update_feed_exempt(feed_uid, exempt)
+    elif op == 'catchup' and flask.request.form.get('confirm') == 'yes':
+      update.catch_up(feed_uid)
+      back = flask.request.args.get('back', '')
+      if back == '/feeds':
+        return flask.redirect(back)
+      notices.append('<p>Caught up successfully.</p>')
   with dbop.db() as c:
     # Get feed statistics
     row = dbop.feed_info_sql(c, feed_uid).fetchone()
@@ -364,92 +371,89 @@ def feed_info(feed_uid, op=None):
       if feed_filter is None:
         feed_filter = ''
     # Change feed title/html/desc/filter if requested
-    notices = []
+    f = flask.request.form
     if flask.request.method == 'POST':
-      if flask.request.form.feed_title \
-         and flask.request.form.feed_title != feed_title:
-        feed_title = flask.request.form.feed_title
+      if f.get('feed_title') and f.get('feed_title') != feed_title:
+        feed_title = f.get('feed_title')
         update.update_feed_title(feed_uid, feed_title)
         notices.append('<p>Feed title updated successfully.</p>')
-      if flask.request.form.feed_html \
-         and flask.request.form.feed_html != feed_html:
-        feed_html = flask.request.form.feed_html
+      if f.get('feed_html') and f.get('feed_html') != feed_html:
+        feed_html = f.get('feed_html')
         update.update_feed_html(feed_uid, feed_html)
         notices.append('<p>Feed HTML link updated successfully.</p>')
-      if flask.request.form.feed_desc \
-         and flask.request.form.feed_desc != feed_desc:
-        feed_desc = flask.request.form.feed_desc
+      if f.get('feed_desc') and f.get('feed_desc') != feed_desc:
+        feed_desc = f.get('feed_desc')
         update.update_feed_desc(feed_uid, feed_desc)
         notices.append('<p>Feed description updated successfully.</p>')
-      if flask.request.form.feed_filter \
-         and flask.request.form.feed_filter != feed_filter:
-        feed_filter = flask.request.form.feed_filter
+      if f.get('feed_filter') and f.get('feed_filter') != feed_filter:
+        feed_filter = f.get('feed_filter')
         update.update_feed_filter(feed_uid, feed_filter)
         notices.append('<p>Feed filter updated successfully.</p>')
-      if flask.request.form.feed_pubxml \
-         and flask.request.form.feed_pubxml != feed_pubxml:
-        feed_pubxml = flask.request.form.feed_pubxml
+      if f.get('feed_pubxml') and f.get('feed_pubxml') != feed_pubxml:
+        feed_pubxml = f.get('feed_pubxml')
         update.update_feed_pubxml(feed_uid, feed_pubxml)
         notices.append('<p>Feed public XML link updated successfully.</p>')
-      # Change feed URL if requested
-      if flask.request.args.get('refresh') == '1' \
-         or (flask.request.form.get(feed_xml)
-             and flask.request.form.feed_xml != feed_xml):
-        try:
-          num_added, num_filtered = update.update_feed_xml(
-            feed_uid, flask.request.form.feed_xml)
-          unread += num_added
-          filtered += num_filtered
-          feed_errors = 0
-          notices.append('<p>Feed refreshed successfully.</p>')
-          if status == 1:
-            status = 0
-            update.set_status(feed_uid, status)
-            notices.append('<p>Feed reactivated</p>')
-          if num_added > 0:
-            notices.append("""<p>%d new unread articles.&nbsp;&nbsp;
-      <a href="view?feed_uid=%d">view articles now</a>&nbsp;&nbsp;
-      <a href="catch_up?feed_uid=%d">catch up</a></p>"""
-                           % (unread, feed_uid, feed_uid))
-        except update.ParseError:
-          notices.append('<p><b>Connection or parse error in attempting to'
-                         + 'subscribe to</b> %s, check URL</p>' % feed_xml)
-        except update.FeedAlreadyExists:
-          notices.append('<p>The feed %s ' % feed_xml
-                         + 'is already assigned to another feed,'
-                         + 'check for duplicates.</p>')
-        except update.UnknownError, e:
-          notices.append('<p>Unknown error:<p>\n<pre>%s</pre>\n' % e.args[0])
+    # Change feed URL if requested
+    if op == 'refresh' or (
+        flask.request.method == 'POST'
+        and flask.request.form.get('feed_xml')
+        and flask.request.form.get('feed_xml') != feed_xml
+    ):
+      try:
+        num_added, num_filtered = update.update_feed_xml(
+          feed_uid, flask.request.form.get('feed_xml', feed_xml))
+        unread += num_added
+        filtered += num_filtered
+        feed_errors = 0
+        notices.append('<p>Feed refreshed successfully.</p>')
+        if status == 1:
+          status = 0
+          update.set_status(feed_uid, status)
+          notices.append('<p>Feed reactivated</p>')
+        if num_added > 0:
+          notices.append("""<p>%d new unread articles.&nbsp;&nbsp;
+    <a href="view?feed_uid=%d">view articles now</a>&nbsp;&nbsp;
+    <a href="catch_up?feed_uid=%d">catch up</a></p>"""
+                         % (unread, feed_uid, feed_uid))
+      except update.ParseError:
+        notices.append('<p><b>Connection or parse error in attempting to'
+                       + 'subscribe to</b> %s, check URL</p>' % feed_xml)
+      except update.FeedAlreadyExists:
+        notices.append('<p>The feed %s ' % feed_xml
+                       + 'is already assigned to another feed,'
+                       + 'check for duplicates.</p>')
+      except update.UnknownError, e:
+        notices.append('<p>Unknown error:<p>\n<pre>%s</pre>\n' % e.args[0])
     feed_public = None
     hidden = regurgitate_except()
     # Display feed flags with option to change it
     if status == 0:
       status_text = 'Active'
-      status_change_op = 'Suspend'
+      status_change_op = 'suspend'
     elif status == 1:
       status_text = 'Suspended'
-      status_change_op = 'Activate'
+      status_change_op = 'activate'
     else:
       status_text = 'Unknown'
-      status_change_op = 'Activate'
+      status_change_op = 'activate'
     if private == 0:
       private_text = 'Public'
-      private_change_op = 'Private'
+      private_change_op = 'private'
     elif private == 1:
       private_text = 'Private'
-      private_change_op = 'Public'
+      private_change_op = 'public'
     else:
       private_text = 'Unknown'
-      private_change_op = 'Private'
+      private_change_op = 'private'
     if exempt == 0:
       exempt_text = 'Not exempt'
-      exempt_change_op = 'Exempt'
+      exempt_change_op = 'exempt'
     elif exempt == 1:
       exempt_text = 'Exempt'
-      exempt_change_op = 'Reinstate'
+      exempt_change_op = 'reinstate'
     else:
       exempt_text = 'Unknown'
-      exempt_change_op = 'Exempt'
+      exempt_change_op = 'exempt'
     # Get top rules
     top_rules = dbop.top_rules(c, feed_uid)
     feed_rules = dbop.rules(c, feed_uid)
@@ -630,3 +634,14 @@ def mylos():
       '_share.atom', time=time, normalize=normalize,
       atom_content=atom_content, **locals()
     )
+
+@app.route("/threads")
+def threads():
+  frames = sys._current_frames()
+  try:
+    return flask.render_template(
+      'threads.html', sys=sys, pprint=pprint, traceback=traceback,
+      sorted=sorted, **locals()
+    )
+  finally:
+    del frames

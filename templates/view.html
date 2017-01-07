@@ -249,8 +249,8 @@ input#stem {
       <tr><td>For <em>__feed_title__</em> only</td><td>
       <input name="feed_only" type="checkbox">
       <input name="item_uid" type="hidden" value="__item_uid__"></td></tr>
-      ##<tr><td>Apply retroactively</td><td><input name="retroactive"
-      ## type="checkbox"></td></tr>
+      {# <tr><td>Apply retroactively</td><td><input name="retroactive"
+         type="checkbox"></td></tr> #}
     </table>
   </form>
 </div>
@@ -282,12 +282,12 @@ if($("body").width() < 760) {
     <a href="{{ i.feed_html }}" title="" class="source print"
        id="feedprint{{ i.uid }}">{{ i.feed_title }}</a>
     {% if not request.args.feed_uid %}
-    <a href="view?feed_uid={{ i.feed_uid }}&show={{ show }}"
+    <a href="/view?feed_uid={{ i.feed_uid }}&show={{ show }}"
        class="ff" target="_blank">&#9658;</a>
     {% endif %}
     {{ i.since_when }}
     {{ i.tag_call|safe }}
-    <a href="edit?uid={{ i.uid }}" class="screen">edit</a>
+    <a href="/edit?uid={{ i.uid }}" class="screen">edit</a>
     <br>
   </div>{{ i.tag_info|safe }}
   <div class="content" id="content{{ i.uid }}">
