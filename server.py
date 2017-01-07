@@ -1,8 +1,8 @@
 #!/usr/local/bin/python
 import sys, os, stat, logging, base64, time, imp, gzip, traceback, pprint, csv
 import threading, BaseHTTPServer, SocketServer, cStringIO, urlparse, urllib
-import flask, sqlite3, string, urllib2, requests, re
-import param, update, filters, util, normalize, dbop, social
+import flask, sqlite3, string, urllib2, requests, re, datetime
+import param, update, filters, util, normalize, dbop, social, __main__
 
 # HTTP header to force caching
 no_expire = [
@@ -540,7 +540,6 @@ def settings(status=''):
     c = db.cursor()
 
     if op == 'refresh':
-      import __main__
       __main__.updater.event.set()
       status = 'Manual refresh of all feeds requested.'
     elif op == 'debug':
@@ -571,6 +570,8 @@ def settings(status=''):
       'settings.html', filters=filters,
       executable=sys.argv[0], py_version=sys.version,
       param_debug=param.debug, param_settings=param.settings,
+      started=__main__.started,
+      uptime=datetime.datetime.now()-__main__.started,
       len=len, max=max, **locals()
     )
 
