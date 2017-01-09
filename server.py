@@ -504,6 +504,14 @@ def rule_op(rule_uid, op):
       filters.del_kw_rule(db, c, rule_uid)
   return '<?xml version="1.0"?><nothing />'
 
+@app.route("/rule/add", methods=['POST'])
+def rule_add(): 
+  with dbop.db() as db:
+    c = db.cursor()
+    filters.add_kw_rule(db, c, **(flask.request.form.to_dict()))
+    db.commit()
+    return '<?xml version="1.0"?><nothing />'
+
 @app.route("/add", methods=['GET', 'POST'])
 def add_feed(): 
   if flask.request.method == 'POST':

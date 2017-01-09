@@ -227,7 +227,7 @@ input#stem {
 {% block CONTENT %}
 <!-- Form used for adding keyword filtering rules -->
 <div id="kw_form_tmpl" style="display:none">
-  <form name="kw_form" method="GET" action="/add_kw_rule">
+  <form name="kw_form" method="POST" action="/rule/add">
     <table>
       <tr><td>Keyword</td>
       <td><input name="kw" id="kw" size="30">
