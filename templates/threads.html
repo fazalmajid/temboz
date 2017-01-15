@@ -1,0 +1,29 @@
+{% extends "menubar.html" %}
+
+{% block TITLE %}Temboz - Threads{% endblock %}
+{% block BODYOPTIONS %} class="unpadded"{% endblock %}
+{% block EXTRAHEAD %}
+    <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    <script language="JavaScript" src="/static/temboz.js"></script>
+{% endblock %}
+
+{% block CONTENT %}
+{# <h1>Cursors</h1>
+#for cursor, tb in singleton.c_opened
+<pre>
+$cursor
+$tb
+</pre>pre>
+#end for #}
+<h1>Tracebacks</h1>
+{% for thread_id, frame in sorted(frames.iteritems()) %}
+<div style="background-color: {{ loop.cycle('#ddd', 'white') }}">
+<pre>
+Thread {{ thread_id }} ({{ sys.getrefcount(frame) }} refs)
+{{ ''.join(traceback.format_stack(frame)) }}
+<hr>
+{{ pprint.pformat(frame.f_locals) }}
+</pre>
+</div>
+{% endfor %}
+{% endblock CONTENT %}

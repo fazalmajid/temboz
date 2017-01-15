@@ -23,6 +23,15 @@
   <input type="submit" value="Confirm">
 </form>
 {% endif %}
+{% if op == 'hardpurge' and request.form.get('confirm') != 'yes' %}
+<form method="POST">
+  <input type="hidden" name="confirm" value="yes">
+  Please confirm you want to delete the post and {{ total }} articles
+  ({{ unread }} unread)
+  <a href="{{ feed_html }}">{{ feed_title }}</a>
+  <input type="submit" value="Confirm">
+</form>
+{% endif %}
 {# Display feed URL with option to change it #}
 <form method="POST" class="feed_info" name="feed_xml">
 <table>
@@ -79,7 +88,7 @@
   <tr class="odd"><td>Catch-up</td><td><a href="/feed/{{ feed_uid }}/catchup">Mark as read</a> {{ unread }} unread articles</td></tr>
   <tr class="even"><td>Purge</td><td><a href="/catch_up?reload=Y&feed_uid={{ feed_uid }}">Purge and reload</a> {{ unread }} unread articles</td></tr>
   <tr class="odd"><td>Debug</td><td><a href="/feed_debug?feed_uid={{ feed_uid }}">Dump the parsed feed</a>, useful for writing <a href="/rules">filtering rules</a></td></tr>
-  <tr class="even"><td>Hard purge</td><td><a href="/hard_purge?feed_uid={{ feed_uid }}">Completely delete</a> {{ total }} articles
+  <tr class="even"><td>Hard purge</td><td><a href="/feed/{{ feed_uid }}/hardpurge">Completely delete</a> {{ total }} articles
 {% if interesting > 0 %}
   (including {{ interesting }} flagged as interesting)
 {% endif %}

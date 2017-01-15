@@ -369,6 +369,14 @@ def feed_info(feed_uid, op=None):
       uninteresting = total - unread - filtered - interesting
       if feed_filter is None:
         feed_filter = ''
+    # hard purge confirmation
+    if op == 'hardpurge' and flask.request.form.get('confirm') == 'yes':
+      status = update.hard_purge(feed_uid)
+      if status:
+        notices.append('<p>Error: %r</p>' % status)
+      else:
+        notices.append('<p>Deleted <a href="%s">%s</a></p>'
+                       % (feed_html, feed_title))
     # Change feed title/html/desc/filter if requested
     f = flask.request.form
     if flask.request.method == 'POST':
@@ -653,3 +661,9 @@ def threads():
     )
   finally:
     del frames
+
+@app.route("/stem")
+def stem():
+  term = flask.request.args.get('q', '')
+  stem = ' '.join(normalize.stem(normalize.get_words(term)))
+  return (stem, 200, {'Content-Type': 'text/plain'})

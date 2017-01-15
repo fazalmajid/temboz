@@ -75,6 +75,7 @@ def re_autodiscovery(url):
 def add_feed(feed_xml):
   """Try to add a feed. Returns a tuple (feed_uid, num_added, num_filtered)"""
   with dbop.db() as db:
+    c = db.cursor()
     feed_xml = feed_xml.replace('feed://', 'http://')
     # verify the feed
     f = feedparser.parse(feed_xml)
@@ -120,7 +121,7 @@ def add_feed(feed_xml):
         feed[key] = value
     filters.load_rules(c)
     try:
-      db.execute("""insert into fm_feeds
+      c.execute("""insert into fm_feeds
       (feed_xml, feed_etag, feed_html, feed_title, feed_desc) values
       (:xmlUrl, :etag, :htmlUrl, :title, :desc)""", feed)
       feed_uid = c.lastrowid
@@ -271,13 +272,14 @@ class RatingsWorker(threading.Thread):
     while True:
       item_uid, rating = self.in_q.get()
       with dbop.db() as db:
+        c = db.cursor()
         try:
-          c = db.execute("""update fm_items
+          c.execute("""update fm_items
           set item_rating=?, item_rated=julianday('now')
           where item_uid=?""", [rating, item_uid])
           fb_token = param.settings.get('fb_token', None)
           if rating == 1 and fb_token:
-            db.execute("""select feed_uid, item_link, item_title, feed_private
+            c.execute("""select feed_uid, item_link, item_title, feed_private
             from fm_items, fm_feeds
             where item_uid=? and feed_uid=item_feed_uid""",
                       [item_uid])
