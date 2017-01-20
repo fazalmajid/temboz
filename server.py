@@ -419,8 +419,8 @@ def feed_info(feed_uid, op=None):
           notices.append('<p>Feed reactivated</p>')
         if num_added > 0:
           notices.append("""<p>%d new unread articles.&nbsp;&nbsp;
-    <a href="view?feed_uid=%d">view articles now</a>&nbsp;&nbsp;
-    <a href="catch_up?feed_uid=%d">catch up</a></p>"""
+    <a href="/view?feed_uid=%d">view articles now</a>&nbsp;&nbsp;
+    <a href="/feed/%d/catchup">catch up</a></p>"""
                          % (unread, feed_uid, feed_uid))
       except update.ParseError:
         notices.append('<p><b>Connection or parse error in attempting to'
