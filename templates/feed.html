@@ -75,7 +75,7 @@
 
   <tr class="even"><td>Status</td><td>{{ status_text }}&nbsp;<a href="/feed/{{ feed_uid }}/{{ status_change_op }}">{{ status_change_op }}</a></td></tr>
   <tr class="odd"><td>Privacy</td><td>{{ private_text }}&nbsp;<a href="/feed/{{ feed_uid }}/{{ private_change_op}}">{{ private_change_op }}</a></td></tr>
-  <tr class="even"><td>Filtering exemption</td><td>{{ exempt_text }}&nbsp;<a href="/feed/{{ feed_uid }}&exempt_change_op={{ exempt_change_op }}">{{ exempt_change_op }}</a> (exempt feeds are still subject to feed-specific filtering rules).</td></tr>
+  <tr class="even"><td>Filtering exemption</td><td>{{ exempt_text }}&nbsp;<a href="/feed/{{ feed_uid }}/{{ exempt_change_op }}">{{ exempt_change_op }}</a> (exempt feeds are still subject to feed-specific filtering rules).</td></tr>
 {########################################################################}
 {% if dupcheck == 0 %}
   <tr class="odd"><td>Duplicate<br>title<br>checking</td><td>No duplicate checks&nbsp;<a href="/feed/{{ feed_uid }}/Dupcheck">check for duplicate titles</a></td></tr>

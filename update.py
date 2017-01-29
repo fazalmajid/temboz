@@ -228,6 +228,7 @@ def update_feed_exempt(feed_uid, exempt):
   feed_uid = int(feed_uid)
   exempt = int(bool(exempt))
   with dbop.db() as db:
+    c = db.cursor()
     db.execute("update fm_feeds set feed_exempt=? where feed_uid=?",
                [exempt, feed_uid])
     if exempt:

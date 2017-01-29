@@ -239,7 +239,32 @@ def share(c):
   and item_rating=1 and feed_private = 0
   order by item_rated DESC, item_uid DESC
   limit 50""")
-  
+
+def feeds(db, sort_key, order):
+  assert sort_key == '(unread > 0) DESC, snr' or sort_key in {
+      'feed_ title', 'last_modified', 'unread', 'filtered', 'interesting',
+      'snr', 'total'
+  }
+  assert order in ('ASC', 'DESC')
+  c = db.cursor()
+  c.execute("""select feed_uid, feed_title, feed_html, feed_xml,
+  last_modified, interesting, unread, uninteresting, filtered, total,
+  snr, feed_status, feed_private, feed_exempt, feed_errors,
+  feed_filter notnull
+  from v_feeds_snr
+  order by feed_status ASC, """ \
+                 + sort_key + ' ' + order + """, lower(feed_title)""")
+  return c.fetchall()
+
+def opml(db):
+  c = db.cursor()
+  c.execute("""select feed_uid, feed_title, feed_desc,
+  feed_html, coalesce(feed_pubxml, feed_xml) as feed_xml, snr
+  from v_feeds_snr
+  where feed_status=0 and feed_private=0
+  order by snr desc, lower(feed_title)""")
+  return c.fetchall()
+
 c = db()
 mv_on_demand(c)
 rebuild_v_feed_stats(c)

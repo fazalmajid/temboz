@@ -472,19 +472,12 @@ def feed_info(feed_uid, op=None):
 
 @app.route("/feeds")
 def feeds(): 
-  sort_key = flask.request.form.get('sort', '(unread > 0) DESC, snr')
+  sort_key = flask.request.args.get('sort', '(unread > 0) DESC, snr')
   if sort_key == 'feed_title':
     sort_key = 'lower(feed_title)'
-  order = flask.request.form.get('order', 'DESC')
+  order = flask.request.args.get('order', 'DESC')
   with dbop.db() as db:
-    cursor = db.cursor()
-    cursor.execute("""select feed_uid, feed_title, feed_html, feed_xml,
-    last_modified, interesting, unread, uninteresting, filtered, total,
-    snr, feed_status, feed_private, feed_exempt, feed_errors,
-    feed_filter notnull
-    from v_feeds_snr order by feed_status ASC, """ \
-    + sort_key + ' ' + order + """, lower(feed_title)""")
-    rows = cursor.fetchall()
+    rows = dbop.feeds(db, sort_key, order)
     sum_unread      = sum(int(row['unread']) for row in rows)
     sum_filtered    = sum(int(row['filtered']) for row in rows)
     sum_interesting = sum(int(row['interesting']) for row in rows)
@@ -667,3 +660,15 @@ def stem():
   term = flask.request.args.get('q', '')
   stem = ' '.join(normalize.stem(normalize.get_words(term)))
   return (stem, 200, {'Content-Type': 'text/plain'})
+
+@app.route("/opml")
+def opml():
+  sort_key = flask.request.args.get('sort', '(unread > 0) DESC, snr')
+  if sort_key == 'feed_title':
+    sort_key = 'lower(feed_title)'
+  order = flask.request.args.get('order', 'DESC')
+  with dbop.db() as db:
+    rows = dbop.opml(db)
+    return (flask.render_template('opml.opml',
+                                  atom_content=atom_content, rows=rows),
+            200 , {'Content-Type': 'text/plain'})
