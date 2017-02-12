@@ -36,9 +36,9 @@
         <td>{{ rtype }}</td>
         <td>{{ text }}</td>
         {% if feed_uid %}
-        <td><a href="view?show=filtered&feed_uid={{ feed_uid }}&rule_uid={{ uid }}">show</a></td>
+        <td><a href="/view?show=filtered&feed_uid={{ feed_uid }}&rule_uid={{ uid }}">show</a></td>
         {% else %}
-        <td><a href="view?show=filtered&rule_uid={{ uid }}">show</a></td>
+        <td><a href="/view?show=filtered&rule_uid={{ uid }}">show</a></td>
         {% endif %}
         <td><a href="javascript:del_kw_rule({{ uid }});">delete</a></td>
       </tr>

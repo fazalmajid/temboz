@@ -13,7 +13,7 @@
       {% if num_added > 0 %}
 <p>{{ num_added }} unread articles.&nbsp;&nbsp;
 <a href="/view?feed_uid={{ feed_uid }}">view articles now</a>&nbsp;&nbsp;
-<a href="/catch_up?feed_uid={{ feed_uid }}">catch up</a>
+<a href="/feed/{{ feed_uid }}/catchup">catch up</a>
 </p>
       {% endif %}
     {% endif %}
