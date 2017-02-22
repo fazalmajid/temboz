@@ -1,7 +1,7 @@
 # this module defines classes that can be used to massage the content of an
 # article, mostly to remove gunk like ads
 
-import sys, re, urllib2, sqlite3
+import sys, re, requests, sqlite3
 import param, util, dbop
 
 class Filter:
@@ -129,7 +129,7 @@ class Dereference(Filter):
             item['link'] = link[0]
             return content
           # we haven't seen this article before, buck up and load it
-          deref = urllib2.urlopen(item['link']).read()
+          deref = requests.get(item['link']).text
           m = self.re.search(deref)
           if m and m.groups():
             item['link'] = m.groups()[0]

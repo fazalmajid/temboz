@@ -7,11 +7,6 @@ JSMIN=		jsmin
 
 all: changelog
 
-cheetah: $(PAGES:%=pages/%.py)
-pages/%.py: pages/%.tmpl
-	cheetah compile $<
-	python -m py_compile pages/*.py
-
 init:
 	@if [ `hostname` != "alamut" ]; then true; else echo "Will not run make init on alamut"; false; fi
 	-rm -f rss.db

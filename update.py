@@ -1,5 +1,5 @@
 import sys, hashlib, time, threading, socket, Queue, signal, os, re
-import urllib2, urlparse, HTMLParser, random, sqlite3
+import urlparse, HTMLParser, random, sqlite3, requests
 import param, feedparser, normalize, util, transform, filters, dbop
 import social
 
@@ -55,7 +55,7 @@ class AutoDiscoveryHandler(HTMLParser.HTMLParser):
       if attrs.get('type') == 'application/atom+xml' and 'href' in attrs:
         self.autodiscovery['atom'] = attrs['href']
   def feed_url(self, page_url):
-    page_data = urllib2.urlopen(page_url).read()
+    page_data = requests.get(page_url).text
     self.feed(page_data)
     # Atom has cleaner semantics than RSS, so give it priority
     url = self.autodiscovery.get(
@@ -68,7 +68,7 @@ def re_autodiscovery(url):
   autodiscovery_re = re.compile(
     '<link[^>]*rel="alternate"[^>]*'
     'application/(atom|rss)\\+xml[^>]*href="([^"]*)"')
-  candidates = autodiscovery_re.findall(urllib2.urlopen(url).read())
+  candidates = autodiscovery_re.findall(requests.get(url).text)
   candidates.sort()
   return candidates
 
@@ -78,7 +78,8 @@ def add_feed(feed_xml):
     c = db.cursor()
     feed_xml = feed_xml.replace('feed://', 'http://')
     # verify the feed
-    f = feedparser.parse(feed_xml)
+    r = requests.get(feed_xml)
+    f = feedparser.parse(r.text)
     # CVS versions of feedparser are not throwing exceptions as they should
     # see:
     # http://sourceforge.net/tracker/index.php?func=detail&aid=1379172&group_id=112328&atid=661937
@@ -104,7 +105,8 @@ def add_feed(feed_xml):
           raise AutodiscoveryParseError
       if not feed_xml:
         raise ParseError
-      f = feedparser.parse(feed_xml)
+      r = requests.get(feed_xml)
+      f = feedparser.parse(r.text)
       if not f.feed:
         raise ParseError
     # we have a valid feed, normalize it
@@ -112,7 +114,7 @@ def add_feed(feed_xml):
     feed = {
       'xmlUrl': f['url'],
       'htmlUrl': str(f.feed['link']),
-      'etag': f.get('etag'),
+      'etag': f.headers.get('Etag'),
       'title': f.feed['title'].encode('ascii', 'xmlcharrefreplace'),
       'desc': f.feed['description'].encode('ascii', 'xmlcharrefreplace')
       }
@@ -140,7 +142,8 @@ def update_feed_xml(feed_uid, feed_xml):
   """Update a feed URL and fetch the feed. Returns the number of new items"""
   feed_uid = int(feed_uid)
 
-  f = feedparser.parse(feed_xml)
+  r = requests.get(feed_xml)
+  f = feedparser.parse(r.text)
   if not f.feed:
     raise ParseError
   normalize.normalize_feed(f)
@@ -329,7 +332,8 @@ def purge_reload(feed_uid):
     where feed_uid=?""", [feed_uid])
     feed_xml = c.fetchone()[0]
     db.commit()
-    f = feedparser.parse(feed_xml)
+    r = requests.get(feed_xml)
+    f = feedparser.parse(r.text)
     if not f.feed:
       raise ParseError
     normalize.normalize_feed(f)
@@ -382,7 +386,13 @@ def fetch_feed(feed_uid, feed_xml, feed_etag, feed_modified):
   if not feed_modified:
     feed_modified = None
   try:
-    f = feedparser.parse(feed_xml, etag=feed_etag, modified=feed_modified)
+    r = requests.get(feed_xml, headers={
+      'If-None-Match': feed_etag
+    })
+    if r.text == '':
+      return {'channel': {}, 'items': [], 'why': 'no change since Etag'}
+    f = feedparser.parse(r.text, etag=r.headers.get('Etag'),
+                         modified=feed_modified)
   except socket.timeout:
     if param.debug:
       print >> param.log, 'EEEEE error fetching feed', feed_xml

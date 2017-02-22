@@ -1,6 +1,6 @@
 # -*- coding: iso-8859-1 -*-
 import sys, time, re, codecs, string, traceback, socket, HTMLParser, hashlib
-import unicodedata, htmlentitydefs, urllib2, urlparse, html5lib
+import unicodedata, htmlentitydefs, requests, urlparse, html5lib
 import feedparser, param, transform, util, porter2
 
 # XXX TODO
@@ -402,26 +402,6 @@ def fix_date(date_tuple):
   else:
     return date_tuple
 
-# code to dereference URLs and follow redirects
-class Redirect(Exception):
-  def __init__(self, code, url):
-    self.code = code
-    self.url = url
-class DontHandleRedirect(urllib2.HTTPRedirectHandler):
-  """Override redirect handling to not dereference redirects for testing"""
-  def http_error_302(self, req, fp, code, msg, headers):
-    if 'location' in headers:
-      newurl = headers.getheaders('location')[0]
-    elif 'uri' in headers:
-      newurl = headers.getheaders('uri')[0]
-    else:
-      return
-    newurl = urlparse.urljoin(req.get_full_url(), newurl)
-    raise Redirect(code, newurl)
-  http_error_301 = http_error_303 = http_error_307 = http_error_302
-redirect_opener = urllib2.build_opener(DontHandleRedirect)
-#socket.setdefaulttimeout(10)
-
 def dereference(url, seen=None, level=0):
   """Recursively dereference a URL"""
   # this set is used to detect redirection loops
@@ -433,22 +413,23 @@ def dereference(url, seen=None, level=0):
   if level > 16:
     return url
   try:
-    url_obj = redirect_opener.open(url)
-    # no redirect occurred
-    return url
-  except (urllib2.URLError, ValueError, socket.error):
-    return url
-  except Redirect, e:
-    # break a redirection loop if it occurs
-    if e.url in seen:
+    r = requests.get(url, allow_redirects=False)
+    if not r.is_redirect:
       return url
-    # some servers redirect to Unicode URLs, which are not legal
-    try:
-      unicode(e.url)
-    except UnicodeDecodeError:
-      return url
-    # there might be several levels of redirection
-    return dereference(e.url, seen, level + 1)
+    else:
+      # break a redirection loop if it occurs
+      redir = r.headers.get('Location')
+      if redir in seen:
+        return url
+      # some servers redirect to Unicode URLs, which are not legal
+      try:
+        unicode(redir)
+      except UnicodeDecodeError:
+        return url
+      # there might be several levels of redirection
+      return dereference(redir, seen, level + 1)
+  except (requests.exceptions.RequestException, ValueError, socket.error):
+    return url
   except:
     util.print_stack()
     return url

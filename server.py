@@ -1,7 +1,7 @@
 #!/usr/local/bin/python
 import sys, os, stat, logging, base64, time, imp, gzip, traceback, pprint, csv
 import threading, BaseHTTPServer, SocketServer, cStringIO, urlparse, urllib
-import flask, sqlite3, string, urllib2, requests, re, datetime
+import flask, sqlite3, string, requests, re, datetime
 import param, update, filters, util, normalize, dbop, social, __main__
 
 # HTTP header to force caching
@@ -532,7 +532,7 @@ def add_feed():
         except update.FeedAlreadyExists:
           feed_err = 'The feed URL is already assigned to another feed.'
           resolution = 'check for duplicates'
-        except urllib2.URLError, e:
+        except requests.exceptions.RequestException as e:
           feed_err = 'Error loading URL during autodiscovery attempt: %r' % e
         except update.UnknownError, e:
           feed_err = 'Unknown error: %r' % e.args[0]
