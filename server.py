@@ -1,7 +1,7 @@
 #!/usr/local/bin/python
 import sys, os, stat, logging, base64, time, imp, gzip, traceback, pprint, csv
 import threading, BaseHTTPServer, SocketServer, cStringIO, urlparse, urllib
-import flask, sqlite3, string, requests, re, datetime
+import flask, sqlite3, string, requests, re, datetime, hmac
 import param, update, filters, util, normalize, dbop, social, __main__
 
 # HTTP header to force caching
@@ -37,6 +37,15 @@ class AuthWrapper:
       return '<h1>HTTP 401 Authentication required</h1>'
     return self.application(environ, start_response)
 
+# seed for CSRF protection nonces
+nonce_seed = os.urandom(20)
+def gen_nonce(msg):
+  return hmac.new(nonce_seed, msg).hexdigest()
+
+def check_nonce(msg, nonce):
+  #return hmac.compare_digest(gen_nonce(msg), nonce.decode('hex'))
+  return gen_nonce(msg) == nonce
+  
 app = flask.Flask(__name__)
 app.wsgi_app = AuthWrapper(app.wsgi_app)
 app.debug = getattr(param, 'debug', False)
@@ -672,3 +681,20 @@ def opml():
     return (flask.render_template('opml.opml',
                                   atom_content=atom_content, rows=rows),
             200 , {'Content-Type': 'text/plain'})
+
+@app.route("/item/<int:uid>/<op>", methods=['GET', 'POST'])
+def item(uid, op):
+  assert op == 'edit'
+  status = None
+  if flask.request.method == 'POST':
+    assert check_nonce('edit%d' % uid, flask.request.form.get('nonce'))
+    status = update.update_item(
+      uid, *[flask.request.form.get(x) for x in ['href', 'title', 'content']])
+  with dbop.db() as db:
+    title, content, href = dbop.item(db, uid)
+  nonce = gen_nonce('edit%d' % uid)
+  return flask.render_template(
+    'edit.html',
+    normalize=normalize,
+    len=len, max=max, **locals()
+  )

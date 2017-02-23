@@ -265,9 +265,14 @@ def opml(db):
   order by snr desc, lower(feed_title)""")
   return c.fetchall()
 
+def item(db, uid):
+  c = db.cursor()
+  c.execute("""select item_title, item_content, item_link
+  from fm_items where item_uid=?""", [uid])
+  return c.fetchone()
+
 c = db()
 mv_on_demand(c)
 rebuild_v_feed_stats(c)
 c.commit()
 c.close()
-

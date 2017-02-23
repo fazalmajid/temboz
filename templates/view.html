@@ -287,7 +287,7 @@ if($("body").width() < 760) {
     {% endif %}
     {{ i.since_when }}
     {{ i.tag_call|safe }}
-    <a href="/edit?uid={{ i.uid }}" class="screen">edit</a>
+    <a href="/item/{{ i.uid }}/edit" class="screen">edit</a>
     <br>
   </div>{{ i.tag_info|safe }}
   <div class="content" id="content{{ i.uid }}">
