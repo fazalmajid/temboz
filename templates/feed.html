@@ -1,0 +1,113 @@
+{% extends "menubar.html" %}
+{% import "rules_common.html" as rules_common %}
+
+{% block TITLE %}Temboz - Feed details{% endblock %}
+{% block BODYOPTIONS %} class="unpadded"{% endblock %}
+{% block EXTRAHEAD %}
+    <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    <script language="JavaScript" src="/static/temboz.js"></script>
+{{ rules_common.rule_head() }}
+{% endblock %}
+
+{% block CONTENT %}
+<h1><a href="{{ feed_html }}">{{ feed_title }}</a></h1>
+{% for notice in notices %}
+{{ notice|safe }}
+{% endfor %}
+{% if op == 'catchup' and request.form.get('confirm') != 'yes' %}
+<form method="POST">
+  <input type="hidden" name="back" value="{{ request.args.get('back') }}">
+  <input type="hidden" name="confirm" value="yes">
+    Please confirm you want to catch up
+  <a href="{{ feed_html }}">{{ feed_title }}</a>
+  <input type="submit" value="Confirm">
+</form>
+{% endif %}
+{% if op == 'hardpurge' and request.form.get('confirm') != 'yes' %}
+<form method="POST">
+  <input type="hidden" name="confirm" value="yes">
+  Please confirm you want to delete the post and {{ total }} articles
+  ({{ unread }} unread)
+  <a href="{{ feed_html }}">{{ feed_title }}</a>
+  <input type="submit" value="Confirm">
+</form>
+{% endif %}
+{# Display feed URL with option to change it #}
+<form method="POST" class="feed_info" name="feed_xml">
+<table>
+  <tr><td>Title</td><td><input name="feed_title" size="80"
+   value="{{ feed_title }}"></td></tr>
+  <tr><td><a href="{{ feed_html }}">Site</a></td>
+    <td><input name="feed_html" size="80" value="{{ feed_html }}"></td></tr>
+  </tr>
+  <tr><td><a href="{{ feed_xml }}">Feed</a></td>
+    <td>
+      <input name="feed_xml" size="80" value="{{ feed_xml }}"></td></tr>
+  <tr><td>Public feed</a></td>
+    <td>
+      {{ hidden|safe }}
+      <input name="feed_pubxml" size="80" value="{{ feed_pubxml }}">
+      (if the Feed XML is not shareable)</td></tr>
+  <tr><td>Desc</td><td><textarea cols="80"
+                                 rows="{{ max(4, len(feed_desc) // 80 + 1)}}"
+                                 name="feed_desc">{{ feed_desc }}</textarea>
+  </td></tr>
+  <tr><td>Filter</td><td>
+    <textarea cols="80" rows="{{ max(4, filters.rule_lines(feed_filter)) }}"
+              name="feed_filter">{{ feed_filter }}</textarea>
+  </td></tr>
+  <tr><td colspan="2" align="center"><input type="button" value="Clear"
+    onclick="document.forms.feed_xml.feed_xml.value='';document.forms.feed_xml.feed_title.value='';document.forms.feed_xml.feed_desc.value='';document.forms.feed_xml.feed_xml.focus();">
+    <input type="submit" value="Change"></td></tr>
+</table>
+</form>
+<br><br>
+
+{# Feed statistics #}
+<table border="0">
+  <tr class="odd"><td>Last modified</td><td align="right">{{ since_when }}</td></tr>
+  <tr class="even"><td><a href="/view?feed_uid={{ feed_uid }}&show=unread">Unread</a></td><td align="right">{{ unread }}</td></tr>
+  <tr class="odd"><td><a href="/view?feed_uid={{ feed_uid }}&show=filtered">Filtered</a></td><td align="right">{{ filtered }}</td></tr>
+  <tr class="even"><td><a href="/view?feed_uid={{ feed_uid }}&show=up">Interesting</a></td><td align="right">{{ interesting }}</td></tr>
+  <tr class="odd"><td><a href="/view?feed_uid={{ feed_uid }}&show=down">Uninteresting</a></td><td align="right">{{ uninteresting }}</td></tr>
+  <tr class="even"><td>Hit ratio</td><td align="right">{{ ratio }}%</td></tr>
+  <tr class="odd"><td>Errors</td><td align="right">{{ feed_errors }}</td></tr>
+
+  <tr class="even"><td>Status</td><td>{{ status_text }}&nbsp;<a href="/feed/{{ feed_uid }}/{{ status_change_op }}">{{ status_change_op }}</a></td></tr>
+  <tr class="odd"><td>Privacy</td><td>{{ private_text }}&nbsp;<a href="/feed/{{ feed_uid }}/{{ private_change_op}}">{{ private_change_op }}</a></td></tr>
+  <tr class="even"><td>Filtering exemption</td><td>{{ exempt_text }}&nbsp;<a href="/feed/{{ feed_uid }}/{{ exempt_change_op }}">{{ exempt_change_op }}</a> (exempt feeds are still subject to feed-specific filtering rules).</td></tr>
+{########################################################################}
+{% if dupcheck == 0 %}
+  <tr class="odd"><td>Duplicate<br>title<br>checking</td><td>No duplicate checks&nbsp;<a href="/feed/{{ feed_uid }}/Dupcheck">check for duplicate titles</a></td></tr>
+{% elif dupcheck == 1 %}
+  <tr class="odd"><td>Duplicate<br>title<br>checking</td><td>Duplicate checking in effect&nbsp;<a href="/feed/{{ feed_uid }}/NoDupcheck">disable duplicate checking</a></td></tr>
+{% else %}
+  <tr class="odd"><td>Duplicate<br>title<br>checking</td><td>Unknown&nbsp;<a href="/feed/{{ feed_uid }}/NoDupcheck">disable duplicate checking</a></td></tr>
+{% endif %}
+  <tr class="even"><td>Refresh</td><td><a href="/feed/{{ feed_uid }}/refresh">Manually refresh</a> feed</td></tr>
+  <tr class="odd"><td>Catch-up</td><td><a href="/feed/{{ feed_uid }}/catchup">Mark as read</a> {{ unread }} unread articles</td></tr>
+  <tr class="even"><td>Purge</td><td><a href="/feed/{{ feed_uid }}/catchup?reload=Y&feed_uid=">Purge and reload</a> {{ unread }} unread articles</td></tr>
+  <tr class="odd"><td>Debug</td><td><a href="/feed_debug?feed_uid={{ feed_uid }}">Dump the parsed feed</a>, useful for writing <a href="/rules">filtering rules</a></td></tr>
+  <tr class="even"><td>Hard purge</td><td><a href="/feed/{{ feed_uid }}/hardpurge">Completely delete</a> {{ total }} articles
+{% if interesting > 0 %}
+  (including {{ interesting }} flagged as interesting)
+{% endif %}
+  </td></tr>
+</table>
+<br>
+{% if top_rules %}
+<h2>Top filter rules</h2>
+<table>
+  <tr><th>Rule</th><th>Type</th><th>Text</th><th>Filtered articles</th></tr>
+  {% for uid, rtype, text, count in top_rules %}
+  <tr valign="top" class="{{ loop.cycle('odd', 'even') }}" id="top_rule_{{ uid }}">
+    <td>{{ uid }}</td>
+    <td>{{ rtype }}</td><td>{{ text }}</td>
+    <td><a href="/view?show=filtered&feed_uid={{ feed_uid }}&rule_uid={{ uid }}">{{ count }} filtered articles</a></td>
+  </tr>
+  {% endfor %}
+  {% endif %}
+</table>
+
+{{ rules_common.rule_tabset(feed_uid, feed_rules) }}
+{% endblock CONTENT %}

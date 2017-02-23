@@ -1,0 +1,302 @@
+{% extends "menubar.html" %}
+
+{% block EXTRACSS %}
+<style>
+input#stem {
+  background-color: #FFFFCC;
+}
+</style>
+{% endblock EXTRACSS %}
+
+{% block TITLE %}Temboz - {{ item_desc }} items{% endblock %}
+
+{% block EXTRAHEAD %}
+<meta name="robots" content="noarchive,noindex,follow,nocache">
+<meta name="viewport" content="initial-scale=1.0">
+<script src="/static/temboz.js"></script>
+<script>
+  hidden = Array();
+  var i = new Image();
+  function webop(op, uid) {
+    $.get('/xmlfeedback/' + op + '/' + rand() + '/' + uid + '.xml');
+  }
+  function refresh_counter() {
+    var articles = $("div.article:visible");
+    if(articles.size() < {{ overload_threshold }}) {
+      $("b#count").html(String(articles.size()));
+    } else {
+      $("b#count").html(String(articles.size()) + "+");
+    }
+    return articles;
+  }
+  function set_context(context) {
+    if (context == "word") {
+      $('.ui-dialog-content input[name="stem"]').show();
+      $('.ui-dialog-content input[name="kw"]').hide();
+    } else {
+      $('.ui-dialog-content input[name="stem"]').hide();
+      $('.ui-dialog-content input[name="kw"]').show();
+    }
+    if (context == "tag" || context == "author") {
+      $('.ui-dialog-content select[name="target"]').hide();
+      $('.ui-dialog-content td:first').html(capitalize(context));
+    } else {
+      $('.ui-dialog-content select[name="target"]').show();
+      if(context == "word") {
+        $('.ui-dialog-content td:first').html("Keyword");
+      } else if(context == "exactword") {
+        $('.ui-dialog-content td:first').html("Keyword");
+      } else if(context == "all") {
+        $('.ui-dialog-content td:first').html("Keywords");
+      } else {
+        $('.ui-dialog-content td:first').html("Phrase");
+      }
+    }
+  }
+  function kw_dialog(id, kw, context) {
+    var tmpl = $("div#kw_form_tmpl");
+    var body = '<div title="Add a keyword rule">' + tmpl.html() + '</div>';
+    body = body.replace(/__item_uid__/, id);
+    body = body.replace(/__feed_title__/, $('#feed' + id + ':first').text());
+    $(body).appendTo("body").dialog({
+      buttons: {
+        "Add": function() {
+          $(this).find("form").ajaxSubmit();
+          $(this).dialog("destroy");
+        },
+        "Cancel": function() {
+          $(this).dialog("destroy");
+          $(this).remove();
+        }
+      },
+      width: 500,
+      height: 250
+      // modal: true,
+      //   overlay: {
+      //     opacity: 0.5,
+      //     background: "black"
+      //   }
+    }).find(":text").val(kw);
+    $('.ui-dialog-content input[name="kw"]').hide();
+    $.get("/stem", {"q": kw}, function(data) {
+      $('.ui-dialog-content input[name="stem"]').val($.trim(data));
+    });
+    $('.ui-dialog-content select[name="match"]').change(function() {
+      var context = $(this).val();
+      set_context(context);
+    })
+      if(kw.search(" ") != -1 || kw.search("-") != -1) {
+        $('.ui-dialog-content select[name="match"]').val('phrase_lc');
+        set_context("phrase_lc");
+      } else {
+        if (!context) {
+          $('.ui-dialog-content input[name="kw"]').hide();
+        }
+      }
+    if(context) {
+      $('.ui-dialog-content select[name="match"]').val(context.toLowerCase());
+      $('.ui-dialog-content select[name="target"]').hide();
+      $('.ui-dialog-content :checkbox').val(["feed_only"]);
+      $('.ui-dialog-content :checkbox').prop("checked", true);
+      $('.ui-dialog-content td:first').html(context);
+      set_context(context);                       
+    }
+  }
+  function hide(id) {
+    var elt = document.getElementById('art' + id);
+    if(elt.style.backgroundColor == "yellow") {
+      elt.style.backgroundColor = "";
+      webop('basic', id);
+      refresh_counter();
+    } else {
+      var kw = $.trim(get_selection());
+      hidden[hidden.length] = elt;
+      elt.style.display = "none";
+      if(kw!="" && elt.innerHTML.indexOf(kw)!=-1) {
+        kw_dialog(id, kw);
+      } else {
+        var tags = $(elt).find("span.author.tag.highlighted").html();
+        if(tags) {
+          kw_dialog(id, tags, 'Author');
+        } else {
+          var tags = $(elt).find("span.item.tag.highlighted").html();
+          if(tags) {
+            kw_dialog(id, tags, 'Tag');
+          }
+        }
+      }
+      webop('demote', id);
+      refresh_counter();
+    }
+  }
+  function collapseToggle(id) {
+    var elt = document.getElementById('content' + id);
+    if(elt.style.display != "none") {
+      elt.style.display = "none";
+      document.getElementById('ctarrow' + id).innerHTML = '&#9654;&nbsp;';
+    } else {
+      elt.style.display = "block";
+      document.getElementById('ctarrow' + id).innerHTML = '&#9660;&nbsp;';
+    }
+  }
+  function toggle_tags(id) {
+    $("div#tags_" + id).toggle();
+  }
+  function toggle_tag() {
+    $(this).toggleClass("highlighted");
+  }
+  function highlight(id) {
+    var elt = document.getElementById('art' + id);
+    elt.style.backgroundColor = "yellow";
+    webop('promote', id);
+    refresh_counter();
+  }
+  function unhide_all() {
+    for(i=0; i<hidden.length; i++) {
+      elt = hidden[i];
+      elt.style.display = "block";
+      webop('basic', elt.id.substring(3));
+      refresh_counter();
+    }
+    hidden = Array();
+  }
+  function unhide_last() {
+    if (hidden.length > 0) {
+      elt = hidden[hidden.length - 1];
+      elt.style.display = "block";
+      webop('basic', elt.id.substring(3));
+      refresh_counter();
+      hidden.length = hidden.length - 1
+    }
+  }
+  function undo(event) {
+    if (event.alreadyHandled) {
+      return;
+    }
+    unhide_last();
+    event.alreadyHandled = true;
+  }
+  function toggle(item) {
+    document.items[item].checked = !document.items[item].checked;
+  }
+  function assign_column() {
+    var height = $(this).height();
+    var left = $("div#col1").height();
+    var right = $("div#col2").height();
+
+    if(Math.abs(left + height - right) > Math.abs(right + height - left)) {
+      $(this).appendTo("div#col2");
+    } else {
+      $(this).appendTo("div#col1");
+    }
+  }
+  $(document).ready(function() {
+    $("span.tag").click(toggle_tag);
+    $(document).bind("keydown", "ctrl+z", undo);
+    $(document).bind("keydown", "meta+z", undo);
+    $(document).bind("keydown", "ctrl+meta+z", undo);
+    refresh_counter();
+    var articles = $("div.article");
+    if($("body").width() >= 760) {
+      articles.each(assign_column);
+    }
+  });
+  init_popups();
+</script>
+{% endblock EXTRAHEAD %}
+
+{% block BODYOPTIONS %} class="unpadded"{% endblock %}
+
+{% block CONTEXT_MENU %}
+<li><span><b id="count">?</b></span></li>
+<li><span class="button"><a href="#">{{ item_desc }}</a></span>
+  <ul>{{ ratings_list|safe }}</ul>
+</li>
+<li><span class="non-iphone">sorted by</span></li>
+<li><span class="button"><a href="#">{{ sort_desc }}</a></span>
+  <ul>{{ sort_list|safe }}</ul>
+</li>
+<li><span class="button"><a href="#">More</a></span>
+  <ul>
+    <li><a href="javascript:unhide_last();">Undo last hide (Ctrl-Z)</a></li>
+    <li><a href="javascript:unhide_all();">Undo all hides</a></li>
+  </ul>
+</li>
+{% endblock CONTEXT_MENU %}
+
+{% block CONTENT %}
+<!-- Form used for adding keyword filtering rules -->
+<div id="kw_form_tmpl" style="display:none">
+  <form name="kw_form" method="POST" action="/rule/add">
+    <table>
+      <tr><td>Keyword</td>
+      <td><input name="kw" id="kw" size="30">
+          <input name="stem" id="stem" size="30"></td></tr>
+      <tr><td>Match type</td><td><select name="match">
+      <option value="word" selected>Any words</option>
+      <option value="exactword">Any words (exact match)</option>
+      <option value="all">All words</option>
+      <option value="phrase_lc">Phrase</option>
+      <option value="phrase">Phrase (case-sensitive)</option>
+      <option value="author">Author</option>
+      <option value="tag">Tag</option>
+      </select></td></tr>
+      <tr><td>Match on</td><td><select name="target">
+      <option value="union" selected>Title or content</option>
+      <option value="title">Title only</option>
+      <option value="content">Content only</option>
+      </select></td></tr>
+      <tr><td>For <em>__feed_title__</em> only</td><td>
+      <input name="feed_only" type="checkbox">
+      <input name="item_uid" type="hidden" value="__item_uid__"></td></tr>
+      {# <tr><td>Apply retroactively</td><td><input name="retroactive"
+         type="checkbox"></td></tr> #}
+    </table>
+  </form>
+</div>
+<!-- Column placeholders will be filled by assign_column after DOM has loaded -->
+<div id="col1" class="col1"></div>
+<div id="col2" class="col2"></div>
+<div style="clear: both;" />
+<script language="JavaScript">
+if($("body").width() < 760) {
+  document.write('<div id="initial">');
+} else {
+  document.write('<div id="initial" class="col1">');
+}
+</script>
+
+{% for i in items %}
+<div class="article" id="art{{ i.uid }}">
+  <div class="headline">
+    <span class="buttons">
+      <span class="down" onclick="hide('{{ i.uid }}')">&#9660;</span>
+      <span class="up" onclick="highlight('{{ i.uid }}')">&#9650;</span>
+    </span>
+    <span class="ctarrow" id="ctarrow{{ i.uid }}"
+          onclick="collapseToggle('{{ i.uid }}')">&#9660;&nbsp;</span>
+    <a href="{{ i.redirect }}" class="headline" target="_blank"
+       title="by {{ i.creator }}, cached at {{ i.loaded }}">{{i.title|safe}}</a>
+    <br><a href="/feed/{{ i.feed_uid }}" title=""
+           class="source screen" id="feed{{ i.uid }}">{{ i.feed_title }}</a>
+    <a href="{{ i.feed_html }}" title="" class="source print"
+       id="feedprint{{ i.uid }}">{{ i.feed_title }}</a>
+    {% if not request.args.feed_uid %}
+    <a href="/view?feed_uid={{ i.feed_uid }}&show={{ show }}"
+       class="ff" target="_blank">&#9658;</a>
+    {% endif %}
+    {{ i.since_when }}
+    {{ i.tag_call|safe }}
+    <a href="/item/{{ i.uid }}/edit" class="screen">edit</a>
+    <br>
+  </div>{{ i.tag_info|safe }}
+  <div class="content" id="content{{ i.uid }}">
+    {{ i.content|safe }}
+  </div>
+</div>
+{% endfor %}
+</div>
+<!-- If we want to put stuff at the page footer, make sure we do not collide -->
+<!-- with either column -->
+<div style="clear: both;" />
+{% endblock CONTENT %}

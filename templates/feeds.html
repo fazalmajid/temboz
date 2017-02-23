@@ -1,0 +1,99 @@
+{% extends "menubar.html" %}
+
+{% block TITLE %}Temboz - Feed details{% endblock %}
+{% block BODYOPTIONS %} class="unpadded"{% endblock %}
+{% block EXTRAHEAD %}
+<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+<script language="JavaScript" src="/static/temboz.js"></script>
+{% endblock %}
+
+{% block CONTENT %}
+<table class="feeds">
+  <thead class="fixed">
+    <tr class="header">
+{# ########################################################################
+## Produce column headings with appropriate sort order
+## XXX should indicate the sort order for columns using CSS background-image
+#}
+{% for title in ['Feed Title', 'Last modified', 'Unread', 'Filtered', 'Interesting', 'SNR', 'Total'] %}
+  {% set col = title.lower().replace(' ', '_') %}
+  {% if col == sort_key %}
+    {% set css = ' class="sort' + order + '"' %}
+    {% set alt_order = {'ASC': 'DESC', 'DESC': 'ASC'}[order] %}
+  {% else %}
+    {% set css = ' class="nonsort"' %}
+    {% if col in ['feed_title', 'last_modified'] %}
+      {% set alt_order = 'ASC' %}
+    {% else %}
+      {% set alt_order = 'DESC' %}
+    {% endif %}
+  {% endif %}
+    <th{{ css }}><a href="feeds?sort={{ col }}&order={{ alt_order }}">{{ title }}</a></th>
+{% endfor %}
+    <th class="nonsort">Actions</th></tr>
+  </thead>
+  <tbody>
+{# ########################################################################
+##   Loop over feeds
+#}
+{% for feed_uid, feed_title, feed_html, feed_xml, delta_t, interesting, unread, uninteresting, filtered, total, snr, status, private, exempt, errors, has_filter in rows %}
+  {% if not total %}
+    {% set total = 0 %}
+  {% else %}
+    {% set total = int(total) %}
+  {% endif %}
+  {% set flags = ['suspended'] * status + ['private'] * private + ['exempt'] * exempt + ['filtered'] * has_filter %}
+  {% if flags %}
+    {% set flags = ' (' + ', '.join(flags) + ')' %}
+  {% else %}
+    {% set flags = '' %}
+  {% endif %}
+  {# Flag feeds with errors #}
+  {% if errors > 10 %}
+    {% set error_flag = ' class="error"' %}
+  {% elif errors > 0 %}
+    {% set error_flag = ' class="small-error"' %}
+  {% else %}
+    {% set error_flag = '' %}
+  {% endif %}
+    <tr valign="top" class="{{ loop.cycle('odd', 'even') }}">
+      <td>
+        <a href="{{ feed_html }}">{{ feed_title }}</a>&nbsp;&nbsp;
+        <a{{ error_flag }} href="{{ feed_xml }}">(XML)</a>
+        <a href="feed/{{ feed_uid }}">(details)</a>
+        {{ flags }}
+      </td>
+      <td nowrap align="right">{{ since(delta_t) }}</td>
+      <td nowrap align="right">
+        <a href="view?feed_uid={{ feed_uid }}&show=unread">{{ unread }}</a>
+      </td>
+      <td nowrap align="right">
+        <a href="view?feed_uid={{ feed_uid }}&show=filtered">{{ filtered }}</a>
+      </td>
+      <td nowrap align="right">
+        <a href="view?feed_uid={{ feed_uid }}&show=up">{{ interesting }}</a>
+      </td>
+      <td nowrap align="right">{{ int(100 * snr) }}%</td>
+      <td nowrap align="right">
+        <a href="view?feed_uid={{ feed_uid }}&show=all">{{ total }}</a>
+      </td>
+      <td nowrap>
+  {% if unread > 0 %}
+        <a href="/feed/{{ feed_uid }}/catchup?back=/feeds">catch up</a>
+  {% endif %}
+      </td>
+    </tr>
+{% endfor %}
+    <tr class="footer">
+      <td>Total</td>
+      <td></td>
+      <td align="right">{{ sum_unread }}</td>
+      <td align="right">{{ sum_filtered }}</td>
+      <td align="right">{{ sum_interesting }}</td>
+      <td></td>
+      <td align="right">{{ sum_total }}</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+{% endblock %}

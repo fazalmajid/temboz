@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import logging, urllib2
+import logging, requests, json, urlparse
 import param, normalize, util
 
 class ExpiredToken(Exception):
@@ -9,12 +9,15 @@ def fb_post(token, msg, url):
   print >> param.activity, 'FACEBOOK', msg, url
   msg = normalize.decode_entities(msg).encode('utf-8')
   fb_url = 'https://graph.facebook.com/me/feed'
-  data = 'access_token=' + token + '&message=' + urllib2.quote(msg) \
-         + '&link=' + urllib2.quote(url)
+  data = dict(urlparse.parse_qsl('access_token=' + token))
+  data['message'] = msg
+  data['link'] = url
   try:
-    req = urllib2.urlopen(fb_url, data)
-    return req.read()
-  except urllib2.HTTPError as e:
+    req = requests.post(fb_url, data=data)
+    out = json.loads(req.text)
+    print >> param.activity, 'FACEBOOK OUT', url, out
+    return out
+  except (ValueError, requests.exception.RequestException) as e:
     print >> param.log, '$' * 72
     print >> param.log, 'FACEBOOK API ERROR'
     print >> param.log, 'FB_URL = %r' % fb_url
@@ -27,15 +30,15 @@ def fb_post(token, msg, url):
     raise
 
 def fb_feed(token):
-  fb_url = 'https://graph.facebook.com/me/home?access_token=' + token
+  fb_url = 'https://graph.facebook.com/me/home'
+  data = dict(urlparse.parse_qsl('access_token=' + token))
   try:
-    req = urllib2.urlopen(fb_url)
-    return req.read()
-  except urllib2.HTTPError as e:
+    req = requests.get(fb_url, params=data)
+    return req.text
+  except requests.exceptions.RequestException as e:
     print >> param.log, '$' * 72
     print >> param.log, 'FACEBOOK API ERROR'
-    print >> param.log, 'FB_URL = %r' % fb_url
-    print >> param.log, 'FB_DATA = %r' % data
-    print >> param.log, 'INFO = %r' % e.read()
+    print >> param.log, 'TOKEN = %r' % token
+    print >> param.log, 'INFO = %r' % e
     print >> param.log, '$' * 72
     raise

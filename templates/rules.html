@@ -1,0 +1,14 @@
+{% extends "menubar.html" %}
+{% import "rules_common.html" as rules_common %}
+
+{% block TITLE %}Temboz - Filtering rules{% endblock %}
+{% block BODYOPTIONS %} class="unpadded"{% endblock %}
+{% block EXTRAHEAD %}
+    <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    <script language="JavaScript" src="/static/temboz.js"></script>
+{{ rules_common.rule_head() }}
+{% endblock %}
+
+{% block CONTENT %}
+{{ rules_common.rule_tabset(None, feed_rules) }}
+{% endblock CONTENT %}

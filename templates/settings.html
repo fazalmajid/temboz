@@ -1,0 +1,358 @@
+{% extends "menubar.html" %}
+
+{% block TITLE %}Temboz - Settings{% endblock %}
+{% block BODYOPTIONS %} class="unpadded"{% endblock %}
+{% block EXTRAHEAD %}
+    <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    <script language="JavaScript" src="/static/temboz.js"></script>
+    <script src="/static/dygraph-combined.js"></script>
+    <style type="text/css">
+    form.yappi, form#yappi_refresh, form#debug {
+      display: inline;
+    }
+    .yappi {
+      display: none;
+    }
+    div#settings div#yappi_stats table td {
+      padding: 1px;
+    }
+    div#settings div#statistics table td {
+      padding: 0;
+    }
+    div#yappi_stats table th {
+      background: #bfff80;
+      padding: 6px;
+      text-align: center;
+    }
+    .dygraph-legend > span {
+      display: none;
+    }
+    .dygraph-legend > span.highlight {
+      display: inline;
+    }
+    </style>
+    <script type="text/javascript">
+    function do_compressor() {
+      if($(this).html() == "gzip") {
+        $("input#c1").val("gzip -9c");
+        $("input#c2").val("gz");
+      }
+      if($(this).html() == "bzip2") {
+        $("input#c1").val("bzip2 -9c");
+        $("input#c2").val("bz2");
+      }
+      if($(this).html() == "reset") {
+        $("input#c1").val("");
+        $("input#c2").val("");
+      }
+    }
+    function yappi(event) {
+      event.stopPropagation();
+      var op = this.id.substring(6);
+      $.get('/xmlfeedback/yappi/' + rand() + '/' + op, load_yappi);
+      return false;
+    }
+    function load_yappi() {
+      $.get('/profile?rand=' + rand(), function(data) {
+        $("div#yappi_data").html(data);
+      });
+      return false;
+    }
+    function load_stats() {
+      // Graphs
+      opts = {
+        highlightCircleSize: 2,
+        strokeWidth: 1,
+        strokeBorderWidth: 1,
+        highlightSeriesOpts: {
+          strokeWidth: 3,
+          strokeBorderWidth: 1,
+          highlightCircleSize: 5,
+        }
+      };
+      dg = new Dygraph(document.getElementById("stats"), "/stats", opts);
+    }
+    $(document).ready(function() {
+      $("form.yappi").hide();
+      $("div#settings").tabs(
+        {
+    {#    activate: function(event, ui) { #}
+    {#    }                               #}
+      });
+      $("form.yappi").submit(yappi);
+      $("form#yappi_refresh").submit(load_yappi);
+      load_stats();
+    });
+    init_popups();
+    $(document).ready(function() {
+      $("div#popup_compressor a").click(do_compressor);
+      load_yappi();
+    });
+    </script>
+{% endblock %}
+
+{% block CONTENT %}
+  {% if status %}
+<p>{{ status }}</p>
+  {% endif %}
+<div id="settings" class="ui-tabs">
+  <ul>
+    <li><a href="#statistics"><span>Stats</span></a></li>
+    <li><a href="#refresh"><span>Refresh</span></a></li>
+    <li><a href="#passwd"><span>Password</span></a></li>
+    <li><a href="#server"><span>Server</span></a></li>
+    <li><a href="#limits"><span>Limits</span></a></li>
+    <li><a href="#timescale"><span>Time scale</span></a></li>
+    <li><a href="#confirm"><span>Confirmation</span></a></li>
+    <li><a href="#facebook"><span>Facebook</span></a></li>
+    <li><a href="#backup"><span>Backups</span></a></li>
+    <li><a href="#defaults"><span>Reset</span></a></li>
+    <li><a href="#profiler"><span>Profiler</span></a></li>
+    <li><a href="#maint"><span>Maintenance</span></a></li>
+    <li><a href="#status"><span>Info</span></a></li>
+  </ul>
+  <div id="statistics" class="ui-tabs">
+    <h2>Statistics</h2>
+    <div id="stats" style="width:100%; height:300px;" class="stats"></div>
+    <p>Zoom: click-drag, Pan: shift-click-drag, Restore: double-click</p>
+    <h2>Top filters</h2>
+    <table>
+    <tr><th>Rule</th><th>Type</th><th>Text</th><th>Last 7 days</th>
+      <th>Prev 7 days</th></tr>
+    {% for id, type, text, feed, title, last_7, prev_7, min_uid, max_uid in stats %}
+    <tr class="{{ loop.cycle('odd', 'even') }}">
+      <td>{{ id }}</td>
+      <td>{{ type }}</td>
+      <td>{{ text}}{% if feed != -1 %} (<a href="feed_info?feed_uid={{ feed }}">{{ title }}</a>){% endif %}</td>
+      <td align="right"><a href="view?show=filtered&rule_uid={{ id }}&min={{ min_uid }}&max={{ max_uid }}{% if feed != -1 %}&feed_uid={{ feed }}{% endif %}">{{ last_7 }}</a></td>
+      <td align="right">{{ prev_7 }}</td>
+    </tr>
+    {% endfor %}
+    </table>
+  </div>
+  <div id="refresh" class="ui-tabs-hide">
+    <p>Manually refresh all feeds</p>
+    <form method="POST"><input type="hidden" name="op" value="refresh">
+      <input type="submit" value="Manual refresh"></td>
+    </form>
+  </div>
+  <div id="passwd" class="ui-tabs-hide">
+    <form method="POST"><input type="hidden" name="op" value="passwd">
+      <table>
+      <tr><td>login</td><td><input name="login"></td></tr>
+      <tr><td>old password</td>
+	<td><input type="password" name="oldpass"></td></tr>
+      <tr><td>password</td><td><input type="password" name="pass"></td></tr>
+      <tr><td>confirm</td><td><input type="password" name="pass2"></td></tr>
+      <tr>
+        <td colspan="2" align="center"><input type="submit" value="Set"></td>
+      </tr>
+      </table>
+    </form>
+  </div>
+  <div id="server" class="ui-tabs-hide">
+    <form method="POST"><input type="hidden" name="op" value="server">
+      <table>
+      <tr><td>Bind address</td><td><input name="bind_ip"></td>
+        <td>leave blank to listen on all IPs</td></tr>
+      <tr><td>TCP port</td><td><input name="port"></td></tr>
+      <tr>
+        <td colspan="2" align="center"><input type="submit" value="Set"></td>
+      </tr>
+      </table>
+    </form>
+  </div>
+  <div id="limits" class="ui-tabs-hide">
+    <form method="POST"><input type="hidden" name="op" value="limits">
+      <table>
+      <tr><td>concurrency</td><td><input name="feed_concurrency"></td>
+        <td>number of worker threads spawned to fetch feeds in parallel</td>
+      </tr>
+      <tr><td>items per page</td><td><input name="overload"></td>
+        <td>maximum number of articles to show on a page</td></tr>
+      <tr><td>refresh interval</td><td><input name="refresh_interval"></td>
+        <td>interval in seconds between page refreshes</td></tr>
+      <tr>
+        <td colspan="2" align="center"><input type="submit" value="Set"></td>
+      </tr>
+      </table>
+    </form>
+  </div>
+  <div id="timescale" class="ui-tabs-hide">
+    <form method="POST"><input type="hidden" name="op" value="timescale">
+      <table>
+      <tr><td>SNR decay half-life</td><td><input name="decay"></td>
+        <td>articles' contribution to the
+	<a href="http://www.temboz.com/help/snr">signal to noise ratio</a> is
+	halved after this interval</td></tr>
+      <tr><td>garbage collection 1</td><td><input name="garbage_contents"></td>
+        <td>time in days after which uninteresting article contents are
+	cleared to free up disk space</td></tr>
+      <tr><td>garbage collection 2</td><td><input name="garbage_items"></td>
+        <td>time in days after which uninteresting article entries (including
+	title, link and tags) are purged to free up disk space</td></tr>
+      <tr><td>backup hour</td><td><input name="backup_hour"></td>
+        <td>hour of day (24-hour) during which backup occurs</td></tr>
+      <tr>
+        <td colspan="2" align="center"><input type="submit" value="Set"></td>
+      </tr>
+      </table>
+    </form>
+  </div>
+  <div id="confirm" class="ui-tabs-hide">
+    <form method="POST"><input type="hidden" name="op" value="confirm">
+      <table>
+      <tr><td>confirm on catch-up?</td>
+        <td><input type="checkbox" name="catch_up_confirm"></td>
+      </tr>
+      <tr><td>confirm on hard purge?</td>
+        <td><input type="checkbox" name="hard_purge_confirm"></td>
+      </tr>
+      <tr>
+        <td colspan="2" align="center"><input type="submit" value="Set"></td>
+      </tr>
+      </table>
+    </form>
+  </div>
+  <div id="facebook" class="ui-tabs-hide">
+    <p>To enable sharing with Facebook, you need to:</p>
+    <ol>
+      <li>Sign up for Facebook's <a
+        href="http://developers.facebook.com/">developer program</a></li>
+      <li>Register Temboz as an app</li>
+      <li>Obtain an App ID and API Key, and list them below</li>
+      <li><a href="facebook">Authorize</a> Temboz using OAUTH 2.0 to post on
+        your behalf</li>
+    </ol>
+    <form method="POST"><input type="hidden" name="op" value="facebook">
+      <table>
+      <tr><td>Facebook App ID</td>
+        <td><input name="app_id" value="{{ param_settings.get('fb_app_id', '') }}"></td>
+      </tr>
+      <tr><td>Facebook API Key</td>
+        <td><input name="api_key" value="{{ param_settings.get('fb_api_key', '') }}"></td>
+      </tr>
+      <tr><td>Facebook App Secret</td>
+        <td><input name="fb_secret" value="{{ param_settings.get('fb_secret', '') }}"></td>
+      </tr>
+      <tr>
+        <td colspan="2" align="center"><input type="submit" value="Set"></td>
+      </tr>
+    {% if param_settings.get('fb_token', '') %}
+      <tr>
+        <td>Authorization</td><td>Successful. <a href="settings?op=del_token">Erase</a> token <tt>{{ param_settings.get('fb_token', '') }}</tt></td>
+      </tr>
+    {% else %}
+      <tr>
+        <td>Authorization</td><td>Not performed yet: <a href="facebook">Authorize now</a></td>
+      </tr>
+    {% endif %}
+      </table>
+    </form>
+  </div>
+  <div id="backup" class="ui-tabs-hide">
+    <form method="POST"><input type="hidden" name="op" value="backup">
+      <table>
+      <tr><td>backup hour</td><td><input name="backup_hour"></td>
+        <td>hour of day (24-hour) during which backup occurs</td></tr>
+      <tr>
+        <td>how many daily backups to keep</td>
+	<td><input name="daily_backups"></td>
+      </tr>
+      <tr>
+        <td>compression utility</td>
+	<td><input id="c1" name="backup_compressor"></td>
+        <td rowspan="2">
+	  <a id="compressor" class="callout"><u>compressors</u>
+	  <small>&#9660;</small></a>
+	  <div id="popup_compressor" class="popup">
+	    <ul>
+	      <li><a href="#">gzip</a></li>
+	      <li><a href="#">bzip2</a></li>
+	      <hr>
+	      <li><a href="#">reset</a></li>
+	    </ul>
+	  </div>
+	</td>
+      </tr>
+      <tr>
+        <td>compressed backup extension</td>
+	<td><input id="c2" name="backup_extension"></td>
+      </tr>
+      <tr>
+        <td colspan="2" align="center"><input type="submit" value="Set"></td>
+      </tr>
+      </table>
+    </form>
+  </div>
+  <div id="defaults" class="ui-tabs-hide">
+    <form method="POST"><input type="hidden" name="op" value="defaults">
+      <table>
+      <tr>
+        <td>Press the button below to reset all settings (other than the
+	password) to their default values.</td>
+      </tr>
+      <tr>
+        <td><input type="submit" value="Reset to defaults"></td>
+      </tr>
+      </table>
+    </form>
+  </div>
+  <div id="profiler" class="ui-tabs-hide">
+    <form id="yappi_start" class="yappi">
+      <input type="submit" value="Start Yappi">
+    </form>
+    <form id="yappi_stop" class="yappi">
+      <input type="submit" value="Suspend Yappi">
+    </form>
+    <form id="yappi_clear_stats" class="yappi">
+      <input type="submit" value="Reset Yappi stats">
+    </form>
+    <form id="yappi_refresh">
+      <input type="submit" value="Refresh Yappi stats">
+    </form>
+    <div id="yappi_data"></div>
+  </div>
+  <div id="maint" class="ui-tabs-hide">
+    <form method="POST"><input type="hidden" name="op" value="maint">
+      <table>
+      <tr>
+        <td>Press the button below to purge and rebuild the stats table. This
+        will speed up the all feeds view and sort operations using SNR</td>
+      </tr>
+      <tr>
+        <td><input type="submit" value="Rebuild stats"></td>
+      </tr>
+      </table>
+    </form>
+  </div>
+  <div id="status" class="ui-tabs-hide">
+    <table>
+    <tr>
+      <td>Executable</td><td>{{ executable }}</td>
+    </tr>
+    <tr>
+      <td>Started</td><td>{{ started }}</td>
+    </tr>
+    <tr>
+      <td>Uptime</td><td>{{ uptime }}</td>
+    </tr>
+    <tr>
+      <td>Python version</td><td>{{ py_version }}</td>
+    </tr>
+    <tr>
+      <td>Verbose logging</td><td>{{ param_debug }}
+	<form id="debug" method="POST" action="#status">
+          <input type="hidden" name="op" value="debug">
+         {% if param_debug %}
+	  <input name="debug" type="submit" value="Disable verbose logging">
+         {% else %}
+	  <input name="debug" type="submit" value="Enable verbose logging">
+         {% endif %}
+	</form>
+      </td>
+    </tr>
+    </table>
+  </div>
+</div>
+{% endblock CONTENT %}

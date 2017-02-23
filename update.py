@@ -1,11 +1,9 @@
 import sys, hashlib, time, threading, socket, Queue, signal, os, re
-import urllib2, urlparse, HTMLParser, random
-import param, feedparser, normalize, util, transform, singleton, filters
+import urlparse, HTMLParser, random, sqlite3, requests
+import param, feedparser, normalize, util, transform, filters, dbop
 import social
 
-sqlite = singleton.sqlite
-
-socket.setdefaulttimeout(10)
+#socket.setdefaulttimeout(10)
 feedparser.USER_AGENT = param.user_agent
 
 class ParseError(Exception):
@@ -24,6 +22,7 @@ ratings = [
   ('up',       'interesting',   'Interesting only',  'item_rating > 0'),
   ('filtered', 'filtered',      'Filtered only',     'item_rating = -2')
 ]
+ratings_dict = dict((ratings[i][0], i) for i in range(len(ratings)))
 sorts = [
   ('created',  'Article date',  'Article date',      'item_created DESC'),
   ('seen',     'Cached date',   'Cached date',       'item_uid DESC'),
@@ -56,7 +55,7 @@ class AutoDiscoveryHandler(HTMLParser.HTMLParser):
       if attrs.get('type') == 'application/atom+xml' and 'href' in attrs:
         self.autodiscovery['atom'] = attrs['href']
   def feed_url(self, page_url):
-    page_data = urllib2.urlopen(page_url).read()
+    page_data = requests.get(page_url).text
     self.feed(page_data)
     # Atom has cleaner semantics than RSS, so give it priority
     url = self.autodiscovery.get(
@@ -69,18 +68,18 @@ def re_autodiscovery(url):
   autodiscovery_re = re.compile(
     '<link[^>]*rel="alternate"[^>]*'
     'application/(atom|rss)\\+xml[^>]*href="([^"]*)"')
-  candidates = autodiscovery_re.findall(urllib2.urlopen(url).read())
+  candidates = autodiscovery_re.findall(requests.get(url).text)
   candidates.sort()
   return candidates
 
 def add_feed(feed_xml):
   """Try to add a feed. Returns a tuple (feed_uid, num_added, num_filtered)"""
-  from singleton import db
-  c = db.cursor()
-  feed_xml = feed_xml.replace('feed://', 'http://')
-  try:
+  with dbop.db() as db:
+    c = db.cursor()
+    feed_xml = feed_xml.replace('feed://', 'http://')
     # verify the feed
-    f = feedparser.parse(feed_xml)
+    r = requests.get(feed_xml)
+    f = feedparser.parse(r.text)
     # CVS versions of feedparser are not throwing exceptions as they should
     # see:
     # http://sourceforge.net/tracker/index.php?func=detail&aid=1379172&group_id=112328&atid=661937
@@ -106,7 +105,8 @@ def add_feed(feed_xml):
           raise AutodiscoveryParseError
       if not feed_xml:
         raise ParseError
-      f = feedparser.parse(feed_xml)
+      r = requests.get(feed_xml)
+      f = feedparser.parse(r.text)
       if not f.feed:
         raise ParseError
     # we have a valid feed, normalize it
@@ -114,14 +114,14 @@ def add_feed(feed_xml):
     feed = {
       'xmlUrl': f['url'],
       'htmlUrl': str(f.feed['link']),
-      'etag': f.get('etag'),
+      'etag': f.headers.get('Etag'),
       'title': f.feed['title'].encode('ascii', 'xmlcharrefreplace'),
       'desc': f.feed['description'].encode('ascii', 'xmlcharrefreplace')
       }
     for key, value in feed.items():
       if type(value) == str:
         feed[key] = value
-    filters.load_rules(db, c)
+    filters.load_rules(c)
     try:
       c.execute("""insert into fm_feeds
       (feed_xml, feed_etag, feed_html, feed_title, feed_desc) values
@@ -130,97 +130,78 @@ def add_feed(feed_xml):
       num_added, num_filtered = process_parsed_feed(db, c, f, feed_uid)
       db.commit()
       return feed_uid, feed['title'], num_added, num_filtered
-    except sqlite.IntegrityError, e:
+    except sqlite3.IntegrityError, e:
       if 'feed_xml' in str(e):
         db.rollback()
         raise FeedAlreadyExists
       else:
         db.rollback()
         raise UnknownError(str(e))
-  finally:
-    c.close()
 
 def update_feed_xml(feed_uid, feed_xml):
   """Update a feed URL and fetch the feed. Returns the number of new items"""
   feed_uid = int(feed_uid)
 
-  f = feedparser.parse(feed_xml)
+  r = requests.get(feed_xml)
+  f = feedparser.parse(r.text)
   if not f.feed:
     raise ParseError
   normalize.normalize_feed(f)
 
-  from singleton import db
-  c = db.cursor()
-  clear_errors(db, c, feed_uid, f)
-  try:
+  with dbop.db() as db:
+    c = db.cursor()
+    clear_errors(db, c, feed_uid, f)
     try:
-      c.execute("update fm_feeds set feed_xml=?, feed_html=? where feed_uid=?",
+      c.execute("""update fm_feeds set feed_xml=?, feed_html=?
+      where feed_uid=?""",
                 [feed_xml, str(f.feed['link']), feed_uid])
-    except sqlite.IntegrityError, e:
+    except sqlite3.IntegrityError, e:
       if 'feed_xml' in str(e):
         db.rollback()
         raise FeedAlreadyExists
       else:
         db.rollback()
         raise UnknownError(str(e))
-    filters.load_rules(db, c)
+    filters.load_rules(c)
     num_added = process_parsed_feed(db, c, f, feed_uid)
     db.commit()
     return num_added
-  finally:
-    c.close()
 
 def update_feed_pubxml(feed_uid, feed_pubxml):
   """Update a feed HTML link"""
   feed_uid = int(feed_uid)
 
-  from singleton import db
-  c = db.cursor()
-  try:
-    c.execute("update fm_feeds set feed_pubxml=? where feed_uid=?",
-              [feed_pubxml, feed_uid])
+  with dbop.db() as db:
+    db.execute("update fm_feeds set feed_pubxml=? where feed_uid=?",
+               [feed_pubxml, feed_uid])
     db.commit()
-  finally:
-    c.close()
 
 def update_feed_title(feed_uid, feed_title):
   """Update a feed title"""
   feed_uid = int(feed_uid)
 
-  from singleton import db
-  c = db.cursor()
-  try:
-    c.execute("update fm_feeds set feed_title=? where feed_uid=?",
-              [feed_title, feed_uid])
+  with dbop.db() as db:
+    db.execute("update fm_feeds set feed_title=? where feed_uid=?",
+               [feed_title, feed_uid])
     db.commit()
-  finally:
-    c.close()
 
 def update_feed_html(feed_uid, feed_html):
   """Update a feed HTML link"""
   feed_uid = int(feed_uid)
 
-  from singleton import db
-  c = db.cursor()
-  try:
-    c.execute("update fm_feeds set feed_html=? where feed_uid=?",
-              [feed_html, feed_uid])
+  with dbop.db() as db:
+    db.execute("update fm_feeds set feed_html=? where feed_uid=?",
+               [feed_html, feed_uid])
     db.commit()
-  finally:
-    c.close()
 
 def update_feed_desc(feed_uid, feed_desc):
   """Update a feed desc"""
   feed_uid = int(feed_uid)
 
-  from singleton import db
-  c = db.cursor()
-  try:
-    c.execute("update fm_feeds set feed_desc=? where feed_uid=?",
-              [feed_desc, feed_uid])
+  with dbop.db() as db:
+    db.execute("update fm_feeds set feed_desc=? where feed_uid=?",
+               [feed_desc, feed_uid])
     db.commit()
-  finally:
-    c.close()
 
 def update_feed_filter(feed_uid, feed_filter):
   """Update a feed desc"""
@@ -232,76 +213,54 @@ def update_feed_filter(feed_uid, feed_filter):
     val = feed_filter
   else:
     val = None
-  from singleton import db
-  c = db.cursor()
-  try:
-    c.execute("update fm_feeds set feed_filter=? where feed_uid=?",
-              [val, feed_uid])
+  with dbop.db() as db:
+    db.execute("update fm_feeds set feed_filter=? where feed_uid=?",
+               [val, feed_uid])
     db.commit()
     filters.invalidate()
-  finally:
-    c.close()
 
 def update_feed_private(feed_uid, private):
   feed_uid = int(feed_uid)
   private = int(bool(private))
-  from singleton import db
-  c = db.cursor()
-  try:
-    c.execute("update fm_feeds set feed_private=? where feed_uid=?",
-              [private, feed_uid])
+  with dbop.db() as db:
+    db.execute("update fm_feeds set feed_private=? where feed_uid=?",
+               [private, feed_uid])
     db.commit()
-  finally:
-    c.close()
 
 def update_feed_exempt(feed_uid, exempt):
   feed_uid = int(feed_uid)
   exempt = int(bool(exempt))
-  from singleton import db
-  c = db.cursor()
-  try:
-    c.execute("update fm_feeds set feed_exempt=? where feed_uid=?",
-              [exempt, feed_uid])
+  with dbop.db() as db:
+    c = db.cursor()
+    db.execute("update fm_feeds set feed_exempt=? where feed_uid=?",
+               [exempt, feed_uid])
     if exempt:
       filters.exempt_feed_retroactive(db, c, feed_uid)
     db.commit()
-  finally:
-    c.close()
 
 def update_feed_dupcheck(feed_uid, dupcheck):
   feed_uid = int(feed_uid)
   dupcheck = int(bool(dupcheck))
   # XXX run a dupcheck pass retroactively here if dupcheck == 1
-  from singleton import db
-  c = db.cursor()
-  try:
-    c.execute("update fm_feeds set feed_dupcheck=? where feed_uid=?",
-              [dupcheck, feed_uid])
+  with dbop.db() as db:
+    db.execute("update fm_feeds set feed_dupcheck=? where feed_uid=?",
+               [dupcheck, feed_uid])
     db.commit()
-  finally:
-    c.close()
 
 def update_item(item_uid, link, title, content):
   item_uid = int(item_uid)
-  from singleton import db
-  c = db.cursor()
-  try:
-    c.execute("""update fm_items set item_link=?, item_title=?, item_content=?
+  with dbop.db() as db:
+    db.execute("""update fm_items set item_link=?, item_title=?, item_content=?
     where item_uid=?""", [link, title, content, item_uid])
     db.commit()
-  finally:
-    c.close()
 
 def title_url(feed_uid):
   feed_uid = int(feed_uid)
-  from singleton import db
-  c = db.cursor()
-  try:
-    c.execute("select feed_title, feed_html from fm_feeds where feed_uid=?",
+  with dbop.db() as db:
+    c = db.execute("""select feed_title, feed_html from fm_feeds
+    where feed_uid=?""",
               [feed_uid])
     return c.fetchone()
-  finally:
-    c.close()
 
 ratings_q = Queue.Queue()
 def set_rating(*args):
@@ -314,59 +273,52 @@ class RatingsWorker(threading.Thread):
     # we need to do this so temboz --refresh honors Ctrl-C
     self.setDaemon(True)
   def run(self):
-    from singleton import db
-    c = db.cursor()
     while True:
       item_uid, rating = self.in_q.get()
-      try:
-        c.execute("""update fm_items
-        set item_rating=?, item_rated=julianday('now')
-        where item_uid=?""", [rating, item_uid])
-        fb_token = param.settings.get('fb_token', None)
-        if rating == 1 and fb_token:
-          c.execute("""select feed_uid, item_link, item_title, feed_private
-          from fm_items, fm_feeds
-          where item_uid=? and feed_uid=item_feed_uid""",
-                    [item_uid])
-          feed_uid, url, title, private = c.fetchone()
-        db.commit()
-        if rating == 1 and fb_token and not private:
-          callout = random.choice(
-            ['Interesting: ', 'Notable: ', 'Recommended: ', 'Thumbs-up: ',
-             'Noteworthy: ', 'FYI: ', 'Worth reading: '])
-          try:
-            social.fb_post(fb_token, callout + title, url)
-          except social.ExpiredToken:
-            notification(db, c, feed_uid, 'Service notification',
-              'The Facebook access token has expired',
-              link='/settings#facebook')
+      with dbop.db() as db:
+        c = db.cursor()
+        try:
+          c.execute("""update fm_items
+          set item_rating=?, item_rated=julianday('now')
+          where item_uid=?""", [rating, item_uid])
+          fb_token = param.settings.get('fb_token', None)
+          if rating == 1 and fb_token:
+            c.execute("""select feed_uid, item_link, item_title, feed_private
+            from fm_items, fm_feeds
+            where item_uid=? and feed_uid=item_feed_uid""",
+                      [item_uid])
+            feed_uid, url, title, private = c.fetchone()
+          db.commit()
+          if rating == 1 and fb_token and not private:
+            callout = random.choice(
+              ['Interesting: ', 'Notable: ', 'Recommended: ', 'Thumbs-up: ',
+               'Noteworthy: ', 'FYI: ', 'Worth reading: '])
+            try:
+              social.fb_post(fb_token, callout + title, url)
+            except social.ExpiredToken:
+              notification(db, c, feed_uid, 'Service notification',
+                'The Facebook access token has expired',
+                link='/settings#facebook')
 
-      except:
-        util.print_stack()
-    # this will never be reached
-    c.close()
+        except:
+          util.print_stack()
 
 def catch_up(feed_uid):
   feed_uid = int(feed_uid)
-  from singleton import db
-  c = db.cursor()
-  try:
-    c.execute("""update fm_items set item_rating=-1
+  with dbop.db() as db:
+    db.execute("""update fm_items set item_rating=-1
     where item_feed_uid=? and item_rating=0""", [feed_uid])
     db.commit()
-  finally:
-    c.close()
 
 def purge_reload(feed_uid):
   reload(transform)
   feed_uid = int(feed_uid)
   if feed_uid in feed_guid_cache:
     del feed_guid_cache[feed_uid]
-  from singleton import db
-  c = db.cursor()
-  try:
+  with dbop.db() as db:
+    c = db.cursor()
     # refresh filtering rules
-    filters.load_rules(db, c)
+    filters.load_rules(c)
     c.execute("delete from fm_items where item_feed_uid=? and item_rating=0",
               [feed_uid])
     c.execute("""delete from fm_tags
@@ -376,44 +328,36 @@ def purge_reload(feed_uid):
     )""", [feed_uid])
     c.execute("""update fm_feeds set feed_modified=NULL, feed_etag=NULL
     where feed_uid=?""", [feed_uid])
-    c.execute("select feed_xml from fm_feeds where feed_uid=?", [feed_uid])
+    c.execute("""select feed_xml from fm_feeds
+    where feed_uid=?""", [feed_uid])
     feed_xml = c.fetchone()[0]
     db.commit()
-    f = feedparser.parse(feed_xml)
+    r = requests.get(feed_xml)
+    f = feedparser.parse(r.text)
     if not f.feed:
       raise ParseError
     normalize.normalize_feed(f)
     clear_errors(db, c, feed_uid, f)
-    filters.load_rules(db, c)
+    filters.load_rules(c)
     num_added = process_parsed_feed(db, c, f, feed_uid)
     db.commit()
-  finally:
-    c.close()
 
 def hard_purge(feed_uid):
   feed_uid = int(feed_uid)
-  from singleton import db
-  c = db.cursor()
-  try:
-    c.execute("delete from fm_items where item_feed_uid=?", [feed_uid])
-    c.execute("delete from fm_rules where rule_feed_uid=?", [feed_uid])
-    c.execute("delete from fm_feeds where feed_uid=?", [feed_uid])
+  with dbop.db() as db:
+    db.execute("delete from fm_items where item_feed_uid=?", [feed_uid])
+    db.execute("delete from fm_rules where rule_feed_uid=?", [feed_uid])
+    db.execute("delete from fm_feeds where feed_uid=?", [feed_uid])
     db.commit()
-  finally:
-    c.close()
     filters.invalidate()
 
 def set_status(feed_uid, status):
   feed_uid = int(feed_uid)
   status = int(status)
-  from singleton import db
-  c = db.cursor()
-  try:
-    c.execute("update fm_feeds set feed_status=? where feed_uid=?",
+  with dbop.db() as db:
+    db.execute("update fm_feeds set feed_status=? where feed_uid=?",
               [status, feed_uid])
     db.commit()
-  finally:
-    c.close()
 
 class FeedWorker(threading.Thread):
   def __init__(self, id, in_q, out_q):
@@ -442,7 +386,13 @@ def fetch_feed(feed_uid, feed_xml, feed_etag, feed_modified):
   if not feed_modified:
     feed_modified = None
   try:
-    f = feedparser.parse(feed_xml, etag=feed_etag, modified=feed_modified)
+    r = requests.get(feed_xml, headers={
+      'If-None-Match': feed_etag
+    })
+    if r.text == '':
+      return {'channel': {}, 'items': [], 'why': 'no change since Etag'}
+    f = feedparser.parse(r.text, etag=r.headers.get('Etag'),
+                         modified=feed_modified)
   except socket.timeout:
     if param.debug:
       print >> param.log, 'EEEEE error fetching feed', feed_xml
@@ -522,7 +472,7 @@ the cursor c for feed feed_uid.
 Returns a tuple (number of items added unread, number of filtered items)"""
   num_added = 0
   num_filtered = 0
-  filters.load_rules(db, c)
+  filters.load_rules(c)
   # check if duplicate title checking is in effect
   if feed_dupcheck is None:
     c.execute("select feed_dupcheck from fm_feeds where feed_uid=?",
@@ -659,7 +609,7 @@ def notification(db, c, feed_uid, title, content, link=None):
   guid = 'temboz://%s/%s' % (feed_uid, hash)
   # do nothing if the link is clicked
   if link is None:
-    link = '/feed_info?feed_uid=%d' % feed_uid
+    link = '/feed/%d' % feed_uid
   c.execute("""insert into fm_items (item_feed_uid, item_guid,
   item_created, item_modified, item_link, item_md5hex,
   item_title, item_content, item_creator, item_rating, item_rule_uid)
@@ -677,9 +627,11 @@ def cleanup(db=None, c=None):
   It can also be invoked by running temboz --clean
   """
   if not db:
-    from singleton import db
-    c = db.cursor()
-  from singleton import sqlite_cli
+    with dbop.db() as db:
+      c = db.cursor()
+      return cleanup(db, c)
+  # XXX need to use PATH instead
+  sqlite_cli = '/usr/local/bin/sqlite3'
   if getattr(param, 'garbage_contents', False):
     c.execute("""update fm_items set item_content=''
     where item_rating < 0 and item_created < julianday('now')-?""",
@@ -691,7 +643,7 @@ def cleanup(db=None, c=None):
       where item_created < min(julianday('now')-?, feed_oldest-7)
       and item_rating<0 and feed_uid=item_feed_uid)""", [param.garbage_items])
     db.commit()
-  singleton.snr_mv(db, c)
+  dbop.snr_mv(db, c)
   c.execute("""delete from fm_tags
   where not exists(
     select item_uid from fm_items where item_uid=tag_item_uid
@@ -727,49 +679,48 @@ def cleanup(db=None, c=None):
           pass
   
 def update(where_clause=''):
-  from singleton import db
-  c = db.cursor()
-  # refresh filtering rules
-  filters.load_rules(db, c)
-  # at 3AM by default, perform house-cleaning
-  if time.localtime()[3] == param.backup_hour:
-    cleanup(db, c)
-  # create worker threads and the queues used to communicate with them
-  work_q = Queue.Queue()
-  process_q = Queue.Queue()
-  workers = []
-  for i in range(param.feed_concurrency):
-    workers.append(FeedWorker(i + 1, work_q, process_q))
-    workers[-1].start()
-  # assign work
-  c.execute("""select feed_uid, feed_xml, feed_etag, feed_dupcheck,
-  strftime('%s', feed_modified) from fm_feeds where feed_status=0 """
-            + where_clause)
-  for feed_uid, feed_xml, feed_etag, feed_dupcheck, feed_modified in c:
-    if feed_modified:
-      feed_modified = float(feed_modified)
-      feed_modified = time.localtime(feed_modified)
-    else:
-      feed_modified = None
-    work_q.put((feed_uid, feed_xml, feed_etag, feed_modified, feed_dupcheck))
-  # None is an indication for workers to stop
-  for i in range(param.feed_concurrency):
-    work_q.put(None)
-  workers_left = param.feed_concurrency
-  while workers_left > 0:
-    feed_info = process_q.get()
-    # exited worker
-    if not feed_info:
-      workers_left -= 1
-    else:
-      try:
-        update_feed(db, c, *feed_info)
-      except:
-        util.print_stack()
-      db.commit()
-    # give reader threads an opportunity to get their work done
-    time.sleep(1)
-  c.close()
+  with dbop.db() as db:
+    c = db.cursor()
+    # refresh filtering rules
+    filters.load_rules(c)
+    # at 3AM by default, perform house-cleaning
+    if time.localtime()[3] == param.backup_hour:
+      cleanup(db, c)
+    # create worker threads and the queues used to communicate with them
+    work_q = Queue.Queue()
+    process_q = Queue.Queue()
+    workers = []
+    for i in range(param.feed_concurrency):
+      workers.append(FeedWorker(i + 1, work_q, process_q))
+      workers[-1].start()
+    # assign work
+    c.execute("""select feed_uid, feed_xml, feed_etag, feed_dupcheck,
+    strftime('%s', feed_modified) from fm_feeds where feed_status=0 """
+              + where_clause)
+    for feed_uid, feed_xml, feed_etag, feed_dupcheck, feed_modified in c:
+      if feed_modified:
+        feed_modified = float(feed_modified)
+        feed_modified = time.localtime(feed_modified)
+      else:
+        feed_modified = None
+      work_q.put((feed_uid, feed_xml, feed_etag, feed_modified, feed_dupcheck))
+    # None is an indication for workers to stop
+    for i in range(param.feed_concurrency):
+      work_q.put(None)
+    workers_left = param.feed_concurrency
+    while workers_left > 0:
+      feed_info = process_q.get()
+      # exited worker
+      if not feed_info:
+        workers_left -= 1
+      else:
+        try:
+          update_feed(db, c, *feed_info)
+        except:
+          util.print_stack()
+        db.commit()
+      # give reader threads an opportunity to get their work done
+      time.sleep(1)
 
 class PeriodicUpdater(threading.Thread):
   def __init__(self):
@@ -787,39 +738,6 @@ class PeriodicUpdater(threading.Thread):
         util.print_stack()
       self.event.clear()
 
-def view_sql(db, c, where, sort, params, overload_threshold):
-  singleton.mv_on_demand(db, c)
-  c.execute("""create temp table articles as select
-    item_uid, item_creator, item_title, item_link, item_content,
-    datetime(item_loaded), date(item_created) as item_created,
-    datetime(item_rated) as item_rated,
-    julianday('now') - julianday(item_created) as delta_created, item_rating,
-    item_rule_uid, item_feed_uid, feed_title, feed_html, feed_xml, snr
-  from fm_items, v_feeds_snr
-  where item_feed_uid=feed_uid and """ + where + """
-  order by """ + sort + """, item_uid DESC limit ?""",
-  params + [overload_threshold])
-  c.execute("""create index articles_i on articles(item_uid)""")
-  c.execute("""select tag_item_uid, tag_name, tag_by
-  from  fm_tags, articles where tag_item_uid=item_uid""")
-  tag_dict = dict()
-  for item_uid, tag_name, tag_by in c:
-    tag_dict.setdefault(item_uid, []).append(tag_name)
-  c.execute("""select * from articles
-  order by """ + sort + """, item_uid DESC""")
-  return tag_dict
-
-def feed_info_sql(db, c, feed_uid):
-  singleton.mv_on_demand(db, c)
-  c.execute("""select feed_title, feed_desc, feed_filter,
-  feed_html, feed_xml, feed_pubxml,
-  last_modified, interesting, unread, uninteresting, filtered, total,
-  feed_status, feed_private, feed_exempt, feed_dupcheck, feed_errors
-  from v_feeds_snr
-  where feed_uid=?
-  group by feed_uid, feed_title, feed_html, feed_xml
-  """, [feed_uid])
-
 def load_settings(db, c):
   c.execute("select name, value from fm_settings")
   setattr(param, 'settings', dict(c.fetchall()))
@@ -829,7 +747,7 @@ def setting(db, c, **kwargs):
     try:
       c.execute("insert into fm_settings (name, value) values (?, ?)",
                 [name, str(value)])
-    except sqlite.IntegrityError, e:
+    except sqlite3.IntegrityError, e:
       c.execute("update fm_settings set value=? where name=?",
                 [value, name])
   db.commit()

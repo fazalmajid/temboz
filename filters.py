@@ -1,6 +1,6 @@
 # handle the various type of FilteringRules
 import time, re, textwrap, requests
-import normalize, param, util
+import normalize, param, util, dbop
 
 rules = []
 feed_rules = {}
@@ -124,15 +124,13 @@ class AuthorRule(Rule):
 ########################################################################
 # functions used inside Python rules
 def link_already(url):
-  from singleton import db
-  print >> param.activity, 'checking for deja-vu for', url,
-  c = db.cursor()
-  c.execute("select count(*) from fm_items where item_link like ?",
-            [url + '%'])
-  l = c.fetchone()
-  c.close()
-  print >> param.log, l and l[0]
-  return l and l[0]
+  with dbop.db() as db:
+    print >> param.activity, 'checking for deja-vu for', url,
+    c = db.execute("select count(*) from fm_items where item_link like ?",
+               [url + '%'])
+    l = c.fetchone()
+    print >> param.log, l and l[0]
+    return l and l[0]
 
 def dereference_content(url):
   try:
@@ -173,6 +171,8 @@ wrapper = textwrap.TextWrapper(width=80, break_long_words=False)
 wrapper.wordsep_re = re.compile(r'(\s+)')
 def rule_lines(rule):
   "Find how many lines are needed for the rule in a word-wrapped <textarea>"
+  if not rule:
+    return 4
   lines = 0
   for line in rule.splitlines():
     if line.strip():
@@ -223,18 +223,18 @@ class PythonRule(Rule):
   def highlight_content(self, html):
     return html + '<br><p>Filtered by Python rule %d</p>' % self.uid
     
-def load_rules(db, c):
+def load_rules(c):
   global loaded, rules, feed_rules
   if loaded: return
   rules = []
   feed_rules = dict()
   try:
     try:
-      c.execute("""select rule_uid, rule_type, rule_text, rule_feed_uid,
-      strftime('%s', rule_expires)
-      from fm_rules
-      where rule_expires is null or rule_expires > julianday('now')""")
-      for uid, rtype, rule, feed_uid, expires in c:
+      for uid, rtype, rule, feed_uid, expires in \
+          c.execute("""select rule_uid, rule_type, rule_text, rule_feed_uid,
+          strftime('%s', rule_expires)
+          from fm_rules
+          where rule_expires is null or rule_expires > julianday('now')"""):
         if expires: expires = int(expires)
         if feed_uid:
           container = feed_rules.setdefault(feed_uid, list())
@@ -258,9 +258,9 @@ def load_rules(db, c):
             uid, expires, rule, rtype.replace('union_', 'content_')))
         else:
           container.append(KeywordRule(uid, expires, rule, rtype))
-      c.execute("""select feed_uid, feed_filter from fm_feeds
-      where feed_filter is not null""")
-      for feed_uid, rule in c:
+      for feed_uid, rule in \
+          c.execute("""select feed_uid, feed_filter from fm_feeds
+          where feed_filter is not null"""):
         rule = PythonRule('feed_%d' % feed_uid, None, rule)
         feed_rules.setdefault(feed_uid, list()).append(rule)
     except:
@@ -348,7 +348,7 @@ def exempt_feed_retroactive(db, c, feed_uid, **kwargs):
 ########################################################################
 # stats
 def stats(c):
-  c.execute("""select rule_uid, rule_type, rule_text,
+  return c.execute("""select rule_uid, rule_type, rule_text,
     coalesce(rule_feed_uid, -1), feed_title,
     sum(case when item_created > julianday('now')-7 then 1 else 0 end) last_7,
     sum(case when item_created < julianday('now')-7 then 1 else 0 end) prev_7,
@@ -363,4 +363,3 @@ def stats(c):
   group by 1, 2, 3, 4, 5
   order by 6 desc
   limit 100""")
-  return c.fetchall()

@@ -1,6 +1,3 @@
-#extends TembozTemplate
-#set $media = $getVar('media', 'screen')
-#implements respond
 * {
   margin: 0;
   padding: 0;
@@ -46,10 +43,20 @@ a.headline {
   font-weight:bold;
   line-height:14pt;
 }
-.source, .ui-dialog form em {
+.ui-dialog form em {
   font-size:10pt;
   line-height:12px;
   color: gray;
+}
+.source {
+  font-size:10pt;
+  line-height:12px;
+  color: #999;
+}
+div.headline {
+  padding-bottom: 6px;
+  margin-bottom: 6px;
+  border-bottom: solid 1px #ddd;
 }
 .article {
   border: solid 1px gray;
@@ -140,7 +147,7 @@ span.tag.highlighted {
   color: white;
   background-color: red;
 }
-a.callout, div.popup li a {
+a, a.callout, div.popup li a, h1 a {
   text-decoration: none;
 }
 a.ff {
@@ -153,170 +160,160 @@ form.inline select {
 form.feed_info, form.add, div#tabset, div#settings, .padded {
   padding: 12px;
 }
-########################################################################
-## SCREEN ONLY
-#if $media == 'screen'
-.print {display: none}
-span.ctarrow {
-  font-size: 18px;
-  cursor: pointer;
-  -moz-user-select: -moz-none;
-  -khtml-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-span.buttons {
-  float: right;
-  font-size: 24px;
-  padding-top: 6px;
-  cursor: pointer;
-  -moz-user-select: -moz-none;
-  -khtml-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-span.buttons span.down {
-  color: #b70000;
-}
-span.buttons span.up {
-  color: #00b700;
-}
-## work-around IE
-body>ul.menu {
-  position: fixed;
-}
-ul.menu {
-  background: #bfff80;
-  padding: 0 1em 0 1em;
-  margin: 0;
-  width: 100%;
-  z-index: 2;
-}
-ul.menu {
-  background-color: #d9ffb3;
-  background: -webkit-gradient(linear, left top, left bottom, from(#d9ffb3), to(#99cc66));
-  background: -moz-linear-gradient(#d9ffb3, #99cc66);
-}
-ul.menu li {
-  display: inline;
-  list-style-type: none;
-  float: left;
-  /* margin: 3px; */
-  height: 100%;
-  margin: 0 3px 0 3px;
-  position: relative;
-}
-ul.menu li span, ul.menu li.help span, ul.menu>li>a {
-  display: block;
-  padding: 9px 0 6px 0;
+
+@media screen {
+  .print {display: none}
+  span.ctarrow {
+    font-size: 18px;
+    cursor: pointer;
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  span.buttons {
+    float: right;
+    font-size: 24px;
+    padding-top: 6px;
+    cursor: pointer;
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  span.buttons span.down {
+    color: #b70000;
+  }
+  span.buttons span.up {
+    color: #00b700;
+  }
+  ul.menu {
+    position: fixed;
+    padding: 0 1em 0 1em;
+    margin: 0;
+    width: 100%;
+    z-index: 2;
+    height: 32px;
+    background: #bfff80;
+    background-color: #d9ffb3;
+    background: -webkit-gradient(linear, left top, left bottom, from(#d9ffb3), to(#99cc66));
+    background: -moz-linear-gradient(#d9ffb3, #99cc66);
+  }
+  ul.menu li {
+    display: inline;
+    list-style-type: none;
+    float: left;
+    /* margin: 3px; */
+    height: 100%;
+    margin: 0 3px 0 3px;
+    position: relative;
+  }
+  ul.menu li span, ul.menu li.help span, ul.menu>li>a {
+    display: block;
+    padding: 9px 0 6px 0;
+  }
+
+  ul.menu span.button>a, ul.menu li.help span a {
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    padding: 3px;
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    background-color: #fff;
+    background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ccc));
+    background: -moz-linear-gradient(#fff, #ccc);
+    text-shadow: rgba(255, 255, 255, 0.4) 0px 1px;
+    -webkit-box-shadow: rgba(255, 255, 255, 0.4) 0 1px;
+    -moz-box-shadow: rgba(255, 255, 255, 0.4) 0 1px;
+    box-shadow: rgba(255, 255, 255, 0.4) 0 1px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    cursor: default;
+  }
+  ul.menu li.help {
+    position: relative;
+    float: right;
+    padding-right: 1em;
+  }
+  ul.menu li ul {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    display: none;
+    background: #fff;
+    border: 1px solid #000;
+    width: 160px;
+    margin: 0;
+  }
+  ul.menu li ul li {
+    display: list-item;
+    float: none;
+  }
+  ul.menu li ul li a {
+    display: block;
+    padding: 3px;
+    border: 1px solid #ccc;
+  }
+  ul.menu li:hover ul {
+    display: block;
+  }
+  ul.menu a {
+    text-decoration: none;
+  }
+  div.spacer {
+    height: 34px;
+  }
+  form.inline {
+    display: inline;
+    margin-bottom: 0px;
+  }
+  body.unpadded p.menu {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  div#settings {
+    padding-top: 20px;
+  }
+  div#settings div.ui-tabs-panel {
+    padding: 20px;
+  }
+  div#settings div.ui-tabs-panel td {
+    padding: 6px;
+  }
+  .col1 .article {
+    margin-left:  12px;
+    margin-right: 6px;
+  }
+  .col2 .article {
+    margin-left:  6px;
+    margin-right: 12px;
+  }
+  .col1 {
+    width: 49.9%;
+    float: left;
+    margin-top: 10px;
+    border: 0px;
+    overflow: hidden;
+  }
+  .col2 {
+    margin-top: 10px;
+    border: 0px;
+    overflow: hidden;
+  }
+} /* @media screen */
+
+@media print {
+  .screen {display: none}
+  span.ctarrow {display: none}
+  span.buttons {display:none}
+  ul.menu {display: none}
 }
 
-ul.menu span.button>a, ul.menu li.help span a {
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-  padding: 3px;
-  border: 1px solid rgba(0, 0, 0, 0.6);
-  background-color: #fff;
-  background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ccc));
-  background: -moz-linear-gradient(#fff, #ccc);
-  text-shadow: rgba(255, 255, 255, 0.4) 0px 1px;
-  -webkit-box-shadow: rgba(255, 255, 255, 0.4) 0 1px;
-  -moz-box-shadow: rgba(255, 255, 255, 0.4) 0 1px;
-  box-shadow: rgba(255, 255, 255, 0.4) 0 1px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  cursor: default;
-}
-ul.menu li.help {
-  position: relative;
-  float: right;
-  padding-right: 1em;
-}
-ul.menu li ul {
-  position: absolute;
-  left: 0;
-  top: 100%;
-  display: none;
-  background: #fff;
-  border: 1px solid #000;
-  width: 160px;
-  margin: 0;
-}
-ul.menu li ul li {
-  display: list-item;
-  float: none;
-}
-ul.menu li ul li a {
-  display: block;
-  padding: 3px;
-  border: 1px solid #ccc;
-}
-ul.menu li:hover ul {
-  display: block;
-}
-ul.menu a {
-  text-decoration: none;
-}
-div.spacer {
-  height: 34px;
-}
-form.inline {
-  display: inline;
-  margin-bottom: 0px;
-}
-body.unpadded p.menu {
-  padding-top: 0px;
-  padding-bottom: 0px;
-  padding-left: 20px;
-  padding-right: 20px;
-}
-div#settings {
-  padding-top: 20px;
-}
-div#settings div.ui-tabs-panel {
-  padding: 20px;
-}
-div#settings div.ui-tabs-panel td {
-  padding: 6px;
-}
-.col1 .article {
-  margin-left:  12px;
-  margin-right: 6px;
-}
-.col2 .article {
-  margin-left:  6px;
-  margin-right: 12px;
-}
-.col1 {
-  width: 49.9%;
-  float: left;
-  margin-top: 10px;
-  border: 0px;
-  overflow: hidden;
-}
-.col2 {
-## ugly work-around a bug in Safari (and probably Konqueror as well)
-#if 'KHTML' not in $headers.get('user-agent', '')
-  width: 49.9%;
-  float: right;
-#end if
-  margin-top: 10px;
-  border: 0px;
-  overflow: hidden;
-}
-#else
-########################################################################
-## PRINT ONLY
-.screen {display: none}
-span.ctarrow {display: none}
-span.buttons {display:none}
-ul.menu {display: none}
-#end if
-########################################################################
-## jQuery dialog
+/* jQuery dialog */
 div.ui-dialog {
   background-color: white;
   padding: 0px;
@@ -333,8 +330,8 @@ div.ui-dialog {
 .ui-dialog-buttonpane {text-align: center}
 .ui-dialog .ui-dialog-titlebar-close {display: none}
 .ui-dialog table {width: 100%}
-########################################################################
-## tabs
+
+/* tabs */
 .ui-tabs-nav {
   border-bottom: 1px solid #ccc;
   padding-bottom: 25px;

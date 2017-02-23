@@ -1,0 +1,47 @@
+{% extends "menubar.html" %}
+{% block TITLE %}Temboz - edit article {{ uid }}{% endblock %}
+<html>
+<body>
+{% block EXTRAHEAD %}
+<script language="JavaScript" type="text/javascript" src="/static/tiny_mce/tiny_mce.js">
+</script>
+<script language="JavaScript" type="text/javascript">
+tinyMCE.init({
+  mode: "textareas",
+  theme: "advanced"
+});
+</script>
+{% endblock %}
+
+{% block CONTENT %}
+<h1>Edit article  {{ uid }}</h1>
+{% if status %}
+<p>Modification of article {{ uid }} failed: {{ status }}</p>
+{% elif request.method == 'POST' %}
+<p>Modification of article {{ uid }} successful:</p>
+<div class="col1">
+  <div class="article" id="art{{ uid }}">
+    <div class="headline">
+      <a href="{{ href }}" class="headline">{{ title }}</a>
+    </div>
+    <div class="content" id="content{{ uid }}">
+      {{ request.form.get('content') | safe}}
+    </div>
+  </div>
+</div>
+<br>
+{% endif %}
+<div style="clear: both;">
+  <form method="POST">
+    <input type="hidden" name="uid" value="{{ uid }}">
+    <input type="hidden" name="nonce" value="{{ nonce }}">
+    <input id="title" name="title" size="80" value="{{ title }}"><br>
+    <input id="href" name="href" size="80" value="{{ href }}"><br>
+    <textarea id="content" name="content" cols="80" rows="24">
+{{ content }}
+    </textarea><br>
+    <input type="submit" value="Save">
+  </form>
+</div>
+</body>
+{% endblock %}

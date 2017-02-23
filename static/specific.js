@@ -41,3 +41,39 @@ function init_popups() {
 function rand() {
   return Math.random().toString().substring(8);
 }
+/* work around jQuery bug */
+$.widget( "ui.tabs", $.ui.tabs, {
+  _isLocal: function( anchor ) {
+    // If there's no hash, it can't be local
+    if ( !anchor.hash.length ) {
+      return false;
+    }
+
+    // http://bugs.jqueryui.com/ticket/11223
+    // Intentionally skip hash, username, password
+    // href may contain username and password, so we can't use that
+    // host, hostname, port, and protocol are all included in origin
+    var urlParts = [ "origin", "pathname", "search" ];
+    var isLocal = true;
+
+    $.each( urlParts, function( urlPart ) {
+      var anchorValue = anchor[ urlPart ];
+      var locationValue = location[ urlPart ];
+
+      // Decoding may throw an error if the URL isn't UTF-8 (#9518)
+      try {
+	anchorValue = decodeURIComponent( anchorValue );
+      } catch ( error ) {}
+      try {
+	locationValue = decodeURIComponent( locationValue );
+      } catch ( error ) {}
+
+      if ( anchorValue !== locationValue ) {
+	isLocal = false;
+	return false;
+      }
+    });
+
+    return isLocal;
+  }
+});

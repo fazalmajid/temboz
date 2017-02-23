@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import sys, os
+import sys, os, datetime
 
 # XXX TODO
 # XXX pacing
@@ -17,6 +17,7 @@ def usage():
   sys.exit(0)
 
 if __name__ == '__main__':
+  started = datetime.datetime.now()
   import getopt
   try:
     import param
@@ -34,7 +35,7 @@ if __name__ == '__main__':
   opts, args = getopt.getopt(
     sys.argv[1:], 'vh',
     ['refresh', 'resync', 'server', 'import=', 'kill', 'help',
-     'clean', 'cleanup'])
+     'clean', 'cleanup', 'sop'])
   if opts == []:
     # try to detect if we are being called as a CGI script
     cgi_ver = os.getenv('GATEWAY_INTERFACE')
@@ -63,8 +64,7 @@ if __name__ == '__main__':
     elif opt == '--import':
       import opml
       opml.import_opml(val)
-    elif opt == '--server':
-      import update, server
+    elif opt == '--daemon':
       # close stdin file descriptor
       try:
         import posix
@@ -72,6 +72,8 @@ if __name__ == '__main__':
         posix.open('/dev/null', posix.O_RDONLY)
       except ImportError:
         pass
+    elif opt == '--server':
+      import update, server
       updater = update.PeriodicUpdater()
       updater.start()
       rater = update.RatingsWorker(update.ratings_q)
@@ -89,4 +91,3 @@ if __name__ == '__main__':
       except:
         util.print_stack()
         sys.exit(1)
-# http://bayazid.kefta.com/~majid/temboz/nph-temboz.cgi/view?feed_uid=1

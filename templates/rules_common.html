@@ -1,0 +1,189 @@
+{% macro rule_head() -%}
+    {# #}
+    <script>
+      function del_kw_rule(uid) {
+        uid = String(uid);
+        $.get("/rule/" + uid + "/del");
+        $("tr#rule_" + uid).hide();
+      };
+    </script>
+{%- endmacro %}
+
+{% macro rule_tabset(feed_uid, tabs) -%}
+<div id="tabset" class="ui-tabs">
+  <ul>
+    {% for initial, rules in tabs|dictsort %}
+      {% if initial != 'Python' %}
+    <li><a href="#keyword_{{ initial }}"><span>{{ initial }}</span></a></li>
+      {% endif %}
+    {% endfor %}
+    {% if 'Python' in tabs %}
+    <li><a href="#python"><span>Python</span></a></li>
+    {% endif %}
+  </ul>
+  {% for initial, rules in tabs|dictsort %}
+    {% if initial != 'Python' %}
+  <div id="keyword_{{ initial }}" class="ui-tabs-hide">
+    <table>
+      <tr>
+        <th>Rule</th><th>Type</th><th>Text</th><th>Filtered articles</th>
+        <th>Delete</th>
+      </tr>
+      {% for uid, rtype, expires, text in rules %}
+      <tr valign="top" class="{{ loop.cycle('odd', 'even') }}"
+          id="rule_{{ uid }}">
+        <td>{{ uid }}</td>
+        <td>{{ rtype }}</td>
+        <td>{{ text }}</td>
+        {% if feed_uid %}
+        <td><a href="/view?show=filtered&feed_uid={{ feed_uid }}&rule_uid={{ uid }}">show</a></td>
+        {% else %}
+        <td><a href="/view?show=filtered&rule_uid={{ uid }}">show</a></td>
+        {% endif %}
+        <td><a href="javascript:del_kw_rule({{ uid }});">delete</a></td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+    {% endif %}
+  {% endfor %}
+  {% if tabs.get('Python') %}
+  <div id="python">
+    <table>
+      <tr>
+        <th>Rule</th><th>Expires</th><th>Text</th><th>Delete</th>
+        <th>Update</th>
+      </tr>
+      {% for uid, rtype, expires, text in tabs['Python'] %}
+      <tr valign="top">
+        <form name="form_python_{{ uid }}" action="rules" method="GET">
+          <td>{{ uid }}<input type="hidden" name="uid" value="{{ uid }}"></td>
+          <td><input type="text" name="expires" value="{{ expires }}"
+                     size="10"></td>
+          <td><textarea cols="80" rows="{{ text|rule_lines }}" name="text">{{ text }}</textarea>
+          </td>
+          <td><input type="checkbox" name="delete"></td>
+          <td><input type="submit" value="Update"></td>
+        </form>
+      </tr>
+      {% endfor %}
+      <tr valign="top">
+        <form action="rules" method="GET">
+        <td><input type="hidden" name="uid" value="new"></td>
+        <td><input type="text" name="expires" size="10" value="never"></td>
+        <td><textarea cols="80" name="text">'XXX' in feed_title and 'YYY' in title</textarea>
+        </td>
+        <td></td>
+        <td><input type="submit" value="Add"></td>
+        </td>
+        </form>
+      </tr>
+    </table>
+
+    <h2>Filter syntax:</h2>
+
+    <p>The filtering rules are Python expressions that are evaluated as
+    booleans. The following variables are always available:</p>
+
+    <table>
+      <tr>
+        <th class="nonsort">Variable</th><th class="nonsort">Description</th>
+      </tr>
+      <tr class="odd"><td>feed_title</td><td>Title of the feed</td></tr>
+      <tr class="even"><td>title</td><td>Title of the article</td></tr>
+
+      <tr class="odd"><td>title_lc</td><td>Title of the article (all in
+      lower case)</td></tr>
+      <tr class="even"><td>title_words</td><td>Set of lower-cased and
+      diacritic-stripped words in the title</td></tr>
+      <tr class="odd"><td>content</td><td>Contents of the article</td></tr>
+      <tr class="even"><td>content_lc</td><td>Contents of the article (all
+      in lower case)</td>
+      <tr class="odd"><td>content_words</td><td>Set of lower-cased and
+      diacritic-stripped words in the content</td></tr>
+      <tr class="even"><td>union_lc</td><td>Union of the article (all in
+      lower case)</td></tr>
+      <tr class="odd"><td>union_words</td><td>Set of lower-cased and
+      diacritic-stripped words in both title and contents</td></tr>
+      <tr class="even"><td>link</td><td>article URL (before dereferencing)
+      </td></tr>
+      <tr class="odd"><td>category</td><td>If present, set of categories for
+      the article</td></tr>
+      <tr class="even"><td>author</td><td>Author of the article</td></tr>
+    </table>
+
+    <p>In addition, the convenience functions <tt>title_any</tt>,
+    <tt>content_any</tt>, <tt>union_any</tt>, <tt>title_any_lc</tt>,
+    <tt>content_any_lc</tt>, <tt>union_any_lc</tt>,
+    <tt>title_any_words</tt>, <tt>content_any_words</tt>,
+    <tt>union_any_words</tt>are here to simplify rules. They take a list of
+    strings and search in the corresponding
+    <tt>title|content(|_lc|_words)</tt> (the <tt>union_</tt>* variants will
+    match either title or contents). If any of the strings in the list
+    matches, the function returns True.</p>
+
+    <p>The function <tt>link_already(</tt><em>url</em><tt>)</tt> checks if
+    the URL passed as its argument is that of an article that was already
+    loaded. This is useful to filter out duplicates or echos from
+    aggregated feeds like Digg or Slashdot, but it also slows down feed
+    processing.</p>
+
+    <p>Other variables may be available on a feed-by-feed basis, also
+    depending on which feed standard is used (e.g. Atom vs. RSS). Check
+    the feed details page for the feed you are interested in for more
+    details.</p>
+
+    <p>If a variable does not exist, the expression evaluation will throw
+    an exception, and the article will not be filtered out, but in a
+    Python logical OR expression, if the first term evaluates true, the
+    second term is not evaluated and the article will be filtered out even
+    if the second term refers to a variable that does not exist.</p>
+
+    <p>You can add comments by starting a line with the character
+    <tt>#</tt>, and use carriage returns like whitespace for
+    legibility</p>
+
+    <h2>Examples</h2>
+
+    <p>Should be self-explanatory:</p>
+
+    <pre>
+    'Salon' in feed_title and ('King Kaufman' in title or 'Letters' in
+    title) </pre><pre> 'SAP' in title.split()
+    </pre>
+
+    <p>or almost equivalently:</p>
+
+    <pre>
+    'sap' in title_words
+    </pre><pre>
+    'Guardian Unlimited' in feed_title and (content.startswith('Sport:')
+     or 'football' in content_lc or 'cricket' in content_lc)
+    </pre>
+
+    <p>which is equivalent to:</p>
+    <pre>
+    'Guardian Unlimited' in feed_title and (content.startswith('Sport:')
+    or content_any_lc('football', 'cricket'))
+    </pre>
+
+    <p>Filter articles referring to SAP, but as a word (i.e. do not filter
+    out 'ASAP'): </p>
+    <pre>
+    union_any_words('sap')
+    </pre>
+  </div>
+</div>
+{% endif %}
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    $("div#tabset").tabs({
+      //beforeLoad: function(event, ui) {
+      //  debugger;
+      //}
+    });
+  });
+</script>
+    
+{%- endmacro %}    
