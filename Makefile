@@ -1,4 +1,4 @@
-VERSION= 	0.8
+VERSION= 	2.0
 TAR_VERSION=	$(VERSION)
 PAGES= 		view error opml feeds temboz_css rules catch_up
 DATE:sh=	date +'%Y-%m-%d'
@@ -8,9 +8,9 @@ JSMIN=		jsmin
 all: changelog
 
 init:
-	@if [ `hostname` != "alamut" ]; then true; else echo "Will not run make init on alamut"; false; fi
+	@if [ `hostname` != "mordac" ]; then true; else echo "Will not run make init on mordac"; false; fi
 	-rm -f rss.db
-	sqlite3 rss.db < ddl.sql > /dev/null
+	sqlite3 rss.db < tembozapp/ddl.sql > /dev/null
 	temboz --import me.opml
 	temboz --refresh
 
@@ -41,7 +41,7 @@ cvsdist disttar:: distclean changelog
 	mkdir temboz-$(VERSION)
 	-rm -f .*~ *~
 	cp README INSTALL NEWS LICENSE UPGRADE ChangeLog temboz *.py temboz-$(VERSION)
-	cp ddl.sql me.opml .ht* temboz-$(VERSION)
+	cp tembozapp/ddl.sql me.opml .ht* temboz-$(VERSION)
 	cp -r templates images etc tiny_mce static temboz-$(VERSION)
 	(cd temboz-$(VERSION); mv param.py param.py.sample; mv transform.py transform.py.sample; find . -name \*.pyc -exec rm {} \;; find . -name \*.pyo -exec rm {} \;; find pages -name \*.py -exec rm {} \;)
 	-rm -f temboz-$(VERSION)/etc/.cvsignore
