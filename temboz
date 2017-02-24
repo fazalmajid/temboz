@@ -31,7 +31,7 @@ if __name__ == '__main__':
     print >> sys.stderr, 'You must create a transform.py file, possibly using',
     print >> sys.stderr, 'transform.py.sample as an example'
     sys.exit(0)
-  import util
+  import tembozapp.util
   opts, args = getopt.getopt(
     sys.argv[1:], 'vh',
     ['refresh', 'resync', 'server', 'import=', 'kill', 'help',
@@ -40,30 +40,30 @@ if __name__ == '__main__':
     # try to detect if we are being called as a CGI script
     cgi_ver = os.getenv('GATEWAY_INTERFACE')
     if cgi_ver and cgi_ver.startswith('CGI/'):
-      import server
-      server.do_cgi()
+      import tembozapp.server
+      tembozapp.server.do_cgi()
     else:
       usage()
   for opt, val in opts:
     if opt in ['-h', '--help']:
       usage()
     if opt == '--refresh':
-      import update
+      import tembozapp.update
       try:
-        update.update()
+        tembozapp.update.update()
       except:
-        util.print_stack()
+        tembozapp.util.print_stack()
         sys.exit(1)
     if opt == '--resync':
-      import update
+      import tembozapp.update
       try:
-        update.update('and feed_errors > 0')
+        tembozapp.update.update('and feed_errors > 0')
       except:
-        util.print_stack()
+        tembozapp.util.print_stack()
         sys.exit(1)
     elif opt == '--import':
-      import opml
-      opml.import_opml(val)
+      import temozapp.opml
+      temozapp.opml.import_opml(val)
     elif opt == '--daemon':
       # close stdin file descriptor
       try:
@@ -73,21 +73,21 @@ if __name__ == '__main__':
       except ImportError:
         pass
     elif opt == '--server':
-      import update, server
-      updater = update.PeriodicUpdater()
+      import tembozapp.update, tembozapp.server
+      updater = tembozapp.update.PeriodicUpdater()
       updater.start()
-      rater = update.RatingsWorker(update.ratings_q)
+      rater = tembozapp.update.RatingsWorker(tembozapp.update.ratings_q)
       rater.start()
-      server.run()
+      tembozapp.server.run()
     elif opt == '--kill':
       import os
       pid = int(open('temboz.pid').readline().strip())
       os.kill(pid, 9)
       os.remove('temboz.pid')
     elif opt in ['--clean', '--cleanup']:
-      import update
+      import tembozapp.update
       try:
-        update.cleanup()
+        tembozapp.update.cleanup()
       except:
-        util.print_stack()
+        tembozapp.util.print_stack()
         sys.exit(1)

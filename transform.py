@@ -1,6 +1,7 @@
 # filtering regular expressions, used to strip out annoyances like ads,
 # web bugs and the like from feeds
-import re, degunk
+import re
+import tembozapp.degunk as degunk
 
 # uncomment this if you have made changes to the degunk module
 # reload(degunk)
