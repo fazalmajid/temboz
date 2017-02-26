@@ -710,9 +710,19 @@ def item(uid, op):
 
 @app.route("/profile")
 def profile():
-  import yappi
+  import yappi, cStringIO
   if not yappi.is_running():
     yappi.start()
   s = yappi.get_func_stats()
-  s.print_all()
-  return ''
+  s = s.sort(flask.request.args.get('sort', 'tsub'))
+  f = cStringIO.StringIO()
+  s.print_all(f, columns={
+    0: ('name', 80),
+    1: ('ncall', 20),
+    2: ('tsub', 8),
+    3: ('ttot', 8)
+  })
+  if flask.request.args.get('clear', 'N').lower() \
+     in {'y', 'yes', 'true', 'on'}:
+    yappi.clear_stats()
+  return '<pre>\n' + f.getvalue() + '</pre>\n'
