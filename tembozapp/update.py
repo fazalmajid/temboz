@@ -393,9 +393,9 @@ def fetch_feed(feed_uid, feed_xml, feed_etag, feed_modified):
       return {'channel': {}, 'items': [], 'why': 'no change since Etag'}
     f = feedparser.parse(r.text, etag=r.headers.get('Etag'),
                          modified=feed_modified)
-  except socket.timeout:
+  except (socket.timeout, requests.exceptions.RequestException) as e:
     if param.debug:
-      print >> param.log, 'EEEEE error fetching feed', feed_xml
+      print >> param.log, 'EEEEE error fetching feed', feed_xml, e
     f = {'channel': {}, 'items': []}
   except:
     if param.debug:
