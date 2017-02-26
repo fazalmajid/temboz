@@ -57,6 +57,10 @@ cvsdist disttar:: distclean changelog
 dist: disttar
 	-$${EDITOR} ../mylos/data/stories/2004/03/29/temboz.html
 
+opml:
+	wget -c https://majid.info/temboz/temboz.opml
+	mv temboz.opml me.opml
+
 distclean:
 	-rm -f core *.pyc *~ pages/*~ *.old pages/*.py pages/*.pyc ChangeLog*
 	-find . -name .\#\* -exec rm {} \;

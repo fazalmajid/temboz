@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 import sys, os, datetime
 
-# XXX TODO
-# XXX pacing
-
 def usage():
   print """usage: %s [options]
   --refresh            : refresh the subscribed feeds
@@ -24,12 +21,6 @@ if __name__ == '__main__':
   except:
     import tembozapp.bootstrap
     tembozapp.bootstrap.do_bootstrap()
-  try:
-    import param
-  except ImportError:
-    print >> sys.stderr, 'You must create a param.py file, possibly using',
-    print >> sys.stderr, 'param.py.sample as an example'
-    sys.exit(0)
   try:
     import transform
   except ImportError:
@@ -67,8 +58,8 @@ if __name__ == '__main__':
         tembozapp.util.print_stack()
         sys.exit(1)
     elif opt == '--import':
-      import temozapp.opml
-      temozapp.opml.import_opml(val)
+      import tembozapp.opml
+      tembozapp.opml.import_opml(val)
     elif opt == '--daemon':
       # close stdin file descriptor
       try:

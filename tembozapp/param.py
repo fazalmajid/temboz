@@ -4,14 +4,6 @@
 #
 ########################################################################
 
-# TCP port to use for the web server
-port = 9999
-# uncomment this if you want Temboz to bind to a specific IP address
-#
-# bind_address = 'localhost'
-# bind_address = '192.168.1.9'
-bind_address = ''
-
 # number of RSS feeds fetched in parallel 
 feed_concurrency = 20
 
@@ -35,7 +27,7 @@ backup_compressor = ('gzip -9c', '.gz')
 # number of daily backups to keep
 daily_backups = 7
 # at what time should the backup be made (default: between 3 and 4 AM)
-backup_hour = 3
+backup_hour = 4
 
 # garbage collection - articles flagged as "uninteresting" will have their
 # content automatically dumped after this interval (but not their title or
@@ -94,4 +86,3 @@ else:
 # These settings are managed in the database and will ultimately supersede
 # param.py
 settings = {}
-

@@ -68,9 +68,9 @@ Enter an IP address and port [127.0.0.1:9999]: """)
       passwd = None
       continue
   hash = passlib.hash.argon2.using(
-    rounds=3,
+    rounds=64,
     memory_cost=65536,
-    max_threads=1,
+    parallelism=1,
     digest_size=32).hash(passwd)
 
   os.system('sqlite3 rss.db < %s/ddl.sql' % dir)
@@ -80,4 +80,3 @@ Enter an IP address and port [127.0.0.1:9999]: """)
     dbop.setting(db, 'passwd', hash)
     dbop.setting(db, 'ip', ip)
     dbop.setting(db, 'port', str(port))
-  

@@ -1,7 +1,8 @@
 #!/usr/local/bin/python
 import sys, os, stat, logging, base64, time, imp, gzip, traceback, pprint, csv
 import threading, BaseHTTPServer, SocketServer, cStringIO, urlparse, urllib
-import flask, sqlite3, string, requests, re, datetime, hmac
+import flask, sqlite3, string, requests, re, datetime, hmac, passlib.hash
+import hashlib, socket
 import param, update, filters, util, normalize, dbop, social, __main__
 
 # HTTP header to force caching
@@ -13,6 +14,7 @@ no_expire = [
 ########################################################################
 
 whitelist = {'/opml', '/_share'}
+auth_cache = dict()
 class AuthWrapper:
   """HTTP Basic Authentication WSGI middleware for Pageserver"""
   def __init__(self, application):
@@ -24,12 +26,22 @@ class AuthWrapper:
       return self.application(environ, start_response)
     auth = environ.get('HTTP_AUTHORIZATION')
     auth_login = None
+    raw_auth = None
     if auth and auth.startswith('Basic '):
-      auth = base64.decodestring(auth[6:]).split(':')
+      raw_auth = base64.decodestring(auth[6:])
+      auth_hash = hashlib.sha256(raw_auth).hexdigest()
+      
+      auth = raw_auth.split(':')
       if len(auth) == 2:
         login, passwd = auth
-        if login in param.auth_dict and param.auth_dict[login] == passwd:
+        if auth_hash in auth_cache:
           auth_login = login
+        elif login == param.settings['login'] \
+           and passlib.hash.argon2.verify(passwd, param.settings['passwd']):
+          # argon2 is too slow by design, so cache it after the first hit
+          auth_cache[auth_hash] = True
+          auth_login = login
+    
     if not auth_login:
       start_response('401 Authentication Required',
                      [('WWW-Authenticate', 'Basic realm="Temboz"'),
@@ -123,13 +135,13 @@ def run():
   # a database format issue
   with dbop.db() as db:
     c = db.cursor()
-    update.load_settings(db, c)
+    dbop.load_settings(c)
     c.close()
   
   logging.getLogger().setLevel(logging.INFO)
   # start Flask
-  app.run(host=getattr(param, 'bind_address', 'localhost'),
-          port=param.port,
+  app.run(host=param.settings['ip'],
+          port=int(param.settings['port']),
           threaded=True)
 
 ########################################################################
@@ -568,20 +580,19 @@ def settings(status=''):
     elif op == 'facebook':
       api_key = flask.request.form.get('api_key', '').strip()
       if api_key:
-        update.setting(db, c, fb_api_key=api_key)
+        dbop.setting(db, c, fb_api_key=api_key)
       app_id = flask.request.form.get('app_id', '').strip()
       if app_id:
-        update.setting(db, c, fb_app_id=app_id)
+        dbop.setting(db, c, fb_app_id=app_id)
       fb_secret = flask.request.form.get('fb_secret', '').strip()
       if fb_secret:
-        update.setting(db, c, fb_secret=fb_secret)
+        dbop.setting(db, c, fb_secret=fb_secret)
     elif op == 'del_token':
-      update.setting(db, c, fb_token='')
+      dbop.setting(db, c, fb_token='')
     elif op == 'maint':
       dbop.snr_mv(db, c)
       db.commit()
 
-    update.load_settings(db, c)
     stats = filters.stats(c)
     
     return flask.render_template(
@@ -612,7 +623,6 @@ def stats():
 def facebook():
   with dbop.db() as db:
     c = db.cursor()
-    update.load_settings(db, c)
     app_id = param.settings.get('fb_app_id', '')
     secret = param.settings.get('fb_secret', '')
     if app_id and secret:
@@ -637,8 +647,7 @@ def facebook():
             }
           )
           token = r.text.split('access_token=', 1)[-1]
-          update.setting(db, c, fb_token=token)
-          update.load_settings(db, c)
+          dbop.setting(db, c, fb_token=token)
           return flask.redirect('/settings#facebook')
     else:
       return settings(status='You need to set the App ID first')
@@ -698,3 +707,12 @@ def item(uid, op):
     normalize=normalize,
     len=len, max=max, **locals()
   )
+
+@app.route("/profile")
+def profile():
+  import yappi
+  if not yappi.is_running():
+    yappi.start()
+  s = yappi.get_func_stats()
+  s.print_all()
+  return ''

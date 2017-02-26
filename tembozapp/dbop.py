@@ -1,4 +1,4 @@
-import sqlite3, string
+import sys, time, sqlite3, string
 import param
 
 def db():
@@ -26,7 +26,7 @@ def rebuild_v_feed_stats(c):
     left outer join mv_feed_stats on feed_uid=snr_feed_uid
     group by feed_uid, feed_title, feed_html, feed_xml;""")
 
-def snr_mv(c):
+def snr_mv(db, c):
   """SQLite does not have materialized views, so we use a conventional table
 instead. The side-effect of this is that new feeds may not be reflected
 immediately. The SNR will also lag by up to a day, which should not matter in
@@ -59,14 +59,20 @@ practice"""
     last_modified timestamp,
     snr real default 0.0)""")
   c.execute("""insert into mv_feed_stats
+  with feeds as (
   select feed_uid,
-    sum(case when item_rating=1 then 1 else 0 end),
-    sum(case when item_rating=0 then 1 else 0 end),
-    sum(case when item_rating=-1 then 1 else 0 end),
-    sum(case when item_rating=-2 then 1 else 0 end),
-    sum(1),
-    max(item_modified),
-    snr_decay(item_rating, item_created, ?)
+    sum(case when item_rating=1 then 1 else 0 end)  interesting,
+    sum(case when item_rating=0 then 1 else 0 end)  unread,
+    sum(case when item_rating=-1 then 1 else 0 end) uninteresting,
+    sum(case when item_rating=-2 then 1 else 0 end) filtered,
+    sum(1)                                          total,
+    max(item_modified)                              latest,
+    sum(case when item_rating > 0 then 1.0 else 0 end
+        / (1 << min(62, (julianday('now') - item_created)/%(decay)d)))
+                                                    snr_sig,
+    sum(1.0
+        / (1 << min(62, (julianday('now') - item_created)/%(decay)d)))
+                                                    snr_norm
   from fm_feeds left outer join (
     select item_rating, item_feed_uid, item_created,
       ifnull(
@@ -75,8 +81,17 @@ practice"""
       ) as item_modified
     from fm_items
   ) on feed_uid=item_feed_uid
-  group by feed_uid, feed_title, feed_html, feed_xml""",
-            [getattr(param, 'decay', 30)])
+  group by feed_uid, feed_title, feed_html, feed_xml
+  )
+  select feed_uid, interesting, unread, uninteresting, filtered, total,
+    latest,
+    case when snr_norm=0 then 0
+         when snr_norm is null or snr_sig is null then 0
+         else snr_sig / snr_norm
+    end as snr
+  from feeds""" % {
+    'decay': getattr(param, 'decay', 30)
+  })
   rebuild_v_feed_stats(c)
   c.executescript("""
   create trigger update_stat_mv after update on fm_items
@@ -144,16 +159,20 @@ practice"""
     delete from mv_feed_stats
     where snr_feed_uid=old.feed_uid;
   end;""")
-  c.commit()  
+  db.commit()
 
-def mv_on_demand(c):
+def mv_on_demand(db):
   """creating the materialized view is not more expensive than running the
   slow full table scan way, so we do so on demand (rather than at startup)"""
+  c = db.cursor()
   sql = c.execute("select sql from sqlite_master where name='mv_feed_stats'")
-  if not sql:
+  status = c.fetchone()
+  if not status:
     print >> param.log, 'WARNING: rebuilding mv_feed_stats...',
-    snr_mv(c)
+    snr_mv(db, c)
+    db.commit()
     print >> param.log, 'done'
+  c.close()
 
 def view_sql(c, where, sort, params, overload_threshold):
   mv_on_demand(c)
@@ -271,13 +290,16 @@ def item(db, uid):
   from fm_items where item_uid=?""", [uid])
   return c.fetchone()
 
-def setting(db, name, value):
+def setting(db, *args, **kwargs):
   c = db.cursor()
-  c.execute('update fm_settings set value=? where name=?',
-            [value, name])
-  if c.rowcount == 0:
-    c.execute('insert into fm_settings (name, value) values (?, ?)',
-              [name, value])
+  for name, value in zip(args[::2], args[1::2]) + kwargs.items():
+    param.settings[name] = str(value)
+    try:
+      c.execute("insert into fm_settings (name, value) values (?, ?)",
+                [name, str(value)])
+    except sqlite3.IntegrityError, e:
+      c.execute("update fm_settings set value=? where name=?",
+                [value, name])
   db.commit()
   c.close()
 
@@ -291,8 +313,14 @@ def get_setting(db, name, default):
   else:
     return l[0]
 
-c = db()
-mv_on_demand(c)
-rebuild_v_feed_stats(c)
-c.commit()
-c.close()
+def load_settings(c):
+  c.execute("select name, value from fm_settings")
+  setattr(param, 'settings', dict(c.fetchall()))
+
+with db() as d:
+  c = d.cursor()
+  load_settings(c)
+  mv_on_demand(d)
+  rebuild_v_feed_stats(d)
+  d.commit()
+  c.close()

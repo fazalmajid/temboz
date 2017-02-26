@@ -737,18 +737,3 @@ class PeriodicUpdater(threading.Thread):
       except:
         util.print_stack()
       self.event.clear()
-
-def load_settings(db, c):
-  c.execute("select name, value from fm_settings")
-  setattr(param, 'settings', dict(c.fetchall()))
-  
-def setting(db, c, **kwargs):
-  for name, value in kwargs.iteritems():
-    try:
-      c.execute("insert into fm_settings (name, value) values (?, ?)",
-                [name, str(value)])
-    except sqlite3.IntegrityError, e:
-      c.execute("update fm_settings set value=? where name=?",
-                [value, name])
-  db.commit()
-  

@@ -1,5 +1,4 @@
-import sys, os, re, xml.etree.ElementTree, singleton
-sqlite = singleton.sqlite
+import sys, os, re, xml.etree.ElementTree, dbop
 
 def parse_opml(opml_file):
   try:
@@ -51,23 +50,23 @@ def parse_opml(opml_file):
 
 def import_opml(opml_file):
   tree = parse_opml(opml_file)
-  from singleton import db
-  c = db.cursor()
-  ok = 0
-  dup = 0
-  for feed in tree:
-    feed['feed_etag'] = ''
-    try:
-      c.execute("""insert into fm_feeds
-      (feed_xml, feed_etag, feed_html, feed_title, feed_desc) values
-      (:xmlUrl, :feed_etag, :htmlUrl, :title, :desc)""", feed)
-      ok += 1
-    except sqlite.IntegrityError, e:
-      if 'feed_xml' not in str(e):
-        raise
-      dup += 1
-  db.commit()
-  print ok, 'feeds imported,', dup, 'rejected as duplicates'
+  with dbop.db() as db:
+    c = db.cursor()
+    ok = 0
+    dup = 0
+    for feed in tree:
+      feed['feed_etag'] = ''
+      try:
+        c.execute("""insert into fm_feeds
+        (feed_xml, feed_etag, feed_html, feed_title, feed_desc) values
+        (:xmlUrl, :feed_etag, :htmlUrl, :title, :desc)""", feed)
+        ok += 1
+      except sqlite.IntegrityError, e:
+        if 'feed_xml' not in str(e):
+          raise
+        dup += 1
+    db.commit()
+    print ok, 'feeds imported,', dup, 'rejected as duplicates'
 
 if __name__ == '__main__':
   for feed in [
