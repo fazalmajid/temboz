@@ -10,7 +10,7 @@ def rebuild_v_feed_stats(c):
   sql = c.execute("select sql from sqlite_master where name='v_feeds_snr'")
   if sql:
     c.executescript("""
-    drop view v_feeds_snr;
+    drop view if exists v_feeds_snr;
     create view v_feeds_snr as
     select feed_uid, feed_title, feed_html, feed_xml, feed_pubxml,
       julianday('now') - last_modified as last_modified,
@@ -33,22 +33,22 @@ immediately. The SNR will also lag by up to a day, which should not matter in
 practice"""
   sql = c.execute("select sql from sqlite_master where name='update_stat_mv'")
   if sql:
-    c.execute('drop trigger update_stat_mv')
+    c.execute('drop trigger if exists update_stat_mv')
   sql = c.execute("select sql from sqlite_master where name='insert_stat_mv'")
   if sql:
-    c.execute('drop trigger insert_stat_mv')
+    c.execute('drop trigger if exists insert_stat_mv')
   sql = c.execute("select sql from sqlite_master where name='delete_stat_mv'")
   if sql:
-    c.execute('drop trigger delete_stat_mv')
+    c.execute('drop trigger if exists delete_stat_mv')
   sql = c.execute("select sql from sqlite_master where name='insert_feed_mv'")
   if sql:
-    c.execute('drop trigger insert_feed_mv')
+    c.execute('drop trigger if exists insert_feed_mv')
   sql = c.execute("select sql from sqlite_master where name='delete_feed_mv'")
   if sql:
-    c.execute('drop trigger delete_feed_mv')
+    c.execute('drop trigger if exists delete_feed_mv')
   sql = c.execute("select sql from sqlite_master where name='mv_feed_stats'")
   if sql:
-    c.execute('drop table mv_feed_stats')
+    c.execute('drop table if exists mv_feed_stats')
   c.execute("""create table mv_feed_stats (
     snr_feed_uid integer primary key,
     interesting integer default 0,
@@ -270,6 +270,26 @@ def item(db, uid):
   c.execute("""select item_title, item_content, item_link
   from fm_items where item_uid=?""", [uid])
   return c.fetchone()
+
+def setting(db, name, value):
+  c = db.cursor()
+  c.execute('update fm_settings set value=? where name=?',
+            [value, name])
+  if c.rowcount == 0:
+    c.execute('insert into fm_settings (name, value) values (?, ?)',
+              [name, value])
+  db.commit()
+  c.close()
+
+def get_setting(db, name, default):
+  c = db.cursor()
+  c.execute('select value from fm_settings where name=?', [name])
+  l = c.fetchone()
+  c.close()
+  if not l:
+    return default
+  else:
+    return l[0]
 
 c = db()
 mv_on_demand(c)

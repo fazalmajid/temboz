@@ -20,6 +20,11 @@ if __name__ == '__main__':
   started = datetime.datetime.now()
   import getopt
   try:
+    os.stat('rss.db')
+  except:
+    import tembozapp.bootstrap
+    tembozapp.bootstrap.do_bootstrap()
+  try:
     import param
   except ImportError:
     print >> sys.stderr, 'You must create a param.py file, possibly using',
