@@ -22,7 +22,7 @@ if __name__ == '__main__':
     import tembozapp.bootstrap
     tembozapp.bootstrap.do_bootstrap()
   try:
-    import transform
+    import tembozapp.transform
   except ImportError:
     print >> sys.stderr, 'You must create a transform.py file, possibly using',
     print >> sys.stderr, 'transform.py.sample as an example'
