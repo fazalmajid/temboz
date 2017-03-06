@@ -26,21 +26,21 @@ I have been using Temboz as my feed reader since 2004. I currently have over 500
 
 ## Screen shots
 
-![Reader UI](https://majid.info/blog/wp-content/uploads/2004/03/t1.gif)
+![Reader UI](http://temboz.com/view.png)
 
-The first screen shot shows the article reading interface, using a two-column layout. Clicking on the “Thumbs down” icon makes the article disappear, bringing a new one in its place (if available). Clicking on the “Thumbs up” icon highlights it in yellow and flags it as interesting in the database.
+The home page is the article reading interface, using a two-column layout. Clicking on the “Thumbs down” icon makes the article disappear, bringing a new one in its place (if available). Clicking on the “Thumbs up” icon highlights it in yellow and flags it as interesting in the database.
 
-![Feed summary](https://majid.info/blog/wp-content/uploads/2004/03/t2.gif)
+![Feed summary](http://temboz.com/feeds.png)
 
 The feed summary page shows statistics on feeds, starting with feeds with unread articles, then by alphabetical order. Feeds can be sorted based on other metrics. You have the option of “catching up” with a feed (marking all the articles as read). Feeds with errors are highlighted in red (not shown). The default sort order is by feed signal-to-noise ratio.
 
-![Feed etails](https://majid.info/blog/wp-content/uploads/2004/03/t4.gif)
+![Feed etails](http://temboz.com/feed.png)
 
-Clicking on the “details” link for a feed brings this page, which allows you to change title or feed URL, and shows the RSS or Atom fields accessible for filtering.
+Clicking on the “details” link for a feed brings up this page, which allows you to change title or feed URL, and shows the RSS or Atom fields accessible for filtering.
 
-Feeds can be filtered by keyword, phrase, tag, author or using Python expressions.
+![Filtering rules](http://temboz.com/filters.png)
 
-![Filtering rules](https://majid.info/blog/wp-content/uploads/2004/03/t3.gif)
+Feeds can be filtered by keyword, phrase, tag, author or using Python expressions. Filtering out junk pop culture makes for tremendous time savings.
 
 ## Known bugs
 
@@ -49,8 +49,8 @@ You can check outstanding bug reports, change requests and more on the [GitHub i
 ## Installation
 
 * You will need Python 2.7 installed on your machine.
-* If you do not have `pip`, install it by running `python -m ensurepip` (you may need to do this as root depending on how your Python installation is set up).
-* If you do not have virtualenv installed, install it using `pip install virtualenv`
+* If you do not have `pip`, install it by running `python -m ensurepip` (you may need to do this as root depending on how your Python installation is set up, or use a system package manager like `apt-get`).
+* If you do not have virtualenv installed, install it using `pip install virtualenv` (or use a package manager if required).
 * Create a directory and virtualenv to run Temboz, in this case `tembozdir`: `virtualenv tembozdir`
 * `cd tembozdir`
   * If you are a bash/ksh user: `. bin/activate`
