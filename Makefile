@@ -61,6 +61,9 @@ opml:
 	wget -c https://majid.info/temboz/temboz.opml
 	mv temboz.opml me.opml
 
+sdist:
+	python setup.py sdist
+
 distclean:
 	-rm -f core *.pyc *~ pages/*~ *.old pages/*.py pages/*.pyc ChangeLog*
 	-find . -name .\#\* -exec rm {} \;

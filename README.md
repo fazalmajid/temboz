@@ -48,9 +48,18 @@ You can check outstanding bug reports, change requests and more on the [GitHub i
 
 ## Installation
 
-You will need Python 2.7 installed on your machine.
-
-(more complete installations with pip and virtualenv to follow)
+* You will need Python 2.7 installed on your machine.
+* If you do not have `pip`, install it by running `python -m ensurepip` (you may need to do this as root depending on how your Python installation is set up).
+* If you do not have virtualenv installed, install it using `pip install virtualenv`
+* Create a directory and virtualenv to run Temboz, in this case `tembozdir`: `virtualenv tembozdir`
+* `cd tembozdir`
+  * If you are a bash/ksh user: `. bin/activate`
+  * If you are a tcsh/csh user: `source bin/activate.csh`
+* Install Temboz in the virtualenv: `pip install temboz`
+* When you run Temboz for the first time, it will prompt you for the network address/port it should listen on, and your login/password: `./bin/temboz`
+* Optionally, you can import an OPML subscription file if you have one: `./bin/temboz --import foo.opml`
+* If you imported subscriptions, you can trigger a manual refresh: `./bin/temboz --refresh`
+* You can now start the Temboz server: `./bin/temboz --server`
 
 ## Credits
 
