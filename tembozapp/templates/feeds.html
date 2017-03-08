@@ -18,7 +18,7 @@
 {% for title in ['Feed Title', 'Last modified', 'Unread', 'Filtered', 'Interesting', 'SNR', 'Total'] %}
   {% set col = title.lower().replace(' ', '_') %}
   {% if col == sort_key %}
-    {% set css = ' class="sort' + order + '"' %}
+    {% set css = ' class="sort ' + order + '"' %}
     {% set alt_order = {'ASC': 'DESC', 'DESC': 'ASC'}[order] %}
   {% else %}
     {% set css = ' class="nonsort"' %}
@@ -28,7 +28,7 @@
       {% set alt_order = 'DESC' %}
     {% endif %}
   {% endif %}
-    <th{{ css }}><a href="feeds?sort={{ col }}&order={{ alt_order }}">{{ title }}</a></th>
+    <th{{ css|safe }}><a href="feeds?sort={{ col }}&order={{ alt_order|safe }}">{{ title }}</a></th>
 {% endfor %}
     <th class="nonsort">Actions</th></tr>
   </thead>

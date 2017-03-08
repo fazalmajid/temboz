@@ -64,28 +64,27 @@ div.headline {
   padding: 6px;
   overflow: hidden;
 }
+table.feeds {
+  width: 100%;
+  padding: 6px;
+}
+th {
+  padding: 0 6px 0 6px;
+}
+th.ASC::before {
+  content: '\25b2 ';
+}
+th.DESC::before {
+  content: '\25bc ';
+}
 th.nonsort {
   background: #eee;
   font-weight: normal;
 }
-table.feeds {
-  width: 100%;
-}
-th.sortASC {
-  background: #ddf;
-  color: red;
+th.sort {
+  background: #fd9;
   font-weight: bold;
   padding-right: 20px;
-  background-image: url(asc.gif);
-  background-position: right;
-  background-repeat: no-repeat;
-}
-th.sortDESC {
-  background: #ddf;
-  color: red;
-  font-weight: bold;
-  padding-right: 20px;
-  background-image: url(desc.gif);
   background-position: right;
   background-repeat: no-repeat;
 }
