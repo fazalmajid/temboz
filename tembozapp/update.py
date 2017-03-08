@@ -55,7 +55,7 @@ class AutoDiscoveryHandler(HTMLParser.HTMLParser):
       if attrs.get('type') == 'application/atom+xml' and 'href' in attrs:
         self.autodiscovery['atom'] = attrs['href']
   def feed_url(self, page_url):
-    page_data = requests.get(page_url).text
+    page_data = requests.get(page_url).content
     self.feed(page_data)
     # Atom has cleaner semantics than RSS, so give it priority
     url = self.autodiscovery.get(
@@ -68,7 +68,7 @@ def re_autodiscovery(url):
   autodiscovery_re = re.compile(
     '<link[^>]*rel="alternate"[^>]*'
     'application/(atom|rss)\\+xml[^>]*href="([^"]*)"')
-  candidates = autodiscovery_re.findall(requests.get(url).text)
+  candidates = autodiscovery_re.findall(requests.get(url).content)
   candidates.sort()
   return candidates
 
@@ -79,7 +79,7 @@ def add_feed(feed_xml):
     feed_xml = feed_xml.replace('feed://', 'http://')
     # verify the feed
     r = requests.get(feed_xml)
-    f = feedparser.parse(r.text)
+    f = feedparser.parse(r.content)
     # CVS versions of feedparser are not throwing exceptions as they should
     # see:
     # http://sourceforge.net/tracker/index.php?func=detail&aid=1379172&group_id=112328&atid=661937
@@ -106,7 +106,7 @@ def add_feed(feed_xml):
       if not feed_xml:
         raise ParseError
       r = requests.get(feed_xml)
-      f = feedparser.parse(r.text)
+      f = feedparser.parse(r.content)
       if not f.feed:
         raise ParseError
     # we have a valid feed, normalize it
@@ -143,7 +143,7 @@ def update_feed_xml(feed_uid, feed_xml):
   feed_uid = int(feed_uid)
 
   r = requests.get(feed_xml)
-  f = feedparser.parse(r.text)
+  f = feedparser.parse(r.content)
   if not f.feed:
     raise ParseError
   normalize.normalize_feed(f)
@@ -333,7 +333,7 @@ def purge_reload(feed_uid):
     feed_xml = c.fetchone()[0]
     db.commit()
     r = requests.get(feed_xml)
-    f = feedparser.parse(r.text)
+    f = feedparser.parse(r.content)
     if not f.feed:
       raise ParseError
     normalize.normalize_feed(f)
@@ -389,9 +389,9 @@ def fetch_feed(feed_uid, feed_xml, feed_etag, feed_modified):
     r = requests.get(feed_xml, headers={
       'If-None-Match': feed_etag
     })
-    if r.text == '':
+    if r.content == '':
       return {'channel': {}, 'items': [], 'why': 'no change since Etag'}
-    f = feedparser.parse(r.text, etag=r.headers.get('Etag'),
+    f = feedparser.parse(r.content, etag=r.headers.get('Etag'),
                          modified=feed_modified)
   except (socket.timeout, requests.exceptions.RequestException) as e:
     if param.debug:

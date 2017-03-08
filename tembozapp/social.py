@@ -14,7 +14,7 @@ def fb_post(token, msg, url):
   data['link'] = url
   try:
     req = requests.post(fb_url, data=data)
-    out = json.loads(req.text)
+    out = json.loads(req.content)
     print >> param.activity, 'FACEBOOK OUT', url, out
     return out
   except (ValueError, requests.exception.RequestException) as e:
@@ -34,7 +34,7 @@ def fb_feed(token):
   data = dict(urlparse.parse_qsl('access_token=' + token))
   try:
     req = requests.get(fb_url, params=data)
-    return req.text
+    return req.content
   except requests.exceptions.RequestException as e:
     print >> param.log, '$' * 72
     print >> param.log, 'FACEBOOK API ERROR'

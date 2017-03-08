@@ -135,7 +135,7 @@ def link_already(url):
 def dereference_content(url):
   try:
     r = requests.get(url)
-    return r.text
+    return r.content
   except:
     return ''
 
