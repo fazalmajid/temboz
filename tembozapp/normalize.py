@@ -16,15 +16,20 @@ date_fmt = '%Y-%m-%d %H:%M:%S'
 # strip out class attributes from articles
 feedparser._HTMLSanitizer.acceptable_attributes.remove('class')
 
-# strip diacritics. Unicode normalization form D (NFD) maps letters with
-# diacritics into the base letter followed by a combining diacritic, all
-# we need to do is get rid of the combining diacritics
-# this probably does not work with exotic characters like
-# U+FDF2 (Arabic ligature Allah)
-def stripc(c):
-  return unicodedata.normalize('NFD', c)[0]
-def strip_diacritics(s):
-  return u''.join(map(stripc, s))
+try:
+  import translitcodec
+  def strip_diacritics(s):
+    return translitcodec.short_encode(s)[0]
+except ImportError:
+  # strip diacritics. Unicode normalization form D (NFD) maps letters with
+  # diacritics into the base letter followed by a combining diacritic, all
+  # we need to do is get rid of the combining diacritics
+  # this probably does not work with exotic characters like
+  # U+FDF2 (Arabic ligature Allah)
+  def stripc(c):
+    return unicodedata.normalize('NFD', c)[0]
+  def strip_diacritics(s):
+    return u''.join(map(stripc, s))
 
 stop_words = ['i', 't', 'am', 'no', 'do', 's', 'my', 'don', 'm', 'on',
               'get', 'in', 'you', 'me', 'd', 've']

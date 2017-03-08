@@ -16,6 +16,7 @@ setuptools.setup(
     'html5lib',
     'passlib',
     'argon2_cffi',
+    'translitcodec',
     'yappi'
   ],
   description='The Temboz RSS/Atom feed reader and aggregator.',
