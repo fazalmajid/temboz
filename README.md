@@ -9,13 +9,13 @@ It is inspired by FeedOnFeeds (web-based personal aggregator), Google News (two 
 ## Features
 
 * Two-column user interface for better readability and information density. Automatic reflow using CSS.
-* Information Hunter-gatherer user interface: items flagged with a “Thumbs down” disappear immediately off the screen (using Dynamic HTML), making room for new articles.
+* Information Hunter-gatherer user interface: items flagged with a "Thumbs down" disappear immediately off the screen (using Dynamic HTML), making room for new articles.
 * Extensive filtering capabilities:
   * By keyword or phrase
   * By tag
   * using Python expressions
 * Ratings system for articles
-* Share articles you flagged as “Thumbs Up” via Facebook or as an Atom feed
+* Share articles you flagged as "Thumbs Up" via Facebook or as an Atom feed
 * Built-in web server.
 * Ad filtering
 * Multithreaded, download feeds in parallel.
@@ -26,19 +26,19 @@ I have been using Temboz as my feed reader since 2004. I currently have over 500
 
 ## Screen shots
 
-![Reader UI](http://temboz.com/view.png)
+![Reader UI](https://temboz.com/view.png)
 
-The home page is the article reading interface, using a two-column layout. Clicking on the “Thumbs down” icon makes the article disappear, bringing a new one in its place (if available). Clicking on the “Thumbs up” icon highlights it in yellow and flags it as interesting in the database.
+The home page is the article reading interface, using a two-column layout. Clicking on the "Thumbs down" icon makes the article disappear, bringing a new one in its place (if available). Clicking on the "Thumbs up" icon highlights it in yellow and flags it as interesting in the database.
 
-![Feed summary](http://temboz.com/feeds.png)
+![Feed summary](https://temboz.com/feeds.png)
 
-The feed summary page shows statistics on feeds, starting with feeds with unread articles, then by alphabetical order. Feeds can be sorted based on other metrics. You have the option of “catching up” with a feed (marking all the articles as read). Feeds with errors are highlighted in red (not shown). The default sort order is by feed signal-to-noise ratio.
+The feed summary page shows statistics on feeds, starting with feeds with unread articles, then by alphabetical order. Feeds can be sorted based on other metrics. You have the option of "catching up" with a feed (marking all the articles as read). Feeds with errors are highlighted in red (not shown). The default sort order is by feed signal-to-noise ratio.
 
-![Feed etails](http://temboz.com/feed.png)
+![Feed etails](https://temboz.com/feed.png)
 
-Clicking on the “details” link for a feed brings up this page, which allows you to change title or feed URL, and shows the RSS or Atom fields accessible for filtering.
+Clicking on the "details" link for a feed brings up this page, which allows you to change title or feed URL, and shows the RSS or Atom fields accessible for filtering.
 
-![Filtering rules](http://temboz.com/filters.png)
+![Filtering rules](https://temboz.com/filters.png)
 
 Feeds can be filtered by keyword, phrase, tag, author or using Python expressions. Filtering out junk pop culture makes for tremendous time savings.
 
@@ -67,4 +67,4 @@ Temboz is written in Python, and leverages Mark Pilgrim’s Ultra-liberal feed p
 
 ## Post scriptum
 
-The name “Temboz” is a reference to Malima Temboz, “The mountain that walks”, an elephant whose tormented spirit is the object of [Mike Resnick’s](http://mikeresnick.com/) excellent SF novel, [Ivory](http://www.penguinrandomhouse.com/books/231473/ivory-by-mike-resnick/9781591025467).
+The name "Temboz" is a reference to Malima Temboz, "The mountain that walks", an elephant whose tormented spirit is the object of [Mike Resnick’s](http://mikeresnick.com/) excellent SF novel, [Ivory](http://www.penguinrandomhouse.com/books/231473/ivory-by-mike-resnick/9781591025467).
