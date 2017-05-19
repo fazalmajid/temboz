@@ -15,14 +15,19 @@ def fb_post(token, msg, url):
   try:
     req = requests.post(fb_url, data=data)
     out = json.loads(req.content)
+    if 'id' not in out:
+      raise ValueError(req.content)
     print >> param.activity, 'FACEBOOK OUT', url, out
     return out
-  except (ValueError, requests.exception.RequestException) as e:
+  except (ValueError, requests.exceptions.RequestException) as e:
     print >> param.log, '$' * 72
     print >> param.log, 'FACEBOOK API ERROR'
     print >> param.log, 'FB_URL = %r' % fb_url
     print >> param.log, 'FB_DATA = %r' % data
-    info = e.read()
+    try:
+      info = e.read()
+    except:
+      info = repr(e)
     print >> param.log, 'INFO = %r' % info
     print >> param.log, '$' * 72
     if 'access token' in info:
