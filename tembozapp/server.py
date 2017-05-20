@@ -2,7 +2,7 @@
 import sys, os, stat, logging, base64, time, imp, gzip, traceback, pprint, csv
 import threading, BaseHTTPServer, SocketServer, cStringIO, urlparse, urllib
 import flask, sqlite3, string, requests, re, datetime, hmac, passlib.hash
-import hashlib, socket
+import hashlib, socket, json
 import param, update, filters, util, normalize, dbop, social, __main__
 
 # HTTP header to force caching
@@ -646,7 +646,11 @@ def facebook():
               'redirect_uri': redir
             }
           )
-          token = r.text.split('access_token=', 1)[-1]
+          print >> param.log, 'FACEBOOK TOKEN RESPONSE', r.text
+          if r.text.startswith('{'):
+            token = json.loads(r.text).get('access_token')
+          else:
+            token = r.text.split('access_token=', 1)[-1]
           dbop.setting(db, c, fb_token=token)
           return flask.redirect('/settings#facebook')
     else:
