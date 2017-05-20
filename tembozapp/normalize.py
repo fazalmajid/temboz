@@ -424,6 +424,9 @@ def dereference(url, seen=None, level=0):
     else:
       # break a redirection loop if it occurs
       redir = r.headers.get('Location')
+      if True not in [redir.startswith(p)
+                      for p in ['http://', 'https://', 'ftp://']]:
+        return url
       if redir in seen:
         return url
       # some servers redirect to Unicode URLs, which are not legal
