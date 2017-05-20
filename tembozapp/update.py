@@ -1,5 +1,5 @@
 import sys, hashlib, time, threading, socket, Queue, signal, os, re
-import urlparse, HTMLParser, random, sqlite3, requests
+import urlparse, HTMLParser, random, sqlite3, requests, cPickle
 import param, feedparser, normalize, util, transform, filters, dbop
 import social
 
@@ -80,6 +80,8 @@ def add_feed(feed_xml):
     # verify the feed
     r = requests.get(feed_xml)
     f = feedparser.parse(r.content)
+    if 'url' not in f:
+      f['url'] = feed_xml
     # CVS versions of feedparser are not throwing exceptions as they should
     # see:
     # http://sourceforge.net/tracker/index.php?func=detail&aid=1379172&group_id=112328&atid=661937
@@ -114,7 +116,7 @@ def add_feed(feed_xml):
     feed = {
       'xmlUrl': f['url'],
       'htmlUrl': str(f.feed['link']),
-      'etag': f.headers.get('Etag'),
+      'etag': r.headers.get('Etag'),
       'title': f.feed['title'].encode('ascii', 'xmlcharrefreplace'),
       'desc': f.feed['description'].encode('ascii', 'xmlcharrefreplace')
       }
@@ -396,11 +398,11 @@ def fetch_feed(feed_uid, feed_xml, feed_etag, feed_modified):
   except (socket.timeout, requests.exceptions.RequestException) as e:
     if param.debug:
       print >> param.log, 'EEEEE error fetching feed', feed_xml, e
-    f = {'channel': {}, 'items': []}
+    f = {'channel': {}, 'items': [], 'why': repr(e)}
   except:
     if param.debug:
       util.print_stack()
-    f = {'channel': {}, 'items': []}
+    f = {'channel': {}, 'items': [], 'why': repr(sys.exc_info[1])}
   normalize.normalize_feed(f)
   return f
 
@@ -443,10 +445,23 @@ def clear_errors(db, c, feed_uid, f):
 def update_feed(db, c, f, feed_uid, feed_xml, feed_etag, feed_modified,
                 feed_dupcheck=None):
   print >> param.activity, feed_xml
+  if 'why' in f and f['why'] == 'no change since Etag':
+    return
   # check for errors - HTTP code 304 means no change
-  if not hasattr(f, 'feed') or 'status' not in f or \
-         'title' not in f.feed and 'link' not in f.feed and \
-         ('status' not in f or f['status'] not in [304]):
+  if not hasattr(f, 'feed') \
+     or 'title' not in f.feed and 'link' not in f.feed:
+    if not hasattr(f, 'feed'):
+      print >> param.log, """FFFFF not hasattr(f, 'feed')""",
+    else:
+      print >> param.log, """FFFFF title=%r link=%r""" % (
+        'title' not in f.feed,
+        'link' not in f.feed
+      ),
+    if 'why' in f:
+      print >> param.log, feed_xml, f['why']
+    else:
+      print >> param.log, feed_xml
+      
     # error or timeout - increment error count
     increment_errors(db, c, feed_uid)
   else:
