@@ -44,9 +44,13 @@ garbage_items = 180
 # garbage_items = None
 
 # URL to use as the User-Agent when downloading feeds
-temboz_url = 'http://www.temboz.com/'
+temboz_url = 'https://www.temboz.com/'
 # user agent shown when fetching the feeds
 user_agent = 'Temboz (%s)' % temboz_url
+def default_user_agent():
+  return user_agent
+import requests
+requests.utils.default_user_agent = default_user_agent
 
 # page unauthenticated users should see
 # the most common case is people checking the referrer logs on their web server
