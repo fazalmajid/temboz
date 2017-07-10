@@ -13,7 +13,7 @@ no_expire = [
 
 ########################################################################
 
-whitelist = {'/opml', '/_share'}
+whitelist = {'/opml', '/_share', '/blogroll.json'}
 auth_cache = dict()
 class AuthWrapper:
   """HTTP Basic Authentication WSGI middleware for Pageserver"""
@@ -730,3 +730,16 @@ def profile():
      in {'y', 'yes', 'true', 'on'}:
     yappi.clear_stats()
   return '<pre>\n' + f.getvalue() + '</pre>\n'
+
+@app.route("/blogroll.json")
+def blogroll():
+  cols = ('uid', 'title', 'description', 'html', 'xml', 'snr')
+  with dbop.db() as db:
+    rows = dbop.opml(db)
+  return (
+    json.dumps(
+      [dict(zip(cols, row)) for row in rows],
+      indent=2
+    ),
+    200 , {'Content-Type': 'application/json'}
+  )
