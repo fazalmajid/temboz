@@ -317,10 +317,26 @@ def load_settings(c):
   c.execute("select name, value from fm_settings")
   setattr(param, 'settings', dict(c.fetchall()))
 
+fts_enabled = False
+def fts(d, c):
+  global fts_enabled
+  try:
+    c.execute("""create virtual table if not exists search
+    using fts5(content="fm_items", item_title, item_content,
+               content_rowid=item_uid)""")
+    fts_enabled = True
+    c.execute("""insert into search(search) values ('rebuild')""")
+    d.commit()
+  except:
+    d.rollback()
+    fts_enabled = False
+
 with db() as d:
   c = d.cursor()
   load_settings(c)
   mv_on_demand(d)
   rebuild_v_feed_stats(d)
+  d.commit()
+  fts(d, c)
   d.commit()
   c.close()

@@ -3,7 +3,7 @@ import sys, os, stat, logging, base64, time, imp, gzip, traceback, pprint, csv
 import threading, BaseHTTPServer, SocketServer, cStringIO, urlparse, urllib
 import flask, sqlite3, string, requests, re, datetime, hmac, passlib.hash
 import hashlib, socket, json
-import param, update, filters, util, normalize, dbop, social, __main__
+import param, update, filters, util, normalize, dbop, social, fts5, __main__
 
 # HTTP header to force caching
 no_expire = [
@@ -204,24 +204,30 @@ def view():
       where +=  ' and item_feed_uid=?'
     except:
       pass
-    # Crude search functionality
+    # search functionality using fts5 if available
     search = flask.request.args.get('search')
+    search_in = flask.request.args.get('search_in', 'title')
     if search:
-      search = search.lower()
-      search_in = flask.request.args.get('search_in', 'title')
-      search_where = 'item_title' if search_in == 'title' else 'item_content'
-      where += ' and lower(%s) like ?' % search_where
-      if type(search) == unicode:
-        # XXX vulnerable to SQL injection attack
-        params.append('%%%s%%' % search.encode('ascii', 'xmlcharrefreplace'))
+      if dbop.fts_enabled:
+        where += """ and item_uid in (
+          select rowid from search where %s '%s'
+        )""" % ('item_title match' if search_in == 'title' else 'search=',
+                fts5.fts5_term(search))
       else:
-        params.append('%%%s%%' % search)
-      # Support for arbitrary where clauses in the view script. Not directly
-      # accessible from the UI
-      extra_where = flask.request.args.get('where_clause')
-      if extra_where:
-        # XXX vulnerable to SQL injection attack
-        where += ' and %s' % extra_where
+        search = search.lower()
+        search_where = 'item_title' if search_in == 'title' else 'item_content'
+        where += ' and lower(%s) like ?' % search_where
+        if type(search) == unicode:
+          # XXX vulnerable to SQL injection attack
+          params.append('%%%s%%' % search.encode('ascii', 'xmlcharrefreplace'))
+        else:
+          params.append('%%%s%%' % search)
+        # Support for arbitrary where clauses in the view script. Not directly
+        # accessible from the UI
+        extra_where = flask.request.args.get('where_clause')
+        if extra_where:
+          # XXX vulnerable to SQL injection attack
+          where += ' and %s' % extra_where
     # Preliminary support for offsets to read more than overload_threshold
     # articles, not fully implemented yet
     try:
