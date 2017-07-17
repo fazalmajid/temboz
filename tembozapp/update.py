@@ -664,6 +664,8 @@ def cleanup(db=None, c=None):
     select item_uid from fm_items where item_uid=tag_item_uid
   )""")
   db.commit()
+  if dbop.fts_enabled:
+    c.execute("""insert into search(search) values ('rebuild')""")
   c.execute('vacuum')
   # we still hold the PseudoCursor lock, this is a good opportunity to backup
   try:

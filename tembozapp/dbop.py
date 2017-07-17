@@ -320,16 +320,37 @@ def load_settings(c):
 fts_enabled = False
 def fts(d, c):
   global fts_enabled
-  try:
-    c.execute("""create virtual table if not exists search
-    using fts5(content="fm_items", item_title, item_content,
-               content_rowid=item_uid)""")
-    fts_enabled = True
-    c.execute("""insert into search(search) values ('rebuild')""")
-    d.commit()
-  except:
-    d.rollback()
-    fts_enabled = False
+  sql = c.execute("select sql from sqlite_master where name='search'")
+  status = c.fetchone()
+  if not status:
+    try:
+      c.execute("""create virtual table if not exists search
+      using fts5(content="fm_items", item_title, item_content,
+                 content_rowid=item_uid)""")
+      # Triggers to keep the FTS index up to date.
+      c.execute("""create trigger fts_ai after insert on fm_items
+      begin
+        insert into search(rowid, item_title, item_content)
+        values (NEW.item_uid, NEW.item_title, NEW.item_content);
+      end;""")
+      c.execute("""create trigger fts_ad after delete on fm_items
+      begin
+        insert into search(search, rowid, item_title, item_content)
+        values ('delete', OLD.item_uid, OLD.item_title, OLD.item_content);
+      end;""")
+      c.execute("""create trigger fts_au after update on fm_items
+      begin
+        insert into search(search, rowid, item_title, item_content)
+        values ('delete', OLD.item_uid, OLD.item_title, OLD.item_content);
+        insert into search(rowid, item_title, item_content)
+        values (NEW.item_uid, NEW.item_title, NEW.item_content);
+      end;""")
+      c.execute("""insert into search(search) values ('rebuild')""")
+      d.commit()
+      fts_enabled = True
+    except:
+      d.rollback()
+      fts_enabled = False
 
 with db() as d:
   c = d.cursor()
