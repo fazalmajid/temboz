@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Temboz login</title>
+    <style>
+      body {
+        line-height:10pt;
+        font-family: helvetica, verdana, arial, sans-serif;
+        font-size:9pt;
+        line-height:11pt;
+      }
+      form {
+        text-align: left;
+        width: 30em;
+        padding: 6px;;
+      }
+      input {
+        margin: 6px;;
+      }
+      label {
+        display: block;
+        width: 8em;
+        float: left;
+        margin: 6px;;
+      }
+      div.loginform {
+        background: #d9ffb3;
+        margin-top: 25vh;
+        margin-left: 25vw;
+        margin-right: 25vw;
+        padding: 5vw;
+        text-align: center;
+        -moz-border-radius: 2vw;
+        -webkit-border-radius: 2vw;
+        border-radius: 2vw;
+      }
+      p.err {
+        color: red;
+        background: #fcc;
+        padding: 1em;
+        border: 2px solid red;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="loginform">
+      <h1>Temboz</h1>
+      {% if err %}
+      <p class="err" >{{ err }}</p>
+      {% endif %}
+      <center>
+        <form method="POST">
+          <label for="login">Login</label>
+          <input name="login"><br>
+          <label for="password">Password</label>
+          <input type="password" name="password" ><br>
+          <center>
+            <input type="submit" value="Login">
+          </center>
+        </form>
+      </center>
+    </div>
+  </body>
+</html>

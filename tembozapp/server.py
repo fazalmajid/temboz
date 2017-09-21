@@ -2,7 +2,7 @@
 import sys, os, stat, logging, base64, time, imp, gzip, traceback, pprint, csv
 import threading, BaseHTTPServer, SocketServer, cStringIO, urlparse, urllib
 import flask, sqlite3, string, requests, re, datetime, hmac, passlib.hash
-import hashlib, socket, json
+import hashlib, socket, json, hmac, werkzeug
 import param, update, filters, util, normalize, dbop, social, fts5, __main__
 
 # HTTP header to force caching
@@ -13,8 +13,12 @@ no_expire = [
 
 ########################################################################
 
-whitelist = {'/opml', '/_share', '/blogroll.json'}
-auth_cache = dict()
+whitelist = {'/login', '/opml', '/_share', '/blogroll.json'}
+try:
+  cookie_secret = os.urandom(16)
+except NotImplementedError:
+  import random
+  cookie_secret = ''.join(str(random.random()) for x in range(8))
 class AuthWrapper:
   """HTTP Basic Authentication WSGI middleware for Pageserver"""
   def __init__(self, application):
@@ -24,29 +28,24 @@ class AuthWrapper:
     url = environ['PATH_INFO'].rstrip('/')
     if url in whitelist or url.startswith('/static/'):
       return self.application(environ, start_response)
-    auth = environ.get('HTTP_AUTHORIZATION')
+    back_url = url if url else '/'
+    cookies = werkzeug.utils.parse_cookie(environ)
+    auth_cookie = cookies.get('auth')
     auth_login = None
-    raw_auth = None
-    if auth and auth.startswith('Basic '):
-      raw_auth = base64.decodestring(auth[6:])
-      auth_hash = hashlib.sha256(raw_auth).hexdigest()
-      
-      auth = raw_auth.split(':')
+    if cookie_secret and auth_cookie:
+      auth = auth_cookie.split(':', 1)
       if len(auth) == 2:
-        login, passwd = auth
-        if auth_hash in auth_cache:
-          auth_login = login
-        elif login == param.settings['login'] \
-           and passlib.hash.argon2.verify(passwd, param.settings['passwd']):
-          # argon2 is too slow by design, so cache it after the first hit
-          auth_cache[auth_hash] = True
+        login, hash = auth
+        if login == param.settings['login'] \
+           and hash == hmac.new(cookie_secret, login,
+                                hashlib.sha256).hexdigest():
           auth_login = login
     
     if not auth_login:
-      start_response('401 Authentication Required',
-                     [('WWW-Authenticate', 'Basic realm="Temboz"'),
+      start_response('302 Moved',
+                     [('Location', '/login?back=' + urllib.quote_plus(url)),
                       ('Content-Type', 'text/html')])
-      return '<h1>HTTP 401 Authentication required</h1>'
+      return '<h1>Moved</h1>'
     return self.application(environ, start_response)
 
 # seed for CSRF protection nonces
@@ -146,6 +145,30 @@ def run():
 
 ########################################################################
 # actual request handlers
+
+@app.route("/login", methods=['GET', 'POST'])
+def login(): 
+  if flask.request.method == 'POST':
+    f = flask.request.form
+    login = f.get('login')
+    if login == param.settings['login'] \
+       and passlib.hash.argon2.verify(f.get('password', ''),
+                                      param.settings['passwd']):
+      # set auth cookie
+      cookie = login + ':' + hmac.new(cookie_secret, login,
+                                      hashlib.sha256).hexdigest()
+      back = flask.request.args.get('back', '/')
+      back = back if back else '/'
+      resp = flask.make_response(
+        flask.redirect(back))
+      resp.set_cookie('auth', cookie, httponly=True)
+      return resp
+    else:
+      return flask.redirect('/login?err=invalid+login+or+password')
+  else:
+    return flask.render_template('login.html',
+                                 err=flask.request.args.get('err'))
+
 @app.route("/")
 @app.route("/view")
 def view(): 
