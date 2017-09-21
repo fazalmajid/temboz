@@ -13,7 +13,7 @@ no_expire = [
 
 ########################################################################
 
-whitelist = {'/login', '/opml', '/_share', '/blogroll.json'}
+whitelist = {'/login', '/opml', '/_share', '/blogroll.json', '/favicon.ico'}
 try:
   cookie_secret = os.urandom(16)
 except NotImplementedError:
