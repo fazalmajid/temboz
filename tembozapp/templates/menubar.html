@@ -16,10 +16,14 @@
       {% endblock %}
       {% block SEARCH_FORM %}
       &nbsp;&nbsp;
-      {% for (name, link) in [('All unread', 'view'), ('All feeds', 'feeds'), ('Add feed', 'add'), ('Filters', 'rules')] %}
+      {% for (name, link, new_window) in [('All unread', 'view', False), ('All feeds', 'feeds', True), ('Add feed', 'add', True), ('Filters', 'rules', True)] %}
       {% if not request.path[1:].startswith(link) %}
       <li class="non-iphone">
+        {% if new_window %}
+        <a target="_blank" href="/{{ link }}">{{ name }}</a>
+        {% else %}
         <a href="/{{ link }}">{{ name }}</a>
+        {% endif %}
       </li>
       {% endif %}
       {% endfor %}
