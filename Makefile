@@ -26,7 +26,8 @@ sync-js:
 js:
 	cat $(JUI)/external/jquery/jquery*.js spool/jquery.form.js \
 	$(JUI)/jquery-ui.js \
-	spool/jquery.hotkeys.meta.js static/specific.js | $(JSMIN)>static/temboz.js
+	spool/jquery.hotkeys.meta.js tembozapp/static/specific.js \
+	| $(JSMIN) > tembozapp/static/temboz.js
 	./temboz --kill
 changelog:
 	cvs2cl.pl --tags -g -q

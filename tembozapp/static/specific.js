@@ -77,3 +77,11 @@ $.widget( "ui.tabs", $.ui.tabs, {
     return isLocal;
   }
 });
+/* search */
+$(function() {
+  $("input#search").focus(
+    function() {
+      $("select.hidden").show();
+    }
+  );
+});
