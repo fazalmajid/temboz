@@ -276,34 +276,40 @@ class RatingsWorker(threading.Thread):
     self.setDaemon(True)
   def run(self):
     while True:
-      item_uid, rating = self.in_q.get()
-      with dbop.db() as db:
-        c = db.cursor()
-        try:
-          c.execute("""update fm_items
-          set item_rating=?, item_rated=julianday('now')
-          where item_uid=?""", [rating, item_uid])
-          fb_token = param.settings.get('fb_token', None)
-          if rating == 1 and fb_token:
-            c.execute("""select feed_uid, item_link, item_title, feed_private
-            from fm_items, fm_feeds
-            where item_uid=? and feed_uid=item_feed_uid""",
-                      [item_uid])
-            feed_uid, url, title, private = c.fetchone()
-          db.commit()
-          if rating == 1 and fb_token and not private:
-            callout = random.choice(
-              ['Interesting: ', 'Notable: ', 'Recommended: ', 'Thumbs-up: ',
-               'Noteworthy: ', 'FYI: ', 'Worth reading: '])
-            try:
-              social.fb_post(fb_token, callout + title, url)
-            except social.ExpiredToken:
-              notification(db, c, feed_uid, 'Service notification',
-                'The Facebook access token has expired',
-                link='/settings#facebook')
+      item_uid = None
+      try:
+        item_uid, rating = self.in_q.get()
+        with dbop.db() as db:
+          c = db.cursor()
+          try:
+            c.execute("""update fm_items
+            set item_rating=?, item_rated=julianday('now')
+            where item_uid=?""", [rating, item_uid])
+            fb_token = param.settings.get('fb_token', None)
+            if rating == 1 and fb_token:
+              c.execute("""select feed_uid, item_link, item_title, feed_private
+              from fm_items, fm_feeds
+              where item_uid=? and feed_uid=item_feed_uid""",
+                        [item_uid])
+              feed_uid, url, title, private = c.fetchone()
+            db.commit()
+            if rating == 1 and fb_token and not private:
+              callout = random.choice(
+                ['Interesting: ', 'Notable: ', 'Recommended: ', 'Thumbs-up: ',
+                 'Noteworthy: ', 'FYI: ', 'Worth reading: '])
+              try:
+                social.fb_post(fb_token, callout + title, url)
+              except social.ExpiredToken:
+                notification(db, c, feed_uid, 'Service notification',
+                  'The Facebook access token has expired',
+                  link='/settings#facebook')
 
-        except:
-          util.print_stack()
+          except:
+            util.print_stack()
+      except:
+        util.print_stack()
+        if item_uid is not None:
+          in_q.put((item_uid, rating))
 
 def catch_up(feed_uid):
   feed_uid = int(feed_uid)
