@@ -309,7 +309,7 @@ class RatingsWorker(threading.Thread):
       except:
         util.print_stack()
         if item_uid is not None:
-          in_q.put((item_uid, rating))
+          self.in_q.put((item_uid, rating))
 
 def catch_up(feed_uid):
   feed_uid = int(feed_uid)
