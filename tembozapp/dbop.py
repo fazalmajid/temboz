@@ -322,7 +322,9 @@ def fts(d, c):
   global fts_enabled
   sql = c.execute("select sql from sqlite_master where name='search'")
   status = c.fetchone()
-  if not status:
+  if status:
+    fts_enabled = True
+  else:
     try:
       c.execute("""create virtual table if not exists search
       using fts5(content="fm_items", item_title, item_content,
