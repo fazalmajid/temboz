@@ -174,27 +174,42 @@ def mv_on_demand(db):
     print >> param.log, 'done'
   c.close()
 
+def elapsed(t, what):
+  t2 = time.time()
+  print >> param.log, what, (t2-t)* 1000, 'ms'
+  return t2
+  
 def view_sql(c, where, sort, params, overload_threshold):
+  t = time.time()
   mv_on_demand(c)
+  #t = elapsed(t, 'mv_on_demand')
   c.execute('drop table if exists articles')
+  #t = elapsed(t, 'drop table if exists article')
   c.execute("""create table articles as select
     item_uid, item_creator, item_title, item_link, item_content,
     datetime(item_loaded), date(item_created) as item_created,
     datetime(item_rated) as item_rated,
     julianday('now') - julianday(item_created) as delta_created, item_rating,
-    item_rule_uid, item_feed_uid, feed_title, feed_html, feed_xml, snr
-  from fm_items, v_feeds_snr
+    item_rule_uid, item_feed_uid, feed_title, feed_html, feed_xml,
+    ifnull(snr, 0) as snr, updated
+  from fm_items
+  join fm_feeds on item_feed_uid=feed_uid
+  left outer join mv_feed_stats on feed_uid=snr_feed_uid
   where item_feed_uid=feed_uid and """ + where + """
   order by """ + sort + """, item_uid DESC limit ?""",
             params + [overload_threshold])
+  #t = elapsed(t, 'create table articles')
   c.execute("""create index articles_i on articles(item_uid)""")
+  #t = elapsed(t, 'create index articles_i')
   tag_dict = dict()
   for item_uid, tag_name, tag_by in c.execute(
       """select tag_item_uid, tag_name, tag_by
       from fm_tags, articles where tag_item_uid=item_uid"""):
     tag_dict.setdefault(item_uid, []).append(tag_name)
-  return tag_dict, c.execute("""select * from articles
+  output = c.execute("""select * from articles
   order by """ + sort + """, item_uid DESC""")
+  #t = elapsed(t, 'output')
+  return tag_dict, output
 
 def feed_info_sql(c, feed_uid):
   mv_on_demand(c)
@@ -354,6 +369,29 @@ def fts(d, c):
       d.rollback()
       fts_enabled = False
 
+def sync_col(d, c):
+  sql = c.execute("""select * from sqlite_master
+  where tbl_name='fm_items' and sql like '%updated%'""")
+  status = c.fetchone()
+  if not status:
+    try:
+      # create an updated column on fm_items with corresponding triggers
+      # to maintain it. This will be used to sync offline mode
+      c.execute("""alter table fm_items add column updated timestamp""")
+      c.execute("""update fm_items set updated = julianday('now')""")
+      c.execute("""create trigger insert_items_ts after insert on fm_items
+      for each row begin update fm_items
+      set updated=julianday('now')
+      where item_uid=NEW.item_uid; end""")
+      c.execute("""create trigger update_items_ts after update on fm_items
+      for each row begin update fm_items
+      set updated=julianday('now')
+      where item_uid=NEW.item_uid; end""")
+      c.execute("""create index item_updated_i on fm_items(updated)""")
+      d.commit()
+    except:
+      d.rollback()
+
 with db() as d:
   c = d.cursor()
   load_settings(c)
@@ -361,5 +399,6 @@ with db() as d:
   rebuild_v_feed_stats(d)
   d.commit()
   fts(d, c)
+  sync_col(d, c)
   d.commit()
   c.close()
