@@ -1,0 +1,100 @@
+{% extends "view.html" %}
+
+{% block EXTRAHEAD2 %}
+<script src="/static/temboz.js"></script>
+<script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
+<script src="/static/mustache.js"></script>
+{% endblock EXTRAHEAD2 %}
+
+{% block INSERT_ARTICLES %}
+{% raw %}
+<script id="item-template-mst" type="x-tmpl-mustache">
+  <div class="article" id="art{{uid}}">
+  <div class="headline">
+  <span class="buttons">
+  <span class="down" onclick="hide('{{uid}}')">&#9660;</span>
+  <span class="up" onclick="highlight('{{uid}}')">&#9650;</span>
+  </span>
+  <span class="ctarrow" id="ctarrow{{uid}}"
+  onclick="collapseToggle('{{uid}}')">&#9660;&nbsp;</span>
+  <a href="{{redirect}}" class="headline" target="_blank"
+  title="by {{creator}}, cached at {{loaded}}">{{{title}}}</a>
+  <br><a href="/feed/{{feed_uid}}" title=""
+  class="source screen" id="feed{{uid}}">{{feed_title}}</a>
+  <a href="{{feed_html}}" title="" class="source print"
+  id="feedprint{{uid}}">{{feed_title}}</a>
+  <a href="/view?feed_uid={{feed_uid}}&show={{show}}"
+  class="ff" target="_blank">&#9658;</a>
+  {{since_when}}
+  {{{tag_call}}}
+  <a href="/item/{{uid}}/edit" class="screen">edit</a>
+  <br>
+  </div>{{tag_info|safe}}
+  <div class="content" id="content{{uid}}">
+  {{{content}}}
+  </div>
+  </div>
+</script>
+{% endraw %}
+<script>
+  var db = new Dexie("unseen_articles");
+  var item_tmpl = document.getElementById("item-template-mst").innerHTML;
+  Mustache.parse(item_tmpl);
+  db.version(1).stores({
+    items: 'uid,updated_ts',
+    ops:   '++seq,uid'
+  });
+  
+  db.on('ready', function() {
+    return new Promise(function (resolve, reject) {
+      var url;
+      var updated = null;
+      db.items.orderBy('updated_ts').last(function(item) {
+        console.log('last item = ' + JSON.stringify(item));
+        updated = item.updated_ts;
+        console.log('updated_ts max = ' + updated);
+        return updated
+      }).then(x=>updated, x=>null)
+        .then(function (updated) {
+          if (location.search == "") {
+            url = '/sync?updated=' + updated;
+          } else {
+            url = '/sync' + location.search + '&updated=' + updated
+          }
+          return $.ajax(url, {
+            type: 'get',
+            timeout: 30000,
+            dataType: 'json',
+            error: function(xhr, textStatus) {
+              console.log('offline article sync failed: ' + textStatus);
+              resolve([]);
+            },
+            success: function(data) {
+              resolve(data);
+            }
+          });
+        })
+    }).then(function (data) {
+      if (data.length > 0) {
+        console.log("fetched " + data.length + " article updates");
+        db.items.bulkPut(data);
+      }
+    });
+  });
+</script>
+{% endblock INSERT_ARTICLES %}
+
+{% block GET_ARTICLES %}
+    var do_cols = $("body").width() >= 760;
+    db.open();
+    db.items.orderBy('uid').reverse().each(function render(item) {
+      if (item.rating == 0) {
+        var node = $(Mustache.render(item_tmpl, item));
+        if(do_cols) {
+          assign_column.call(node);
+        } else {
+          node.appendTo($("div#initial"));
+        }
+      }
+    });
+{% endblock GET_ARTICLES %}

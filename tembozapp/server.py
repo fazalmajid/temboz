@@ -32,13 +32,13 @@ class AuthWrapper:
     cookies = werkzeug.utils.parse_cookie(environ)
     auth_cookie = cookies.get('auth')
     auth_login = None
+    ua = environ.get('HTTP_USER_AGENT')
     if cookie_secret and auth_cookie:
       auth = auth_cookie.split(':', 1)
       if len(auth) == 2:
-        login, hash = auth
+        login, session = auth
         if login == param.settings['login'] \
-           and hash == hmac.new(cookie_secret, login,
-                                hashlib.sha256).hexdigest():
+           and dbop.check_session(session, ua):
           auth_login = login
     
     if not auth_login:
@@ -155,13 +155,15 @@ def login():
        and passlib.hash.argon2.verify(f.get('password', ''),
                                       param.settings['passwd']):
       # set auth cookie
-      cookie = login + ':' + hmac.new(cookie_secret, login,
-                                      hashlib.sha256).hexdigest()
+      session = hmac.new(cookie_secret, login, hashlib.sha256).hexdigest()
+      ua = flask.request.headers.get('User-Agent')
+      dbop.save_session(session, ua)
+      cookie = login + ':' + session
       back = flask.request.args.get('back', '/')
       back = back if back else '/'
       resp = flask.make_response(
         flask.redirect(back))
-      resp.set_cookie('auth', cookie, httponly=True)
+      resp.set_cookie('auth', cookie, max_age=14*86400, httponly=True)
       return resp
     else:
       return flask.redirect('/login?err=invalid+login+or+password')
@@ -169,9 +171,7 @@ def login():
     return flask.render_template('login.html',
                                  err=flask.request.args.get('err'))
 
-@app.route("/")
-@app.route("/view")
-def view(): 
+def view_common(do_items=True):
   # Query-string parameters for this page
   #   show
   #   feed_uid
@@ -191,7 +191,19 @@ def view():
     i = update.ratings_dict.get(show, 1)
     show = update.ratings[i][0]
     item_desc = update.ratings[i][1]
+    # items updated after the provided julianday
+    updated = flask.request.args.get('updated', '')
     where = update.ratings[i][3]
+    params = []
+    if updated:
+      try:
+        updated = float(updated)
+        params.append(updated)
+        # we want all changes, not just unread ones, so we can mark
+        # read articles as such in IndexedDB
+        where = 'fm_items.updated > ?'
+      except:
+        print >> param.log, 'invalid updated=' + repr(updated)
     sort = flask.request.args.get('sort', 'seen')
     i = update.sorts_dict.get(sort, 1)
     sort = update.sorts[i][0]
@@ -200,7 +212,6 @@ def view():
     # optimizations for mobile devices
     mobile = bool(flask.request.args.get('mobile', False))
     # SQL options
-    params = []
     # filter by filter rule ID
     if show == 'filtered':
       try:
@@ -230,12 +241,16 @@ def view():
     # search functionality using fts5 if available
     search = flask.request.args.get('search')
     search_in = flask.request.args.get('search_in', 'title')
+    #print >> param.log, 'search =', repr(search)
     if search:
+      #print >> param.log, 'dbop.fts_enabled =', dbop.fts_enabled
       if dbop.fts_enabled:
+        fterm = fts5.fts5_term(search)
+        #print >> param.log, 'FTERM =', repr(fterm)
         where += """ and item_uid in (
           select rowid from search where %s '%s'
         )""" % ('item_title match' if search_in == 'title' else 'search=',
-                fts5.fts5_term(search))
+                fterm)
       else:
         search = search.lower()
         search_where = 'item_title' if search_in == 'title' else 'item_content'
@@ -265,60 +280,76 @@ def view():
       '<li><a href="%s">%s</a></li>' % (change_param(sort=sort_name),
                                         sort_desc)
       for (sort_name, sort_desc, discard, discard) in update.sorts)
-    # fetch and format items
-    tag_dict, rows = dbop.view_sql(c, where, order_by, params,
-                                   param.overload_threshold)
     items = []
-    for row in rows:
-      (uid, creator, title, link, content, loaded, created, rated,
-       delta_created, rating, filtered_by, feed_uid, feed_title, feed_html,
-       feed_xml, feed_snr) = row
-      # redirect = '/redirect/%d' % uid
-      redirect = link
-      since_when = since(delta_created)
-      creator = creator.replace('"', '\'')
-      if rating == -2:
-        if filtered_by:
-          rule = filters.Rule.registry.get(filtered_by)
-          if rule:
-            title = rule.highlight_title(title)
-            content = rule.highlight_content(content)
-          elif filtered_by == 0:
-            content = '%s<br><p>Filtered by feed-specific Python rule</p>' \
-                      % content
-      if uid in tag_dict or (creator and (creator != 'Unknown')):
-        # XXX should probably escape the Unicode here
-        tag_info = ' '.join('<span class="item tag">%s</span>' % t
-                            for t in sorted(tag_dict.get(uid, [])))
-        if creator and creator != 'Unknown':
-          tag_info = '%s<span class="author tag">%s</span>' \
-                     % (tag_info, creator)
-        tag_info = '<div class="tag_info" id="tags_%s">' % uid \
-                   + tag_info + '</div>'
-        tag_call = '<a href="javascript:toggle_tags(%s);">tags</a>' % uid
-      else:
-        tag_info = ''
-        tag_call = '(no tags)'
-      items.append({
-        'uid': uid,
-        'since_when': since_when,
-        'creator': creator,
-        'loaded': loaded,
-        'feed_uid': feed_uid,
-        'title': title,
-        'feed_html': feed_html,
-        'content': content,
-        'tag_info': tag_info,
-        'tag_call': tag_call,
-        'redirect': redirect,
-        'feed_title': feed_title,
-      })
+    if do_items:
+      # fetch and format items
+      #print >> param.log, 'where =', where, 'params =', params
+      tag_dict, rows = dbop.view_sql(c, where, order_by, params,
+                                     param.overload_threshold)
+      for row in rows:
+        (uid, creator, title, link, content, loaded, created, rated,
+         delta_created, rating, filtered_by, feed_uid, feed_title, feed_html,
+         feed_xml, feed_snr, updated_ts) = row
+        # redirect = '/redirect/%d' % uid
+        redirect = link
+        since_when = since(delta_created)
+        creator = creator.replace('"', '\'')
+        if rating == -2:
+          if filtered_by:
+            rule = filters.Rule.registry.get(filtered_by)
+            if rule:
+              title = rule.highlight_title(title)
+              content = rule.highlight_content(content)
+            elif filtered_by == 0:
+              content = '%s<br><p>Filtered by feed-specific Python rule</p>' \
+                        % content
+        if uid in tag_dict or (creator and (creator != 'Unknown')):
+          # XXX should probably escape the Unicode here
+          tag_info = ' '.join('<span class="item tag">%s</span>' % t
+                              for t in sorted(tag_dict.get(uid, [])))
+          if creator and creator != 'Unknown':
+            tag_info = '%s<span class="author tag">%s</span>' \
+                       % (tag_info, creator)
+          tag_info = '<div class="tag_info" id="tags_%s">' % uid \
+                     + tag_info + '</div>'
+          tag_call = '<a href="javascript:toggle_tags(%s);">tags</a>' % uid
+        else:
+          tag_info = ''
+          tag_call = '(no tags)'
+        items.append({
+          'uid': uid,
+          'since_when': since_when,
+          'creator': creator,
+          'loaded': loaded,
+          'feed_uid': feed_uid,
+          'title': title,
+          'feed_html': feed_html,
+          'content': content,
+          'tag_info': tag_info,
+          'tag_call': tag_call,
+          'redirect': redirect,
+          'feed_title': feed_title,
+          'feed_snr': feed_snr,
+          'updated_ts': updated_ts,
+          'rating': rating,
+        })
+  return {
+    'show': show,
+    'item_desc': item_desc,
+    'feed_uid': feed_uid,
+    'ratings_list': ratings_list,
+    'sort_desc': sort_desc,
+    'sort_list': sort_list,
+    'items': items,
+    'overload_threshold': param.overload_threshold
+  }
+  
 
-    return flask.render_template('view.html', show=show, item_desc=item_desc,
-                                 feed_uid=feed_uid, ratings_list=ratings_list,
-                                 sort_desc=sort_desc, sort_list=sort_list,
-                                 items=items,
-                                 overload_threshold=param.overload_threshold)
+@app.route("/")
+@app.route("/view")
+def view():
+  pvars = view_common()
+  return flask.render_template('view.html', **pvars)
 
 @app.route("/xmlfeedback/<op>/<rand>/<arg>")
 def ajax(op, rand, arg):
@@ -772,3 +803,15 @@ def blogroll():
     ),
     200 , {'Content-Type': 'application/json'}
   )
+
+@app.route("/offline")
+def offline():
+  pvars = view_common(do_items=False)
+  return flask.render_template('offline.html', **pvars)
+
+@app.route("/sync")
+def sync():
+  pvars = view_common()
+  return (json.dumps(pvars['items'], indent=2),
+          200 , {'Content-Type': 'application/json'})
+

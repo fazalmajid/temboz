@@ -195,14 +195,18 @@ input#stem {
     $(document).bind("keydown", "ctrl+z", undo);
     $(document).bind("keydown", "meta+z", undo);
     $(document).bind("keydown", "ctrl+meta+z", undo);
-    refresh_counter();
+    {% block GET_ARTICLES %}
     var articles = $("div.article");
     if($("body").width() >= 760) {
       articles.each(assign_column);
     }
+    {% endblock GET_ARTICLES %}
+    refresh_counter();
   });
   init_popups();
 </script>
+{% block EXTRAHEAD2 %}
+{% endblock EXTRAHEAD2 %}
 {% endblock EXTRAHEAD %}
 
 {% block BODYOPTIONS %} class="unpadded"{% endblock %}
@@ -266,6 +270,7 @@ if($("body").width() < 760) {
 }
 </script>
 
+{% block INSERT_ARTICLES %}
 {% for i in items %}
 <div class="article" id="art{{ i.uid }}">
   <div class="headline">
@@ -295,6 +300,7 @@ if($("body").width() < 760) {
   </div>
 </div>
 {% endfor %}
+{% endblock INSERT_ARTICLES %}
 </div>
 <!-- If we want to put stuff at the page footer, make sure we do not collide -->
 <!-- with either column -->

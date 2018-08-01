@@ -370,6 +370,7 @@ def fts(d, c):
       fts_enabled = False
 
 def sync_col(d, c):
+  c.execute("""pragma journal_mode=WAL""")
   sql = c.execute("""select * from sqlite_master
   where tbl_name='fm_items' and sql like '%updated%'""")
   status = c.fetchone()
@@ -392,6 +393,53 @@ def sync_col(d, c):
     except:
       d.rollback()
 
+def sessions(d, c):
+  sql = c.execute("""select * from sqlite_master
+  where tbl_name='fm_sessions'""")
+  status = c.fetchone()
+  if not status:
+    try:
+      # create an updated column on fm_items with corresponding triggers
+      # to maintain it. This will be used to sync offline mode
+      c.execute("""create table fm_sessions (
+      uuid text primary key,
+      user_agent text,
+      created timestamp default (julianday('now')),
+      expires timestamp default (julianday('now') + 14)
+      )""")
+      d.commit()
+    except:
+      d.rollback()
+
+def save_session(uuid, user_agent):
+  with db() as d:
+    c = d.cursor()
+    try:
+      c.execute("""delete from fm_sessions where expires < julianday('now')""")
+      c.execute("""insert into fm_sessions (uuid, user_agent) values (?, ?)""",
+                [uuid, user_agent])
+      d.commit()
+      auth_cache[uuid, user_agent] = time.time() + 14 * 86400
+    except sqlite3.IntegrityError:
+      pass
+
+auth_cache = dict()
+def check_session(uuid, user_agent):
+  if (uuid, user_agent) in auth_cache \
+     and time.time() < auth_cache[uuid, user_agent]:
+    return True
+  with db() as d:
+    c = d.cursor()
+    c.execute("""select count(*), MAX((expires - 2440587.5)*86400)
+    from fm_sessions
+    where uuid=? and user_agent=? and expires > julianday('now')
+      and created < julianday('now')""", [uuid, user_agent])
+    l = c.fetchone()
+    good = l and l[0] == 1
+    if good:
+      auth_cache[uuid, user_agent] = l[1]
+    return good
+
 with db() as d:
   c = d.cursor()
   load_settings(c)
@@ -400,5 +448,5 @@ with db() as d:
   d.commit()
   fts(d, c)
   sync_col(d, c)
-  d.commit()
+  sessions(d, c)
   c.close()

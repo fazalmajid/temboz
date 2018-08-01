@@ -1,0 +1,27 @@
+<div class="article" id="art{{uid}}">
+  <div class="headline">
+    <span class="buttons">
+      <span class="down" onclick="hide('{{uid}}')">&#9660;</span>
+      <span class="up" onclick="highlight('{{uid}}')">&#9650;</span>
+    </span>
+    <span class="ctarrow" id="ctarrow{{uid}}"
+          onclick="collapseToggle('{{uid}}')">&#9660;&nbsp;</span>
+    <a href="{{redirect}}" class="headline" target="_blank"
+       title="by {{creator}}, cached at {{loaded}}">{{i.title|safe}}</a>
+    <br><a href="/feed/{{feed_uid}}" title=""
+           class="source screen" id="feed{{uid}}">{{feed_title}}</a>
+    <a href="{{feed_html}}" title="" class="source print"
+       id="feedprint{{uid}}">{{feed_title}}</a>
+    {% if not request.args.feed_uid %}
+    <a href="/view?feed_uid={{feed_uid}}&show={{ show}}"
+       class="ff" target="_blank">&#9658;</a>
+    {% endif %}
+    {{since_when}}
+    {{tag_call|safe}}
+    <a href="/item/{{uid}}/edit" class="screen">edit</a>
+    <br>
+  </div>{{tag_info|safe}}
+  <div class="content" id="content{{uid}}">
+    {{content|safe}}
+  </div>
+</div>
