@@ -1,8 +1,9 @@
+
 #!/usr/local/bin/python
 import sys, os, stat, logging, base64, time, imp, gzip, traceback, pprint, csv
 import threading, BaseHTTPServer, SocketServer, cStringIO, urlparse, urllib
 import flask, sqlite3, string, requests, re, datetime, hmac, passlib.hash
-import hashlib, socket, json, hmac, werkzeug
+import hashlib, socket, json, werkzeug
 import param, update, filters, util, normalize, dbop, social, fts5, __main__
 
 # HTTP header to force caching
@@ -155,8 +156,9 @@ def login():
        and passlib.hash.argon2.verify(f.get('password', ''),
                                       param.settings['passwd']):
       # set auth cookie
-      session = hmac.new(cookie_secret, login, hashlib.sha256).hexdigest()
       ua = flask.request.headers.get('User-Agent')
+      session = hmac.new(cookie_secret, login + ua,
+                         hashlib.sha256).hexdigest()
       dbop.save_session(session, ua)
       cookie = login + ':' + session
       back = flask.request.args.get('back', '/')

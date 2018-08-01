@@ -4,7 +4,7 @@ setuptools.setup(
   name='temboz',
   author='Fazal Majid',
   author_email='python@sentfrom.com',
-  version='2.3.0',
+  version='2.3.1',
   url='http://github.com/fazalmajid/temboz',
   #package_dir={'': 'src'},
   packages=['tembozapp'],
