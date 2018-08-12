@@ -4,6 +4,7 @@
 {% block EXTRAHEAD %}
     <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
     <script language="JavaScript" src="/static/temboz.js"></script>
+    <script language="JavaScript" src="/static/add.js"></script>
 {% endblock %}
 
 {% block CONTENT %}
@@ -29,6 +30,7 @@
     
 <p>Subscribe to a RSS feed:</p>
 <form class="add" action="add" method="POST">
-<input size=64 name="feed_xml"><input type="submit" value="Subscribe">
+  <input size=64 id="feed_xml" name="feed_xml">
+  <input type="submit" value="Subscribe">
 </form>
 {% endblock CONTENT %}
