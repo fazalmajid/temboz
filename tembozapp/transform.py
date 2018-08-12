@@ -236,6 +236,11 @@ filter_list = [
   # Use m.xkcd.com instead of desktop xkcd to get the alt text
   degunk.ReUrl(url=r'http://m.xkcd.com\1',
                regex_url=r'http://xkcd.com(.*)'),
+  # Medium
+  degunk.Re('<figure.*?https://cdn-images-1.medium.com/max/700/1*PZjwR1Nbluff5IMI6Y1T6g@2x.png.*?</figure>',
+            re.MULTILINE + re.DOTALL),
+  degunk.Re('<p>.*?on Medium, where people are continuing the conversation by highlighting and responding to this story.*?/p>',
+            re.MULTILINE + re.DOTALL),
   # AnandTech
   degunk.Re('<p align=center>'
             '<a href="http://dynamic[^"]*.anandtech.com/www/delivery/'
