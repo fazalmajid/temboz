@@ -63,6 +63,7 @@ input#stem {
         "Add": function() {
           $(this).find("form").ajaxSubmit();
           $(this).dialog("destroy");
+          $(this).remove();
         },
         "Cancel": function() {
           $(this).dialog("destroy");
