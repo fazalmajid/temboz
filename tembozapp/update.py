@@ -683,10 +683,12 @@ def cleanup(db=None, c=None):
              + time.strftime('%Y-%m-%d') + '%s') % param.backup_compressor)
   # rotate the log
   os.rename(param.log_filename, 'backups/log_' + time.strftime('%Y-%m-%d'))
-  param.log.close()
-  param.log = open(param.log_filename, 'a', 0)
-  os.dup2(param.log.fileno(), 1)
-  os.dup2(param.log.fileno(), 2)
+  # rotate log if we have overriden stdout/stderr
+  if hasattr(param, 'log_filename'):
+    param.log.close()
+    param.log = open(param.log_filename, 'a', 0)
+    os.dup2(param.log.fileno(), 1)
+    os.dup2(param.log.fileno(), 2)
   # delete old backups
   backup_re = re.compile(
     'daily_[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\\.')
