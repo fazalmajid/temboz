@@ -1,4 +1,4 @@
-import sys, time, sqlite3, string
+import sys, time, sqlite3, string, json
 import param
 
 def db():
@@ -178,8 +178,22 @@ def elapsed(t, what):
   t2 = time.time()
   print >> param.log, what, (t2-t)* 1000, 'ms'
   return t2
-  
+
+use_json = None
 def view_sql(c, where, sort, params, overload_threshold):
+  global use_json
+  if use_json is None:
+    try:
+      c.execute("""select json_group_array(feed_uid) from fm_feeds""")
+      use_json = True
+    except:
+      use_json = False
+  if use_json:
+    return view_sql_json(c, where, sort, params, overload_threshold)
+  else:
+    view_sql_no_json(c, where, sort, params, overload_threshold)
+    
+def view_sql_no_json(c, where, sort, params, overload_threshold):
   t = time.time()
   mv_on_demand(c)
   #t = elapsed(t, 'mv_on_demand')
@@ -209,6 +223,33 @@ def view_sql(c, where, sort, params, overload_threshold):
   output = c.execute("""select * from articles
   order by """ + sort + """, item_uid DESC""")
   #t = elapsed(t, 'output')
+  return tag_dict, output
+
+def view_sql_json(c, where, sort, params, overload_threshold):
+  mv_on_demand(c)
+  rows = c.execute("""select
+    item_uid, item_creator, item_title, item_link, item_content,
+    datetime(item_loaded), date(item_created) as item_created,
+    datetime(item_rated) as item_rated,
+    julianday('now') - julianday(item_created) as delta_created, item_rating,
+    item_rule_uid, item_feed_uid, feed_title, feed_html, feed_xml,
+    ifnull(snr, 0) as snr, updated,
+    json_group_array(tag_name)
+  from fm_items
+  join fm_feeds on item_feed_uid=feed_uid
+  left outer join mv_feed_stats on feed_uid=snr_feed_uid
+  left outer join fm_tags on tag_item_uid=item_uid
+  where item_feed_uid=feed_uid and """ + where + """
+  group by 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17
+  order by """ + sort + """, item_uid DESC limit ?""",
+            params + [overload_threshold])
+  tag_dict = dict()
+  output = []
+  for cols in rows:
+    cols = list(cols)
+    output.append(cols[:-1])
+    tags = json.loads(cols[-1])
+    tag_dict[cols[0]] = tags
   return tag_dict, output
 
 def feed_info_sql(c, feed_uid):

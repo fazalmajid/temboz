@@ -693,7 +693,7 @@ def facebook():
               + '/facebook?op=oauth_redirect'
       op = flask.request.args.get('op', '')
       if not op:
-        fb_url = 'https://graph.facebook.com/oauth/authorize?display=touch&client_id=' + app_id + '&scope=publish_actions&redirect_uri=' + redir
+        fb_url = 'https://graph.facebook.com/oauth/authorize?display=touch&client_id=' + app_id + '&scope=publish_pages,manage_pages&redirect_uri=' + redir
         print >> param.log, 'FB_URL =', fb_url
         return flask.redirect(fb_url)
       elif op == 'oauth_redirect':
