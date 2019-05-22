@@ -1,13 +1,13 @@
-import sys, os, socket, string, getpass, passlib.hash
+import sys, os, socket, string, shutil, getpass, passlib.hash
 
-def do_bootstrap():
+def interactive_bootstrap():
   dir = os.path.dirname(__file__ or os.getcwd())
   dir = os.getcwd() + os.sep + 'tempip' if dir == '.' else dir
-  print """Welcome to the Temboz initial setup wizard!
-  """
+  print("""Welcome to the Temboz initial setup wizard!
+  """)
   ip, port = None, None
   while not ip or not port:
-    bind = raw_input(
+    bind = input(
       """What IP address and TCP port should the server run on?
       Choose 127.0.0.1 to only allow connections from this machine (default)
       Choose 0.0.0.0 to allow connections from outside machines
@@ -19,37 +19,39 @@ Enter an IP address and port [127.0.0.1:9999]: """)
       # IPv6 addresses can have colons too
       ip, port_s = bind.rsplit(':', 1)
     except ValueError:
-      print >> sys.stderr,  'Invalid bind specification', bind,
-      print >> sys.stderr,  '- it should be a of the form <IP>:<port>.'
+      print('Invalid bind specification', bind, end=' ', file=sys.stderr)
+      print('- it should be a of the form <IP>:<port>.', file=sys.stderr)
       continue
     try:
       port = int(port_s)
     except ValueError:
-      print >> sys.stderr,  'Invalid port number', port_s,
-      print >> sys.stderr,  '- it should be a number between 1 and 65535.'
+      print('Invalid port number', port_s, end=' ', file=sys.stderr)
+      print('- it should be a number between 1 and 65535.', file=sys.stderr)
       continue
     if port < 1 or port > 65535:
-      print >> sys.stderr,  'Invalid port number:', port,
-      print >> sys.stderr, '- it should be a number between 1 and 65535.'
+      print('Invalid port number:', port, end=' ', file=sys.stderr)
+      print('- it should be a number between 1 and 65535.', file=sys.stderr)
       port = None
     try:
       s = socket.socket()
       s.bind((ip, port))
       s.close()
     except socket.error as e:
-      print >> sys.stderr,  'Cannot bind to', bind, '-', str(e)
+      print('Cannot bind to', bind, '-', str(e), file=sys.stderr)
       ip, port = None, None
       continue
 
   login = None
   while not login:
-    login = raw_input(
+    login = input(
       'Choose a username: ')
     login = login.strip()
-    if not set(login).issubset(set(string.letters + string.digits + '_.')):
-      print >> sys.stderr,  'Invalid username', login,
-      print >> sys.stderr,  '- it should only have alphanumeric characters,',
-      print >> sys.stderr,  'underscore or dot'
+    if not set(login).issubset(set(
+        string.ascii_letters + string.digits + '_.'
+    )):
+      print('Invalid username', login, end=' ', file=sys.stderr)
+      print('- it should only have alphanumeric characters,', end=' ', file=sys.stderr)
+      print('underscore or dot', file=sys.stderr)
       login = None
       continue
 
@@ -60,11 +62,11 @@ Enter an IP address and port [127.0.0.1:9999]: """)
   while not passwd:
     passwd = getpass.getpass('Enter password: ')
     if len(passwd) < 8:
-      print >> sys.stderr, 'The password must have at least 8 characters'
+      print('The password must have at least 8 characters', file=sys.stderr)
       passwd = None
       continue
     if passwd != getpass.getpass('Confirm password: '):
-      print >> sys.stderr,  'The passwords do not match'
+      print('The passwords do not match', file=sys.stderr)
       passwd = None
       continue
   hash = passlib.hash.argon2.using(
@@ -74,9 +76,34 @@ Enter an IP address and port [127.0.0.1:9999]: """)
     digest_size=32).hash(passwd)
 
   os.system('sqlite3 rss.db < %s/ddl.sql' % dir)
-  import dbop
+  from . import dbop
   with dbop.db() as db:
     dbop.setting(db, 'login', login)
     dbop.setting(db, 'passwd', hash)
     dbop.setting(db, 'ip', ip)
     dbop.setting(db, 'port', str(port))
+
+
+def docker_bootstrap():
+  ip, port = '127.0.0.1', 9999
+  login = 'temboz'
+  hash = passlib.hash.argon2.using(
+    rounds=64,
+    memory_cost=65536,
+    parallelism=1,
+    digest_size=32).hash('temboz')
+
+  dir = os.path.dirname(__file__ or os.getcwd())
+  assert dir == '/temboz/tembozapp'
+  os.system('sqlite3 rss.db < %s/ddl.sql' % dir)
+  from . import dbop
+  with dbop.db() as db:
+    dbop.setting(db, 'login', login)
+    dbop.setting(db, 'passwd', hash)
+    dbop.setting(db, 'ip', ip)
+    dbop.setting(db, 'port', str(port))
+  print("""\033[1;34mInitialized with defaults for docker:
+  URL:      http://localhost:9999/
+  login:    temboz
+  password: temboz
+  \033[0m\n""")

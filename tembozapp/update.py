@@ -1,7 +1,21 @@
-import sys, hashlib, time, threading, socket, Queue, signal, os, re
-import urlparse, HTMLParser, random, sqlite3, requests, cPickle
-import param, feedparser, normalize, util, transform, filters, dbop
-import social
+from __future__ import print_function
+import sys, hashlib, time, threading, socket, signal, os, re
+import random, sqlite3, requests, pickle, feedparser
+try:
+  import queue
+except ImportError:
+  import Queue as queue
+try:
+  import urllib.parse as urlparse
+except ImportError:
+  import urlparse
+try:
+  import html.parser as HTMLParser
+except ImportError:
+  import HTMLParser
+
+from . import param, normalize, util, transform, filters, dbop
+import imp
 
 #socket.setdefaulttimeout(10)
 feedparser.USER_AGENT = param.user_agent
@@ -22,7 +36,7 @@ ratings = [
   ('up',       'interesting',   'Interesting only',  'item_rating > 0'),
   ('filtered', 'filtered',      'Filtered only',     'item_rating = -2')
 ]
-ratings_dict = dict((ratings[i][0], i) for i in range(len(ratings)))
+ratings_dict = dict((ratings[i][0], i) for i in list(range(len(ratings))))
 sorts = [
   ('created',  'Article date',  'Article date',      'item_created DESC'),
   ('seen',     'Cached date',   'Cached date',       'item_uid DESC'),
@@ -31,7 +45,7 @@ sorts = [
   ('oldest',   'Oldest seen',   'Oldest seen',       'item_uid ASC'),
   ('random',   'Random order',  'Random order',      'random() ASC'),
 ]
-sorts_dict = dict((sorts[i][0], i) for i in range(len(sorts)))
+sorts_dict = dict((sorts[i][0], i) for i in list(range(len(sorts))))
 
 class AutoDiscoveryHandler(HTMLParser.HTMLParser):
   """Find RSS autodiscovery info, as specified in:
@@ -117,10 +131,10 @@ def add_feed(feed_xml):
       'xmlUrl': f['url'],
       'htmlUrl': str(f.feed['link']),
       'etag': r.headers.get('Etag'),
-      'title': f.feed['title'].encode('ascii', 'xmlcharrefreplace'),
-      'desc': f.feed['description'].encode('ascii', 'xmlcharrefreplace')
+      'title': f.feed['title'],
+      'desc': f.feed['description']
       }
-    for key, value in feed.items():
+    for key, value in list(feed.items()):
       if type(value) == str:
         feed[key] = value
     filters.load_rules(c)
@@ -132,7 +146,7 @@ def add_feed(feed_xml):
       num_added, num_filtered = process_parsed_feed(db, c, f, feed_uid)
       db.commit()
       return feed_uid, feed['title'], num_added, num_filtered
-    except sqlite3.IntegrityError, e:
+    except sqlite3.IntegrityError as e:
       if 'feed_xml' in str(e):
         db.rollback()
         raise FeedAlreadyExists
@@ -157,7 +171,7 @@ def update_feed_xml(feed_uid, feed_xml):
       c.execute("""update fm_feeds set feed_xml=?, feed_html=?
       where feed_uid=?""",
                 [feed_xml, str(f.feed['link']), feed_uid])
-    except sqlite3.IntegrityError, e:
+    except sqlite3.IntegrityError as e:
       if 'feed_xml' in str(e):
         db.rollback()
         raise FeedAlreadyExists
@@ -264,7 +278,7 @@ def title_url(feed_uid):
               [feed_uid])
     return c.fetchone()
 
-ratings_q = Queue.Queue()
+ratings_q = queue.Queue()
 def set_rating(*args):
   ratings_q.put(args)
 
@@ -293,17 +307,6 @@ class RatingsWorker(threading.Thread):
                         [item_uid])
               feed_uid, url, title, private = c.fetchone()
             db.commit()
-            if rating == 1 and fb_token and not private:
-              callout = random.choice(
-                ['Interesting: ', 'Notable: ', 'Recommended: ', 'Thumbs-up: ',
-                 'Noteworthy: ', 'FYI: ', 'Worth reading: '])
-              try:
-                social.fb_post(fb_token, callout + title, url)
-              except social.ExpiredToken:
-                notification(db, c, feed_uid, 'Service notification',
-                  'The Facebook access token has expired',
-                  link='/settings#facebook')
-
           except:
             util.print_stack()
       except:
@@ -319,7 +322,7 @@ def catch_up(feed_uid):
     db.commit()
 
 def purge_reload(feed_uid):
-  reload(transform)
+  imp.reload(transform)
   feed_uid = int(feed_uid)
   if feed_uid in feed_guid_cache:
     del feed_guid_cache[feed_uid]
@@ -385,7 +388,7 @@ class FeedWorker(threading.Thread):
       self.out_q.put(None)
   def fetch_feed(self, feed_uid, feed_xml, feed_etag, feed_modified,
                  feed_dupcheck):
-    print >> param.activity, self.id, feed_xml
+    print(self.id, feed_xml, file=param.activity)
     return fetch_feed(feed_uid, feed_xml, feed_etag, feed_modified)
 
 def fetch_feed(feed_uid, feed_xml, feed_etag, feed_modified):
@@ -403,7 +406,7 @@ def fetch_feed(feed_uid, feed_xml, feed_etag, feed_modified):
                          modified=feed_modified)
   except (socket.timeout, requests.exceptions.RequestException) as e:
     if param.debug:
-      print >> param.log, 'EEEEE error fetching feed', feed_xml, e
+      print('EEEEE error fetching feed', feed_xml, e, file=param.log)
     f = {'channel': {}, 'items': [], 'why': repr(e)}
   except:
     if param.debug:
@@ -426,7 +429,7 @@ def increment_errors(db, c, feed_uid):
     notification(db, c, feed_uid, 'Service notification',
                  'This feed was suspended because Temboz encountered '
                  + str(errors) + ' consecutive errors')
-    print >> param.log, 'EEEEE too many errors, suspending feed', feed_title
+    print('EEEEE too many errors, suspending feed', feed_title, file=param.log)
     c.execute("update fm_feeds set feed_status = 1 where feed_uid=?",
               [feed_uid])
 
@@ -450,23 +453,23 @@ def clear_errors(db, c, feed_uid, f):
 
 def update_feed(db, c, f, feed_uid, feed_xml, feed_etag, feed_modified,
                 feed_dupcheck=None):
-  print >> param.activity, feed_xml
+  print(feed_xml, file=param.activity)
   if 'why' in f and f['why'] == 'no change since Etag':
     return
   # check for errors - HTTP code 304 means no change
   if not hasattr(f, 'feed') \
      or 'title' not in f.feed and 'link' not in f.feed:
     if not hasattr(f, 'feed'):
-      print >> param.log, """FFFFF not hasattr(f, 'feed')""",
+      print("""FFFFF not hasattr(f, 'feed')""", end=' ', file=param.log)
     else:
-      print >> param.log, """FFFFF title=%r link=%r""" % (
+      print("""FFFFF title=%r link=%r""" % (
         'title' not in f.feed,
         'link' not in f.feed
-      ),
+      ), end=' ', file=param.log)
     if 'why' in f:
-      print >> param.log, feed_xml, f['why']
+      print(feed_xml, f['why'], file=param.log)
     else:
-      print >> param.log, feed_xml
+      print(feed_xml, file=param.log)
       
     # error or timeout - increment error count
     increment_errors(db, c, feed_uid)
@@ -483,7 +486,7 @@ feed_guid_cache = {}
 def prune_feed_guid_cache():
   yesterday = time.time() - 86400
   for feed_uid in feed_guid_cache:
-    for guid in feed_guid_cache[feed_uid].keys()[:]:
+    for guid in list(feed_guid_cache[feed_uid].keys())[:]:
       if feed_guid_cache[feed_uid][guid] < yesterday:
         del feed_guid_cache[feed_uid][guid]
 
@@ -558,11 +561,11 @@ Returns a tuple (number of items added unread, number of filtered items)"""
                   [feed_uid, title, link])
         l = bool(c.fetchone()[0])
         if l:
-          print >> param.activity, 'DUPLICATE TITLE', title
+          print('DUPLICATE TITLE', title, file=param.activity)
       # XXX Runt items (see normalize.py) are almost always spurious, we just
       # XXX skip them, although we may revisit this decision in the future
       if not l and item.get('RUNT', False):
-        print >> param.activity, 'RUNT ITEM', item
+        print('RUNT ITEM', item, file=param.activity)
         l = True
     # GUID already exists, this is a change
     else:
@@ -590,7 +593,7 @@ Returns a tuple (number of items added unread, number of filtered items)"""
         values
         (?, ?, julianday(?), julianday(?), ?, ?, ?, ?, ?, ?, ?)""",
                   [feed_uid, guid, created, modified, link,
-                   hashlib.md5(content).hexdigest(),
+                   hashlib.md5(content.encode('UTF-8')).hexdigest(),
                    title, content, author, skip, filtered_by])
         # if we have tags, insert them
         # note: feedparser.py handles 'category' as a special case, so we
@@ -605,10 +608,10 @@ Returns a tuple (number of items added unread, number of filtered items)"""
             values (?, ?)""", [tag, item_uid])
         if skip:
           num_filtered += 1
-          print >> param.activity, 'SKIP', title, rule
+          print('SKIP', title, rule, file=param.activity)
         else:
           num_added += 1
-          print >> param.activity, ' ' * 4, title
+          print(' ' * 4, title, file=param.activity)
       except:
         util.print_stack(['c', 'f'])
         continue
@@ -626,7 +629,7 @@ Returns a tuple (number of items added unread, number of filtered items)"""
 def notification(db, c, feed_uid, title, content, link=None):
   """Insert a service notification, e.g. to notify before a feed is disabled
   due to too many errors"""
-  hash = hashlib.md5(content).hexdigest()
+  hash = hashlib.md5(content.encode('UTF-8')).hexdigest()
   guid = 'temboz://%s/%s' % (feed_uid, hash)
   # do nothing if the link is clicked
   if link is None:
@@ -712,8 +715,8 @@ def update(where_clause=''):
     if time.localtime()[3] == param.backup_hour:
       cleanup(db, c)
     # create worker threads and the queues used to communicate with them
-    work_q = Queue.Queue()
-    process_q = Queue.Queue()
+    work_q = queue.Queue()
+    process_q = queue.Queue()
     workers = []
     for i in range(param.feed_concurrency):
       workers.append(FeedWorker(i + 1, work_q, process_q))
@@ -756,7 +759,7 @@ class PeriodicUpdater(threading.Thread):
     while True:
       # XXX should wrap this in a try/except clause
       self.event.wait(param.refresh_interval)
-      print >> param.activity, time.ctime(), '- refreshing feeds'
+      print(time.ctime(), '- refreshing feeds', file=param.activity)
       try:
         update()
       except:

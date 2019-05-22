@@ -1,10 +1,21 @@
-
-#!/usr/local/bin/python
+from __future__ import print_function
 import sys, os, stat, logging, base64, time, imp, gzip, traceback, pprint, csv
-import threading, BaseHTTPServer, SocketServer, cStringIO, urlparse, urllib
+import threading, io
 import flask, sqlite3, string, requests, re, datetime, hmac, passlib.hash
-import hashlib, socket, json, werkzeug
-import param, update, filters, util, normalize, dbop, social, fts5, __main__
+import hashlib, socket, json, werkzeug, __main__
+from . import param, update, filters, util, normalize, dbop, fts5
+
+try:
+  import socketserver as SocketServer
+except ImportError:
+  import SocketServer
+try:
+  import urllib.parse as urlparse
+  quote_plus = urlparse.quote_plus
+  urlencode = urlparse.urlencode
+except ImportError:
+  import urlparse
+  from urllib import quote_plus, urlencode
 
 # HTTP header to force caching
 no_expire = [
@@ -19,7 +30,7 @@ try:
   cookie_secret = os.urandom(16)
 except NotImplementedError:
   import random
-  cookie_secret = ''.join(str(random.random()) for x in range(8))
+  cookie_secret = ''.join(str(random.random()) for x in list(range(8)))
 class AuthWrapper:
   """HTTP Basic Authentication WSGI middleware for Pageserver"""
   def __init__(self, application):
@@ -43,10 +54,10 @@ class AuthWrapper:
           auth_login = login
     
     if not auth_login:
-      start_response('302 Moved',
-                     [('Location', '/login?back=' + urllib.quote_plus(url)),
-                      ('Content-Type', 'text/html')])
-      return '<h1>Moved</h1>'
+      write = start_response('302 Moved',
+                             [('Location', '/login?back=' + quote_plus(url)),
+                              ('Content-Type', 'text/html')])
+      return [b'<h1>Moved</h1>']
     return self.application(environ, start_response)
 
 # seed for CSRF protection nonces
@@ -73,7 +84,7 @@ def change_param(*arg, **kwargs):
   parts = list(parts)
   param = urlparse.parse_qs(parts[4])
   param.update(kwargs)
-  parts[4] = urllib.urlencode(param, True)
+  parts[4] = urlencode(param, True)
   return urlparse.urlunparse(tuple(parts))
 
 ########################################################################
@@ -114,7 +125,7 @@ def atom_content(content):
   return ent_re.sub(ent_sub_xml, content)
 
 # validate parameter names to guard against XSS attacks
-valid_chars = set(string.letters + string.digits + '_')
+valid_chars = set(string.ascii_letters + string.digits + '_')
 def regurgitate_except(*exclude):
   """Regurgitate query string parameters as <input type="hidden"> fields
     to help maintain context in self-submitting forms"""
@@ -122,8 +133,8 @@ def regurgitate_except(*exclude):
   for k in flask.request.form:
     opts[k] = flask.request.form[k]
   return '\n'.join('<input type="hidden" name="%s" value="%s">'
-                   % (name, urllib.quote_plus(value.encode('utf-8')))
-                   for (name, value) in opts.iteritems()
+                   % (name, quote_plus(value.encode('utf-8')))
+                   for (name, value) in iter(opts.items())
                    if set(name).issubset(valid_chars)
                    and name not in ('referer', 'headers')
                    and name not in exclude)
@@ -139,14 +150,18 @@ def run():
     c.close()
   
   logging.getLogger().setLevel(logging.INFO)
-  # start Flask
-  app.run(host=param.settings['ip'],
-          port=int(param.settings['port']),
-          threaded=True)
+  # try the Waitress WSGI first, fall back to the Flask DEV server
+  try:
+    import waitress
+    waitress.serve(app, host=param.settings['ip'], port=param.settings['port'],
+                   asyncore_use_poll=True)
+  except ImportError:
+    app.run(host=param.settings['ip'],
+            port=int(param.settings['port']),
+            threaded=True)
 
 ########################################################################
 # actual request handlers
-
 @app.route("/login", methods=['GET', 'POST'])
 def login(): 
   if flask.request.method == 'POST':
@@ -157,14 +172,13 @@ def login():
                                       param.settings['passwd']):
       # set auth cookie
       ua = flask.request.headers.get('User-Agent')
-      session = hmac.new(cookie_secret, login + ua,
+      session = hmac.new(cookie_secret, (login + ua).encode('UTF-8'),
                          hashlib.sha256).hexdigest()
       dbop.save_session(session, ua)
       cookie = login + ':' + session
       back = flask.request.args.get('back', '/')
       back = back if back else '/'
-      resp = flask.make_response(
-        flask.redirect(back))
+      resp = flask.make_response(flask.redirect(back))
       resp.set_cookie('auth', cookie, max_age=14*86400, httponly=True)
       return resp
     else:
@@ -205,7 +219,7 @@ def view_common(do_items=True):
         # read articles as such in IndexedDB
         where = 'fm_items.updated > ?'
       except:
-        print >> param.log, 'invalid updated=' + repr(updated)
+        print('invalid updated=' + repr(updated), file=param.log)
     sort = flask.request.args.get('sort', 'seen')
     i = update.sorts_dict.get(sort, 1)
     sort = update.sorts[i][0]
@@ -257,7 +271,7 @@ def view_common(do_items=True):
         search = search.lower()
         search_where = 'item_title' if search_in == 'title' else 'item_content'
         where += ' and lower(%s) like ?' % search_where
-        if type(search) == unicode:
+        if type(search) == str:
           # XXX vulnerable to SQL injection attack
           params.append('%%%s%%' % search.encode('ascii', 'xmlcharrefreplace'))
         else:
@@ -286,8 +300,12 @@ def view_common(do_items=True):
     if do_items:
       # fetch and format items
       #print >> param.log, 'where =', where, 'params =', params
-      tag_dict, rows = dbop.view_sql(c, where, order_by, params,
-                                     param.overload_threshold)
+      out = dbop.view_sql(c, where, order_by, params, param.overload_threshold)
+      if out:
+        tag_dict, rows = out
+      else:
+        # no data
+        tag_dict, rows = {}, []
       for row in rows:
         (uid, creator, title, link, content, loaded, created, rated,
          delta_created, rating, filtered_by, feed_uid, feed_title, feed_html,
@@ -512,7 +530,7 @@ def feed_info(feed_uid, op=None):
         notices.append('<p>The feed %s ' % feed_xml
                        + 'is already assigned to another feed,'
                        + 'check for duplicates.</p>')
-      except update.UnknownError, e:
+      except update.UnknownError as e:
         notices.append('<p>Unknown error:<p>\n<pre>%s</pre>\n' % e.args[0])
     feed_public = None
     hidden = regurgitate_except()
@@ -617,7 +635,7 @@ def add_feed():
           resolution = 'check for duplicates'
         except requests.exceptions.RequestException as e:
           feed_err = 'Error loading URL during autodiscovery attempt: %r' % e
-        except update.UnknownError, e:
+        except update.UnknownError as e:
           feed_err = 'Unknown error: %r' % e.args[0]
     
   return flask.render_template(
@@ -671,7 +689,7 @@ def stats():
   with dbop.db() as db:
     c = db.cursor()
     rows = dbop.stats(c)
-    csvfile = cStringIO.StringIO()
+    csvfile = io.StringIO()
     out = csv.writer(csvfile, dialect='excel', delimiter=',')
     out.writerow([col[0].capitalize() for col in c.description])
     for row in c:
@@ -694,7 +712,7 @@ def facebook():
       op = flask.request.args.get('op', '')
       if not op:
         fb_url = 'https://graph.facebook.com/oauth/authorize?display=touch&client_id=' + app_id + '&scope=publish_pages,manage_pages&redirect_uri=' + redir
-        print >> param.log, 'FB_URL =', fb_url
+        print('FB_URL =', fb_url, file=param.log)
         return flask.redirect(fb_url)
       elif op == 'oauth_redirect':
         code = flask.request.args.get('code', '')
@@ -708,7 +726,7 @@ def facebook():
               'redirect_uri': redir
             }
           )
-          print >> param.log, 'FACEBOOK TOKEN RESPONSE', r.text
+          print('FACEBOOK TOKEN RESPONSE', r.text, file=param.log)
           if r.text.startswith('{'):
             token = json.loads(r.text).get('access_token')
           else:
@@ -776,12 +794,12 @@ def item(uid, op):
 
 @app.route("/profile")
 def profile():
-  import yappi, cStringIO
+  import yappi, io
   if not yappi.is_running():
     yappi.start()
   s = yappi.get_func_stats()
   s = s.sort(flask.request.args.get('sort', 'tsub'))
-  f = cStringIO.StringIO()
+  f = io.StringIO()
   s.print_all(f, columns={
     0: ('name', 80),
     1: ('ncall', 20),
@@ -800,7 +818,7 @@ def blogroll():
     rows = dbop.opml(db)
   return (
     json.dumps(
-      [dict(zip(cols, row)) for row in rows],
+      [dict(list(zip(cols, row))) for row in rows],
       indent=2
     ),
     200 , {'Content-Type': 'application/json'}

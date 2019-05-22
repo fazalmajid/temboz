@@ -1,8 +1,8 @@
 # this module defines classes that can be used to massage the content of an
 # article, mostly to remove gunk like ads
-
+from __future__ import print_function
 import sys, re, requests, sqlite3
-import param, util, dbop
+from . import param, util, dbop
 
 class Filter:
   """Virtual class with the interface for all degunking filters"""
@@ -125,7 +125,7 @@ class Dereference(Filter):
           link = c.fetchone()
           c.close()
           if link:
-            print >> param.log, 'not dereferencing', guid, '->', link[0]
+            print('not dereferencing', guid, '->', link[0], file=param.log)
             item['link'] = link[0]
             return content
           # we haven't seen this article before, buck up and load it

@@ -1,8 +1,9 @@
 #!/usr/bin/env python
+from __future__ import print_function
 import sys, os, datetime
 
 def usage():
-  print """usage: %s [options]
+  print("""usage: %s [options]
   --refresh            : refresh the subscribed feeds
   --import <opml_file> : import subscriptions from a OPML file
   --server             : run the built-in web server
@@ -10,7 +11,7 @@ def usage():
   --cleanup            : perform database housekeeping and cleanup
   -v                   : be more verbose (can be repeated)
   -h, --help           : print this help text
-  """ % sys.argv[0]
+  """ % sys.argv[0])
   sys.exit(0)
 
 if __name__ == '__main__':
@@ -20,12 +21,17 @@ if __name__ == '__main__':
     os.stat('rss.db')
   except:
     import tembozapp.bootstrap
-    tembozapp.bootstrap.do_bootstrap()
+    if os.getenv('DOCKER') == 'true':
+      tembozapp.bootstrap.docker_bootstrap()
+    else:
+      tembozapp.bootstrap.interactive_bootstrap()
+  import tembozapp.transform
   try:
     import tembozapp.transform
   except ImportError:
-    print >> sys.stderr, 'You must create a transform.py file, possibly using',
-    print >> sys.stderr, 'transform.py.sample as an example'
+    print('You must create a transform.py file, possibly using',
+          end=' ', file=sys.stderr)
+    print('transform.py.sample as an example', file=sys.stderr)
     sys.exit(0)
   import tembozapp.util
   opts, args = getopt.getopt(

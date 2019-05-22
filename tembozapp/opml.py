@@ -28,7 +28,7 @@ def parse_opml(opml_file):
                          attrs('description', '')).replace(
             '"', '&quot;').replace(
             '& ', '&amp; ').replace(
-            '\u00a9', '&copy;')
+            '\\u00a9', '&copy;')
           }
         )
   # invalid format, e.g. as used by FeedOnFeeds
@@ -43,7 +43,7 @@ def parse_opml(opml_file):
           'desc': re.sub('<(^>, '')*>', '', attrs('description', '')).replace(
             '"', '&quot;').replace(
             '& ', '&amp; ').replace(
-            '\u00a9', '&copy;')
+            '\\u00a9', '&copy;')
           }
         )
   return tree
@@ -61,12 +61,12 @@ def import_opml(opml_file):
         (feed_xml, feed_etag, feed_html, feed_title, feed_desc) values
         (:xmlUrl, :feed_etag, :htmlUrl, :title, :desc)""", feed)
         ok += 1
-      except sqlite.IntegrityError, e:
+      except sqlite.IntegrityError as e:
         if 'feed_xml' not in str(e):
           raise
         dup += 1
     db.commit()
-    print ok, 'feeds imported,', dup, 'rejected as duplicates'
+    print(ok, 'feeds imported,', dup, 'rejected as duplicates')
 
 if __name__ == '__main__':
   for feed in [
@@ -79,7 +79,7 @@ if __name__ == '__main__':
     'test/directory.opml',
     'test/category.opml',
     ]:
-    print feed
-    print parse_opml(feed)
-    print '-' * 72
+    print(feed)
+    print(parse_opml(feed))
+    print('-' * 72)
   
