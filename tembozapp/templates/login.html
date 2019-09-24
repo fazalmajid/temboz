@@ -24,7 +24,6 @@
         margin: 6px;;
       }
       div.loginform {
-        background: #d9ffb3;
         margin-top: 25vh;
         margin-left: 25vw;
         margin-right: 25vw;
@@ -35,10 +34,23 @@
         border-radius: 2vw;
       }
       p.err {
+        padding: 1em;
+      }
+      /* colors */
+      div.loginform {
+          background: #d9ffb3;
+	  color: black;
+      }
+      p.err {
         color: red;
         background: #fcc;
-        padding: 1em;
         border: 2px solid red;
+      }
+      @media (prefers-color-scheme: dark) {
+	  html {
+	      background: black;
+	      color: white;
+	  }
       }
     </style>
   </head>
