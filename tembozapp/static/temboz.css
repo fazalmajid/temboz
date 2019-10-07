@@ -347,6 +347,7 @@ a.small-error:link, a.small-error:visited {
 }
 tr:hover, th.nonsort, tr.footer, span.item.tag, ul.menu {
     background-color: #bfff80;
+    color: black;
 }
 th.sort {
     background: #fd9;
@@ -367,6 +368,7 @@ span.filter-highlight {
 }
 span.author.tag {
     background-color: #ffcc33;
+    color: black;
 }
 span.tag.highlighted {
     color: white;
