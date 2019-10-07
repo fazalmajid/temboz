@@ -105,14 +105,14 @@ input#stem {
   }
   function hide(id) {
     var elt = document.getElementById('art' + id);
-    if(elt.style.backgroundColor == "yellow") {
-      elt.style.backgroundColor = "";
+    if(elt.classList.contains("thumbsUp")) {
+      elt.classList.remove("thumbsUp");
       webop('basic', id);
       refresh_counter();
     } else {
       var kw = $.trim(get_selection());
       hidden[hidden.length] = elt;
-      elt.style.display = "none";
+      elt.classList.add("thumbsDown");
       if(kw!="" && elt.innerHTML.indexOf(kw)!=-1) {
         kw_dialog(id, kw);
       } else {
@@ -148,14 +148,15 @@ input#stem {
   }
   function highlight(id) {
     var elt = document.getElementById('art' + id);
-    elt.style.backgroundColor = "yellow";
+    elt.classList.add("thumbsUp");
+    elt.classList.remove("thumbsDown");
     webop('promote', id);
     refresh_counter();
   }
   function unhide_all() {
     for(i=0; i<hidden.length; i++) {
       elt = hidden[i];
-      elt.style.display = "block";
+	elt.classList.remove("thumbsDown");
       webop('basic', elt.id.substring(3));
       refresh_counter();
     }
@@ -164,7 +165,7 @@ input#stem {
   function unhide_last() {
     if (hidden.length > 0) {
       elt = hidden[hidden.length - 1];
-      elt.style.display = "block";
+      elt.classList.remove("thumbsDown");
       webop('basic', elt.id.substring(3));
       refresh_counter();
       hidden.length = hidden.length - 1

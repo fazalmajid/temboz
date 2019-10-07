@@ -302,6 +302,9 @@ blockquote {
   margin: 1em;
   padding-left: 6pt;
 }
+.thumbsDown {
+    display: none;
+}
 
 /************************************************************************/
 /* colors and dark mode                                                 */
@@ -386,6 +389,10 @@ div.ui-dialog {
 .ui-tabs-nav li.ui-tabs-active a:visited,
 a.ff {
     border-bottom: 1px solid white;
+    color: black;
+}
+.thumbsUp {
+    background-color: yellow;
     color: black;
 }
 @media screen {
