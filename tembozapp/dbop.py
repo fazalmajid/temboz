@@ -1,5 +1,6 @@
+from __future__ import print_function
 import sys, time, sqlite3, string, json
-import param
+from . import param
 
 def db():
   conn = sqlite3.connect('rss.db', 60.0)
@@ -168,15 +169,15 @@ def mv_on_demand(db):
   sql = c.execute("select sql from sqlite_master where name='mv_feed_stats'")
   status = c.fetchone()
   if not status:
-    print >> param.log, 'WARNING: rebuilding mv_feed_stats...',
+    print('WARNING: rebuilding mv_feed_stats...', end=' ', file=param.log)
     snr_mv(db, c)
     db.commit()
-    print >> param.log, 'done'
+    print('done', file=param.log)
   c.close()
 
 def elapsed(t, what):
   t2 = time.time()
-  print >> param.log, what, (t2-t)* 1000, 'ms'
+  print(what, (t2-t)* 1000, 'ms', file=param.log)
   return t2
 
 use_json = None
@@ -348,12 +349,12 @@ def item(db, uid):
 
 def setting(db, *args, **kwargs):
   c = db.cursor()
-  for name, value in zip(args[::2], args[1::2]) + kwargs.items():
+  for name, value in list(zip(args[::2], args[1::2])) + list(kwargs.items()):
     param.settings[name] = str(value)
     try:
       c.execute("insert into fm_settings (name, value) values (?, ?)",
                 [name, str(value)])
-    except sqlite3.IntegrityError, e:
+    except sqlite3.IntegrityError as e:
       c.execute("update fm_settings set value=? where name=?",
                 [value, name])
   db.commit()

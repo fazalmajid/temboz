@@ -1,7 +1,13 @@
 # -*- coding: iso-8859-1 -*-
-import sys, time, re, codecs, string, traceback, socket, HTMLParser, hashlib
-import unicodedata, htmlentitydefs, requests, urlparse, html5lib
-import feedparser, param, transform, util, porter2
+from __future__ import print_function
+import sys, time, re, codecs, string, traceback, socket, hashlib
+import unicodedata, requests, html5lib, feedparser
+from . import param, transform, util, porter2
+
+try:
+  import html.entities as htmlentitydefs
+except ImportError:
+  import htmlentitydefs
 
 # XXX TODO
 #
@@ -29,7 +35,7 @@ except ImportError:
   def stripc(c):
     return unicodedata.normalize('NFD', c)[0]
   def strip_diacritics(s):
-    return u''.join(map(stripc, s))
+    return ''.join(map(stripc, s))
 
 stop_words = ['i', 't', 'am', 'no', 'do', 's', 'my', 'don', 'm', 'on',
               'get', 'in', 'you', 'me', 'd', 've']
@@ -68,7 +74,8 @@ stop_words += ['a', 'the', 'of', 'and', 'that', 'for', 'by', 'as', 'be',
 # XXX it's not good practice to mix languages like this, we should use
 # XXX feed language metadata and track what language a content is written in
 # XXX but that would require significant data model changes
-stop_words += [strip_diacritics(unicode(s, 'iso8859-15')) for s in [
+dec = (lambda s: unicode(s, 'iso8859-15')) if sys.version < '3' else str
+stop_words += [strip_diacritics(dec(s)) for s in [
   "a", "A", "à", "afin", "ah", "ai", "aie", "aient", "aies", "ailleurs",
   "ainsi", "ait", "alentour", "alias", "allais", "allaient",
   "allait", "allons", "allez", "alors", "Ap.", "Apr.", "après",
@@ -195,14 +202,14 @@ for c in string.whitespace:
 del lc_map[32]
 for c in string.punctuation + '\'\xab\xbb':
   punct_map[ord(c)] = 32
-punct_map[0x2019] = u"'"
+punct_map[0x2019] = "'"
 
 # decode HTML entities with known Unicode equivalents
 ent_re = re.compile(r'\&([^;]*);')
 def ent_sub(m):
   ent = m.groups()[0]
   if ent in htmlentitydefs.name2codepoint:
-    return unichr(htmlentitydefs.name2codepoint[ent])
+    return chr(htmlentitydefs.name2codepoint[ent])
   if ent.startswith('#'):
     if ent.lower().startswith('#x'):
       codepoint = int('0x' + ent[2:], 16)
@@ -212,7 +219,7 @@ def ent_sub(m):
       except ValueError:
         return ent
     if codepoint > 0 and codepoint < sys.maxunicode:
-      return unichr(codepoint)
+      return chr(codepoint)
   # fallback - leave as-is
   return '&%s;' % ent
   
@@ -222,10 +229,6 @@ def decode_entities(s):
 # XXX need to normalize for HTML entities as well
 def lower(s):
   """Turn a string lower-case, including stripping accents"""
-  try:
-    s = unicode(s)
-  except UnicodeDecodeError:
-    s = s.decode('utf8')
   return strip_diacritics(decode_entities(s)).translate(lc_map).lower()
 
 # XXX this implementation is hopefully correct, but inefficient
@@ -255,7 +258,7 @@ strip_tags_re = re.compile('<[^>]*>')
 def get_words(s):
   return set([
     word for word
-    in lower(unicode(strip_tags_re.sub('', unicode(s)))
+    in lower(str(strip_tags_re.sub('', str(s)))
              ).translate(punct_map).split()
     if word not in stop_words])
 def stem(words):
@@ -349,7 +352,7 @@ def balance(html, limit_words=None, ellipsis=' ...'):
 
     if element in block and stack and stack[-1] not in block:
       # close previous block if any
-      for i in xrange(len(stack) - 1, -1, -1):
+      for i in range(len(stack) - 1, -1, -1):
         if stack[i] in block: break
       stack, previous_block = stack[:i], stack[i:]
       previous_block.reverse()
@@ -431,7 +434,7 @@ def dereference(url, seen=None, level=0):
         return url
       # some servers redirect to Unicode URLs, which are not legal
       try:
-        unicode(redir)
+        str(redir)
       except UnicodeDecodeError:
         return url
       # there might be several levels of redirection
@@ -461,7 +464,7 @@ def normalize(item, f, run_filters=True):
           item[key] = candidate[0]
         else:
           # XXX not really sure how to handle these cases
-          print >> param.log, 'E' * 16, 'ambiguous RDF', key, item[key]
+          print('E' * 16, 'ambiguous RDF', key, item[key], file=param.log)
           item[key] = item[key][0]
     if isinstance(item.get(key), dict) and 'value' in item[key]:
       item[key] = item[key]['value']
@@ -469,12 +472,6 @@ def normalize(item, f, run_filters=True):
   # title
   if 'title' not in item or not item['title'].strip():
     item['title'] = 'Untitled'
-  # XXX for debugging
-  if type(item['title']) not in [str, unicode]:
-    print >> param.log, 'TITLE' * 15
-    import code
-    from sys import exit
-    code.interact(local=locals())
   item['title_lc'] =   lower(item['title'])
   item['title_words_exact'] =  get_words(item['title_lc'])
   item['title_words'] =  stem(item['title_words_exact'])
@@ -491,15 +488,6 @@ def normalize(item, f, run_filters=True):
     if 'id' not in item:
       item['id'] = 'HASH_CONTENT'
       item['RUNT'] = True
-  if type(item['link']) == unicode:
-    item['link'] = str(item['link'].encode('UTF-8'))
-  if type(item['link']) != str:
-    print >> param.log, 'LINK IS NOT str', repr(item['link'])
-  # XXX special case handling for annoying Sun/Roller malformed entries
-  if 'blog.sun.com' in item['link'] or 'blog.sun.com' in item['link']:
-    item['link'] = item['link'].replace(
-      'blog.sun.com', 'blogs.sun.com').replace(
-      'blogs.sun.com/page', 'blogs.sun.com/roller/page')
   ########################################################################
   # GUID
   if 'id' not in item:
@@ -575,7 +563,7 @@ def normalize(item, f, run_filters=True):
   content_lc = lower(content)
   # the content might have invalid 8-bit characters.
   # Heuristic suggested by Georg Bauer
-  if type(content) != unicode:
+  if type(content) != str:
     try:
       content = content.decode('utf-8')
     except UnicodeError:
@@ -600,18 +588,13 @@ def normalize(item, f, run_filters=True):
     item['item_tags'] = []
   ########################################################################
   # map unicode
-  for key in ['title', 'link', 'created', 'modified', 'author', 'content']:
-    if type(item.get(key)) == unicode:
-      item[key] = item[key].encode('ascii', 'xmlcharrefreplace')
+  # for key in ['title', 'link', 'created', 'modified', 'author', 'content']:
+  #   if type(item.get(key)) == str:
+  #     item[key] = item[key].encode('ascii', 'xmlcharrefreplace')
   # hash the content as the GUID if required
   if item['id'] == 'HASH_CONTENT':
     item['id']= hashlib.md5(item['title'] + item['content']).hexdigest()
   
 def escape_xml(s):
   """Escape entities for a XML target"""
-  return s.decode('latin1').replace('&', '&amp;').encode('ascii', 'xmlcharrefreplace').replace("'", "&apos;").replace('"', '&quot;').replace('<', '&lt;').replace('>', '&gt;')
-
-def escape_html(s):
-  """Escape entities for a HTML target.
-Differs from XML in that &apos; is defined by W3C but not implemented widely"""
-  return s.decode('latin1').replace('&', '&amp;').encode('ascii', 'xmlcharrefreplace').replace("'", "&#39;").replace('"', '&quot;').replace('<', '&lt;').replace('>', '&gt;')
+  return s.replace('&', '&amp;').encode('ascii', 'xmlcharrefreplace').replace("'", "&apos;").replace('"', '&quot;').replace('<', '&lt;').replace('>', '&gt;')

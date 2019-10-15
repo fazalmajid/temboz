@@ -1,4 +1,4 @@
-import sys, os, threading, Queue
+import sys, os, threading, queue
 sys.path.append('.')
 os.chdir('..')
 import normalize
@@ -6,8 +6,8 @@ from singleton import db
 
 num_workers = 64
 
-in_q = Queue.Queue()
-out_q = Queue.Queue()
+in_q = queue.Queue()
+out_q = queue.Queue()
 class Worker(threading.Thread):
   def run(self):
     while True:
@@ -30,8 +30,8 @@ c.execute("""select item_uid, item_link
 from fm_items
 where item_rating>0
 order by item_uid""")
-map(in_q.put, c)
-map(in_q.put, [(None, None)] * num_workers)
+list(map(in_q.put, c))
+list(map(in_q.put, [(None, None)] * num_workers))
 
 
 while True:
@@ -42,7 +42,7 @@ while True:
       db.commit()
       sys.exit(0)
     continue
-  print uid, url
-  print '\t==>', new_url
+  print(uid, url)
+  print('\t==>', new_url)
   c.execute('update fm_items set item_link=? where item_uid=?',
             [new_url, uid])

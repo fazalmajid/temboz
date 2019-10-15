@@ -37,6 +37,12 @@ opml:
 	wget -c https://majid.info/temboz/temboz.opml
 	mv temboz.opml me.opml
 
+docker:
+	docker build -t fazalmajid/temboz .
+
+docker-run:
+	docker run -p 9999:9999 -v `pwd`:/temboz/data fazalmajid/temboz
+
 sdist:
 	-rm -f dist/*
 	python setup.py sdist

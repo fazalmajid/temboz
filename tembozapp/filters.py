@@ -1,6 +1,7 @@
 # handle the various type of FilteringRules
+from __future__ import print_function
 import time, re, textwrap, requests
-import normalize, param, util, dbop
+from . import normalize, param, util, dbop
 
 rules = []
 feed_rules = {}
@@ -68,7 +69,7 @@ class KeywordRule(Rule):
     else:
       return self.rule in target
   def highlight(self, html):
-    if type(self.rule) in [str, unicode]:
+    if type(self.rule) in [str, str]:
       return normalize.replace_first(
         html, self.rule,
         '<span class="filter-highlight">%s</span>' % self.rule)
@@ -125,11 +126,11 @@ class AuthorRule(Rule):
 # functions used inside Python rules
 def link_already(url):
   with dbop.db() as db:
-    print >> param.activity, 'checking for deja-vu for', url,
+    print('checking for deja-vu for', url, end=' ', file=param.activity)
     c = db.execute("select count(*) from fm_items where item_link like ?",
                [url + '%'])
     l = c.fetchone()
-    print >> param.log, l and l[0]
+    print(l and l[0], file=param.log)
     return l and l[0]
 
 def dereference_content(url):
@@ -186,7 +187,7 @@ class PythonRule(Rule):
     Rule.__init__(self, uid, expires)
     self.rule = rule
     rule = normalize_rule(rule)
-    self.code = compile(rule, 'rule' + `uid`, 'eval')
+    self.code = compile(rule, 'rule' + repr(uid), 'eval')
   def __str__(self):
     return '<PythonRule %s %s>' % (self.uid, normalize_rule(self.rule))
   def test(self, item, feed, feed_uid):
@@ -323,7 +324,7 @@ def add_kw_rule(db, c, kw=None, item_uid=None, match='word', target='title',
     rule_type = target + '_' + match
 
   for word in words:
-    print >> param.log, 'ADD_KW_RULES', rule_type, item_uid, word
+    print('ADD_KW_RULES', rule_type, item_uid, word, file=param.log)
     c.execute("""insert into fm_rules (rule_type, rule_feed_uid, rule_text)
     values (?, (select item_feed_uid from fm_items where item_uid=?), ?)""",
               [rule_type, item_uid, word]);

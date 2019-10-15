@@ -18,8 +18,8 @@ for uid, link, feed, guid in l:
   ll = [x[0] for x in ll]
   assert uid in ll
   if len(ll) > 2:
-    print 'could not resolve link', link,
-    print 'more than 2 instances:', ', '.join(map(str, ll))
+    print('could not resolve link', link, end=' ')
+    print('more than 2 instances:', ', '.join(map(str, ll)))
     continue
   if len(ll) < 2: continue
   ll.remove(uid)
