@@ -1,4 +1,4 @@
-from __future__ import print_function
+from __future__ import print_function, division
 import sys, os, stat, logging, base64, time, imp, gzip, traceback, pprint, csv
 import threading, io
 import flask, sqlite3, string, requests, re, datetime, hmac, passlib.hash
@@ -462,7 +462,7 @@ def feed_info(feed_uid, op=None):
     filtered = int(filtered)
     total = int(total)
     if interesting + uninteresting > 0:
-      ratio = interesting * 100 / (interesting + uninteresting)
+      ratio = interesting * 100 // (interesting + uninteresting)
     else:
       ratio = 0
       assert interesting + uninteresting + unread + filtered == total, \
