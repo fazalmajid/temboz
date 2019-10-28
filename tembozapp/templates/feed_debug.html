@@ -1,0 +1,29 @@
+{% extends "menubar.html" %}
+
+{% block TITLE %}Temboz - Feed debug{% endblock %}
+{% block BODYOPTIONS %} class="unpadded"{% endblock %}
+{% block EXTRAHEAD %}
+    <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    <script language="JavaScript" src="/static/temboz.js"></script>
+{% endblock %}
+
+{% block CONTENT %}
+<h1><a href="{{ feed_html }}">{{ feed_title }}</a></h2>
+
+  <h2>Feed variables</h2>
+{% for var in f.feed %}
+{{ var|safe }}<br>
+{% endfor %}
+
+  <h2>Item variables</h2>
+{% if 'items' in f and f['items'] %}
+{% for var in f['items'][0] %}
+{{ var|safe }}<br>
+{% endfor %}
+{% endif %}
+
+  <h2>Feed dump (normalized)</h2>
+  <pre>
+{{ pprinted }}
+  </pre>
+{% endblock CONTENT %}

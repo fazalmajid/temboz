@@ -2,6 +2,7 @@ from __future__ import print_function, division
 import sys, os, stat, logging, base64, time, imp, gzip, traceback, pprint, csv
 import threading, io
 import flask, sqlite3, string, requests, re, datetime, hmac, passlib.hash
+import feedparser
 import hashlib, socket, json, werkzeug, __main__
 from . import param, update, filters, util, normalize, dbop, fts5
 
@@ -568,6 +569,22 @@ def feed_info(feed_uid, op=None):
     
     return flask.render_template(
       'feed.html', filters=filters,
+      len=len, max=max, **locals()
+    )
+
+@app.route("/feed_debug/<int:feed_uid>", methods=['GET'])
+def feed_debug(feed_uid):
+  with dbop.db() as c:
+    row = dbop.feed_info_sql(c, feed_uid).fetchone()
+    (feed_title, feed_desc, feed_filter, feed_html, feed_xml, feed_pubxml,
+     delta_t, interesting, unread, uninteresting, filtered, total, status,
+     private, exempt, dupcheck, feed_errors) = row
+
+    f = feedparser.parse(feed_xml)
+    normalize.normalize_all(f)
+    pprinted = pprint.pformat(f)
+    return flask.render_template(
+      'feed_debug.html',
       len=len, max=max, **locals()
     )
 
