@@ -698,6 +698,7 @@ def settings(status=''):
       param_debug=param.debug, param_settings=param.settings,
       started=__main__.started,
       uptime=datetime.datetime.now()-__main__.started,
+      fts5_enabled=getattr(dbop, 'fts_enabled'),
       len=len, max=max, **locals()
     )
 
