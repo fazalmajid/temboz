@@ -593,7 +593,7 @@ def normalize(item, f, run_filters=True):
   #     item[key] = item[key].encode('ascii', 'xmlcharrefreplace')
   # hash the content as the GUID if required
   if item['id'] == 'HASH_CONTENT':
-    item['id']= hashlib.md5(item['title'] + item['content']).hexdigest()
+    item['id']= hashlib.md5((item['title'] + item['content']).encode('utf-8')).hexdigest()
   
 def escape_xml(s):
   """Escape entities for a XML target"""
