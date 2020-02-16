@@ -1,7 +1,8 @@
 from __future__ import print_function, division
 import sys, os, stat, logging, base64, time, imp, gzip, traceback, pprint, csv
 import threading, io
-import flask, sqlite3, string, requests, re, datetime, hmac, passlib.hash
+import flask, sqlite3, string, requests, re, datetime, hmac, hashlib
+import passlib.hash
 import feedparser
 import hashlib, socket, json, werkzeug, __main__
 from . import param, update, filters, util, normalize, dbop, fts5
@@ -64,7 +65,8 @@ class AuthWrapper:
 # seed for CSRF protection nonces
 nonce_seed = os.urandom(20)
 def gen_nonce(msg):
-  return hmac.new(nonce_seed, msg).hexdigest()
+  return hmac.new(nonce_seed, msg.encode('utf-8'),
+                  digestmod=hashlib.sha256).hexdigest()
 
 def check_nonce(msg, nonce):
   #return hmac.compare_digest(gen_nonce(msg), nonce.decode('hex'))
