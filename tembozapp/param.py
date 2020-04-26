@@ -66,16 +66,16 @@ except:
 # the feed is automatically suspended. -1 to unlimit
 max_errors = 1000
 
-debug = True
-#debug = False
+#debug = True
+debug = False
 #debug_sql = True
 debug_sql = False
 #profile = False
 
 # logging
 import sys, os
+log_filename = 'error.log'
 if '--daemon' in sys.argv:
-  log_filename = 'error.log'
   # if you modify mode and buffer size, see also update.py:cleanup
   # for the code that rotates this file daily
   log = open(log_filename, 'a', 0)
