@@ -656,43 +656,53 @@ def cleanup(db=None, c=None):
       return cleanup(db, c)
   # XXX need to use PATH instead
   sqlite_cli = '/usr/local/bin/sqlite3'
+  print('Starting cleanup', file=param.log)
+  print('garbage_contents: ', getattr(param, 'garbage_contents', False),
+        file=param.log)
+  print('garbage_items: ', getattr(param, 'garbage_items', False),
+        file=param.log)
   if getattr(param, 'garbage_contents', False):
+    print('starting garbage_contents ', file=param.log)
     c.execute("""update fm_items set item_content=''
     where item_rating < 0 and item_created < julianday('now')-?""",
               [param.garbage_contents])
     db.commit()
   if getattr(param, 'garbage_items', False):
+    print('starting garbage_items ', file=param.log)
     c.execute("""delete from fm_items where item_uid in (
       select item_uid from fm_items, fm_feeds
       where item_created < min(julianday('now')-?, feed_oldest-7)
       and item_rating<0 and feed_uid=item_feed_uid)""", [param.garbage_items])
     db.commit()
+  print('recreating SNR materialized view', file=param.log)
   dbop.snr_mv(db, c)
+  print('deleting unused tags', file=param.log)
   c.execute("""delete from fm_tags
   where not exists(
     select item_uid from fm_items where item_uid=tag_item_uid
   )""")
   db.commit()
+  print('deleting unused tags', file=param.log)
   if dbop.fts_enabled:
+    print('rebuilding full-text search index', file=param.log)
     c.execute("""insert into search(search) values ('rebuild')""")
+    db.commit()
+  print('vacuuming', file=param.log)
   c.execute('vacuum')
   # we still hold the PseudoCursor lock, this is a good opportunity to backup
+  print('creating backups dir', file=param.log)
   try:
     os.mkdir('backups')
+    print('backups dir created', file=param.log)
   except OSError:
-    pass
+    print('backups dir already exists', file=param.log)
+  print('pruning feed GUID cache', file=param.log)
   prune_feed_guid_cache()
+  print('backing up SQLite', file=param.log)
   os.system((sqlite_cli + ' rss.db .dump | %s > backups/daily_' \
              + time.strftime('%Y-%m-%d') + '%s') % param.backup_compressor)
-  # rotate the log
-  os.rename(param.log_filename, 'backups/log_' + time.strftime('%Y-%m-%d'))
-  # rotate log if we have overriden stdout/stderr
-  if hasattr(param, 'log_filename'):
-    param.log.close()
-    param.log = open(param.log_filename, 'a', 0)
-    os.dup2(param.log.fileno(), 1)
-    os.dup2(param.log.fileno(), 2)
   # delete old backups
+  print('deleting old backups', file=param.log)
   backup_re = re.compile(
     'daily_[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\\.')
   log_re = re.compile(
@@ -702,9 +712,11 @@ def cleanup(db=None, c=None):
       elapsed = time.time() - os.stat('backups/' + fn).st_ctime
       if elapsed > 86400 * param.daily_backups:
         try:
+          print('deleting', fn, file=param.log)
           os.remove('backups/' + fn)
         except OSError:
           pass
+  print('Ended cleanup', file=param.log)
   
 def update(where_clause=''):
   with dbop.db() as db:
