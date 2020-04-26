@@ -43,7 +43,7 @@ class AuthWrapper:
     if url in whitelist or url.startswith('/static/'):
       return self.application(environ, start_response)
     back_url = url if url else '/'
-    cookies = werkzeug.utils.parse_cookie(environ)
+    cookies = werkzeug.http.parse_cookie(environ)
     auth_cookie = cookies.get('auth')
     auth_login = None
     ua = environ.get('HTTP_USER_AGENT')

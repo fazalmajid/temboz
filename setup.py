@@ -7,7 +7,7 @@ setuptools.setup(
   name='temboz',
   author='Fazal Majid',
   author_email='python@sentfrom.com',
-  version='3.0',
+  version='3.0.2',
   url='https://github.com/fazalmajid/temboz',
   #package_dir={'': 'src'},
   packages=['tembozapp'] + setuptools.find_packages(),
@@ -21,6 +21,7 @@ setuptools.setup(
     'argon2_cffi',
     'translitcodec',
     'feedparser',
+    'werkzeug>=1.0.1',
     'yappi'
   ],
   description='The Temboz RSS/Atom feed reader and aggregator.',
