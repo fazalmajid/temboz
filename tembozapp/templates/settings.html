@@ -104,7 +104,6 @@
     <li><a href="#limits"><span>Limits</span></a></li>
     <li><a href="#timescale"><span>Time scale</span></a></li>
     <li><a href="#confirm"><span>Confirmation</span></a></li>
-    <li><a href="#facebook"><span>Facebook</span></a></li>
     <li><a href="#backup"><span>Backups</span></a></li>
     <li><a href="#defaults"><span>Reset</span></a></li>
     <li><a href="#profiler"><span>Profiler</span></a></li>
@@ -211,44 +210,6 @@
       <tr>
         <td colspan="2" align="center"><input type="submit" value="Set"></td>
       </tr>
-      </table>
-    </form>
-  </div>
-  <div id="facebook" class="ui-tabs-hide">
-    <p>To enable sharing with Facebook, you need to:</p>
-    <ol>
-      <li>Sign up for Facebook's <a
-        href="http://developers.facebook.com/">developer program</a></li>
-      <li>Register Temboz as an app</li>
-      <li>Obtain an App ID and API Key, and list them below</li>
-      <li>Request an App Review by Facebook for the <tt>publish_pages</tt> and
-        <tt>manage_pages</tt> permissions
-      <li><a href="facebook">Authorize</a> Temboz using OAUTH 2.0 to post on
-        your behalf</li>
-    </ol>
-    <form method="POST"><input type="hidden" name="op" value="facebook">
-      <table>
-      <tr><td>Facebook App ID</td>
-        <td><input name="app_id" value="{{ param_settings.get('fb_app_id', '') }}"></td>
-      </tr>
-      <tr><td>Facebook API Key</td>
-        <td><input name="api_key" value="{{ param_settings.get('fb_api_key', '') }}"></td>
-      </tr>
-      <tr><td>Facebook App Secret</td>
-        <td><input name="fb_secret" value="{{ param_settings.get('fb_secret', '') }}"></td>
-      </tr>
-      <tr>
-        <td colspan="2" align="center"><input type="submit" value="Set"></td>
-      </tr>
-    {% if param_settings.get('fb_token', '') %}
-      <tr>
-        <td>Authorization</td><td>Successful. <a href="settings?op=del_token">Erase</a> token <tt>{{ param_settings.get('fb_token', '') }}</tt></td>
-      </tr>
-    {% else %}
-      <tr>
-        <td>Authorization</td><td>Not performed yet: <a href="facebook">Authorize now</a></td>
-      </tr>
-    {% endif %}
       </table>
     </form>
   </div>
