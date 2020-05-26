@@ -5,6 +5,22 @@
 {% block EXTRAHEAD %}
     <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
     <script language="JavaScript" src="/static/temboz.js"></script>
+    <style>
+      .even {
+        background-color: #ddd;
+      }
+      .odd {
+        background-color: white;
+      }
+      @media (prefers-color-scheme: dark) {
+        .even {
+          background-color: #333;
+        }
+        .odd {
+          background-color: black;
+        }
+      }
+    </style>
 {% endblock %}
 
 {% block CONTENT %}
@@ -16,8 +32,8 @@ $tb
 </pre>pre>
 #end for #}
 <h1>Tracebacks</h1>
-{% for thread_id, frame in sorted(frames.iteritems()) %}
-<div style="background-color: {{ loop.cycle('#ddd', 'white') }}">
+{% for thread_id, frame in sorted(frames.items()) %}
+<div class="{{ loop.cycle('odd', 'even') }}">
 <pre>
 Thread {{ thread_id }} ({{ sys.getrefcount(frame) }} refs)
 {{ ''.join(traceback.format_stack(frame)) }}
