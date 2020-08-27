@@ -719,43 +719,6 @@ def stats():
     finally:
       csvfile.close()
 
-@app.route("/facebook")
-def facebook():
-  with dbop.db() as db:
-    c = db.cursor()
-    app_id = param.settings.get('fb_app_id', '')
-    secret = param.settings.get('fb_secret', '')
-    if app_id and secret:
-      ## XXX cannot assume https://
-      redir = 'https://' + flask.request.headers['host'] \
-              + '/facebook?op=oauth_redirect'
-      op = flask.request.args.get('op', '')
-      if not op:
-        fb_url = 'https://graph.facebook.com/oauth/authorize?display=touch&client_id=' + app_id + '&scope=publish_pages,manage_pages&redirect_uri=' + redir
-        print('FB_URL =', fb_url, file=param.log)
-        return flask.redirect(fb_url)
-      elif op == 'oauth_redirect':
-        code = flask.request.args.get('code', '')
-        if code:
-          r = requests.get(
-            'https://graph.facebook.com/oauth/access_token',
-            params={
-              'client_id': app_id,
-              'client_secret': secret,
-              'code': code,
-              'redirect_uri': redir
-            }
-          )
-          print('FACEBOOK TOKEN RESPONSE', r.text, file=param.log)
-          if r.text.startswith('{'):
-            token = json.loads(r.text).get('access_token')
-          else:
-            token = r.text.split('access_token=', 1)[-1]
-          dbop.setting(db, c, fb_token=token)
-          return flask.redirect('/settings#facebook')
-    else:
-      return settings(status='You need to set the App ID first')
-
 @app.route("/_share")
 def mylos():
   with dbop.db() as db:
