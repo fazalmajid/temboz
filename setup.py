@@ -7,7 +7,7 @@ setuptools.setup(
   name='temboz',
   author='Fazal Majid',
   author_email='python@sentfrom.com',
-  version='3.0.2',
+  version='4.0',
   url='https://github.com/fazalmajid/temboz',
   #package_dir={'': 'src'},
   packages=['tembozapp'] + setuptools.find_packages(),
@@ -19,9 +19,10 @@ setuptools.setup(
     'html5lib',
     'passlib',
     'argon2_cffi',
-    'translitcodec',
+    'ctranslitcodec',
     'feedparser',
     'werkzeug>=1.0.1',
+    'bleach',
     'yappi'
   ],
   description='The Temboz RSS/Atom feed reader and aggregator.',
@@ -30,9 +31,6 @@ setuptools.setup(
   classifiers=[
     'License :: OSI Approved :: BSD License',
     'Programming Language :: Python',
-    'Programming Language :: Python :: 2',
-    'Programming Language :: Python :: 2.7',
-    'Programming Language :: Python :: 3',
     'Programming Language :: Python :: 3.8',
   ],
 )

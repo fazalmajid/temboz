@@ -129,7 +129,8 @@ class Dereference(Filter):
             item['link'] = link[0]
             return content
           # we haven't seen this article before, buck up and load it
-          deref = requests.get(item['link']).content
+          deref = requests.get(item['link'],
+                               timeout=param.http_timeout).content
           m = self.re.search(deref)
           if m and m.groups():
             item['link'] = m.groups()[0]

@@ -69,7 +69,7 @@ class AutoDiscoveryHandler(HTMLParser.HTMLParser):
       if attrs.get('type') == 'application/atom+xml' and 'href' in attrs:
         self.autodiscovery['atom'] = attrs['href']
   def feed_url(self, page_url):
-    page_data = requests.get(page_url).content
+    page_data = requests.get(page_url, timeout=param.http_timeout).content
     self.feed(page_data)
     # Atom has cleaner semantics than RSS, so give it priority
     url = self.autodiscovery.get(
@@ -82,7 +82,8 @@ def re_autodiscovery(url):
   autodiscovery_re = re.compile(
     '<link[^>]*rel="alternate"[^>]*'
     'application/(atom|rss)\\+xml[^>]*href="([^"]*)"')
-  candidates = autodiscovery_re.findall(requests.get(url).content)
+  candidates = autodiscovery_re.findall(
+    requests.get(url, timeout=param.http_timeout).content)
   candidates.sort()
   return candidates
 
@@ -92,7 +93,7 @@ def add_feed(feed_xml):
     c = db.cursor()
     feed_xml = feed_xml.replace('feed://', 'http://')
     # verify the feed
-    r = requests.get(feed_xml)
+    r = requests.get(feed_xml, timeout=param.http_timeout)
     f = feedparser.parse(r.content)
     if 'url' not in f:
       f['url'] = feed_xml
@@ -121,7 +122,7 @@ def add_feed(feed_xml):
           raise AutodiscoveryParseError
       if not feed_xml:
         raise ParseError
-      r = requests.get(feed_xml)
+      r = requests.get(feed_xml, timeout=param.http_timeout)
       f = feedparser.parse(r.content)
       if not f.feed:
         raise ParseError
@@ -158,7 +159,7 @@ def update_feed_xml(feed_uid, feed_xml):
   """Update a feed URL and fetch the feed. Returns the number of new items"""
   feed_uid = int(feed_uid)
 
-  r = requests.get(feed_xml)
+  r = requests.get(feed_xml, timeout=param.http_timeout)
   f = feedparser.parse(r.content)
   if not f.feed:
     raise ParseError
@@ -343,7 +344,7 @@ def purge_reload(feed_uid):
     where feed_uid=?""", [feed_uid])
     feed_xml = c.fetchone()[0]
     db.commit()
-    r = requests.get(feed_xml)
+    r = requests.get(feed_xml, timeout=param.http_timeout)
     f = feedparser.parse(r.content)
     if not f.feed:
       raise ParseError
@@ -399,7 +400,7 @@ def fetch_feed(feed_uid, feed_xml, feed_etag, feed_modified):
   try:
     r = requests.get(feed_xml, headers={
       'If-None-Match': feed_etag
-    })
+    }, timeout=param.http_timeout)
     if r.content == '':
       return {'channel': {}, 'items': [], 'why': 'no change since Etag'}
     f = feedparser.parse(r.content, etag=r.headers.get('Etag'),

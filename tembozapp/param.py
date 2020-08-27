@@ -87,6 +87,9 @@ else:
   activity = sys.stderr
 # redirect stout and stderr to the log file
 
+# default timeout for HTTP requests in seconds
+http_timeout = 60.0
+
 # These settings are managed in the database and will ultimately supersede
 # param.py
 settings = {}

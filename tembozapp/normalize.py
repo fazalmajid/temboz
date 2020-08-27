@@ -3,6 +3,7 @@ from __future__ import print_function
 import sys, time, re, codecs, string, traceback, socket, hashlib
 import unicodedata, requests, html5lib, feedparser
 from . import param, transform, util, porter2
+import bleach
 
 try:
   import html.entities as htmlentitydefs
@@ -23,7 +24,10 @@ date_fmt = '%Y-%m-%d %H:%M:%S'
 feedparser._HTMLSanitizer.acceptable_attributes.remove('class')
 
 try:
-  import translitcodec
+  try:
+    import ctranslitcodec as translitcodec
+  except ImportError:
+    import translitcodec
   def strip_diacritics(s):
     return translitcodec.short_encode(s)[0]
 except ImportError:
@@ -309,8 +313,19 @@ banned = set(banned)
 tag_re = re.compile(r'(<>|<[^!].*?>|<!\[CDATA\[|\]\]>|<!--.*?-->|<[!]>)',
                     re.DOTALL | re.MULTILINE)
 def balance(html, limit_words=None, ellipsis=' ...'):
+  # we cannot trust feedparser to sanitize
   if not limit_words:
-    return html5lib.serialize(html5lib.parse(html))
+    #return html5lib.serialize(html5lib.parse(html))
+    return bleach.clean(
+      html,
+      tags=feedparser._HTMLSanitizer.acceptable_elements,
+      attributes=list(feedparser._HTMLSanitizer.acceptable_attributes),
+      styles=list(feedparser._HTMLSanitizer.acceptable_css_properties),
+      strip=True
+    )
+
+  # the legacy balancing logic is redundant with html5lib's,
+  # but this is seldom used
   word_count = 0
   tokens = tag_re.split(html)
   out = []
@@ -364,7 +379,14 @@ def balance(html, limit_words=None, ellipsis=' ...'):
     out.append(token)
   # flush the stack
   out.extend(['</%s>' % element for element in reversed(stack)])
-  return ''.join(out)
+  html = ''.join(out)
+  return bleach.clean(
+    html,
+    tags=feedparser._HTMLSanitizer.acceptable_elements,
+    attributes=list(feedparser._HTMLSanitizer.acceptable_attributes),
+    styles=list(feedparser._HTMLSanitizer.acceptable_css_properties),
+    strip=True
+  )
 
 ########################################################################
 def normalize_all(f):
@@ -421,7 +443,7 @@ def dereference(url, seen=None, level=0):
   if level > 16:
     return url
   try:
-    r = requests.get(url, allow_redirects=False)
+    r = requests.get(url, allow_redirects=False, timeout=param.http_timeout)
     if not r.is_redirect:
       return url
     else:
@@ -593,8 +615,10 @@ def normalize(item, f, run_filters=True):
   #     item[key] = item[key].encode('ascii', 'xmlcharrefreplace')
   # hash the content as the GUID if required
   if item['id'] == 'HASH_CONTENT':
-    item['id']= hashlib.md5((item['title'] + item['content']).encode('utf-8')).hexdigest()
+    item['id']= hashlib.md5(
+      (item['title'] + item['content']).encode('utf-8')).hexdigest()
+  return item
   
 def escape_xml(s):
   """Escape entities for a XML target"""
-  return s.replace('&', '&amp;').encode('ascii', 'xmlcharrefreplace').replace("'", "&apos;").replace('"', '&quot;').replace('<', '&lt;').replace('>', '&gt;')
+  return s.replace('&', '&amp;').replace("'", "&apos;").replace('"', '&quot;').replace('<', '&lt;').replace('>', '&gt;').encode('ascii', 'xmlcharrefreplace')
