@@ -45,7 +45,7 @@ docker-run:
 
 sdist:
 	-rm -f dist/*
-	python setup.py sdist
+	python3 setup.py sdist
 
 pypi: sdist
 	twine upload dist/*

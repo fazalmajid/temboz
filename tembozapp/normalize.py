@@ -621,4 +621,9 @@ def normalize(item, f, run_filters=True):
   
 def escape_xml(s):
   """Escape entities for a XML target"""
-  return s.replace('&', '&amp;').replace("'", "&apos;").replace('"', '&quot;').replace('<', '&lt;').replace('>', '&gt;').encode('ascii', 'xmlcharrefreplace')
+  try:
+    s = s.decode('utf-8')
+  except:
+    pass
+    
+  return s.replace('&', '&amp;').replace("'", "&apos;").replace('"', '&quot;').replace('<', '&lt;').replace('>', '&gt;').encode('ascii', 'xmlcharrefreplace').decode('ascii')
