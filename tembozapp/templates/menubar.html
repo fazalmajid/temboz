@@ -33,7 +33,7 @@
           {% if request.args.feed_uid %}
 	  <input name="feed_uid" type="hidden" value="{{request.args.get('feed_uid', '')}}">
           {% endif %}
-      <input name="search" id="search" value="{{request.args.get('search', '')}}">
+      <input name="search" id="search" {% if request.path != '/view' %}action="/view"{% endif %} value="{{request.args.get('search', '')}}">
       <select name="show" class="hidden">
 	<option value="all" selected>All articles</option>
 	<option value="unread">Unread only</option>
