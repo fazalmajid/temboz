@@ -286,7 +286,7 @@ def rules(c, feed_uid=None):
     where rule_feed_uid is NULL
     order by lower(rule_text)""")
   tabs = {}
-  for uid, rtype, expires, text in rows:
+  for uid, rtype, expires, text in rows.fetchall():
     row = uid, rtype, expires, text
     initial = text[0].upper()
     if rtype == 'python':
