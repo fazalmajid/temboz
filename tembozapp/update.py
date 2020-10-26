@@ -9,12 +9,8 @@ try:
   import urllib.parse as urlparse
 except ImportError:
   import urlparse
-try:
-  import html.parser as HTMLParser
-except ImportError:
-  import HTMLParser
 
-from . import param, normalize, util, transform, filters, dbop
+from . import param, normalize, util, transform, filters, dbop, autodiscovery
 import imp
 
 #socket.setdefaulttimeout(10)
@@ -22,7 +18,7 @@ feedparser.USER_AGENT = param.user_agent
 
 class ParseError(Exception):
   pass
-class AutodiscoveryParseError(Exception):
+class AutoDiscoveryError(Exception):
   pass
 class FeedAlreadyExists(Exception):
   pass
@@ -47,46 +43,6 @@ sorts = [
 ]
 sorts_dict = dict((sorts[i][0], i) for i in list(range(len(sorts))))
 
-class AutoDiscoveryHandler(HTMLParser.HTMLParser):
-  """Find RSS autodiscovery info, as specified in:
-    http://diveintomark.org/archives/2002/05/30/rss_autodiscovery
-  Cope even if the HTML document is not strictly XML compliant (as we do not
-  use a SGML parser like htmllib.HTMLParser does"""
-  def __init__(self):
-    HTMLParser.HTMLParser.__init__(self)
-    self.autodiscovery = {}
-  def handle_starttag(self, tag, attrs):
-    if tag == 'link':
-      attrs = dict(attrs)
-      if attrs.get('rel', '').strip().lower() != 'alternate':
-        return
-      if 'comments' in attrs.get('href', '').strip().lower():
-        return
-      if 'comments feed' in attrs.get('title', '').strip().lower():
-        return
-      if attrs.get('type') == 'application/rss+xml' and 'href' in attrs:
-        self.autodiscovery['rss'] = attrs['href']
-      if attrs.get('type') == 'application/atom+xml' and 'href' in attrs:
-        self.autodiscovery['atom'] = attrs['href']
-  def feed_url(self, page_url):
-    page_data = requests.get(page_url, timeout=param.http_timeout).content
-    self.feed(page_data)
-    # Atom has cleaner semantics than RSS, so give it priority
-    url = self.autodiscovery.get(
-      'atom', self.autodiscovery.get('rss'))
-    # the URL could be relative, if so fix it
-    url = urlparse.urljoin(page_url, url)
-    return url
-
-def re_autodiscovery(url):
-  autodiscovery_re = re.compile(
-    '<link[^>]*rel="alternate"[^>]*'
-    'application/(atom|rss)\\+xml[^>]*href="([^"]*)"')
-  candidates = autodiscovery_re.findall(
-    requests.get(url, timeout=param.http_timeout).content)
-  candidates.sort()
-  return candidates
-
 def add_feed(feed_xml):
   """Try to add a feed. Returns a tuple (feed_uid, num_added, num_filtered)"""
   with dbop.db() as db:
@@ -95,36 +51,20 @@ def add_feed(feed_xml):
     # verify the feed
     r = requests.get(feed_xml, timeout=param.http_timeout)
     f = feedparser.parse(r.content)
-    if 'url' not in f:
-      f['url'] = feed_xml
-    # CVS versions of feedparser are not throwing exceptions as they should
-    # see:
-    # http://sourceforge.net/tracker/index.php?func=detail&aid=1379172&group_id=112328&atid=661937
+    normalize.basic(f, feed_xml)
     if not f.feed or ('link' not in f.feed or 'title' not in f.feed):
-      # some feeds have multiple links, one for self and one for PuSH
-      if f.feed and 'link' not in f.feed and 'links' in f.feed:
-        try:
-          for l in f.feed['links']:
-            if l['rel'] == 'self':
-              f.feed['link'] = l['href']
-        except KeyError:
-          pass
-    if not f.feed or ('link' not in f.feed or 'title' not in f.feed):
-      # try autodiscovery
-      try:
-        feed_xml = AutoDiscoveryHandler().feed_url(feed_xml)
-      except HTMLParser.HTMLParseError:
-        # in desperate conditions, regexps ride to the rescue
-        try:
-          feed_xml = re_autodiscovery(feed_xml)[0][1]
-        except:
-          util.print_stack()
-          raise AutodiscoveryParseError
+      original = feed_xml
+      feed_xml = autodiscovery.find(original)
       if not feed_xml:
-        raise ParseError
+        raise AutoDiscoveryError
+      print('add_feed:autodiscovery of', original, 'found', feed_xml,
+            file=param.log)
       r = requests.get(feed_xml, timeout=param.http_timeout)
-      f = feedparser.parse(r.content)
-      if not f.feed:
+      f = feedparser.parse(r.text)
+      normalize.basic(f, feed_xml)
+      if not f.feed or 'url' not in f:
+        print('add_feed:autodiscovery failed %r %r' % (r.text, f.__dict__),
+              file=param.log)
         raise ParseError
     # we have a valid feed, normalize it
     normalize.normalize_feed(f)

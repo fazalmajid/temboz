@@ -646,7 +646,7 @@ def add_feed():
         except update.ParseError:
           feed_err = 'Connection or parse error in subcription attempt.'
           resolution= 'check URL'
-        except update.AutodiscoveryParseError:
+        except update.AutoDiscoveryError:
           feed_err = 'Autodiscovery failed.'
           resolution = 'you need to find a valid feed URL'
         except update.FeedAlreadyExists:

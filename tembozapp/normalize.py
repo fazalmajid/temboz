@@ -1,7 +1,7 @@
 # -*- coding: iso-8859-1 -*-
 from __future__ import print_function
 import sys, time, re, codecs, string, traceback, socket, hashlib
-import unicodedata, requests, html5lib, feedparser
+import unicodedata, requests, feedparser
 from . import param, transform, util, porter2
 import bleach
 
@@ -41,6 +41,7 @@ except ImportError:
   def strip_diacritics(s):
     return ''.join(map(stripc, s))
 
+# XXX need a good way to support languages other than English and French
 stop_words = ['i', 't', 'am', 'no', 'do', 's', 'my', 'don', 'm', 'on',
               'get', 'in', 'you', 'me', 'd', 've']
 # list originally from: http://bll.epnet.com/help/ehost/Stop_Words.htm
@@ -324,7 +325,7 @@ def balance(html, limit_words=None, ellipsis=' ...'):
       strip=True
     )
 
-  # the legacy balancing logic is redundant with html5lib's,
+  # the legacy balancing logic is redundant with Bleach's,
   # but this is seldom used
   word_count = 0
   tokens = tag_re.split(html)
@@ -432,6 +433,23 @@ def fix_date(date_tuple):
   else:
     return date_tuple
 
+# why doesn't feedparser do these basic normalizations?
+def basic(f, feed_xml):
+  if 'url' not in f:
+    f['url'] = feed_xml
+  # CVS versions of feedparser are not throwing exceptions as they should
+  # see:
+  # http://sourceforge.net/tracker/index.php?func=detail&aid=1379172&group_id=112328&atid=661937
+  if not f.feed or ('link' not in f.feed or 'title' not in f.feed):
+    # some feeds have multiple links, one for self and one for PuSH
+    if f.feed and 'link' not in f.feed and 'links' in f.feed:
+      try:
+        for l in f.feed['links']:
+          if l['rel'] == 'self':
+            f.feed['link'] = l['href']
+      except KeyError:
+        pass
+  
 def dereference(url, seen=None, level=0):
   """Recursively dereference a URL"""
   # this set is used to detect redirection loops
