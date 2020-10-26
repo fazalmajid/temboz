@@ -21,7 +21,7 @@ setuptools.setup(
     'argon2_cffi',
     'ctranslitcodec',
     'sgmllib3k',
-    'feedparser>=6,0,2',
+    'feedparser>=6.0.2',
     'werkzeug>=1.0.1',
     'bleach>=3.2.1',
     'yappi'
