@@ -48,7 +48,7 @@ You can check outstanding bug reports, change requests and more on the [GitHub i
 
 ## Installation
 
-* You will need Python 3.8 installed on your machine, and a reasonably recent version of SQLite, ideally with the json1 and fts5 extensions enabled for optimum performance
+* You will need Python 3.8+ installed on your machine, and a reasonably recent version of SQLite, ideally with the json1 and fts5 extensions enabled for optimum performance
 * If you do not have `pip`, install it by running `python -m ensurepip` (you may need to do this as root depending on how your Python installation is set up, or use a system package manager like `apt-get`).
 * If you do not have virtualenv installed, install it using `pip install virtualenv` (or use a package manager if required).
 * Create a directory and virtualenv to run Temboz, in this case `tembozdir`: `virtualenv tembozdir`

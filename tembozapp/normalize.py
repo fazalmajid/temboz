@@ -20,9 +20,6 @@ except ImportError:
 #date_fmt = '%a, %d %b %Y %H:%M:%S %Z'
 date_fmt = '%Y-%m-%d %H:%M:%S'
 
-# strip out class attributes from articles
-feedparser._HTMLSanitizer.acceptable_attributes.remove('class')
-
 try:
   try:
     import ctranslitcodec as translitcodec
@@ -311,6 +308,58 @@ block = set(block)
 closing = set(closing)
 banned = set(banned)
 
+acceptable_elements = set([
+  'a', 'abbr', 'acronym', 'address', 'area', 'article', 'aside', 'audio', 'b',
+  'big', 'blockquote', 'br', 'button', 'canvas', 'caption', 'center', 'cite',
+  'code', 'col', 'colgroup', 'command', 'datagrid', 'datalist', 'dd', 'del',
+  'details', 'dfn', 'dialog', 'dir', 'div', 'dl', 'dt', 'em', 'event-source',
+  'fieldset', 'figcaption', 'figure', 'footer', 'font', 'form', 'header',
+  'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'i', 'img', 'input', 'ins',
+  'keygen', 'kbd', 'label', 'legend', 'li', 'm', 'map', 'menu', 'meter',
+  'multicol', 'nav', 'nextid', 'ol', 'output', 'optgroup', 'option', 'p',
+  'pre', 'progress', 'q', 's', 'samp', 'section', 'select', 'small', 'sound',
+  'source', 'spacer', 'span', 'strike', 'strong', 'sub', 'sup', 'table',
+  'tbody', 'td', 'textarea', 'time', 'tfoot', 'th', 'thead', 'tr', 'tt', 'u',
+  'ul', 'var', 'video', 'noscript'
+])
+
+acceptable_attributes = [
+  'abbr', 'accept', 'accept-charset', 'accesskey', 'action', 'align', 'alt',
+  'autocomplete', 'autofocus', 'axis', 'background', 'balance', 'bgcolor',
+  'bgproperties', 'border', 'bordercolor', 'bordercolordark',
+  'bordercolorlight', 'bottompadding', 'cellpadding', 'cellspacing', 'ch',
+  'challenge', 'char', 'charoff', 'choff', 'charset', 'checked', 'cite',
+  'class', 'clear', 'color', 'cols', 'colspan', 'compact', 'contenteditable',
+  'controls', 'coords', 'data', 'datafld', 'datapagesize', 'datasrc',
+  'datetime', 'default', 'delay', 'dir', 'disabled', 'draggable', 'dynsrc',
+  'enctype', 'end', 'face', 'for', 'form', 'frame', 'galleryimg', 'gutter',
+  'headers', 'height', 'hidefocus', 'hidden', 'high', 'href', 'hreflang',
+  'hspace', 'icon', 'id', 'inputmode', 'ismap', 'keytype', 'label',
+  'leftspacing', 'lang', 'list', 'longdesc', 'loop', 'loopcount', 'loopend',
+  'loopstart', 'low', 'lowsrc', 'max', 'maxlength', 'media', 'method', 'min',
+  'multiple', 'name', 'nohref', 'noshade', 'nowrap', 'open', 'optimum',
+  'pattern', 'ping', 'point-size', 'poster', 'pqg', 'preload', 'prompt',
+  'radiogroup', 'readonly', 'rel', 'repeat-max', 'repeat-min', 'replace',
+  'required', 'rev', 'rightspacing', 'rows', 'rowspan', 'rules', 'scope',
+  'selected', 'shape', 'size', 'span', 'src', 'start', 'step', 'summary',
+  'suppress', 'tabindex', 'target', 'template', 'title', 'toppadding', 'type',
+  'unselectable', 'usemap', 'urn', 'valign', 'value', 'variable', 'volume',
+  'vspace', 'vrml', 'width', 'wrap'
+]
+
+acceptable_css_properties = [
+  'azimuth', 'background-color', 'border-bottom-color', 'border-collapse',
+  'border-color', 'border-left-color', 'border-right-color',
+  'border-top-color', 'clear', 'color', 'cursor', 'direction', 'display',
+  'elevation', 'float', 'font', 'font-family', 'font-size', 'font-style',
+  'font-variant', 'font-weight', 'height', 'letter-spacing', 'line-height',
+  'overflow', 'pause', 'pause-after', 'pause-before', 'pitch', 'pitch-range',
+  'richness', 'speak', 'speak-header', 'speak-numeral', 'speak-punctuation',
+  'speech-rate', 'stress', 'text-align', 'text-decoration', 'text-indent',
+  'unicode-bidi', 'vertical-align', 'voice-family', 'volume', 'white-space',
+  'width'
+]
+
 tag_re = re.compile(r'(<>|<[^!].*?>|<!\[CDATA\[|\]\]>|<!--.*?-->|<[!]>)',
                     re.DOTALL | re.MULTILINE)
 def balance(html, limit_words=None, ellipsis=' ...'):
@@ -319,9 +368,9 @@ def balance(html, limit_words=None, ellipsis=' ...'):
     #return html5lib.serialize(html5lib.parse(html))
     return bleach.clean(
       html,
-      tags=feedparser._HTMLSanitizer.acceptable_elements,
-      attributes=list(feedparser._HTMLSanitizer.acceptable_attributes),
-      styles=list(feedparser._HTMLSanitizer.acceptable_css_properties),
+      tags=acceptable_elements,
+      attributes=acceptable_attributes,
+      styles=acceptable_css_properties,
       strip=True
     )
 
