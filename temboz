@@ -2,6 +2,7 @@
 from __future__ import print_function
 import sys, os, datetime
 import sanity
+import tembozapp.feedfix
 
 def usage():
   print("""usage: %s [options]
