@@ -2,6 +2,9 @@
 ._*
 *.log
 rss.db
+rss.db.bak
+rss.db-shm
+rss.db-wal
 *.pyc
 ChangeLog
 *.pid

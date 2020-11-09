@@ -450,6 +450,12 @@ def feed_info(feed_uid, op=None):
       if back == '/feeds':
         return flask.redirect(back)
       notices.append('<p>Caught up successfully.</p>')
+    elif op == 'reload' and flask.request.form.get('confirm') == 'yes':
+      update.purge_reload(feed_uid)
+      back = flask.request.args.get('back', '')
+      if back == '/feeds':
+        return flask.redirect(back)
+      notices.append('<p>Purged and reloaded successfully.</p>')
   with dbop.db() as c:
     # Get feed statistics
     row = dbop.feed_info_sql(c, feed_uid).fetchone()

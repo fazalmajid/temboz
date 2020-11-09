@@ -14,11 +14,11 @@
 {% for notice in notices %}
 {{ notice|safe }}
 {% endfor %}
-{% if op == 'catchup' and request.form.get('confirm') != 'yes' %}
+{% if op in ('catchup', 'reload') and request.form.get('confirm') != 'yes' %}
 <form method="POST">
   <input type="hidden" name="back" value="{{ request.args.get('back') }}">
   <input type="hidden" name="confirm" value="yes">
-    Please confirm you want to catch up
+    Please confirm you want to {{ op }}
   <a href="{{ feed_html }}">{{ feed_title }}</a>
   <input type="submit" value="Confirm">
 </form>
@@ -86,7 +86,7 @@
 {% endif %}
   <tr class="even"><td>Refresh</td><td><a href="/feed/{{ feed_uid }}/refresh">Manually refresh</a> feed</td></tr>
   <tr class="odd"><td>Catch-up</td><td><a href="/feed/{{ feed_uid }}/catchup">Mark as read</a> {{ unread }} unread articles</td></tr>
-  <tr class="even"><td>Purge</td><td><a href="/feed/{{ feed_uid }}/catchup?reload=Y&feed_uid=">Purge and reload</a> {{ unread }} unread articles</td></tr>
+  <tr class="even"><td>Purge</td><td><a href="/feed/{{ feed_uid }}/reload">Purge and reload</a> {{ unread }} unread articles</td></tr>
   <tr class="odd"><td>Debug</td><td><a href="/feed_debug/{{ feed_uid }}">Dump the parsed feed</a>, useful for writing <a href="/rules">filtering rules</a></td></tr>
   <tr class="even"><td>Hard purge</td><td><a href="/feed/{{ feed_uid }}/hardpurge">Completely delete</a> {{ total }} articles
 {% if interesting > 0 %}

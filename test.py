@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import sys, time, os, threading, unittest, pprint, subprocess
 import feedparser
-import tembozapp.feedfix
+import tembozapp.feedfix, tembozapp.normalize
 
 class TestCase(unittest.TestCase):
   def setUp(self):
@@ -21,6 +21,15 @@ class TestCase(unittest.TestCase):
       d = f.read()
       f.close()
       feedparser.parse(d)
+
+  def test102_title_xss(self):
+      f = open('bugfeed/boingboing', 'r')
+      d = f.read()
+      f.close()
+      f = feedparser.parse(d)
+      i = [i for i in f.entries if '>' in i.title][0]
+      tembozapp.normalize.normalize(i, f, False)
+      assert '>' not in i.title
 
 def suite():
   suite = unittest.makeSuite(TestCase, 'test')

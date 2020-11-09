@@ -432,9 +432,9 @@ def balance(html, limit_words=None, ellipsis=' ...'):
   html = ''.join(out)
   return bleach.clean(
     html,
-    tags=feedparser._HTMLSanitizer.acceptable_elements,
-    attributes=list(feedparser._HTMLSanitizer.acceptable_attributes),
-    styles=list(feedparser._HTMLSanitizer.acceptable_css_properties),
+    tags=acceptable_elements,
+    attributes=acceptable_attributes,
+    styles=acceptable_css_properties,
     strip=True
   )
 
@@ -561,6 +561,13 @@ def normalize(item, f, run_filters=True):
   # title
   if 'title' not in item or not item['title'].strip():
     item['title'] = 'Untitled'
+  item['title'] = bleach.clean(
+    item['title'],
+    tags=[],
+    attributes=[],
+    styles=[],
+    strip=True
+  )
   item['title_lc'] =   lower(item['title'])
   item['title_words_exact'] =  get_words(item['title_lc'])
   item['title_words'] =  stem(item['title_words_exact'])
