@@ -360,6 +360,17 @@ acceptable_css_properties = [
   'width'
 ]
 
+def sanitize_text(text):
+  """Sanitize text fields like title or feed description for XSS"""
+  return bleach.clean(
+    text,
+    tags=[],
+    attributes=[],
+    styles=[],
+    strip=True
+  )
+  
+
 tag_re = re.compile(r'(<>|<[^!].*?>|<!\[CDATA\[|\]\]>|<!--.*?-->|<[!]>)',
                     re.DOTALL | re.MULTILINE)
 def balance(html, limit_words=None, ellipsis=' ...'):
@@ -447,6 +458,7 @@ def normalize_all(f):
 def normalize_feed(f):
   if 'description' not in f['channel']:
     f['channel']['description'] = f['channel'].get('title', '')
+  f['channel']['description'] = sanitize_text(f['channel']['description'])
   if 'modified' in f and type(f['modified']) == str:
     try:
       f['modified'] = time.strptime(f['modified'],
@@ -498,6 +510,8 @@ def basic(f, feed_xml):
             f.feed['link'] = l['href']
       except KeyError:
         pass
+  if 'title' in f.feed:
+    f.feed['title'] = sanitize_text(f.feed['title'])
   
 def dereference(url, seen=None, level=0):
   """Recursively dereference a URL"""
@@ -561,13 +575,7 @@ def normalize(item, f, run_filters=True):
   # title
   if 'title' not in item or not item['title'].strip():
     item['title'] = 'Untitled'
-  item['title'] = bleach.clean(
-    item['title'],
-    tags=[],
-    attributes=[],
-    styles=[],
-    strip=True
-  )
+  item['title'] = sanitize_text(item['title'])
   item['title_lc'] =   lower(item['title'])
   item['title_words_exact'] =  get_words(item['title_lc'])
   item['title_words'] =  stem(item['title_words_exact'])
@@ -594,6 +602,7 @@ def normalize(item, f, run_filters=True):
     item['author'] = 'Unknown'
     if 'author' in f['channel']:
       item['author'] = f['channel']['author']
+  item['author'] = sanitize_text(item['author'])
   ########################################################################
   # created amd modified dates
   if 'modified' not in item:
@@ -654,7 +663,7 @@ def normalize(item, f, run_filters=True):
         content = filter.apply(content, f, item)
     except:
       util.print_stack(black_list=['item'])
-  # balance tags like <b>...</b>
+  # balance tags like <b>...</b> and sanitize
   content = balance(content)
   content_lc = lower(content)
   # the content might have invalid 8-bit characters.
@@ -679,7 +688,8 @@ def normalize(item, f, run_filters=True):
   # intercepted by feedparser.FeedParserDict.__getitemm__ and treated as
   # special case
   if 'tags' in item and type(item['tags']) == list:
-    item['item_tags'] = set([lower(t['term']) for t in item['tags']])
+    item['item_tags'] = set([lower(sanitize_text(t['term']))
+                             for t in item['tags']])
   else:
     item['item_tags'] = []
   ########################################################################

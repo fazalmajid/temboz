@@ -74,7 +74,7 @@ def add_feed(feed_xml):
       'etag': r.headers.get('Etag'),
       'title': f.feed['title'],
       'desc': f.feed['description']
-      }
+    }
     for key, value in list(feed.items()):
       if type(value) == str:
         feed[key] = value
