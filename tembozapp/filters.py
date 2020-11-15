@@ -71,13 +71,11 @@ class KeywordRule(Rule):
   def highlight(self, html):
     if type(self.rule) in [str, str]:
       return normalize.replace_first(
-        html, self.rule,
-        '<span class="filter-highlight">%s</span>' % self.rule)
+        html, self.rule, '<span class="filter-highlight">', '</span>')
     else:
       for word in self.rule:
         html = normalize.replace_first(
-          html, word,
-          '<span class="filter-highlight">%s</span>' % word)
+          html, word, '<span class="filter-highlight">', '</span>')
       return html
   def highlight_title(self, html):
     if self.target == 'content' \

@@ -32,13 +32,21 @@ class TestCase(unittest.TestCase):
     assert '>' not in i.title
 
   def test103_highlight(self):
-    rule = tembozapp.filters.KeywordRule(
-      8670, None, 'cloud', 'title_word')
-    before = time.time()
-    print(rule.highlight_title(""""Sopra Steria gets £££££££s to manage cops' Oracle e-Biz suite in Oracle's cloud in Cleveland, UK"""))
-    after = time.time()
-    assert after - before < 1.0
-
+    uid = 0
+    for (kind, pat, s) in [
+        ('title_word', 'cloud', "Sopra Steria gets £££££££s to manage cops' Oracle e-Biz suite in Oracle's cloud in Cleveland, UK"),
+        ('title_word', 'gb', "Sopra Steria gets £££££££s to manage cops' Oracle e-Biz suite in Oracle's cloud in Cleveland, UK"),
+    ]:
+      uid += 1
+      rule = tembozapp.filters.KeywordRule(
+        uid, None, pat, kind)
+      before = time.time()
+      s2 = rule.highlight_title(s)
+      after = time.time()
+      assert after - before < 1.0
+      assert s2 != s
+      assert '<span' in s2
+    
 def suite():
   suite = unittest.makeSuite(TestCase, 'test')
   return suite

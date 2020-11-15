@@ -237,24 +237,40 @@ def lower(s):
 # XXX we should be able to replace it with a finite state automaton in C
 # XXX for better performance
 # tested with u=u'\xe9sop\xe9sopfoo\xe9sop' and unicodedata.normalize('NFD', u)
-def replace_first(s, pat, repl):
-  """Case-insensitive replacement of the first occurrent of pat in s by repl"""
+def replace_first(s, pat, mark_begin, mark_end):
+  """Case-insensitive replacement of the 1st occurrence of pat in s by repl"""
   lc = lower(s)
   pat = lower(pat)
   start = lc.find(pat)
   if start == -1:
     return s
   else:
-    # find the beginning of the pattern in the original string
-    # since we strip accent, the equivalent in the original string may be
-    # further than in the lower-case version
-    # i.e. we are assuming that len(lower(s)) <= len(s) for all Unicode s
-    while not lower(s[start:]).startswith(pat):
-      start += 1
+    # (c)translitcodec does more than simply lowercasing, so we will need
+    # to use bisection to find where in the untransliterated string the
+    # pattern can be found
+    if lower(s[start:]).find(pat) == -1:
+      # As a fast-path, use the position in the transliterated string as
+      # an initial guess of where to start, but in this case it did not work
+      start = 0
+    end = len(s)
+    while lower(s[start:]).find(pat) > 0:
+      if start == end:
+        # XXX still can't find it, this shouldn't happen
+        return s
+      mid = (start + end + 1) // 2
+      if lower(s[mid:]).find(pat) >= 0:
+        start = mid
+      else:
+        end = mid
+    # now we have the start, find the end
     end = start + len(pat)
-    while lower(s[start:end]) != pat:
-      end += 1
-    return s[:start] + repl + s[end:]
+    if lower(s[start:end]) != pat:
+      end = start
+      # the pattern may not be equal, e.g. searching for 'GB' in '£' that
+      # expands to 'gbp'
+      while not lower(s[start:end]).startswith(pat):
+        end += 1
+    return s[:start] + mark_begin + s[start:end] + mark_end + s[end:]
 
 strip_tags_re = re.compile('<[^>]*>')
 def get_words(s):
