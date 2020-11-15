@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import sys, time, os, threading, unittest, pprint, subprocess
 import feedparser
-import tembozapp.feedfix, tembozapp.normalize
+import tembozapp.feedfix, tembozapp.normalize, tembozapp.filters
 
 class TestCase(unittest.TestCase):
   def setUp(self):
@@ -23,13 +23,21 @@ class TestCase(unittest.TestCase):
       feedparser.parse(d)
 
   def test102_title_xss(self):
-      f = open('bugfeed/boingboing', 'r')
-      d = f.read()
-      f.close()
-      f = feedparser.parse(d)
-      i = [i for i in f.entries if '>' in i.title][0]
-      tembozapp.normalize.normalize(i, f, False)
-      assert '>' not in i.title
+    f = open('bugfeed/boingboing', 'r')
+    d = f.read()
+    f.close()
+    f = feedparser.parse(d)
+    i = [i for i in f.entries if '>' in i.title][0]
+    tembozapp.normalize.normalize(i, f, False)
+    assert '>' not in i.title
+
+  def test103_highlight(self):
+    rule = tembozapp.filters.KeywordRule(
+      8670, None, 'cloud', 'title_word')
+    before = time.time()
+    print(rule.highlight_title(""""Sopra Steria gets £££££££s to manage cops' Oracle e-Biz suite in Oracle's cloud in Cleveland, UK"""))
+    after = time.time()
+    assert after - before < 1.0
 
 def suite():
   suite = unittest.makeSuite(TestCase, 'test')

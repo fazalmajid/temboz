@@ -1,6 +1,6 @@
 from __future__ import print_function, division
 import sys, os, stat, logging, base64, time, imp, gzip, traceback, pprint, csv
-import threading, io
+import threading, io, cProfile
 import flask, sqlite3, string, requests, re, datetime, hmac, hashlib
 import passlib.hash
 import feedparser
@@ -62,6 +62,28 @@ class AuthWrapper:
       return [b'<h1>Moved</h1>']
     return self.application(environ, start_response)
 
+class cProfileWrapper:
+  """Middleware to dump cProfile if the query-string parameter cprofile is
+  present, its value is the name of the profile file"""
+  def __init__(self, application):
+    self.application = application
+
+  def __call__(self, environ, start_response):
+    qs = werkzeug.wsgi.get_query_string(environ)
+    fn = None
+    if 'cProfile=' in qs:
+      fn = dict(urlparse.parse_qsl(qs))['cProfile']
+      logging.info('starting profile of %r to %r' % (environ['PATH_INFO'], fn))
+      prof = cProfile.Profile()
+      prof.enable()
+    try:
+      return self.application(environ, start_response)
+    finally:
+      if fn:
+        prof.disable()
+        logging.info('saving profile to %r' % (fn,))
+        prof.dump_stats(fn)
+
 # seed for CSRF protection nonces
 nonce_seed = os.urandom(20)
 def gen_nonce(msg):
@@ -73,7 +95,7 @@ def check_nonce(msg, nonce):
   return gen_nonce(msg) == nonce
   
 app = flask.Flask(__name__)
-app.wsgi_app = AuthWrapper(app.wsgi_app)
+app.wsgi_app = AuthWrapper(cProfileWrapper(app.wsgi_app))
 app.debug = getattr(param, 'debug', False)
 if not app.debug:
   # this setting interferes with Flask debug
@@ -286,6 +308,10 @@ def view_common(do_items=True):
   # Preliminary support for offsets to read more than overload_threshold
   # articles, not fully implemented yet
   try:
+    limit = int(flask.request.args['limit'])
+  except:
+    limit = param.overload_threshold
+  try:
     offset = int(flask.request.args['offset'])
   except:
     offset = 0
@@ -304,7 +330,7 @@ def view_common(do_items=True):
     if do_items:
       # fetch and format items
       #print >> param.log, 'where =', where, 'params =', params
-      out = dbop.view_sql(c, where, order_by, params, param.overload_threshold)
+      out = dbop.view_sql(c, where, order_by, params, limit)
       if out:
         tag_dict, rows = out
       else:
