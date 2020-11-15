@@ -204,102 +204,103 @@ def view_common(do_items=True):
   #   down:     articles already flagged uninteresting
   #   filtered: filtered out articles
   #   mylos:    read-only view, e.g. http://www.majid.info/mylos/temboz.html
+  show = flask.request.args.get('show', 'unread')
+  i = update.ratings_dict.get(show, 1)
+  show = update.ratings[i][0]
+  item_desc = update.ratings[i][1]
+  # items updated after the provided julianday
+  updated = flask.request.args.get('updated', '')
+  where = update.ratings[i][3]
+  params = []
+  if updated:
+    try:
+      updated = float(updated)
+      params.append(updated)
+      # we want all changes, not just unread ones, so we can mark
+      # read articles as such in IndexedDB
+      where = 'fm_items.updated > ?'
+    except:
+      print('invalid updated=' + repr(updated), file=param.log)
+  sort = flask.request.args.get('sort', 'seen')
+  i = update.sorts_dict.get(sort, 1)
+  sort = update.sorts[i][0]
+  sort_desc = update.sorts[i][1]
+  order_by = update.sorts[i][3]
+  # optimizations for mobile devices
+  mobile = bool(flask.request.args.get('mobile', False))
+  # SQL options
+  # filter by filter rule ID
+  if show == 'filtered':
+    try:
+      params.append(int(flask.request.args['rule_uid']))
+      where += ' and item_rule_uid=?'
+    except:
+      pass
+  # filter by uid range
+  try:
+    params.append(int(flask.request.args['min']))
+    where += ' and item_uid >= ?'
+  except:
+    pass
+  try:
+    params.append(int(flask.request.args['max']))
+    where += ' and item_uid <= ?'
+  except:
+    pass
+  # Optionally restrict view to a single feed
+  feed_uid = None
+  try:
+    feed_uid = int(flask.request.args['feed_uid'])
+    params.append(feed_uid)
+    where +=  ' and item_feed_uid=?'
+  except:
+    pass
+  # search functionality using fts5 if available
+  search = flask.request.args.get('search')
+  search_in = flask.request.args.get('search_in', 'title')
+  #print >> param.log, 'search =', repr(search)
+  if search:
+    #print >> param.log, 'dbop.fts_enabled =', dbop.fts_enabled
+    if dbop.fts_enabled:
+      fterm = fts5.fts5_term(search)
+      #print >> param.log, 'FTERM =', repr(fterm)
+      where += """ and item_uid in (
+        select rowid from search where %s '%s'
+      )""" % ('item_title match' if search_in == 'title' else 'search=',
+              fterm)
+    else:
+      search = search.lower()
+      search_where = 'item_title' if search_in == 'title' else 'item_content'
+      where += ' and lower(%s) like ?' % search_where
+      if type(search) == str:
+        # XXX vulnerable to SQL injection attack
+        params.append('%%%s%%' % search.encode('ascii', 'xmlcharrefreplace'))
+      else:
+        params.append('%%%s%%' % search)
+      # Support for arbitrary where clauses in the view script. Not directly
+      # accessible from the UI
+      extra_where = flask.request.args.get('where_clause')
+      if extra_where:
+        # XXX vulnerable to SQL injection attack
+        where += ' and %s' % extra_where
+  # Preliminary support for offsets to read more than overload_threshold
+  # articles, not fully implemented yet
+  try:
+    offset = int(flask.request.args['offset'])
+  except:
+    offset = 0
+  ratings_list = ''.join(
+    '<li><a href="%s">%s</a></li>' % (change_param(show=rating_name),
+                                      rating_desc)
+    for (rating_name, rating_desc, discard, discard) in update.ratings)
+  sort_list = ''.join(
+    '<li><a href="%s">%s</a></li>' % (change_param(sort=sort_name),
+                                      sort_desc)
+    for (sort_name, sort_desc, discard, discard) in update.sorts)
+  items = []
+  # minimize work to be done while the SQLite lock is held
   with dbop.db() as c:
     filters.load_rules(c)
-    show = flask.request.args.get('show', 'unread')
-    i = update.ratings_dict.get(show, 1)
-    show = update.ratings[i][0]
-    item_desc = update.ratings[i][1]
-    # items updated after the provided julianday
-    updated = flask.request.args.get('updated', '')
-    where = update.ratings[i][3]
-    params = []
-    if updated:
-      try:
-        updated = float(updated)
-        params.append(updated)
-        # we want all changes, not just unread ones, so we can mark
-        # read articles as such in IndexedDB
-        where = 'fm_items.updated > ?'
-      except:
-        print('invalid updated=' + repr(updated), file=param.log)
-    sort = flask.request.args.get('sort', 'seen')
-    i = update.sorts_dict.get(sort, 1)
-    sort = update.sorts[i][0]
-    sort_desc = update.sorts[i][1]
-    order_by = update.sorts[i][3]
-    # optimizations for mobile devices
-    mobile = bool(flask.request.args.get('mobile', False))
-    # SQL options
-    # filter by filter rule ID
-    if show == 'filtered':
-      try:
-        params.append(int(flask.request.args['rule_uid']))
-        where += ' and item_rule_uid=?'
-      except:
-        pass
-    # filter by uid range
-    try:
-      params.append(int(flask.request.args['min']))
-      where += ' and item_uid >= ?'
-    except:
-      pass
-    try:
-      params.append(int(flask.request.args['max']))
-      where += ' and item_uid <= ?'
-    except:
-      pass
-    # Optionally restrict view to a single feed
-    feed_uid = None
-    try:
-      feed_uid = int(flask.request.args['feed_uid'])
-      params.append(feed_uid)
-      where +=  ' and item_feed_uid=?'
-    except:
-      pass
-    # search functionality using fts5 if available
-    search = flask.request.args.get('search')
-    search_in = flask.request.args.get('search_in', 'title')
-    #print >> param.log, 'search =', repr(search)
-    if search:
-      #print >> param.log, 'dbop.fts_enabled =', dbop.fts_enabled
-      if dbop.fts_enabled:
-        fterm = fts5.fts5_term(search)
-        #print >> param.log, 'FTERM =', repr(fterm)
-        where += """ and item_uid in (
-          select rowid from search where %s '%s'
-        )""" % ('item_title match' if search_in == 'title' else 'search=',
-                fterm)
-      else:
-        search = search.lower()
-        search_where = 'item_title' if search_in == 'title' else 'item_content'
-        where += ' and lower(%s) like ?' % search_where
-        if type(search) == str:
-          # XXX vulnerable to SQL injection attack
-          params.append('%%%s%%' % search.encode('ascii', 'xmlcharrefreplace'))
-        else:
-          params.append('%%%s%%' % search)
-        # Support for arbitrary where clauses in the view script. Not directly
-        # accessible from the UI
-        extra_where = flask.request.args.get('where_clause')
-        if extra_where:
-          # XXX vulnerable to SQL injection attack
-          where += ' and %s' % extra_where
-    # Preliminary support for offsets to read more than overload_threshold
-    # articles, not fully implemented yet
-    try:
-      offset = int(flask.request.args['offset'])
-    except:
-      offset = 0
-    ratings_list = ''.join(
-      '<li><a href="%s">%s</a></li>' % (change_param(show=rating_name),
-                                        rating_desc)
-      for (rating_name, rating_desc, discard, discard) in update.ratings)
-    sort_list = ''.join(
-      '<li><a href="%s">%s</a></li>' % (change_param(sort=sort_name),
-                                        sort_desc)
-      for (sort_name, sort_desc, discard, discard) in update.sorts)
-    items = []
     if do_items:
       # fetch and format items
       #print >> param.log, 'where =', where, 'params =', params
@@ -309,53 +310,53 @@ def view_common(do_items=True):
       else:
         # no data
         tag_dict, rows = {}, []
-      for row in rows:
-        (uid, creator, title, link, content, loaded, created, rated,
-         delta_created, rating, filtered_by, feed_uid, feed_title, feed_html,
-         feed_xml, feed_snr, updated_ts) = row
-        # redirect = '/redirect/%d' % uid
-        redirect = link
-        since_when = since(delta_created)
-        creator = creator.replace('"', '\'')
-        if rating == -2:
-          if filtered_by:
-            rule = filters.Rule.registry.get(filtered_by)
-            if rule:
-              title = rule.highlight_title(title)
-              content = rule.highlight_content(content)
-            elif filtered_by == 0:
-              content = '%s<br><p>Filtered by feed-specific Python rule</p>' \
-                        % content
-        if uid in tag_dict or (creator and (creator != 'Unknown')):
-          # XXX should probably escape the Unicode here
-          tag_info = ' '.join('<span class="item tag">%s</span>' % t
-                              for t in sorted(tag_dict.get(uid, [])))
-          if creator and creator != 'Unknown':
-            tag_info = '%s<span class="author tag">%s</span>' \
-                       % (tag_info, creator)
-          tag_info = '<div class="tag_info" id="tags_%s">' % uid \
-                     + tag_info + '</div>'
-          tag_call = '<a href="javascript:toggle_tags(%s);">tags</a>' % uid
-        else:
-          tag_info = ''
-          tag_call = '(no tags)'
-        items.append({
-          'uid': uid,
-          'since_when': since_when,
-          'creator': creator,
-          'loaded': loaded,
-          'feed_uid': feed_uid,
-          'title': title,
-          'feed_html': feed_html,
-          'content': content,
-          'tag_info': tag_info,
-          'tag_call': tag_call,
-          'redirect': redirect,
-          'feed_title': feed_title,
-          'feed_snr': feed_snr,
-          'updated_ts': updated_ts,
-          'rating': rating,
-        })
+  for row in rows:
+    (uid, creator, title, link, content, loaded, created, rated,
+     delta_created, rating, filtered_by, feed_uid, feed_title, feed_html,
+     feed_xml, feed_snr, updated_ts) = row
+    # redirect = '/redirect/%d' % uid
+    redirect = link
+    since_when = since(delta_created)
+    creator = creator.replace('"', '\'')
+    if rating == -2:
+      if filtered_by:
+        rule = filters.Rule.registry.get(filtered_by)
+        if rule:
+          title = rule.highlight_title(title)
+          content = rule.highlight_content(content)
+        elif filtered_by == 0:
+          content = '%s<br><p>Filtered by feed-specific Python rule</p>' \
+                    % content
+    if uid in tag_dict or (creator and (creator != 'Unknown')):
+      # XXX should probably escape the Unicode here
+      tag_info = ' '.join('<span class="item tag">%s</span>' % t
+                          for t in sorted(tag_dict.get(uid, [])))
+      if creator and creator != 'Unknown':
+        tag_info = '%s<span class="author tag">%s</span>' \
+                   % (tag_info, creator)
+      tag_info = '<div class="tag_info" id="tags_%s">' % uid \
+                 + tag_info + '</div>'
+      tag_call = '<a href="javascript:toggle_tags(%s);">tags</a>' % uid
+    else:
+      tag_info = ''
+      tag_call = '(no tags)'
+    items.append({
+      'uid': uid,
+      'since_when': since_when,
+      'creator': creator,
+      'loaded': loaded,
+      'feed_uid': feed_uid,
+      'title': title,
+      'feed_html': feed_html,
+      'content': content,
+      'tag_info': tag_info,
+      'tag_call': tag_call,
+      'redirect': redirect,
+      'feed_title': feed_title,
+      'feed_snr': feed_snr,
+      'updated_ts': updated_ts,
+      'rating': rating,
+    })
   return {
     'show': show,
     'item_desc': item_desc,
