@@ -14,6 +14,8 @@ class TestCase(unittest.TestCase):
     assert feed_url == 'https://blog.majid.info/index.xml'
     feed_url = tembozapp.autodiscovery.find('https://greenwald.substack.com')
     assert feed_url == 'https://greenwald.substack.com/feed/'
+    feed_url = tembozapp.autodiscovery.find('https://www.calnewport.com/blog/')
+    assert feed_url == 'https://www.calnewport.com/blog/feed'
 
   def test101_feedparser_exceptions(self):
     for fn in os.listdir('bugfeed'):

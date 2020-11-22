@@ -1,5 +1,5 @@
-import urllib
-import requests, html5lib
+import urllib.parse
+import requests, html5lib, feedparser
 from . import param
 
 def find(url):
@@ -29,3 +29,19 @@ def find(url):
       continue
     if 'href' in attrs:
       return urllib.parse.urljoin(base, attrs['href'])
+  # no usable autodiscovery links in the meta, try some heuristics
+  for suffix in [
+      'feed', 'feed/', 'rss', 'atom', 'feed.xml',
+      '/feed', '/feed/', '/rss', '/atom', '/feed.xml',
+      'index.atom', 'index.rss', 'index.xml', 'atom.xml', 'rss.xml',
+      '/index.atom', '/index.rss', '/index.xml', '/atom.xml', '/rss.xml',
+      '.rss', '/.rss', '?rss=1', '?feed=rss2',
+  ]:
+    try:
+      u = urllib.parse.urljoin(base, suffix)
+      f = feedparser.parse(u)
+      if 'url' in f:
+        return u
+    except:
+      pass
+    
