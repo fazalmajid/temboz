@@ -126,7 +126,9 @@
     the URL passed as its argument is that of an article that was already
     loaded. This is useful to filter out duplicates or echos from
     aggregated feeds like Digg or Slashdot, but it also slows down feed
-    processing.</p>
+    processing. You can use the function
+    <tt>link_extract(link_text, content)</tt> to extract a link from the
+    content (the text of the link must match exactly).</p>
 
     <p>Other variables may be available on a feed-by-feed basis, also
     depending on which feed standard is used (e.g. Atom vs. RSS). Check

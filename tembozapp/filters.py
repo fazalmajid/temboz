@@ -1,6 +1,6 @@
 # handle the various type of FilteringRules
 from __future__ import print_function
-import time, re, textwrap, requests
+import time, re, textwrap, requests, html5lib
 from . import normalize, param, util, dbop
 
 rules = []
@@ -131,6 +131,17 @@ def link_already(url):
     print(l and l[0], file=param.log)
     return l and l[0]
 
+def link_extract(link_text, content):
+  """Extract first link after link_text"""
+  h = html5lib.parse(content, namespaceHTMLElements=False)
+  candidates = h.findall(".//a[.='%s']" % link_text)
+  if not candidates:
+    return 'NOT MATCHED'
+  try:
+    return candidates[0].attrib['href']
+  except:
+    return 'NOT MATCHED'
+
 def dereference_content(url):
   try:
     r = requests.get(url, timeout=param.http_timeout)
@@ -202,6 +213,7 @@ class PythonRule(Rule):
     filter_dict['category'] = filter_dict['item_tags']
     # used to filter echos from sites like Digg
     filter_dict['link_already'] = link_already
+    filter_dict['link_extract'] = link_extract
     filter_dict['dereference_content'] = dereference_content
     # convenient shortcut functions
     filter_dict['title_any_words'] = curry(any, item['title_words'])
