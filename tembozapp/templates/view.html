@@ -115,6 +115,9 @@ input#stem {
       elt.classList.add("thumbsDown");
       if(kw!="" && elt.innerHTML.indexOf(kw)!=-1) {
         kw_dialog(id, kw);
+        if(document.getElementById('title' + id).innerHTML.indexOf(kw)==-1) {
+          $('.ui-dialog-content select[name="target"]').val("union");
+        }
       } else {
         var tags = $(elt).find("span.author.tag.highlighted").html();
         if(tags) {
@@ -283,6 +286,7 @@ if($("body").width() < 760) {
     <span class="ctarrow" id="ctarrow{{ i.uid }}"
           onclick="collapseToggle('{{ i.uid }}')">&#9660;&nbsp;</span>
     <a href="{{ i.redirect }}" class="headline" target="_blank"
+       id="title{{ i.uid }}"
        title="by {{ i.creator }}, cached at {{ i.loaded }}">{{i.title|safe}}</a>
     <br><a href="/feed/{{ i.feed_uid }}" title=""
            class="source screen" id="feed{{ i.uid }}">{{ i.feed_title }}</a>
