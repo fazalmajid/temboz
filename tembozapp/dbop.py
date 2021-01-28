@@ -206,7 +206,7 @@ def view_sql_no_json(c, where, sort, params, overload_threshold):
     datetime(item_rated) as item_rated,
     julianday('now') - julianday(item_created) as delta_created, item_rating,
     item_rule_uid, item_feed_uid, feed_title, feed_html, feed_xml,
-    ifnull(snr, 0) as snr, updated
+    ifnull(snr, 0) as snr, updated, feed_exempt
   from fm_items
   join fm_feeds on item_feed_uid=feed_uid
   left outer join mv_feed_stats on feed_uid=snr_feed_uid
@@ -234,7 +234,7 @@ def view_sql_json(c, where, sort, params, overload_threshold):
     datetime(item_rated) as item_rated,
     julianday('now') - julianday(item_created) as delta_created, item_rating,
     item_rule_uid, item_feed_uid, feed_title, feed_html, feed_xml,
-    ifnull(snr, 0) as snr, updated,
+    ifnull(snr, 0) as snr, updated, feed_exempt,
     json_group_array(tag_name)
   from fm_items
   join fm_feeds on item_feed_uid=feed_uid

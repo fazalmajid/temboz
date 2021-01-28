@@ -53,7 +53,7 @@ input#stem {
       }
     }
   }
-  function kw_dialog(id, kw, context) {
+  function kw_dialog(id, kw, context, exempt=false, where='title') {
     var tmpl = $("div#kw_form_tmpl");
     var body = '<div title="Add a keyword rule">' + tmpl.html() + '</div>';
     body = body.replace(/__item_uid__/, id);
@@ -94,6 +94,12 @@ input#stem {
           $('.ui-dialog-content input[name="kw"]').hide();
         }
       }
+    if(where=='union') {
+      $('.ui-dialog-content select[name="target"]').val("union");
+    }
+    if(exempt) {
+      $('.ui-dialog-content :checkbox').prop("checked", true);
+    }
     if(context) {
       $('.ui-dialog-content select[name="match"]').val(context.toLowerCase());
       $('.ui-dialog-content select[name="target"]').hide();
@@ -103,7 +109,7 @@ input#stem {
       set_context(context);                       
     }
   }
-  function hide(id) {
+  function thumbs_down(id, exempt) {
     var elt = document.getElementById('art' + id);
     if(elt.classList.contains("thumbsUp")) {
       elt.classList.remove("thumbsUp");
@@ -114,18 +120,21 @@ input#stem {
       hidden[hidden.length] = elt;
       elt.classList.add("thumbsDown");
       if(kw!="" && elt.innerHTML.indexOf(kw)!=-1) {
-        kw_dialog(id, kw);
+        // if the search terms are not in the title, default to title+contents
         if(document.getElementById('title' + id).innerHTML.indexOf(kw)==-1) {
-          $('.ui-dialog-content select[name="target"]').val("union");
+          where = 'union'
+        } else {
+          where = 'title'
         }
+        kw_dialog(id, kw, exempt=exempt, where=where);
       } else {
         var tags = $(elt).find("span.author.tag.highlighted").html();
         if(tags) {
-          kw_dialog(id, tags, 'Author');
+          kw_dialog(id, tags, 'Author', exempt=exempt);
         } else {
           var tags = $(elt).find("span.item.tag.highlighted").html();
           if(tags) {
-            kw_dialog(id, tags, 'Tag');
+            kw_dialog(id, tags, 'Tag', exempt=exempt);
           }
         }
       }
@@ -280,7 +289,7 @@ if($("body").width() < 760) {
 <div class="article" id="art{{ i.uid }}">
   <div class="headline">
     <span class="buttons">
-      <span class="down" onclick="hide('{{ i.uid }}')">&#9660;</span>
+      <span class="down" onclick="thumbs_down('{{ i.uid }}', {{ i.feed_exempt }})">&#9660;</span>
       <span class="up" onclick="highlight('{{ i.uid }}')">&#9650;</span>
     </span>
     <span class="ctarrow" id="ctarrow{{ i.uid }}"

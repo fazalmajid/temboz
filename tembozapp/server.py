@@ -1,6 +1,6 @@
 from __future__ import print_function, division
 import sys, os, stat, logging, base64, time, imp, gzip, traceback, pprint, csv
-import threading, io, cProfile
+import threading, io, cProfile, tempfile
 import flask, sqlite3, string, requests, re, datetime, hmac, hashlib
 import passlib.hash
 import feedparser
@@ -339,7 +339,7 @@ def view_common(do_items=True):
   for row in rows:
     (uid, creator, title, link, content, loaded, created, rated,
      delta_created, rating, filtered_by, feed_uid, feed_title, feed_html,
-     feed_xml, feed_snr, updated_ts) = row
+     feed_xml, feed_snr, updated_ts, feed_exempt) = row
     # redirect = '/redirect/%d' % uid
     redirect = link
     since_when = since(delta_created)
@@ -382,6 +382,7 @@ def view_common(do_items=True):
       'feed_snr': feed_snr,
       'updated_ts': updated_ts,
       'rating': rating,
+      'feed_exempt': str(feed_exempt).lower()
     })
   return {
     'show': show,
@@ -811,6 +812,20 @@ def item(uid, op):
 @app.route("/profile")
 def profile():
   import yappi, io
+  format = flask.request.args.get('format', 'ystat')
+  if format in ('pstat', 'callgrind'):
+    fd, filename = tempfile.mkstemp()
+    os.close(fd)
+    yappi.save(filename, format)
+    f = open(filename, 'rb')
+    data = f.read()
+    f.close()
+    os.unlink(filename)
+    return (data, 200 , {
+      'Content-Disposition': 'attachment; filename=yappi.%s"' % format,
+      'Content-Type': 'application/octet-stream'
+    })
+    
   if not yappi.is_running():
     yappi.start()
   s = yappi.get_func_stats()
