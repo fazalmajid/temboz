@@ -382,7 +382,7 @@ def view_common(do_items=True):
       'feed_snr': feed_snr,
       'updated_ts': updated_ts,
       'rating': rating,
-      'feed_exempt': str(feed_exempt).lower()
+      'feed_exempt': str(bool(feed_exempt)).lower()
     })
   return {
     'show': show,

@@ -53,7 +53,7 @@ input#stem {
       }
     }
   }
-  function kw_dialog(id, kw, context, exempt=false, where='title') {
+  function kw_dialog(id, kw, context, exempt, where) {
     var tmpl = $("div#kw_form_tmpl");
     var body = '<div title="Add a keyword rule">' + tmpl.html() + '</div>';
     body = body.replace(/__item_uid__/, id);
@@ -86,14 +86,14 @@ input#stem {
       var context = $(this).val();
       set_context(context);
     })
-      if(kw.search(" ") != -1 || kw.search("-") != -1) {
-        $('.ui-dialog-content select[name="match"]').val('phrase_lc');
-        set_context("phrase_lc");
-      } else {
-        if (!context) {
-          $('.ui-dialog-content input[name="kw"]').hide();
-        }
+    if(kw.search(" ") != -1 || kw.search("-") != -1) {
+      $('.ui-dialog-content select[name="match"]').val('phrase_lc');
+      set_context("phrase_lc");
+    } else {
+      if (!context) {
+        $('.ui-dialog-content input[name="kw"]').hide();
       }
+    }
     if(where=='union') {
       $('.ui-dialog-content select[name="target"]').val("union");
     }
@@ -126,15 +126,15 @@ input#stem {
         } else {
           where = 'title'
         }
-        kw_dialog(id, kw, exempt=exempt, where=where);
+        kw_dialog(id, kw, false, exempt, where);
       } else {
         var tags = $(elt).find("span.author.tag.highlighted").html();
         if(tags) {
-          kw_dialog(id, tags, 'Author', exempt=exempt);
+          kw_dialog(id, tags, 'Author', exempt);
         } else {
           var tags = $(elt).find("span.item.tag.highlighted").html();
           if(tags) {
-            kw_dialog(id, tags, 'Tag', exempt=exempt);
+            kw_dialog(id, tags, 'Tag', exempt);
           }
         }
       }
