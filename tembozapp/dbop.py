@@ -318,9 +318,9 @@ def share(c):
 
 def feeds(db, sort_key, order):
   assert sort_key == '(unread > 0) DESC, snr' or sort_key in {
-      'feed_ title', 'last_modified', 'unread', 'filtered', 'interesting',
-      'snr', 'total'
-  }
+    'feed_title', 'lower(feed_title)', 'last_modified', 'unread', 'filtered',
+    'interesting', 'snr', 'total'
+  }, repr(sort_key)
   assert order in ('ASC', 'DESC')
   c = db.cursor()
   c.execute("""select feed_uid, feed_title, feed_html, feed_xml,
