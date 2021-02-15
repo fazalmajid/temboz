@@ -297,7 +297,7 @@ if($("body").width() < 760) {
     <a href="{{ i.redirect }}" class="headline" target="_blank"
        id="title{{ i.uid }}"
        title="by {{ i.creator }}, cached at {{ i.loaded }}">{{i.title|safe}}</a>
-    <br><a href="/feed/{{ i.feed_uid }}" title=""
+    <br><a href="/feed/{{ i.feed_uid }}" title="" target="_new"
            class="source screen" id="feed{{ i.uid }}">{{ i.feed_title }}</a>
     <a href="{{ i.feed_html }}" title="" class="source print"
        id="feedprint{{ i.uid }}">{{ i.feed_title }}</a>
