@@ -86,7 +86,7 @@ input#stem {
       var context = $(this).val();
       set_context(context);
     })
-    if(kw.search(" ") != -1 || kw.search("-") != -1) {
+    if(kw.search(/[\s-_.,/?;:'"[\]\\|!@#$%&*()=+\^]/) != -1) {
       $('.ui-dialog-content select[name="match"]').val('phrase_lc');
       set_context("phrase_lc");
     } else {
