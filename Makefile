@@ -23,13 +23,14 @@ sync-js:
 	(cd spool; wget -N https://raw.githubusercontent.com/jeresig/jquery.hotkeys/master/jquery.hotkeys.js)
 	(cd spool; wget -N https://unpkg.com/dexie@latest/dist/dexie.js)
 	(cd spool; wget -N https://raw.githubusercontent.com/janl/mustache.js/master/mustache.js)
+#	(cd spool; wget -N https://unpkg.com/colcade/colcade.js)
 
 js: $(JUI)/external/jquery/jquery*.js spool/jquery.form.js $(JUI)/jquery-ui.js spool/jquery.hotkeys.meta.js tembozapp/static/specific.js #spool/dexie.js
 	cat $^ \
 	| $(JSMIN) > tembozapp/static/temboz.js
 	cp spool/mustache.js tembozapp/static
 	#./temboz --kill
-	(svcadm restart temboz:fazal;svcadm restart nginx)
+
 changelog:
 	cvs2cl.pl --tags -g -q
 

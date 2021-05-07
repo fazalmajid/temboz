@@ -48,8 +48,12 @@
     }
     function yappi(event) {
       event.stopPropagation();
-      var op = this.id.substring(6);
-      $.get('/xmlfeedback/yappi/' + rand() + '/' + op, load_yappi);
+        var op = this.id.substring(6);
+        if (op=="pstat"||op=="callgrind") {
+          $.get('/profile?random=' + rand() + '&format=' + op);
+        } else {
+          $.get('/xmlfeedback/yappi/' + rand() + '/' + op, load_yappi);
+        }
       return false;
     }
     function load_yappi() {
@@ -73,7 +77,7 @@
       dg = new Dygraph(document.getElementById("stats"), "/stats", opts);
     }
     $(document).ready(function() {
-      $("form.yappi").hide();
+      //$("form.yappi").hide();
       $("div#settings").tabs(
         {
     {#    activate: function(event, ui) { #}
@@ -273,6 +277,14 @@
     </form>
     <form id="yappi_refresh">
       <input type="submit" value="Refresh Yappi stats">
+    </form>
+    <form id="yappi_pstat" class="yappi"
+          method="GET" action="/profile?format=pstat">
+      <input type="submit" value="Export pstat">
+    </form>
+    <form id="yappi_callgrind" class="yappi"
+          method="GET" action="/profile?format=callgrind">
+      <input type="submit" value="Export callgrind">
     </form>
     <div id="yappi_data"></div>
   </div>

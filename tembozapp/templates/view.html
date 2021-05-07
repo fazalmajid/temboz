@@ -193,26 +193,34 @@ input#stem {
   function toggle(item) {
     document.items[item].checked = !document.items[item].checked;
   }
-  function assign_column() {
-    var height = $(this).height();
-    var left = $("div#col1").height();
-    var right = $("div#col2").height();
-
-    if(Math.abs(left + height - right) > Math.abs(right + height - left)) {
-      $(this).appendTo("div#col2");
-    } else {
-      $(this).appendTo("div#col1");
-    }
-  }
   $(document).ready(function() {
     $("span.tag").click(toggle_tag);
     $(document).bind("keydown", "ctrl+z", undo);
     $(document).bind("keydown", "meta+z", undo);
     $(document).bind("keydown", "ctrl+meta+z", undo);
     {% block GET_ARTICLES %}
-    var articles = $("div.article");
     if($("body").width() >= 760) {
-      articles.each(assign_column);
+      var articles = document.getElementsByClassName("article");
+      var col1 = document.getElementById("col1");
+      var left = 0;
+      var col1items = Array();
+      var col2 = document.getElementById("col2");
+      var right = 0;
+      var col2items = Array();
+      var i;
+      for(i=0; i<articles.length; i++) {
+        var item = articles[i];
+        var height = item.offsetHeight;
+        if(Math.abs(left + height - right) > Math.abs(right + height - left)) {
+          col2items[col2items.height] = item;
+          right = right + height;
+        } else {
+          col1items[col1items.height] = item;
+          left = left + height;
+        }
+      }
+      col1.append(...col1items);
+      col2.append(...col2items);
     }
     {% endblock GET_ARTICLES %}
     refresh_counter();
