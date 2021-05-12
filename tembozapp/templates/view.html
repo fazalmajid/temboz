@@ -209,13 +209,14 @@ input#stem {
       var col2items = Array();
       var i;
       for(i=0; i<articles.length; i++) {
+        /* distribute elements between the two columns */
         var item = articles[i];
         var height = item.offsetHeight;
         if(Math.abs(left + height - right) > Math.abs(right + height - left)) {
-          col2items[col2items.height] = item;
+          col2items[col2items.length] = item;
           right = right + height;
         } else {
-          col1items[col1items.height] = item;
+          col1items[col1items.length] = item;
           left = left + height;
         }
       }
