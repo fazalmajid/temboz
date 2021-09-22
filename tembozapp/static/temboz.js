@@ -1835,8 +1835,10 @@ if(mapPoint){var trigger;if(!shift&&!meta&&!ctrl&&!alt){trigger=mapPoint[special
 else{var modif='';if(alt)modif+='alt+';if(meta)modif+='meta+';if(ctrl)modif+='ctrl+';if(shift)modif+='shift+';trigger=mapPoint[modif+special];if(!trigger){if(character){trigger=mapPoint[modif+character]||mapPoint[modif+hotkeys.shiftNums[character]]||(modif==='shift+'&&mapPoint[hotkeys.shiftNums[character]]);}}}
 if(trigger){var result=false;for(var x=0;x<trigger.length;x++){if(trigger[x].disableInInput){var elem=jQuery(event.target);if(jTarget.is("input")||jTarget.is("textarea")||jTarget.is("select")||elem.is("input")||elem.is("textarea")||elem.is("select")){return true;}}
 result=result||trigger[x].cb.apply(this,[event]);}
-return result;}}}};window.hotkeys=hotkeys;return jQuery;})(jQuery);function get_selection(){var userSelection;userSelection="";if(window.getSelection){userSelection=String(window.getSelection());}else if(document.selection){userSelection=document.selection.createRange().text;}
+return result;}}}};window.hotkeys=hotkeys;return jQuery;})(jQuery);var saved_selection="";function raw_selection(){var userSelection;userSelection="";if(window.getSelection){userSelection=String(window.getSelection());}else if(document.selection){userSelection=document.selection.createRange().text;}
 return $.trim(userSelection);}
+function save_selection(){saved_selection=raw_selection();}
+function get_selection(){var s=raw_selection();if(s==""&&saved_selection!="")s=saved_selection;return s;}
 function capitalize(s){return s.charAt(0).toUpperCase()+s.substring(1);}
 function place_popup(){var popup=$("div#popup_"+this.id);this.popup=popup;}
 function hide_popups(){$(document).unbind("click",hide_popups);$("div.popup").hide();}
@@ -1846,4 +1848,4 @@ function rand(){return Math.random().toString().substring(8);}
 $.widget("ui.tabs",$.ui.tabs,{_isLocal:function(anchor){if(!anchor.hash.length){return false;}
 var urlParts=["origin","pathname","search"];var isLocal=true;$.each(urlParts,function(urlPart){var anchorValue=anchor[urlPart];var locationValue=location[urlPart];try{anchorValue=decodeURIComponent(anchorValue);}catch(error){}
 try{locationValue=decodeURIComponent(locationValue);}catch(error){}
-if(anchorValue!==locationValue){isLocal=false;return false;}});return isLocal;}});$(function(){$("input#search").focus(function(){$("select.hidden").show();});});
+if(anchorValue!==locationValue){isLocal=false;return false;}});return isLocal;}});$(function(){$("input#search").focus(function(){$("select.hidden").show();});document.body.addEventListener("touchend",function(e){save_selection();},false);});
