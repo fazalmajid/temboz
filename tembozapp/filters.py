@@ -1,7 +1,7 @@
 # handle the various type of FilteringRules
 from __future__ import print_function
 import time, re, textwrap, requests, html5lib
-from . import normalize, param, util, dbop
+from . import normalize, param, util, urldedup
 
 rules = []
 feed_rules = {}
@@ -123,13 +123,8 @@ class AuthorRule(Rule):
 ########################################################################
 # functions used inside Python rules
 def link_already(url):
-  with dbop.db() as db:
-    print('checking for deja-vu for', url, end=' ', file=param.activity)
-    c = db.execute("select count(*) from fm_items where item_link like ?",
-               [url + '%'])
-    l = c.fetchone()
-    print(l and l[0], file=param.log)
-    return l and l[0]
+  print('checking for deja-vu for', url, end=' ', file=param.activity)
+  return urldedup.exists(url)
 
 def link_extract(link_text, content):
   """Extract first link after link_text"""

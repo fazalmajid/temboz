@@ -11,6 +11,7 @@ except ImportError:
   import urlparse
 
 from . import param, normalize, util, transform, filters, dbop, autodiscovery
+from . import urldedup
 import imp
 
 #socket.setdefaulttimeout(10)
@@ -207,9 +208,16 @@ def update_feed_dupcheck(feed_uid, dupcheck):
 def update_item(item_uid, link, title, content):
   item_uid = int(item_uid)
   with dbop.db() as db:
-    db.execute("""update fm_items set item_link=?, item_title=?, item_content=?
+    c = db.cursor()
+    c.execute("""select item_link from fm_items where item_uid=?""",
+               [item_uid])
+    prev = c.fetchone()
+    if not prev:
+      return
+    c.execute("""update fm_items set item_link=?, item_title=?, item_content=?
     where item_uid=?""", [link, title, content, item_uid])
     db.commit()
+    urldedup.rename(prev[0], link)
 
 def title_url(feed_uid):
   feed_uid = int(feed_uid)
@@ -529,13 +537,14 @@ Returns a tuple (number of items added unread, number of filtered items)"""
       link = normalize.dereference(link)
       try:
         c.execute("""insert into fm_items (item_feed_uid, item_guid,
-        item_created,   item_modified, item_link, item_md5hex,
-        item_title, item_content, item_creator, item_rating, item_rule_uid)
+        item_created, item_modified, item_link, item_md5hex, item_title,
+        item_content, item_creator, item_rating, item_rule_uid)
         values
         (?, ?, julianday(?), julianday(?), ?, ?, ?, ?, ?, ?, ?)""",
                   [feed_uid, guid, created, modified, link,
                    hashlib.md5(content.encode('UTF-8')).hexdigest(),
                    title, content, author, skip, filtered_by])
+        urldedup.add(link)
         # if we have tags, insert them
         # note: feedparser.py handles 'category' as a special case, so we
         # need to work around that to get to the data
@@ -575,15 +584,16 @@ def notification(db, c, feed_uid, title, content, link=None):
   # do nothing if the link is clicked
   if link is None:
     link = '/feed/%d' % feed_uid
-  c.execute("""insert into fm_items (item_feed_uid, item_guid,
-  item_created, item_modified, item_link, item_md5hex,
-  item_title, item_content, item_creator, item_rating, item_rule_uid)
+  c.execute("""insert into fm_items (item_feed_uid, item_guid, item_created,
+  item_modified, item_link, item_md5hex, item_title, item_content,
+  item_creator, item_rating, item_rule_uid)
   values
-  (?, ?, julianday('now'), julianday('now'), ?, ?,
-  ?, ?, ?, 0, NULL)""",
-            [feed_uid, guid, link, hash,
-             title, content, 'Temboz notifications'])
+  (?, ?, julianday('now'), julianday('now'), ?, ?, ?, ?, ?, 0, NULL)""",
+            [feed_uid, guid, link, hash, title, content,
+             'Temboz notifications'])
   db.commit()
+  # no point in tracking internal URLs
+  #urldedup.add(link)
 
 def cleanup(db=None, c=None):
   """garbage collection - see param.py
