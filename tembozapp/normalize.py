@@ -529,21 +529,25 @@ def basic(f, feed_xml):
   if 'title' in f.feed:
     f.feed['title'] = sanitize_text(f.feed['title'])
   
-def dereference(url, seen=None, level=0):
+def dereference(url, seen=None, level=0, jar=None):
   """Recursively dereference a URL"""
   # this set is used to detect redirection loops
   if seen is None:
     seen = set([url])
   else:
     seen.add(url)
+  if jar is None:
+    jar = requests.cookies.RequestsCookieJar()
   # stop recursion if it is too deep
   if level > 16:
     return url
   try:
-    r = requests.get(url, allow_redirects=False, timeout=param.http_timeout)
+    r = requests.get(url, allow_redirects=False, timeout=param.http_timeout,
+                     cookies=jar)
     if not r.is_redirect:
       return url
     else:
+      jar.update(r.cookies)
       # break a redirection loop if it occurs
       redir = r.headers.get('Location')
       if True not in [redir.startswith(p)
@@ -557,7 +561,7 @@ def dereference(url, seen=None, level=0):
       except UnicodeDecodeError:
         return url
       # there might be several levels of redirection
-      return dereference(redir, seen, level + 1)
+      return dereference(redir, seen, level + 1, jar)
   except (requests.exceptions.RequestException, ValueError, socket.error):
     return url
   except:
