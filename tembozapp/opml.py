@@ -1,4 +1,5 @@
-import sys, os, re, xml.etree.ElementTree, dbop
+import sys, os, re, xml.etree.ElementTree
+from . import dbop
 
 def parse_opml(opml_file):
   try:
