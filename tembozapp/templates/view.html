@@ -155,6 +155,14 @@ input#stem {
   function toggle_tags(id) {
     $("div#tags_" + id).toggle();
   }
+  function collapse_all() {
+    $(".content").hide();
+    $(".ctarrow").html("&#9654;&nbsp;");
+  }
+  function uncollapse_all() {
+    $(".content").show();
+    $(".ctarrow").html("&#9660;&nbsp;");
+  }
   function toggle_tag() {
     $(this).toggleClass("highlighted");
   }
@@ -247,6 +255,8 @@ input#stem {
   <ul>
     <li><a href="javascript:unhide_last();">Undo last hide (Ctrl-Z)</a></li>
     <li><a href="javascript:unhide_all();">Undo all hides</a></li>
+    <li><a href="javascript:collapse_all();">Collapse all</a></li>
+    <li><a href="javascript:uncollapse_all();">Undo collapse all</a></li>
   </ul>
 </li>
 {% endblock CONTEXT_MENU %}
