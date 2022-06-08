@@ -250,4 +250,8 @@ filter_list = [
             '<a href=\'http://dynamic[^\']*.anandtech.com/www/delivery/'
             '.*?</[ap]>',
             re.MULTILINE + re.DOTALL),
-  ]
+  # TechRadar
+  degunk.Limit('techradar.com',
+               degunk.Re('<div class="product".*?</div>',
+                         re.MULTILINE + re.DOTALL))
+]

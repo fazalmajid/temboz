@@ -9,6 +9,16 @@ class Filter:
   def apply(self, content, feed, item):
     raise NotImplementedError
 
+# wrapper to limit a filter to only feeds matching a URL
+class Limit(Filter):
+  def __init__(self, url, filter):
+    self.url = url
+    self.filter = filter
+  def apply(self, content, feed, item):
+    if self.url not in item.get('link', ''):
+      return content
+    return self.filter.apply(content, feed, item)
+
 class Re(Filter):
   """Strip text, or rewrite a substitution for it, using regular expressions
   regex: regex to search for in article text
