@@ -270,17 +270,9 @@ def catch_up(feed_uid):
     where item_feed_uid=? and item_rating=0""", [feed_uid])
     db.commit()
 
-
-def purge(c, feed_uid):
+def purge_items(c, feed_uid):
   c.execute("delete from fm_items where item_feed_uid=? and item_rating=0",
             [feed_uid])
-  c.execute("""delete from fm_tags
-  where exists (
-  select item_uid from fm_items
-  where item_uid=tag_item_uid and item_feed_uid=? and item_rating=0
-  )""", [feed_uid])
-  c.execute("""update fm_feeds set feed_modified=NULL, feed_etag=NULL
-  where feed_uid=?""", [feed_uid])
     
 def purge_reload(feed_uid):
   imp.reload(transform)
@@ -291,7 +283,9 @@ def purge_reload(feed_uid):
     c = db.cursor()
     # refresh filtering rules
     filters.load_rules(c)
-    purge(c, feed_uid)
+    purge_items(c, feed_uid)
+    c.execute("""update fm_feeds set feed_modified=NULL, feed_etag=NULL
+    where feed_uid=?""", [feed_uid])
     c.execute("""select feed_xml from fm_feeds
     where feed_uid=?""", [feed_uid])
     feed_xml = c.fetchone()[0]
@@ -632,9 +626,15 @@ def cleanup(db=None, c=None):
   print('recreating SNR materialized view', file=param.log)
   dbop.snr_mv(db, c)
   print('deleting unused tags', file=param.log)
-  c.execute("""delete from fm_tags
-  where not exists(
-    select item_uid from fm_items where item_uid=tag_item_uid
+  c.execute("""with bad as (
+    select tag_item_uid, tag_name
+    from fm_tags
+    left join fm_items on tag_item_uid=item_uid
+    where item_uid is null
+  )
+  delete from fm_tags
+  where (tag_item_uid, tag_name) in (
+    select tag_item_uid, tag_name from bad
   )""")
   db.commit()
   print('deleting unused tags', file=param.log)

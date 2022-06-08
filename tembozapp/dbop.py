@@ -5,6 +5,7 @@ from . import param
 def db():
   conn = sqlite3.connect('rss.db', 60.0)
   conn.row_factory = sqlite3.Row
+  conn.execute('PRAGMA foreign_keys = ON')
   return conn
 
 def rebuild_v_feed_stats(c):
