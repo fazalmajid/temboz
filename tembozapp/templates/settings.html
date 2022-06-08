@@ -50,7 +50,15 @@
       event.stopPropagation();
         var op = this.id.substring(6);
         if (op=="pstat"||op=="callgrind") {
-          $.get('/profile?random=' + rand() + '&format=' + op);
+          // Content-Disposition is not honored from within a XmlHttpRequest
+          // so we create a bogus iframe instead
+          var i = document.createElement("iframe");
+          i.style.position = "absolute";
+          i.style.left = "-10000px";
+          i.style.width = "1px";
+          i.style.height = "1px";
+          i.src = '/profile?random=' + rand() + '&format=' + op;
+          document.body.appendChild(i);
         } else {
           $.get('/xmlfeedback/yappi/' + rand() + '/' + op, load_yappi);
         }

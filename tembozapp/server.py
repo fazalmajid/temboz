@@ -816,13 +816,14 @@ def profile():
   if format in ('pstat', 'callgrind'):
     fd, filename = tempfile.mkstemp()
     os.close(fd)
-    yappi.save(filename, format)
+    s = yappi.get_func_stats()
+    s.save(filename, format)
     f = open(filename, 'rb')
     data = f.read()
     f.close()
     os.unlink(filename)
     return (data, 200 , {
-      'Content-Disposition': 'attachment; filename=yappi.%s"' % format,
+      'Content-Disposition': 'attachment; filename="yappi.%s"' % format,
       'Content-Type': 'application/octet-stream'
     })
     
