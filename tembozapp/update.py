@@ -270,6 +270,18 @@ def catch_up(feed_uid):
     where item_feed_uid=? and item_rating=0""", [feed_uid])
     db.commit()
 
+
+def purge(c, feed_uid):
+  c.execute("delete from fm_items where item_feed_uid=? and item_rating=0",
+            [feed_uid])
+  c.execute("""delete from fm_tags
+  where exists (
+  select item_uid from fm_items
+  where item_uid=tag_item_uid and item_feed_uid=? and item_rating=0
+  )""", [feed_uid])
+  c.execute("""update fm_feeds set feed_modified=NULL, feed_etag=NULL
+  where feed_uid=?""", [feed_uid])
+    
 def purge_reload(feed_uid):
   imp.reload(transform)
   feed_uid = int(feed_uid)
@@ -279,15 +291,7 @@ def purge_reload(feed_uid):
     c = db.cursor()
     # refresh filtering rules
     filters.load_rules(c)
-    c.execute("delete from fm_items where item_feed_uid=? and item_rating=0",
-              [feed_uid])
-    c.execute("""delete from fm_tags
-    where exists (
-      select item_uid from fm_items
-      where item_uid=tag_item_uid and item_feed_uid=? and item_rating=0
-    )""", [feed_uid])
-    c.execute("""update fm_feeds set feed_modified=NULL, feed_etag=NULL
-    where feed_uid=?""", [feed_uid])
+    purge(c, feed_uid)
     c.execute("""select feed_xml from fm_feeds
     where feed_uid=?""", [feed_uid])
     feed_xml = c.fetchone()[0]

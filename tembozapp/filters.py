@@ -8,9 +8,15 @@ feed_rules = {}
 loaded = False
 
 def evaluate_rules(item, feed, feed_uid, exempt):
+  # item.__getitem__ is expensive so cache the most frequently used members
+  cached = dict()
+  for target in ('title', 'content'):
+    for suffix in ('', '_words', '_words_exact', '_lc'):
+      cached[target + suffix] = item[target + suffix]
+  # now loop through the applicable rules
   for rule in rules * (not exempt) + feed_rules.get(feed_uid, list()):
     try:
-      if rule.test(item, feed, feed_uid):
+      if rule.test(item, feed, feed_uid, cached):
         return True, rule
     except:
       util.print_stack(['f'])
@@ -48,7 +54,7 @@ class KeywordRule(Rule):
   def __str__(self):
     return '<KeywordRule %s %s %s %s>' % (self.uid, self.target, self.match,
                                           self.rule)
-  def test(self, item, feed, feed_uid):
+  def test(self, item, feed, feed_uid, cached):
     if self.check_expires():
       return False
     if self.match in ['word', 'all']:
@@ -59,7 +65,7 @@ class KeywordRule(Rule):
       suffix = '_lc'
     else:
       suffix = ''
-    target = item[self.target + suffix]
+    target = cached[self.target + suffix]
     if self.match in ('word', 'exactword'):
       return bool(target.intersection(self.rule))
     elif self.match == 'exactword':
@@ -95,7 +101,7 @@ class TagRule(Rule):
     self.rule = normalize.lower(rule)
   def __str__(self):
     return '<TagRule %s %s>' % (self.uid, self.rule)
-  def test(self, item, feed, feed_uid):
+  def test(self, item, feed, feed_uid, cached):
     if self.check_expires():
       return False
     for tag in item['item_tags']:
@@ -112,7 +118,7 @@ class AuthorRule(Rule):
     self.rule = rule
   def __str__(self):
     return '<AuthorRule %s %s>' % (self.uid, self.rule)
-  def test(self, item, feed, feed_uid):
+  def test(self, item, feed, feed_uid, cached):
     if self.check_expires():
       return False
     return self.rule == normalize.lower(item['author'])
@@ -194,7 +200,7 @@ class PythonRule(Rule):
     self.code = compile(rule, 'rule' + repr(uid), 'eval')
   def __str__(self):
     return '<PythonRule %s %s>' % (self.uid, normalize_rule(self.rule))
-  def test(self, item, feed, feed_uid):
+  def test(self, item, feed, feed_uid, cached):
     if self.check_expires():
       return False
     filter_dict = dict()
