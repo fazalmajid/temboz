@@ -7,7 +7,7 @@
     <script language="JavaScript" src="/static/temboz.js"></script>
     <script src="/static/dygraph-combined.js"></script>
     <style type="text/css">
-    form.yappi, form#yappi_refresh, form#debug {
+    form.yappi, form#yappi_refresh_tsub, form#yappi_refresh_ttot, form#debug {
       display: inline;
     }
     .yappi {
@@ -49,7 +49,7 @@
     function yappi(event) {
       event.stopPropagation();
         var op = this.id.substring(6);
-        if (op=="pstat"||op=="callgrind") {
+        if (op == "pstat" || op == "callgrind") {
           // Content-Disposition is not honored from within a XmlHttpRequest
           // so we create a bogus iframe instead
           var i = document.createElement("iframe");
@@ -65,7 +65,13 @@
       return false;
     }
     function load_yappi() {
-      $.get('/profile?rand=' + rand(), function(data) {
+      order = this.id;
+      if (this.id == "yappi_refresh_ttot") {
+        order = "ttot";
+      } else {
+        order = "tsub";
+      }        
+      $.get('/profile?rand=' + rand() + "&sort=" + order, function(data) {
         $("div#yappi_data").html(data);
       });
       return false;
@@ -92,7 +98,8 @@
     {#    }                               #}
       });
       $("form.yappi").submit(yappi);
-      $("form#yappi_refresh").submit(load_yappi);
+      $("form#yappi_refresh_tsub").submit(load_yappi);
+      $("form#yappi_refresh_ttot").submit(load_yappi);
       load_stats();
     });
     init_popups();
@@ -278,16 +285,19 @@
       <input type="submit" value="Start Yappi (CPU time)">
     </form>
     <form id="yappi_start_wall" class="yappi">
-      <input type="submit" value="Start Yappi (Wall clock time)">
+      <input type="submit" value="(Wall clock time)">
     </form>
     <form id="yappi_stop" class="yappi">
       <input type="submit" value="Suspend Yappi">
     </form>
     <form id="yappi_clear_stats" class="yappi">
-      <input type="submit" value="Reset Yappi stats">
+      <input type="submit" value="Reset stats">
     </form>
-    <form id="yappi_refresh">
-      <input type="submit" value="Refresh Yappi stats">
+    <form id="yappi_refresh_tsub">
+      <input type="submit" value="Refresh (self time)">
+    </form>
+    <form id="yappi_refresh_ttot">
+      <input type="submit" value="Refresh (total time)">
     </form>
     <form id="yappi_pstat" class="yappi"
           method="GET" action="/profile?format=pstat">
