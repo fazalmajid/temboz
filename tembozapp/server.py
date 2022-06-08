@@ -416,8 +416,14 @@ def ajax(op, rand, arg):
       return '<?xml version="1.0"?><nothing />'
     else:
       import yappi
-      assert arg in ['start', 'stop', 'clear_stats']
-      getattr(yappi, arg)()
+      assert arg in ['start_cpu', 'start_wall', 'stop', 'clear_stats']
+      if arg.startswith('start'):
+        yappi.stop()
+        yappi.clear_stats()
+        yappi.set_clock_type(arg[6:])
+        yappi.start()
+      else:
+        getattr(yappi, arg)()
   return '<?xml version="1.0"?><nothing />'
   
 @app.route("/robots.txt")
