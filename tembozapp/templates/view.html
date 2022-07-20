@@ -206,6 +206,8 @@ input#stem {
     $(document).bind("keydown", "ctrl+z", undo);
     $(document).bind("keydown", "meta+z", undo);
     $(document).bind("keydown", "ctrl+meta+z", undo);
+    $(document).bind("keydown", "ctrl+q", collapse_all);
+    $(document).bind("keydown", "ctrl+shift+q", uncollapse_all);
     {% block GET_ARTICLES %}
     if($("body").width() >= 760) {
       var articles = document.getElementsByClassName("article");
@@ -255,8 +257,8 @@ input#stem {
   <ul>
     <li><a href="javascript:unhide_last();">Undo last hide (Ctrl-Z)</a></li>
     <li><a href="javascript:unhide_all();">Undo all hides</a></li>
-    <li><a href="javascript:collapse_all();">Collapse all</a></li>
-    <li><a href="javascript:uncollapse_all();">Undo collapse all</a></li>
+    <li><a href="javascript:collapse_all();">Collapse all (Ctrl-Q)</a></li>
+    <li><a href="javascript:uncollapse_all();">Undo collapse all (Ctrl-Shift-Q)</a></li>
   </ul>
 </li>
 {% endblock CONTEXT_MENU %}
