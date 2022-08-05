@@ -3,7 +3,7 @@ from __future__ import print_function
 import sys, time, re, codecs, string, traceback, socket, hashlib
 import unicodedata, requests, feedparser
 from . import param, transform, util, porter2
-import bleach
+import bleach, bleach.css_sanitizer
 
 try:
   import html.entities as htmlentitydefs
@@ -376,13 +376,20 @@ acceptable_css_properties = [
   'width'
 ]
 
+css_none = bleach.css_sanitizer.CSSSanitizer(
+  allowed_css_properties=[]
+)
+css_san = bleach.css_sanitizer.CSSSanitizer(
+  allowed_css_properties=acceptable_css_properties
+)
+
 def sanitize_text(text):
   """Sanitize text fields like title or feed description for XSS"""
   return bleach.clean(
     text,
     tags=[],
     attributes=[],
-    styles=[],
+    css_sanitizer=css_none,
     strip=True
   )
   
@@ -397,7 +404,7 @@ def balance(html, limit_words=None, ellipsis=' ...'):
       html,
       tags=acceptable_elements,
       attributes=acceptable_attributes,
-      styles=acceptable_css_properties,
+      css_sanitizer=css_san,
       strip=True
     )
 
@@ -461,7 +468,7 @@ def balance(html, limit_words=None, ellipsis=' ...'):
     html,
     tags=acceptable_elements,
     attributes=acceptable_attributes,
-    styles=acceptable_css_properties,
+    css_sanitizer=css_san,
     strip=True
   )
 

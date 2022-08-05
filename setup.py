@@ -23,7 +23,7 @@ setuptools.setup(
     'sgmllib3k',
     'feedparser>=6.0.2',
     'werkzeug>=1.0.1',
-    'bleach>=3.2.1',
+    'bleach>=5.0.1',
     'yappi'
   ],
   description='The Temboz RSS/Atom feed reader and aggregator.',

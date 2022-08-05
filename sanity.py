@@ -16,3 +16,6 @@ for i in f.entries:
   #pprint.pprint(i)
   assert '<script>' not in repr(i), \
     'Refusing to start Temboz because feedparser is not sanitizing properly'
+
+assert bleach.__version__ >= '5', \
+  'Temboz now requires Bleach 5 or later, which made breaking API changes'
