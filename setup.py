@@ -7,7 +7,7 @@ setuptools.setup(
   name='temboz',
   author='Fazal Majid',
   author_email='python@sentfrom.com',
-  version='4.5.6',
+  version='4.6.0',
   url='https://github.com/fazalmajid/temboz',
   #package_dir={'': 'src'},
   packages=['tembozapp'] + setuptools.find_packages(),
@@ -34,5 +34,7 @@ setuptools.setup(
     'Programming Language :: Python',
     'Programming Language :: Python :: 3.8',
     'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
   ],
 )
