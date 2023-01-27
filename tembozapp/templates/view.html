@@ -269,8 +269,12 @@ input#stem {
   <form name="kw_form" method="POST" action="/rule/add">
     <table>
       <tr><td>Keyword</td>
-      <td><input name="kw" id="kw" size="30">
-          <input name="stem" id="stem" size="30"></td></tr>
+        <td>
+          <input name="kw" id="kw" autocomplete="off" autocorrect="off"
+                 autocapitalize="off" spellcheck="false" size="30">
+          <input name="stem" id="stem" autocomplete="off" autocorrect="off"
+                 autocapitalize="off" spellcheck="false" size="30">
+        </td></tr>
       <tr><td>Match type</td><td><select name="match">
       <option value="word" selected>Any words</option>
       <option value="exactword">Any words (exact match)</option>
