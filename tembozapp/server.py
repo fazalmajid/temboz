@@ -717,21 +717,13 @@ def settings(status=''):
         setattr(param, 'debug', False)
       else:
         setattr(param, 'debug', True)
-    elif op == 'facebook':
-      api_key = flask.request.form.get('api_key', '').strip()
-      if api_key:
-        dbop.setting(db, c, fb_api_key=api_key)
-      app_id = flask.request.form.get('app_id', '').strip()
-      if app_id:
-        dbop.setting(db, c, fb_app_id=app_id)
-      fb_secret = flask.request.form.get('fb_secret', '').strip()
-      if fb_secret:
-        dbop.setting(db, c, fb_secret=fb_secret)
     elif op == 'del_token':
       dbop.setting(db, c, fb_token='')
     elif op == 'maint':
       dbop.snr_mv(db, c)
       db.commit()
+    else:
+      raise NotImplementedError
 
     stats = filters.stats(c)
     
