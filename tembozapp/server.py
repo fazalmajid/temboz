@@ -722,7 +722,7 @@ def settings(status=''):
     elif op == 'maint':
       dbop.snr_mv(db, c)
       db.commit()
-    else:
+    elif op:
       raise NotImplementedError
 
     stats = filters.stats(c)
