@@ -67,7 +67,7 @@ if __name__ == '__main__':
         sys.exit(1)
     elif opt == '--import':
       import tembozapp.opml
-      tembozapp.opml.import_opml(val)
+      print(tembozapp.opml.import_opml(opml_filename=val))
     elif opt == '--daemon':
       # close stdin file descriptor
       try:

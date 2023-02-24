@@ -119,6 +119,7 @@
     <li><a href="#statistics"><span>Stats</span></a></li>
     <li><a href="#refresh"><span>Refresh</span></a></li>
     <li><a href="#passwd"><span>Password</span></a></li>
+    <li><a href="#opml"><span>OPML</span></a></li>
     <li><a href="#server"><span>Server</span></a></li>
     <li><a href="#limits"><span>Limits</span></a></li>
     <li><a href="#timescale"><span>Time scale</span></a></li>
@@ -166,6 +167,26 @@
       <tr>
         <td colspan="2" align="center"><input type="submit" value="Set"></td>
       </tr>
+      </table>
+    </form>
+  </div>
+  <div id="opml" class="ui-tabs-hide">
+    <form method="POST"><input type="hidden" name="op" value="opml">
+      <p>OPML is a XML-based format to export subscribed feeds</p>
+      <p>
+        <a href="/opml">Export your own Temboz OPML</a> (does not include
+        feeds marked as private).
+      </p>
+      <p>Import your feeds from another reader using an OPML file.</p>
+      <table>
+        <tr><td>Import from URL</td><td><input name="url"></td></tr>
+        <tr><td colspan="2" align="center">or</td></tr>
+        <tr><td>Upload file</td><td><input name="file" type="file"></td></tr>
+        <tr>
+          <td colspan="2" align="center">
+            <input type="submit" value="Import">
+          </td>
+        </tr>
       </table>
     </form>
   </div>

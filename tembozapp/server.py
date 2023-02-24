@@ -5,7 +5,7 @@ import flask, sqlite3, string, requests, re, datetime, hmac, hashlib
 import passlib.hash
 import feedparser
 import hashlib, socket, json, werkzeug, __main__
-from . import param, update, filters, util, normalize, dbop, fts5
+from . import param, update, filters, util, normalize, dbop, fts5, opml
 
 try:
   import socketserver as SocketServer
@@ -728,6 +728,11 @@ def settings(status=''):
       )
       if ok:
         return flask.redirect('/login?info=' + status.replace(' ', '+'))
+    elif op == 'opml':
+      opml_url = flask.request.form.get('url', '')
+      if opml_url:
+        r = requests.get(opml_url)
+        status = opml.import_opml(db=db, c=c, opml=r.text)
     elif op == 'maint':
       dbop.snr_mv(db, c)
       db.commit()
@@ -789,7 +794,7 @@ def stem():
   return (stem, 200, {'Content-Type': 'text/plain'})
 
 @app.route("/opml")
-def opml():
+def opml_export():
   sort_key = flask.request.args.get('sort', '(unread > 0) DESC, snr')
   if sort_key == 'feed_title':
     sort_key = 'lower(feed_title)'

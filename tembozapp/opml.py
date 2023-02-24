@@ -1,18 +1,22 @@
-import sys, os, re, xml.etree.ElementTree
+import sys, os, io, re, xml.etree.ElementTree
 from . import dbop
 
-def parse_opml(opml_file):
-  try:
-    opml = xml.etree.ElementTree.parse(os.path.expanduser(opml_file))
-  except xml.etree.ElementTree.ParseError:
+def parse_opml(opml=None, opml_filename=None):
+  assert opml or opml_filename
+  if opml:
+    opml = xml.etree.ElementTree.parse(io.StringIO(opml))
+  else:
     try:
-      opml = xml.etree.ElementTree.parse(
-        os.path.expanduser(opml_file),
-        xml.etree.ElementTree.XMLParser(encoding='UTF-8'))
+      opml = xml.etree.ElementTree.parse(os.path.expanduser(opml_filename))
     except xml.etree.ElementTree.ParseError:
-      opml = xml.etree.ElementTree.parse(
-        os.path.expanduser(opml_file),
-        xml.etree.ElementTree.XMLParser(encoding='ISO8859-1'))
+      try:
+        opml = xml.etree.ElementTree.parse(
+          os.path.expanduser(opml_filename),
+          xml.etree.ElementTree.XMLParser(encoding='UTF-8'))
+      except xml.etree.ElementTree.ParseError:
+        opml = xml.etree.ElementTree.parse(
+          os.path.expanduser(opml_filename),
+          xml.etree.ElementTree.XMLParser(encoding='ISO8859-1'))
   tree = []
   #import code
   #code.interact(local=locals())
@@ -49,25 +53,31 @@ def parse_opml(opml_file):
         )
   return tree
 
-def import_opml(opml_file):
-  tree = parse_opml(opml_file)
-  with dbop.db() as db:
-    c = db.cursor()
-    ok = 0
-    dup = 0
-    for feed in tree:
-      feed['feed_etag'] = ''
-      try:
-        c.execute("""insert into fm_feeds
-        (feed_xml, feed_etag, feed_html, feed_title, feed_desc) values
-        (:xmlUrl, :feed_etag, :htmlUrl, :title, :desc)""", feed)
-        ok += 1
-      except sqlite.IntegrityError as e:
-        if 'feed_xml' not in str(e):
-          raise
-        dup += 1
-    db.commit()
-    print(ok, 'feeds imported,', dup, 'rejected as duplicates')
+def process_tree(db, c, tree):
+  ok = 0
+  dup = 0
+  for feed in tree:
+    feed['feed_etag'] = ''
+    try:
+      c.execute("""insert into fm_feeds
+      (feed_xml, feed_etag, feed_html, feed_title, feed_desc) values
+      (:xmlUrl, :feed_etag, :htmlUrl, :title, :desc)""", feed)
+      ok += 1
+    except sqlite.IntegrityError as e:
+      if 'feed_xml' not in str(e):
+        raise
+      dup += 1
+  db.commit()
+  return f'{ok} feeds imported, {dup} rejected as duplicates'
+
+def import_opml(db=None, c=None, **kwargs):
+  tree = parse_opml(**kwargs)
+  if not db:
+    with dbop.db() as db:
+      c = db.cursor()
+      return process_tree(db, c, tree)
+  else:
+    return process_tree(db, c, tree)
 
 if __name__ == '__main__':
   for feed in [
