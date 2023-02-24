@@ -42,7 +42,9 @@ docker:
 	docker build -t fazalmajid/temboz .
 
 docker-run:
-	docker run -p 9999:9999 -v `pwd`:/temboz/data fazalmajid/temboz
+	-docker stop temboz_1
+	-docker rm temboz_1
+	docker run --name temboz_1 -p 9999:9999 -v `pwd`:/temboz/data fazalmajid/temboz
 
 sdist:
 	-rm -f dist/*

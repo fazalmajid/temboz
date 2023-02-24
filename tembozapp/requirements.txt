@@ -1,0 +1,14 @@
+flask
+requests
+html5lib>=1.1
+passlib
+argon2_cffi
+ctranslitcodec
+sgmllib3k
+werkzeug>=1.0.1
+waitress
+feedparser
+bleach>=5.0.1
+tinycss2
+paste
+yappi

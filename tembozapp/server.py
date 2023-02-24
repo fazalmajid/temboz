@@ -177,8 +177,9 @@ def run():
   logging.getLogger().setLevel(logging.INFO)
   # try the Waitress WSGI first, fall back to the Flask DEV server
   try:
-    import waitress
-    waitress.serve(app, host=param.settings['ip'], port=param.settings['port'],
+    import waitress, paste.translogger
+    waitress.serve(paste.translogger.TransLogger(app),
+                   host=param.settings['ip'], port=param.settings['port'],
                    asyncore_use_poll=True)
   except ImportError:
     app.run(host=param.settings['ip'],

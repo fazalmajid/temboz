@@ -85,7 +85,7 @@ Enter an IP address and port [127.0.0.1:9999]: """)
 
 
 def docker_bootstrap():
-  ip, port = '127.0.0.1', 9999
+  ip, port = '0.0.0.0', 9999
   login = 'temboz'
   hash = passlib.hash.argon2.using(
     rounds=64,
