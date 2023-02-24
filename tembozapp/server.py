@@ -717,8 +717,6 @@ def settings(status=''):
         setattr(param, 'debug', False)
       else:
         setattr(param, 'debug', True)
-    elif op == 'del_token':
-      dbop.setting(db, c, fb_token='')
     elif op == 'maint':
       dbop.snr_mv(db, c)
       db.commit()
