@@ -211,7 +211,8 @@ def login():
       return flask.redirect('/login?err=invalid+login+or+password')
   else:
     return flask.render_template('login.html',
-                                 err=flask.request.args.get('err'))
+                                 err=flask.request.args.get('err'),
+                                 info=flask.request.args.get('info'))
 
 def view_common(do_items=True):
   # Query-string parameters for this page
@@ -717,6 +718,16 @@ def settings(status=''):
         setattr(param, 'debug', False)
       else:
         setattr(param, 'debug', True)
+    elif op == 'passwd':
+      old_login, login, passwd, oldpass, pass1, pass2 = [
+        flask.request.form.get(x, '')
+        for x in ('old_login', 'login', 'passwd', 'oldpass', 'pass1', 'pass2')
+      ]
+      ok, status = dbop.change_passwd(
+        db, c, old_login, login, passwd, oldpass, pass1, pass2
+      )
+      if ok:
+        return flask.redirect('/login?info=' + status.replace(' ', '+'))
     elif op == 'maint':
       dbop.snr_mv(db, c)
       db.commit()

@@ -1,5 +1,4 @@
-from __future__ import print_function
-import sys, time, sqlite3, string, json
+import sys, time, sqlite3, string, json, passlib
 from . import param
 
 def db():
@@ -482,6 +481,39 @@ def check_session(uuid, user_agent):
     if good:
       auth_cache[uuid, user_agent] = l[1]
     return good
+
+def change_passwd(d, c, old_login, login, passwd, oldpass, pass1, pass2):
+  if pass1 != pass2:
+    return False, 'Passwords do not match'
+  if old_login != param.settings['login']:
+    return False, 'Login does not match'
+  login = login or old_login
+  if not passlib.hash.argon2.verify(oldpass, param.settings['passwd']):
+    return False, 'Old password is invalid'
+  hash = passlib.hash.argon2.using(
+    rounds=64,
+    memory_cost=65536,
+    parallelism=1,
+    digest_size=32
+  ).hash(pass1)
+  try:
+    c.execute("""update fm_settings set value=? where name='login'""",
+              (login,))
+    c.execute("""update fm_settings set value=? where name='passwd'""",
+              (hash,))
+    c.execute("""delete from fm_sessions""")
+    d.commit()
+    param.settings['login'] = login
+    param.settings['passwd'] = hash
+    auth_cache.clear()
+    if old_login != login:
+      return True, 'login and password successfully changed'
+    else:
+      return True, 'password successfully changed'
+  except:
+    d.rollback()
+    raise
+  return False, 'Unexpected error'
 
 with db() as d:
   c = d.cursor()

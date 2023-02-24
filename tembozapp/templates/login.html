@@ -33,24 +33,28 @@
         -webkit-border-radius: 2vw;
         border-radius: 2vw;
       }
-      p.err {
+      p.err, p.info {
         padding: 1em;
       }
       /* colors */
       div.loginform {
-          background: #d9ffb3;
-	  color: black;
+        background: #d9ffb3;
+	color: black;
       }
       p.err {
         color: red;
         background: #fcc;
         border: 2px solid red;
       }
+      p.info {
+        color: #2a0;
+        border: 2px solid green;
+      }
       @media (prefers-color-scheme: dark) {
-	  html {
-	      background: black;
-	      color: white;
-	  }
+	html {
+	  background: black;
+	  color: white;
+	}
       }
     </style>
   </head>
@@ -59,6 +63,9 @@
       <h1>Temboz</h1>
       {% if err %}
       <p class="err" >{{ err }}</p>
+      {% endif %}
+      {% if info %}
+      <p class="info" >{{ info }}</p>
       {% endif %}
       <center>
         <form method="POST">
