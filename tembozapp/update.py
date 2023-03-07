@@ -270,6 +270,22 @@ def catch_up(feed_uid):
     where item_feed_uid=? and item_rating=0""", [feed_uid])
     db.commit()
 
+def dedupe(feed_uid):
+  feed_uid = int(feed_uid)
+  with dbop.db() as db:
+    c = db.cursor()
+    c.execute("""update fm_items set item_rating=-1
+    where item_feed_uid=? and item_rating=0 and exists (
+      select * from fm_items i2
+      where i2.item_feed_uid=fm_items.item_feed_uid
+        and i2.item_uid<>fm_items.item_uid
+        and i2.item_title=fm_items.item_title and i2.item_rating<>0
+    )""", [feed_uid])
+    modified = c.rowcount
+    db.commit()
+    c.close()
+  return modified
+
 def purge_items(c, feed_uid):
   c.execute("delete from fm_items where item_feed_uid=? and item_rating=0",
             [feed_uid])

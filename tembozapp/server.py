@@ -484,6 +484,16 @@ def feed_info(feed_uid, op=None):
       if back == '/feeds':
         return flask.redirect(back)
       notices.append('<p>Caught up successfully.</p>')
+    elif op == 'dedupe' and flask.request.form.get('confirm') == 'yes':
+      deduped = update.dedupe(feed_uid)
+      logging.info('deduped %r' % (deduped,))
+      back = flask.request.args.get('back', '')
+      if back == '/feeds':
+        return flask.redirect(back)
+      if deduped > 0:
+        notices.append(f'<p>Deduplicated {deduped} articles successfully.</p>')
+      else:
+        notices.append('<p>No unread duplicate articles found.</p>')
     elif op == 'reload' and flask.request.form.get('confirm') == 'yes':
       update.purge_reload(feed_uid)
       back = flask.request.args.get('back', '')
