@@ -4,7 +4,8 @@ import threading, io, cProfile, tempfile
 import flask, sqlite3, string, requests, re, datetime, hmac, hashlib
 import passlib.hash
 import feedparser
-import hashlib, socket, json, werkzeug, __main__
+import hashlib, socket, json, werkzeug, werkzeug.http, werkzeug.wrappers
+import __main__
 from . import param, update, filters, util, normalize, dbop, fts5
 
 try:
@@ -69,7 +70,7 @@ class cProfileWrapper:
     self.application = application
 
   def __call__(self, environ, start_response):
-    qs = werkzeug.wsgi.get_query_string(environ)
+    qs = werkzeug.wrappers.Request(environ).query_string.decode('utf-8')
     fn = None
     if 'cProfile=' in qs:
       fn = dict(urlparse.parse_qsl(qs))['cProfile']
