@@ -50,8 +50,14 @@ def add_feed(feed_xml):
     c = db.cursor()
     feed_xml = feed_xml.replace('feed://', 'http://')
     # verify the feed
-    r = requests.get(feed_xml, timeout=param.http_timeout)
-    f = feedparser.parse(r.content)
+    s = requests.Session()
+    try:
+      r = s.get(feed_xml, timeout=param.http_timeout)
+      content = r.content
+      etag = r.headers.get('Etag')
+    finally:
+      s.close()
+    f = feedparser.parse(content)
     normalize.basic(f, feed_xml)
     if not f.feed or ('link' not in f.feed or 'title' not in f.feed):
       original = feed_xml
@@ -60,11 +66,17 @@ def add_feed(feed_xml):
         raise AutoDiscoveryError
       print('add_feed:autodiscovery of', original, 'found', feed_xml,
             file=param.log)
-      r = requests.get(feed_xml, timeout=param.http_timeout)
-      f = feedparser.parse(r.text)
+      s = requests.Session()
+      try:
+        r = s.get(feed_xml, timeout=param.http_timeout)
+        text = r.text
+        etag = r.headers.get('Etag')
+      finally:
+        s.close()
+      f = feedparser.parse(text)
       normalize.basic(f, feed_xml)
       if not f.feed or 'url' not in f:
-        print('add_feed:autodiscovery failed %r %r' % (r.text, f.__dict__),
+        print('add_feed:autodiscovery failed %r %r' % (text, f.__dict__),
               file=param.log)
         raise ParseError
     # we have a valid feed, normalize it
@@ -72,7 +84,7 @@ def add_feed(feed_xml):
     feed = {
       'xmlUrl': f['url'],
       'htmlUrl': str(f.feed['link']),
-      'etag': r.headers.get('Etag'),
+      'etag': etag,
       'title': f.feed['title'],
       'desc': f.feed['description']
     }
@@ -100,8 +112,13 @@ def update_feed_xml(feed_uid, feed_xml):
   """Update a feed URL and fetch the feed. Returns the number of new items"""
   feed_uid = int(feed_uid)
 
-  r = requests.get(feed_xml, timeout=param.http_timeout)
-  f = feedparser.parse(r.content)
+  s = requests.Session()
+  try:
+    r = s.get(feed_xml, timeout=param.http_timeout)
+    content = r.content
+  finally:
+    s.close()
+  f = feedparser.parse(content)
   if not f.feed:
     raise ParseError
   normalize.normalize_feed(f)
@@ -279,7 +296,7 @@ def dedupe(feed_uid):
       select * from fm_items i2
       where i2.item_feed_uid=fm_items.item_feed_uid
         and i2.item_uid<>fm_items.item_uid
-        and i2.item_title=fm_items.item_title and i2.item_rating<>0
+        and i2.item_title=fm_items.item_title
     )""", [feed_uid])
     modified = c.rowcount
     db.commit()
@@ -306,8 +323,13 @@ def purge_reload(feed_uid):
     where feed_uid=?""", [feed_uid])
     feed_xml = c.fetchone()[0]
     db.commit()
-    r = requests.get(feed_xml, timeout=param.http_timeout)
-    f = feedparser.parse(r.content)
+    s = requests.Session()
+    try:
+      r = s.get(feed_xml, timeout=param.http_timeout)
+      content = r.content
+    finally:
+      s.close()
+    f = feedparser.parse(content)
     if not f.feed:
       raise ParseError
     normalize.normalize_feed(f)
@@ -360,12 +382,18 @@ def fetch_feed(feed_uid, feed_xml, feed_etag, feed_modified):
   if not feed_modified:
     feed_modified = None
   try:
-    r = requests.get(feed_xml, headers={
-      'If-None-Match': feed_etag
-    }, timeout=param.http_timeout)
-    if r.content == '':
+    s = requests.Session()
+    try:
+      r = s.get(feed_xml, headers={
+        'If-None-Match': feed_etag
+      }, timeout=param.http_timeout)
+      content = r.content
+      etag = r.headers.get('Etag')
+    finally:
+      s.close()
+    if content == '':
       return {'channel': {}, 'items': [], 'why': 'no change since Etag'}
-    f = feedparser.parse(r.content, etag=r.headers.get('Etag'),
+    f = feedparser.parse(content, etag=etag,
                          modified=feed_modified)
   except (socket.timeout, requests.exceptions.RequestException) as e:
     if param.debug:

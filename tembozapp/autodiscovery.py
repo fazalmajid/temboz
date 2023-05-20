@@ -3,9 +3,13 @@ import requests, html5lib, feedparser
 from . import param
 
 def find(url):
-  html = requests.get(url,
-                      headers={'user-agent': param.user_agent},
-                      timeout=param.http_timeout).content
+  s = requests.Session()
+  try:
+    html = s.get(url,
+                 headers={'user-agent': param.user_agent},
+                 timeout=param.http_timeout).content
+  finally:
+    s.close()
   tree = html5lib.parse(html, namespaceHTMLElements=False)
   # base for relative URLs
   base = tree.findall('.//base')

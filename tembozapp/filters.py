@@ -145,8 +145,12 @@ def link_extract(link_text, content):
 
 def dereference_content(url):
   try:
-    r = requests.get(url, timeout=param.http_timeout)
-    return r.content
+    s = requests.Session()
+    try:
+      r = s.get(url, timeout=param.http_timeout)
+      return r.content
+    finally:
+      s.close()
   except:
     return ''
 
