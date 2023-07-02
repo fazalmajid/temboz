@@ -1,6 +1,6 @@
 from __future__ import print_function
 import sys, hashlib, time, threading, socket, signal, os, re
-import random, sqlite3, requests, pickle, feedparser
+import random, sqlite3, pickle, feedparser, requests
 try:
   import queue
 except ImportError:
@@ -50,13 +50,8 @@ def add_feed(feed_xml):
     c = db.cursor()
     feed_xml = feed_xml.replace('feed://', 'http://')
     # verify the feed
-    s = requests.Session()
-    try:
-      r = s.get(feed_xml, timeout=param.http_timeout)
-      content = r.content
-      etag = r.headers.get('Etag')
-    finally:
-      s.close()
+    content, headers = util.GET(feed_xml)
+    etag = headers.get('Etag')
     f = feedparser.parse(content)
     normalize.basic(f, feed_xml)
     if not f.feed or ('link' not in f.feed or 'title' not in f.feed):
@@ -66,13 +61,8 @@ def add_feed(feed_xml):
         raise AutoDiscoveryError
       print('add_feed:autodiscovery of', original, 'found', feed_xml,
             file=param.log)
-      s = requests.Session()
-      try:
-        r = s.get(feed_xml, timeout=param.http_timeout)
-        text = r.text
-        etag = r.headers.get('Etag')
-      finally:
-        s.close()
+      text, headers = util.GET(feed_xml)
+      etag = headers.get('Etag')
       f = feedparser.parse(text)
       normalize.basic(f, feed_xml)
       if not f.feed or 'url' not in f:
@@ -112,12 +102,7 @@ def update_feed_xml(feed_uid, feed_xml):
   """Update a feed URL and fetch the feed. Returns the number of new items"""
   feed_uid = int(feed_uid)
 
-  s = requests.Session()
-  try:
-    r = s.get(feed_xml, timeout=param.http_timeout)
-    content = r.content
-  finally:
-    s.close()
+  content, headers = util.GET(feed_xml)
   f = feedparser.parse(content)
   if not f.feed:
     raise ParseError
@@ -323,12 +308,7 @@ def purge_reload(feed_uid):
     where feed_uid=?""", [feed_uid])
     feed_xml = c.fetchone()[0]
     db.commit()
-    s = requests.Session()
-    try:
-      r = s.get(feed_xml, timeout=param.http_timeout)
-      content = r.content
-    finally:
-      s.close()
+    content, headers = util.GET(feed_xml)
     f = feedparser.parse(content)
     if not f.feed:
       raise ParseError
@@ -382,15 +362,10 @@ def fetch_feed(feed_uid, feed_xml, feed_etag, feed_modified):
   if not feed_modified:
     feed_modified = None
   try:
-    s = requests.Session()
-    try:
-      r = s.get(feed_xml, headers={
-        'If-None-Match': feed_etag
-      }, timeout=param.http_timeout)
-      content = r.content
-      etag = r.headers.get('Etag')
-    finally:
-      s.close()
+    content, headers = util.GET(feed_xml, headers={
+      'If-None-Match': feed_etag
+    })
+    etag = headers.get('Etag')
     if content == '':
       return {'channel': {}, 'items': [], 'why': 'no change since Etag'}
     f = feedparser.parse(content, etag=etag,

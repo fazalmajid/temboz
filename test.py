@@ -13,7 +13,7 @@ class TestCase(unittest.TestCase):
     feed_url = tembozapp.autodiscovery.find('https://blog.majid.info/')
     assert feed_url == 'https://blog.majid.info/index.xml'
     feed_url = tembozapp.autodiscovery.find('https://greenwald.substack.com')
-    assert feed_url == 'https://greenwald.substack.com/feed/'
+    assert feed_url == 'https://greenwald.substack.com/feed', feed_url
     feed_url = tembozapp.autodiscovery.find('https://www.calnewport.com/blog/')
     assert feed_url == 'https://www.calnewport.com/blog/feed'
 
@@ -49,6 +49,15 @@ class TestCase(unittest.TestCase):
       assert s2 != s
       assert '<span' in s2
     
+  def test104_relurl(self):
+    f = open('bugfeed/Ablogtowatch', 'r')
+    d = f.read()
+    f.close()
+    f = feedparser.parse(d)
+    i = [i for i in f.entries if 'Zenith Chronomaster Open' in i.title][0]
+    tembozapp.normalize.normalize(i, f, False)
+    pprint.pprint(i)
+
 def suite():
   suite = unittest.makeSuite(TestCase, 'test')
   return suite

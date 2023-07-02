@@ -1,6 +1,7 @@
 from __future__ import print_function
-import sys, traceback
+import sys, traceback, threading, signal, pprint, requests
 import tembozapp.param as param
+import urllib3.util.connection
 
 # Utility functions for debugging
 # we have to be extra defensive in order not to erase the original exception
@@ -28,3 +29,34 @@ def print_stack(black_list=[]):
   # to help the garbage collector
   del e
   print('#' * 10, 'END', '#' * 63, file=param.log)
+
+
+# XXX trace opened HTTP connection file descriptos
+http_fds = dict()
+local = threading.local()
+save_create_connection = urllib3.util.connection.create_connection
+def create_connection(*args, **kwargs):
+  #print('@'*32, repr(save_create_connection), repr(args), repr(kwargs), file=sys.stderr)
+  sock = save_create_connection(*args, **kwargs)
+  #print('@'*32, repr(sock), repr(sock.fileno()), file=sys.stderr)
+  try:
+    http_fds[sock.fileno()] = local.url, local.traceback
+  except:
+    http_fds[sock.fileno()] = '????', traceback.format_stack()
+  return sock
+urllib3.util.connection.create_connection = create_connection
+def dump_httpconn(*args, **kwargs):
+  with open('httpconn.out', 'w') as f:
+    pprint.pprint(http_fds, f)
+signal.signal(signal.SIGUSR2, dump_httpconn)
+# /XXX
+
+def GET(url, return_r=False, **kwargs):
+  local.url = url
+  local.traceback = traceback.format_stack()
+  with requests.Session() as s:
+    r = s.get(url, timeout=param.http_timeout, **kwargs)
+    if return_r:
+      return r
+    else:
+      return r.text, r.headers

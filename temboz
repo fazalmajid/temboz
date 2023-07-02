@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import print_function
-import sys, os, datetime
+import sys, os, datetime, resource
 import tembozapp.feedfix
 
 def usage():
@@ -18,6 +18,10 @@ def usage():
 if __name__ == '__main__':
   started = datetime.datetime.now()
   import getopt
+  # raise max number of file descriptors
+  hard = resource.getrlimit(resource.RLIMIT_NOFILE)[1]
+  resource.setrlimit(resource.RLIMIT_NOFILE, (hard, hard))
+  # bootstrap DB file if it does not exist
   try:
     os.stat('rss.db')
   except:
@@ -26,8 +30,8 @@ if __name__ == '__main__':
       tembozapp.bootstrap.docker_bootstrap()
     else:
       tembozapp.bootstrap.interactive_bootstrap()
+  # do not run if dependencies are insecure
   import sanity
-  import tembozapp.transform
   try:
     import tembozapp.transform
   except ImportError:

@@ -1,6 +1,6 @@
 # handle the various type of FilteringRules
 from __future__ import print_function
-import time, re, textwrap, requests, html5lib
+import time, re, textwrap, html5lib
 from . import normalize, param, util, urldedup
 
 rules = []
@@ -145,12 +145,8 @@ def link_extract(link_text, content):
 
 def dereference_content(url):
   try:
-    s = requests.Session()
-    try:
-      r = s.get(url, timeout=param.http_timeout)
-      return r.content
-    finally:
-      s.close()
+    text, headers = util.GET(url)
+    return text
   except:
     return ''
 

@@ -1,7 +1,7 @@
 # -*- coding: iso-8859-1 -*-
 from __future__ import print_function
 import sys, time, re, codecs, string, traceback, socket, hashlib
-import unicodedata, requests, feedparser
+import requests, unicodedata, feedparser
 from . import param, transform, util, porter2
 import bleach, bleach.css_sanitizer
 
@@ -549,30 +549,25 @@ def dereference(url, seen=None, level=0, jar=None):
   if level > 16:
     return url
   try:
-    s = requests.Session()
-    try:
-      r = s.get(url, allow_redirects=False, timeout=param.http_timeout,
-                       cookies=jar)
-      if not r.is_redirect:
+    r = util.GET(url, allow_redirects=False, cookies=jar, return_r=True)
+    if not r.is_redirect:
+      return url
+    else:
+      jar.update(r.cookies)
+      # break a redirection loop if it occurs
+      redir = r.headers.get('Location')
+      if True not in [redir.startswith(p)
+                      for p in ['http://', 'https://', 'ftp://']]:
         return url
-      else:
-        jar.update(r.cookies)
-        # break a redirection loop if it occurs
-        redir = r.headers.get('Location')
-        if True not in [redir.startswith(p)
-                        for p in ['http://', 'https://', 'ftp://']]:
-          return url
-        if redir in seen:
-          return url
-        # some servers redirect to Unicode URLs, which are not legal
-        try:
-          str(redir)
-        except UnicodeDecodeError:
-          return url
-        # there might be several levels of redirection
-        return dereference(redir, seen, level + 1, jar)
-    finally:
-      s.close()
+      if redir in seen:
+        return url
+      # some servers redirect to Unicode URLs, which are not legal
+      try:
+        str(redir)
+      except UnicodeDecodeError:
+        return url
+      # there might be several levels of redirection
+      return dereference(redir, seen, level + 1, jar)
   except (requests.exceptions.RequestException, ValueError, socket.error):
     return url
   except:

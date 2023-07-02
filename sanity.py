@@ -19,3 +19,8 @@ for i in f.entries:
 
 assert bleach.__version__ >= '5', \
   'Temboz now requires Bleach 5 or later, which made breaking API changes'
+
+# disable urllib3 connection pooling, which leads to excess file descriptor
+# utilization
+import requests.adapters
+requests.adapters.DEFAULT_POOLSIZE = 0

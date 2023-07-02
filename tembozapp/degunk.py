@@ -1,7 +1,7 @@
 # this module defines classes that can be used to massage the content of an
 # article, mostly to remove gunk like ads
 from __future__ import print_function
-import sys, re, requests, sqlite3
+import sys, re, sqlite3
 from . import param, util, dbop
 
 class Filter:
@@ -139,12 +139,7 @@ class Dereference(Filter):
             item['link'] = link[0]
             return content
           # we haven't seen this article before, buck up and load it
-          s = requests.Session()
-          try:
-            deref = s.get(item['link'],
-                          timeout=param.http_timeout).content
-          finally:
-            s.close()
+          deref, headers = util.GET(item['link'])
           m = self.re.search(deref)
           if m and m.groups():
             item['link'] = m.groups()[0]
