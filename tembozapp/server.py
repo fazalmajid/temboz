@@ -1,5 +1,5 @@
 from __future__ import print_function, division
-import sys, os, stat, logging, base64, time, imp, gzip, traceback, pprint, csv
+import sys, os, stat, logging, base64, time, gzip, traceback, pprint, csv
 import threading, io, cProfile, tempfile
 import flask, sqlite3, string, requests, re, datetime, hmac, hashlib
 import passlib.hash

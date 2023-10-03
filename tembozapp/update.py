@@ -12,7 +12,7 @@ except ImportError:
 
 from . import param, normalize, util, transform, filters, dbop, autodiscovery
 from . import urldedup
-import imp
+import importlib
 
 #socket.setdefaulttimeout(10)
 feedparser.USER_AGENT = param.user_agent
@@ -293,7 +293,7 @@ def purge_items(c, feed_uid):
             [feed_uid])
     
 def purge_reload(feed_uid):
-  imp.reload(transform)
+  importlib.reload(transform)
   feed_uid = int(feed_uid)
   if feed_uid in feed_guid_cache:
     del feed_guid_cache[feed_uid]
