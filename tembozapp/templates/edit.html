@@ -3,12 +3,13 @@
 <html>
 <body>
 {% block EXTRAHEAD %}
-<script language="JavaScript" type="text/javascript" src="/static/tiny_mce/tiny_mce.js">
+<link rel="stylesheet" type="text/css" href="/static/trumbowyg.min.css">
+<script language="JavaScript" src="/static/temboz.js"></script>
+<script language="JavaScript" type="text/javascript" src="/static/trumbowyg.min.js">
 </script>
 <script language="JavaScript" type="text/javascript">
-tinyMCE.init({
-  mode: "textareas",
-  theme: "advanced"
+$(function() {
+  $('div.editor').trumbowyg();
 });
 </script>
 {% endblock %}
@@ -37,9 +38,9 @@ tinyMCE.init({
     <input type="hidden" name="nonce" value="{{ nonce }}">
     <input id="title" name="title" size="80" value="{{ title }}"><br>
     <input id="href" name="href" size="80" value="{{ href }}"><br>
-    <textarea id="content" name="content" cols="80" rows="24">
+    <div id="content" class="editor" name="content" cols="80" rows="24">
 {{ content }}
-    </textarea><br>
+    </div><br>
     <input type="submit" value="Save">
   </form>
 </div>

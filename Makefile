@@ -25,11 +25,19 @@ sync-js:
 	(cd spool; wget -N https://raw.githubusercontent.com/janl/mustache.js/master/mustache.js)
 #	(cd spool; wget -N https://unpkg.com/colcade/colcade.js)
 
-js: $(JUI)/external/jquery/jquery*.js spool/jquery.form.js $(JUI)/jquery-ui.js spool/jquery.hotkeys.meta.js tembozapp/static/specific.js #spool/dexie.js
+js: $(JUI)/external/jquery/jquery*.js spool/jquery.form.js $(JUI)/jquery-ui.js spool/jquery.hotkeys.meta.js tembozapp/static/specific.js tembozapp/static/trumbowyg.min.js #spool/dexie.js
 	cat $^ \
 	| $(JSMIN) > tembozapp/static/temboz.js
 	cp spool/mustache.js tembozapp/static
 	#./temboz --kill
+
+tembozapp/static/trumbowyg.min.js:
+	wget -c https://github.com/Alex-D/Trumbowyg/archive/main.zip
+	unzip main.zip
+	mv Trumbowyg-main/dist/trumbowyg.min.js tembozapp/static/
+	mv Trumbowyg-main/dist/ui/trumbowyg.min.css tembozapp/static/
+	cp -r Trumbowyg-main/dist/ui tembozapp/static
+	rm -rf main.zip Trumbowyg-main
 
 changelog:
 	cvs2cl.pl --tags -g -q
