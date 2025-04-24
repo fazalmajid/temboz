@@ -3,7 +3,7 @@ DATE:sh=	date +'%Y-%m-%d'
 
 JSMIN=		jsmin
 
-all: changelog
+all: js
 
 init:
 	@if [ `hostname` != "mordac" ]; then true; else echo "Will not run make init on mordac"; false; fi
@@ -38,9 +38,6 @@ tembozapp/static/trumbowyg.min.js:
 	mv Trumbowyg-main/dist/ui/trumbowyg.min.css tembozapp/static/
 	cp -r Trumbowyg-main/dist/ui tembozapp/static
 	rm -rf main.zip Trumbowyg-main
-
-changelog:
-	cvs2cl.pl --tags -g -q
 
 opml:
 	wget -c https://majid.info/temboz/temboz.opml

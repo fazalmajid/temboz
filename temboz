@@ -43,7 +43,7 @@ if __name__ == '__main__':
   opts, args = getopt.getopt(
     sys.argv[1:], 'vh',
     ['refresh', 'resync', 'server', 'import=', 'kill', 'help',
-     'clean', 'cleanup', 'sop'])
+     'clean', 'cleanup', 'repl'])
   if opts == []:
     # try to detect if we are being called as a CGI script
     cgi_ver = os.getenv('GATEWAY_INTERFACE')
@@ -55,14 +55,17 @@ if __name__ == '__main__':
   for opt, val in opts:
     if opt in ['-h', '--help']:
       usage()
-    if opt == '--refresh':
+    elif opt == '--repl':
+      import tembozapp.util
+      tembozapp.util.start_repl()
+    elif opt == '--refresh':
       import tembozapp.update
       try:
         tembozapp.update.update()
       except:
         tembozapp.util.print_stack()
         sys.exit(1)
-    if opt == '--resync':
+    elif opt == '--resync':
       import tembozapp.update
       try:
         tembozapp.update.update('and feed_errors > 0')

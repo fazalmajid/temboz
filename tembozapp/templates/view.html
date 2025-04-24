@@ -158,10 +158,12 @@ input#stem {
   function collapse_all() {
     $(".content").hide();
     $(".ctarrow").html("&#9654;&nbsp;");
+    document.cookie = "collapse=true";
   }
   function uncollapse_all() {
     $(".content").show();
     $(".ctarrow").html("&#9660;&nbsp;");
+    document.cookie = "collapse=false";
   }
   function toggle_tag() {
     $(this).toggleClass("highlighted");

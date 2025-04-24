@@ -14,8 +14,6 @@ def parse_opml(opml_file):
         os.path.expanduser(opml_file),
         xml.etree.ElementTree.XMLParser(encoding='ISO8859-1'))
   tree = []
-  #import code
-  #code.interact(local=locals())
   # XML is case-sensitive. xmlUrl is what is officially in the OPML spec
   for node in opml.getroot().findall('.//outline[@xmlUrl]'):
     if node is not None:

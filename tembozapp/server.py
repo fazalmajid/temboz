@@ -438,13 +438,6 @@ def robots():
 def favicon():
   return ('No favicon\n', 404, {'Content-Type': 'text/plain'})
 
-def rule_tabset(feed_uid=None):
-
-    return flask.render_template(
-      'feed.html', filters=filters,
-      len=len, max=max, **locals()
-    )
-
 @app.template_filter('rule_lines')
 def rule_lines(text):
   return max(4, filters.rule_lines(text))
@@ -622,7 +615,15 @@ def feed_info(feed_uid, op=None):
     
     return flask.render_template(
       'feed.html', filters=filters,
-      len=len, max=max, **locals()
+      len=len, max=max, exempt_change_op=exempt_change_op,
+      exempt_text=exempt_text, feed_desc=feed_desc, feed_errors=feed_errors,
+      feed_filter=feed_filter, feed_html=feed_html, feed_pubxml=feed_pubxml,
+      feed_rules=feed_rules, feed_title=feed_title, feed_uid=feed_uid,
+      feed_xml=feed_xml, filtered=filtered, hidden=hidden,
+      interesting=interesting, op=op, private_change_op=private_change_op,
+      private_text=private_text, ratio=ratio, since_when=since_when,
+      status_change_op=status_change_op, status_text=status_text, total=total,
+      uninteresting=uninteresting, unread=unread
     )
 
 @app.route("/feed_debug/<int:feed_uid>", methods=['GET'])

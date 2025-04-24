@@ -101,4 +101,7 @@ $(function() {
     document.body.addEventListener("touchend", function(e) {
         save_selection();
     }, false);
+    if (document.cookie.indexOf("collapse=true") != -1) {
+        collapse_all();
+    }
 });

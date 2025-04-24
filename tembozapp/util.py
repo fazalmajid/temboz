@@ -1,5 +1,5 @@
 from __future__ import print_function
-import sys, traceback, threading, signal, pprint, requests
+import sys, traceback, threading, signal, pprint, code, requests
 import tembozapp.param as param
 import urllib3.util.connection
 
@@ -25,6 +25,8 @@ def print_stack(black_list=[]):
       for var_name, var_value in list(t.tb_frame.f_locals.items()):
         if var_name not in black_list:
           print(var_name, ':', repr(var_value), file=param.log)
+    # to help the garbage collector
+    var_name, var_value = None, None
     del t
   # to help the garbage collector
   del e
@@ -51,6 +53,7 @@ def dump_httpconn(*args, **kwargs):
 signal.signal(signal.SIGUSR2, dump_httpconn)
 # /XXX
 
+
 def GET(url, return_r=False, **kwargs):
   local.url = url
   local.traceback = traceback.format_stack()
@@ -60,3 +63,13 @@ def GET(url, return_r=False, **kwargs):
       return r
     else:
       return r.text, r.headers
+
+
+class REPL(threading.Thread):
+  def run(self):
+    code.interact(local=locals())
+    
+def start_repl():
+  t = REPL()
+  t.start()
+  
