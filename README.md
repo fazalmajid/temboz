@@ -1,5 +1,10 @@
 # The Temboz feed reader
 
+> [!WARNING]
+> I have stopped working on Temboz and rewrote it in Rust, see https://github.com/fazalmajid/rTemboz
+> and switched for my own use on 2026-03-08
+> It will probably take a few weeks to fully stabilize, but I would recommend using that instead.
+
 ## Introduction
 
 Temboz is a web-based RSS/Atom aggregator and feed reader that focuses on saving you time by letting you filter out articles you are not interested in.
