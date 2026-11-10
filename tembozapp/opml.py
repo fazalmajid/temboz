@@ -1,4 +1,4 @@
-import sys, os, re, xml.etree.ElementTree
+import sys, os, re, sqlite3, xml.etree.ElementTree
 from . import dbop
 
 def parse_opml(opml_file):
@@ -60,7 +60,7 @@ def import_opml(opml_file):
         (feed_xml, feed_etag, feed_html, feed_title, feed_desc) values
         (:xmlUrl, :feed_etag, :htmlUrl, :title, :desc)""", feed)
         ok += 1
-      except sqlite.IntegrityError as e:
+      except sqlite3.IntegrityError as e:
         if 'feed_xml' not in str(e):
           raise
         dup += 1
